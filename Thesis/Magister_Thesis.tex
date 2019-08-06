@@ -1,0 +1,157 @@
+\documentclass[12pt,a4paper,twoside]{mwart}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{polski} \usepackage{indentfirst}
+\usepackage[left=3cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{dirtree}
+\usepackage{fancyhdr}
+\usepackage[nottoc,numbib]{tocbibind}
+\usepackage{apacite}
+\usepackage{enumitem}
+
+\newcommand{\makecell}[2][@{}c@{}]{\begin{tabular}{#1}#2\end{tabular}}
+\newcommand{\file}[1]{\textbf{\textit{\textcolor{darkgreen}{#1}}}}
+\newcommand{\folder}[1]{\textbf{\textit{\textcolor{dodgerblue}{#1}}}}
+
+\pagestyle{fancy}
+%% JN: nie jestem pewien czy klasa 'article' z 'openany' ma \markright
+%% JN: uproszczenie paginy: tylko autor i tytuł pracy, zamiast tytułu
+%%     bieżącego rozdziału.
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhf{}
+\fancyhead[LO]{\small \emph{\nouppercase{\leftmark}}}
+\fancyhead[RE]{\small \emph{\nouppercase{\rightmark}}}
+
+\cfoot{\fancyplain{}{\thepage}}
+
+% Czesc odpowiedzialna za styl kodu
+% Taken from Lena Herrmann at 
+% http://lenaherrmann.net/2010/05/20/javascript-syntax-highlighting-in-the-latex-listings-package
+\usepackage{listings}
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{dodgerblue}{RGB}{28, 134, 238}
+\definecolor{darkgreen}{RGB}{0,153,51}
+\definecolor{darkOrange}{RGB}{120,30,0}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, try, catch, switch, var, let, if, in, while, do, else, case, break},
+  keywordstyle=\color{purple}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, this, Math, Float32Array, Array},
+  ndkeywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{darkgreen}\ttfamily,
+  stringstyle=\color{darkOrange}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   %% JN: jeśli ie odwołuje się do konkretnych linii, to ich numerowanie nie do końca ma sens
+   %% JN: jesli numerowanie linii jest uzywane do pokazania gdzie linie zostały zawiniete,
+   %%     to lepiej uzyć mniej agresywnego stylu
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
+
+
+\begin{document}
+  
+\begin{titlepage}
+	\begin{center}
+		\large Uniwersytet Mikołaja Kopernika w Toruniu\\
+		\large Wydział Matematyki i Informatyki\\
+		\vspace{3cm} 
+		\large Patryk Bieszke\\
+			nr albumu: 273187\\
+			informatyka\\
+		\vspace{2cm}
+		Praca magisterska\\
+	
+		\vspace{3cm} 
+		\huge Generowanie kompozycji muzycznych z użyciem sieci neuronowych\\
+	\end{center}
+	\hfill
+	\begin{minipage}{6cm}
+		\vspace{3cm}
+		Opiekun pracy dyplomowej\\
+		prof. dr hab. Krzysztof Stencel
+	\end{minipage}
+	\vspace{4cm}
+	\begin{center}
+		Toruń 2018\\
+	\end{center}
+\end{titlepage}
+
+
+\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+
+\bibliographystyle{apacite}
+\bibliography{References}
+\clearpage
+\thispagestyle{empty}
+\mbox{}
+
+\pagenumbering{arabic}
+\tableofcontents 
+
+\clearpage
+
+\setcounter{secnumdepth}{0}
+\section{Wstęp}
+\label{sec:wstep}
+
+\newpage
+
+\section{Słownik skrótów}
+\begin{itemize}
+\item \textbf{DAW} - \textit{ang. \textbf{D}igital \textbf{A}udio \textbf{W}orkstation}, pol. Cyfrowa Stacja Robocza 
+\item \textbf{MIDI} - \textit{ang. \textbf{M}usical \textbf{I}nstrument \textbf{D}igital \textbf{I}nterface}
+\item \textbf{AUX} - \textit{ang. \textbf{Aux}iliary}
+\item \textbf{W3C} - \textit{ang. \textbf{W}orld \textbf{W}ide \textbf{W}eb \textbf{C}onsortium}
+\item \textbf{SVG} - \textit{ang. \textbf{S}calable \textbf{V}ector \textbf{G}raphics}
+\item \textbf{HTML} - \textit{ang. \textbf{H}yper\textbf{t}ext \textbf{M}arkup \textbf{L}anguage}
+\item \textbf{CSS} - \textit{ang.  \textbf{C}ascading \textbf{S}tyle \textbf{S}heets}
+\item \textbf{JS} - \textit{\textbf{J}ava\textbf{S}cript}
+\item \textbf{DOM} - \textit{ang. \textbf{D}ocument \textbf{O}bject \textbf{M}odel}
+\item \textbf{API} - \textit{ang. \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface}
+\item \textbf{CLI} - \textit{ang. \textbf{C}ommand \textbf{L}ine \textbf{I}nterface}
+\item \textbf{CQRS} - \textit{ang. \textbf{C}ommand \textbf{Q}uery \textbf{R}esponsibility \textbf{S}egregation}
+\item \textbf{MVC} - \textit{ang. \textbf{M}odel-\textbf{V}iew-\textbf{C}ontroller}
+\item \textbf{URL} - \textit{(ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator )}
+\item \textbf{npm} - \textit{(ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager)}
+  \todo[inline]{Czy jest to dobra konwencja dla słownika skrótów? Czy umieścić go przed wstępem z racji tego, że we wstępie chciałbym użyć DAW?}
+  
+\end{itemize}
+\newpage
+\setcounter{secnumdepth}{2}
+
+\section{Transpilacja muzyki}
+Some claim \cite{DBLP:journals/spm/BenetosDDE19}
+\section{Klasyfikacja muzyki}
+
+\section{Generowanie muzyki}
+
+\section{Zakonczenie}
+OKok
+\end{document}  
