@@ -14,7 +14,7 @@
 \usepackage{enumitem}
 
 \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
-\linespread{1.15}
+%% \linespread{1.15} odstep pomiędzy liniami?
 
 \newcommand{\makecell}[2][@{}c@{}]{\begin{tabular}{#1}#2\end{tabular}}
 \newcommand{\file}[1]{\textbf{\textit{\textcolor{darkgreen}{#1}}}}
@@ -150,17 +150,47 @@
 \setcounter{secnumdepth}{2}
 
 \section{Transkrypcja muzyki}
-Pliki dźwiękowe przechowują sygnały dźwiękowe w postaci sugnałów cyfrowych. Układ w którym pliki te przechowują bity jest zdeterminowany przez kodowanie, które zostało na nich zastosowane. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powtały z myślą o zaoszczędzeniu jak największej ilości pamięci w zaleności od tego, w jakim stopniu mona pójść na kompromis z jakością skompresowanego sygnału.
+Pliki dźwiękowe przechowują sygnały foniczne w postaci sygnałów cyfrowych. Układ, w którym pliki te przechowują bity jest zdeterminowany przez kodowanie, które zostało na nich zastosowane. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powtały z myślą o zaoszczędzeniu jak największej ilości pamięci w zaleności od tego, w jakim stopniu mona pójść na kompromis z jakością skompresowanego sygnału.
 
-Z punktu widzenina algorytmów generujących muzkę, w tym modeli sieci, pliki dźwiękowe nie są wystarczająco funkcjonalną formą trzymania danych. W celu pozyskania istotnych informacji w kontekście maszynowej kompozycji muzyki nalezałoby zastosować szereg algorytmów, w tym transformacji i funkcji statystycznych, na każdym z plików. Proces ten jest skomplikowany pod względem obliczeniowym i wymaga nie małej mocy obliczeniowej. Z racji tego, że kategoryzacje zbioru muzycznego jak i dynamiczne dostosowywanie modelu, na podstawie którego zostaną generowane kompozycje muzyczne według założeń projektu ma odbywać się w czasie rzeczywistym, jedyną formą przechowywania plików z informacją o kompozycjach będzie postać po zastosowaniu transkrypcji na danych utworach.
+Z punktu widzenina algorytmów generujących muzkę, w tym modeli sieci, pliki dźwiękowe nie są wystarczająco funkcjonalną formą trzymania danych. W celu pozyskania istotnych informacji w kontekście maszynowej kompozycji muzyki należałoby zastosować szereg algorytmów, w tym transformacji i funkcji statystycznych, na każdym z plików. Proces ten jest skomplikowany pod względem obliczeniowym, co w połączeniu z dużym woluminem danych czyni go czasochłonnym. Z racji tego, że kategoryzacje zbioru muzycznego jak i dynamiczne dostosowywanie modelu, na podstawie którego zostaną generowane kompozycje muzyczne według założeń projektu ma odbywać się w czasie rzeczywistym, jedyną formą przechowywania plików z informacją o kompozycjach będzie postać po zastosowaniu transkrypcji na danych utworach.
 
 %% z PWN : transkrypcja [łac. transcriptio ‘przepisywanie’], muz. opracowanie utworu muz. na inny niż w oryginale zespół wykonawczy (orkiestracja) lub inny instrument; Pytanie czy rozszerzenie tego znaczenia w języku polskim jest poprawne? także zapisanie utworu inną notacją muz.; transkrybować — zapisywać znakami współcz. notacji muz. utwory zapisane dawnymi systemami notacyjnymi, np. notacją modalną, menzuralną. Po ENG transkrypcja jest zgodna z rozdziałem
 
-Transkrypcja muzyki to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki, która wcześniej nie była zapisana w taki sposób Jest to skomplikowany i czasochłonny proces nawet dla profesjonalistów z tej dziedziny. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analize sygnału fonicznego. Do polepszenia rezultatu tego procesu często wymagane jest odesparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych problemów transkrypcji
+Transkrypcja muzyki to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki, która wcześniej nie była zapisana w taki sposób. Jest to skomplikowany i czasochłonny proces nawet dla profesjonalistów z dużym doświadczeniem w tej dziedzinie. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analize sygnału fonicznego. Do polepszenia rezultatu tego procesu często wymagane jest odesparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych problemów transkrypcji
 
-W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony na przykładach istniejących rozwiazań.  Celem tych rozważań jest opisanie modułu opisywanego projektu, służącego do transpilacji wysłanego przez użytkownika poliku dźwiękowego przez serwer
+W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony na przykładach istniejących rozwiazań.  Celem tych rozważań jest przybliżenie działania modułu opisywanego projektu, służącego do transpilacji wysłanego przez użytkownika pliku dźwiękowego
 
 \subsection{Jak "działa" muzyka}
+Uproszczając pojęcie muzyki, są to dźwięki podniesione do odpowiednich wysokości z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument czy głos ludzki. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na częsci pierwsze, można wyróżnić cztery esencjalne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów muzycznych. Są to:
+\begin{itemize}
+\item Rytm
+\item Wysokość tonu
+\item Głośność
+\item Barwa dźwięku
+\end{itemize}
+Składowe te są widoczne bardzo wyraźnie w zapisie nutowym, z kolei ten jest wystarczającym źródłem informacji dla muzyków aby zagrać dany utwór muzyczny. Zapisane nuty przedstawiają wysokość tonu jak i jego barwę wraz z długością granego dźwięku i poziomem głośności jaki powinien zostać zastosowany. Innymi, wysoko praktycznymi informacjami, do których dostęp daje muzykom zapis nutowy, są: 
+\begin{itemize}
+  \item tempo utworu, czyli szybkość z jaką nuty powinny być grane, 
+  \item sygnatura czasowa, która wyznacza bazową strukture rytmiczną w jakiej dany utwór został napisany,
+  \item klucz w którym został napisany utwór, opisujący harmoniczną podstawę kompozycji, co w praktyce ogranicza dostępne wysokości tonu.
+\end{itemize} 
+Informacją, którą zapis nutowy nie zapewnia, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk, ponieważ każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest zwiazany z transkrypcją muzyki, jak i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
+
+W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy, które są głównym przedmiotem analizy w kierunku transkrypcji muzycznej.
+
+\subsubsection{Rytm}
+W kontekście muzykologji, rytm jest bazową struktórą czasową utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całego utworu, ponieważ powszechną praktyką jest jego modyfikacja w trakcie trwania wykonania w celu uzyskania specyficznych efektów artystycznych. Bardzo częstą praktyką jest na przykład minimalne podnoszenie tempa na czas każdego z refrenów w celu ich wypuklenia na tle całości kompozycji.
+
+Podstawową jednostką rytmiczną jest nuta. Miarą tempa utworu przeniesioną na domenę fizyczną są \textbf{uderzenia na minutę} \textit{(ang. beats per minute, BPM)} oznaczające liczbę ćwierćnut przypadających na jedną minutę. \textbf{Taktem} nazywamy odcinek zapisu muzycznego wizualnie oznaczony pionowymi kreskami. Takty tworzą regularne odcinki czasowe, a ich długość jest zależna od \textbf{metrum}. Metrum jest oznaczeniem metrycznym opisującym ile jakich jednostek mieści się w takcie. Dla przykłądu, najpopularniejszym metrum w muzyce pop jest 4/4, co oznacza, że w każdym takcie mieszczą się cztery ćwierć nuty.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{images/Rytm_pieciolinia.png}\\
+(Przykład użycia React Developer Tools w przeglądarce Chrome)
+\end{center}
+\end{figure}
+
+\subsubsection{Głośność}
+Jak głośno 
 
 \subsection{Transformata Fouriera}
 
