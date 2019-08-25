@@ -1,5 +1,6 @@
 export enum ViewState {
     home,
     uploadMidi,
-    transcribe
+    transcribe,
+    utility
 } 

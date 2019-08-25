@@ -5,6 +5,9 @@ import { Navbar, Button, Alignment } from "@blueprintjs/core";
 import { IconName } from "@blueprintjs/icons";
 import { ViewState } from '../shared/enums';
 
+import logo from './logo.png';
+import strings from '../shared/strings';
+
 type MainNavbarProps = {
     OnViewStateChange: (viewState: ViewState) => void,
     CurremtViewState: ViewState
@@ -30,18 +33,23 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
     const getViewButtons = () => {
         const homeButton = getViewButton({
             iconName: "home",
-            text: "Home",
+            text: strings.navBarHome,
             viewState: ViewState.home
         });
         const uploadMidiButton = getViewButton({
             iconName: "document",
-            text: "Upload MIDI",
+            text: strings.navBarUploadMidi,
             viewState: ViewState.uploadMidi
         });
         const transcribeButton = getViewButton({
             iconName: "music",
-            text: "Transcribe",
+            text: strings.navBarTranscribe,
             viewState: ViewState.transcribe
+        });
+        const utilityButton = getViewButton({
+            iconName: "pulse",
+            text: strings.navBarUtility,
+            viewState: ViewState.utility
         });
 
         return (
@@ -49,13 +57,14 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
                 {homeButton}
                 {uploadMidiButton}
                 {transcribeButton}
+                {utilityButton}
             </Fragment>
         );
     }
     return (
         <Navbar className="PqM-main-navbar">
             <Navbar.Group align={Alignment.LEFT}>
-                <Navbar.Heading>PqMusic</Navbar.Heading>
+                <Navbar.Heading><img src={logo} alt="PqMusic Logo"/></Navbar.Heading>
                 <Navbar.Divider />
                 {getViewButtons()}
             </Navbar.Group>

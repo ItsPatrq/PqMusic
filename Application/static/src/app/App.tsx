@@ -6,6 +6,7 @@ import { MainNavbar } from '../mainNavbar/MainNavbar';
 import { ViewState } from '../shared/enums';
 import { Transcribe } from '../transcribe/Transcribe';
 import { UploadMidi } from '../uploadMidi/UploadMidi';
+import { Utility } from '../utility/Utility';
 type AppState = {
   currentViewState: ViewState
 }
@@ -22,7 +23,8 @@ export class App extends Component<{}, AppState> {
     return {
       [ViewState.home]: <Home />,
       [ViewState.uploadMidi]: <UploadMidi />,
-      [ViewState.transcribe]: <Transcribe />
+      [ViewState.transcribe]: <Transcribe />,
+      [ViewState.utility]: <Utility />
     }[this.state.currentViewState]
   }
 

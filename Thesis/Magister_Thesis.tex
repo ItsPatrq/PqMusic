@@ -177,20 +177,63 @@ Składowe te są widoczne bardzo wyraźnie w zapisie nutowym, z kolei ten jest w
 Informacją, którą zapis nutowy nie zapewnia, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk, ponieważ każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest zwiazany z transkrypcją muzyki, jak i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
 
 W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy, które są głównym przedmiotem analizy w kierunku transkrypcji muzycznej.
-
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=0.5]{images/pieciolinia_logic.png}\\
+  (Przykład notacji muzycznej wygenerowanej z pliku MIDI w programie Logic Pro X. Widać na nim takie informacje jak metrum czy wysokości granych dźwięków)
+  \end{center}
+  \end{figure}
 \subsubsection{Rytm}
 W kontekście muzykologji, rytm jest bazową struktórą czasową utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całego utworu, ponieważ powszechną praktyką jest jego modyfikacja w trakcie trwania wykonania w celu uzyskania specyficznych efektów artystycznych. Bardzo częstą praktyką jest na przykład minimalne podnoszenie tempa na czas każdego z refrenów w celu ich wypuklenia na tle całości kompozycji.
 
 Podstawową jednostką rytmiczną jest nuta. Miarą tempa utworu przeniesioną na domenę fizyczną są \textbf{uderzenia na minutę} \textit{(ang. beats per minute, BPM)} oznaczające liczbę ćwierćnut przypadających na jedną minutę. \textbf{Taktem} nazywamy odcinek zapisu muzycznego wizualnie oznaczony pionowymi kreskami. Takty tworzą regularne odcinki czasowe, a ich długość jest zależna od \textbf{metrum}. Metrum jest oznaczeniem metrycznym opisującym ile jakich jednostek mieści się w takcie. Dla przykłądu, najpopularniejszym metrum w muzyce pop jest 4/4, co oznacza, że w każdym takcie mieszczą się cztery ćwierć nuty.
-\begin{figure}[H]
+
+\subsubsection{Wysokość tonu}
+Wysokością tonu, czy też wysokością dźwięku, nazywana jest częstotliwość drgań źródła fali, czyli ton podstawowy. Zgodnie z zachodnimi standardami tworzenia muzyki, system równomiernie temperowany zakłada skwantowanie spektrum częstotliwości tak zwane półtony, czyli najmniejsze interwały. Każda z tak powstałych muzycznych nut ma przypisaną literę w celu odróżnienia, alfabetycznie od A do G wraz z ewentualnymi podwyższeniami (moll) czy obniżeniami (dur) półtonowymi. Tak nazwane wysokości są grupowane w oktawy, każda zawierająca 12 półtonów. Pełna nazwa granego dźwięku powinna zawierać nazwę literalną wraz z numerem oktawy.
+
+Obowiązujący obecnie strój zakłada referencyjne mierzenie czestotliwości zależnie od wysokości A4, która powinna być równa 440 Hz. Każda oktawa zaczyna się od częstotliwości dwa razy większej od poprzedniej. Standard MIDI mapuje daną częstotliowość bazową na liczbę rzeczywistą odpowiadającą wysokości dźwięku przy pomocy wzoru:
+\begin{equation} \label{eq:midi_freq}
+p = 69 + 12 * \log{2}(\frac{f}{440 Hz})
+\end{equation}
+
+Korzystając ze wzoru ~\ref{eq:midi_freq} dla wielokrotności liczby 440 można uzyskać tabelkę z częstotliwościami kolejnych dźwięków A w oktawach:
+
 \begin{center}
-\includegraphics[scale=0.5]{images/Rytm_pieciolinia.png}\\
-(Przykład użycia React Developer Tools w przeglądarce Chrome)
+  \begin{tabular}{ |c|c|c| } 
+   \hline
+   p & f & Literalna nazwa wysokości dźwięku\\
+   \hline
+   33 & 55 & A2\\
+   45 & 110 & A2\\
+   57 & 220 & A3\\
+   69 & 440 & A4\\
+   81 & 880 & A5\\
+   93 & 1760 & A6\\
+   105 & 3520 & A7\\
+   \hline
+  \end{tabular}
 \end{center}
-\end{figure}
+
+Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkłąd częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadzę fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względów technicznych. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. Równierz z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Rozpoznawanie tylko tych sztywnych wysokości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacznie ograniczyłby jej skuteczność.
 
 \subsubsection{Głośność}
-Jak głośno 
+W notacji muzycznej nie używa się zbyt często słowa "głośność". To co słuchacz odbiera jako siłę dźwięku z punktu widzenia muzyka jest dynamiką granego fragmentu. Większość instrumentów używanych do tworzenia muzyki posiada zdolność wytworzenia zróżnicowanych w sile fal akustycznych. Podstawą skali dynamiki są dwa słowa kluczowe:
+
+\begin{itemize}
+  \item \textbf{f} (forte) - głośno
+  \item \textbf{p} (piano) - cicho
+\end{itemize}
+
+Pomiędzy tymi stopniami są kroki pośrednie, odpowiednio mezzo-forte (dość głoścno) i mezzo-piano (dość cicho). Poza czterema wymienionymi przypadkami dostępne są równierz skrajności odpowiadające za bardzo gośny (odpowiednio - cichy) i możliwie najgłośniejszy (odpowiednio - najcichszy) odcień dynamiki. 
+
+Z punktu widzenia algorytmicznej analizy muzyki problematyczne są dynamiki zwane crescendo i diminuendo. Odpowiadają one za kolejno stopniowe wzmacnianie i stopniowe osłabianie natężenia dynamiki. Łatwo jest pomylić takie zabiegi z innymi cechami sygnału audio.
+
+Warto też wspomnieć o technice zwanej \textit{tremolo}, która określa artykulacje  grania wielu dźwięków o tej samej wysokości z różną dynamiką. Analizując sygnał łatwo jest pomylić kolejne uderzenia tremolo z zagraniem nowych nut.
+
+Z praktycznego punktu widzenia głośność w plikach muzycznych jest zdeterminowana przez to, jak dany utwór został wyprodukowany. W procesie nagrywania ogromne znaczenia ma położenie i rodzaj mikrofonu, jak i otoczenie w którym rejestrowany jest dźwięk. Charakterystyka niektórych powierzchni może sprawić, że fałszywie cichsze częstotliwości będą wychodziły na przód nagrania. Kompresja dynamiki utworu jest powrzechną praktyką podczas miksowania i masterowania utworów. Dzieje się tak ponieważ ludzie impulsywnie uważają głośniejsze utwory za lepsze, co doprowadziło rynek muzyczny do produkowania utworów o niemal stałej dynamice głośności. Choć temat ten jest w trakcie regulacji, przez między innymi wprowadzenie ograniczeń dynamiki na podstawie jednostki LUFS danego utworu, dokładne analizowanie głośności wielu istniejących nagrań może doprowadzić do nieprawdziwych wniosków.
+
+\subsubsection{Barwa dźwięku}
+Barwa dźwięku (inaczej tembr) jest cechą odwołującą się harmonicznej domeny sygnału fonicznego.
 
 \subsection{Transformata Fouriera}
 
@@ -205,6 +248,7 @@ Jak głośno
 \section{Generowanie muzyki}
 
 \section{Implementacja}
+~\ref{eq:midi_freq}
 
 \section{Zakonczenie}
 
