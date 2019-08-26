@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 
 import { Home } from "../home/Home";
 import { MainNavbar } from '../mainNavbar/MainNavbar';
@@ -7,6 +6,7 @@ import { ViewState } from '../shared/enums';
 import { Transcribe } from '../transcribe/Transcribe';
 import { UploadMidi } from '../uploadMidi/UploadMidi';
 import { Utility } from '../utility/Utility';
+
 type AppState = {
   currentViewState: ViewState
 }
@@ -36,8 +36,8 @@ export class App extends Component<{}, AppState> {
 
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
+      <div className="PqM">
+        <header className="PqM-header">
           
           <MainNavbar OnViewStateChange={this.onViewStateChange} CurremtViewState={this.state.currentViewState} />
         </header>

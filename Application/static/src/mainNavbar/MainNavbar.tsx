@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import './MainNavBar.css';
 
 import { Navbar, Button, Alignment } from "@blueprintjs/core";
 import { IconName } from "@blueprintjs/icons";

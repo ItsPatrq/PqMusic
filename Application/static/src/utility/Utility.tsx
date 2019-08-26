@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-import { NumericInput } from "@blueprintjs/core";
-
-import './Utility.css';
-
+import { FqMidi } from './FqMidi/FqMidi';
 export type UtilityState = {
   fqMidiValue: number
 }
@@ -34,13 +31,11 @@ export class Utility extends Component<{}, UtilityState> {
             Utility
         </div>
 
-        <div className="PqM-Utility_fqMidi">
-          <div className="PqM-Utility_fqMidi_result">{this.countFqMidiValueChange()}</div> = 69 + 12 * log2(f / 440); <div className="PqM-Utility_fqMidi_variable">f</div> = 
-          <NumericInput 
-            onValueChange={this.handleFqMidiValueChange}
-            value={this.state.fqMidiValue}
-          />
-        </div>
+        <FqMidi 
+          fqMidiValue={this.state.fqMidiValue} 
+          handleFqMidiValueChange={this.handleFqMidiValueChange}
+        />
+        
       </div>
     );
   }
