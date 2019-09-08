@@ -47,3 +47,20 @@ body {
 
 .PqM-main-navbar img {
   width: 60px; }
+
+.PqM-rows {
+  width: 100%;
+  clear: both;
+  float: left; }
+  .PqM-rows .PqM-row {
+    clear: both;
+    float: left;
+    padding: 10px 10px 10px 230px;
+    position: relative;
+    margin: 20px 0 0;
+    width: 100%; }
+    .PqM-rows .PqM-row_label {
+      float: left;
+      margin-left: -210px;
+      text-align: right;
+      width: 191px; }

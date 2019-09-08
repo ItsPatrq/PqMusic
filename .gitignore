@@ -285,3 +285,6 @@ Application/resources/onsets-frames/train/checkpoint
 Application/resources/onsets-frames/train/model.ckpt.data-00000-of-00001
 Application/resources/onsets-frames/train/model.ckpt.index
 Application/resources/onsets-frames/train/model.ckpt.meta
+Application/server/__pycache__/pqutils.cpython-37.pyc
+*.wav
+*.mp3

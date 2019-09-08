@@ -141,27 +141,27 @@
 \item \textbf{CLI} - \textit{ang. \textbf{C}ommand \textbf{L}ine \textbf{I}nterface}
 \item \textbf{CQRS} - \textit{ang. \textbf{C}ommand \textbf{Q}uery \textbf{R}esponsibility \textbf{S}egregation}
 \item \textbf{MVC} - \textit{ang. \textbf{M}odel-\textbf{V}iew-\textbf{C}ontroller}
-\item \textbf{URL} - \textit{(ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator )}
-\item \textbf{npm} - \textit{(ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager)}
-  \todo[inline]{Czy jest to dobra konwencja dla słownika skrótów? Czy umieścić go przed wstępem z racji tego, że we wstępie chciałbym użyć DAW?}
+\item \textbf{URL} - \textit{ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator }
+\item \textbf{npm} - \textit{ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager}
+  \todo[inline]{Do przejrzenia listy i usunięcia niepotrzebnych}
   
 \end{itemize}
 \newpage
 \setcounter{secnumdepth}{2}
 
 \section{Transkrypcja muzyki}
-Pliki dźwiękowe przechowują sygnały foniczne w postaci sygnałów cyfrowych. Układ, w którym pliki te przechowują bity jest zdeterminowany przez kodowanie, które zostało na nich zastosowane. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powtały z myślą o zaoszczędzeniu jak największej ilości pamięci w zaleności od tego, w jakim stopniu mona pójść na kompromis z jakością skompresowanego sygnału.
+Pliki dźwiękowe przechowują sygnały foniczne w postaci sygnałów cyfrowych. Układ, w którym pliki te przechowują bity jest zdeterminowany przez kodowanie, które zostało na nich zastosowane. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu mona pójść na kompromis z jakością skompresowanego sygnału.
 
-Z punktu widzenina algorytmów generujących muzkę, w tym modeli sieci, pliki dźwiękowe nie są wystarczająco funkcjonalną formą trzymania danych. W celu pozyskania istotnych informacji w kontekście maszynowej kompozycji muzyki należałoby zastosować szereg algorytmów, w tym transformacji i funkcji statystycznych, na każdym z plików. Proces ten jest skomplikowany pod względem obliczeniowym, co w połączeniu z dużym woluminem danych czyni go czasochłonnym. Z racji tego, że kategoryzacje zbioru muzycznego jak i dynamiczne dostosowywanie modelu, na podstawie którego zostaną generowane kompozycje muzyczne według założeń projektu ma odbywać się w czasie rzeczywistym, jedyną formą przechowywania plików z informacją o kompozycjach będzie postać po zastosowaniu transkrypcji na danych utworach.
+W kontekście algorytmów generujących muzykę, w tym modeli sieci, pliki dźwiękowe nie są wystarczająco funkcjonalną formą trzymania danych. W celu pozyskania istotnych informacji w kontekście maszynowej kompozycji muzyki należałoby zastosować szereg algorytmów, w tym transformacji i funkcji statystycznych, na każdym z plików. Proces ten jest skomplikowany pod względem obliczeniowym, co w połączeniu z dużym woluminem danych czyni go czasochłonnym. Z racji tego, że kategoryzacje zbioru muzycznego jak i dynamiczne dostosowywanie modelu, na podstawie którego zostaną generowane kompozycje muzyczne według założeń projektu ma odbywać się w czasie rzeczywistym, jedyną formą przechowywania plików z informacją o kompozycjach będzie postać po zastosowaniu transkrypcji na danych utworach.
 
 %% z PWN : transkrypcja [łac. transcriptio ‘przepisywanie’], muz. opracowanie utworu muz. na inny niż w oryginale zespół wykonawczy (orkiestracja) lub inny instrument; Pytanie czy rozszerzenie tego znaczenia w języku polskim jest poprawne? także zapisanie utworu inną notacją muz.; transkrybować — zapisywać znakami współcz. notacji muz. utwory zapisane dawnymi systemami notacyjnymi, np. notacją modalną, menzuralną. Po ENG transkrypcja jest zgodna z rozdziałem
 
-Transkrypcja muzyki to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki, która wcześniej nie była zapisana w taki sposób. Jest to skomplikowany i czasochłonny proces nawet dla profesjonalistów z dużym doświadczeniem w tej dziedzinie. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analize sygnału fonicznego. Do polepszenia rezultatu tego procesu często wymagane jest odesparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych problemów transkrypcji
+Transkrypcja muzyki to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki, która wcześniej nie była zapisana w taki sposób. Jest to skomplikowany i czasochłonny proces nawet dla profesjonalistów z dużym doświadczeniem w tej dziedzinie. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analizę sygnału fonicznego. Do polepszenia rezultatu tego procesu często wymagane jest odseparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych problemów transkrypcji
 
-W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony na przykładach istniejących rozwiazań.  Celem tych rozważań jest przybliżenie działania modułu opisywanego projektu, służącego do transpilacji wysłanego przez użytkownika pliku dźwiękowego
+W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony na przykładach istniejących rozwiązań.  Celem tych rozważań jest przybliżenie działania modułu opisywanego projektu, służącego do transpilacji wysłanego przez użytkownika pliku dźwiękowego
 
 \subsection{Jak "działa" muzyka}
-Uproszczając pojęcie muzyki, są to dźwięki podniesione do odpowiednich wysokości z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument czy głos ludzki. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na częsci pierwsze, można wyróżnić cztery esencjalne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów muzycznych. Są to:
+Uproszczając pojęcie muzyki, są to dźwięki podniesione do odpowiednich wysokości z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument czy głos ludzki. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na części pierwsze, można wyróżnić cztery esencjalne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów muzycznych. Są to:
 \begin{itemize}
 \item Rytm
 \item Wysokość tonu
@@ -171,27 +171,27 @@ Uproszczając pojęcie muzyki, są to dźwięki podniesione do odpowiednich wyso
 Składowe te są widoczne bardzo wyraźnie w zapisie nutowym, z kolei ten jest wystarczającym źródłem informacji dla muzyków aby zagrać dany utwór muzyczny. Zapisane nuty przedstawiają wysokość tonu jak i jego barwę wraz z długością granego dźwięku i poziomem głośności jaki powinien zostać zastosowany. Innymi, wysoko praktycznymi informacjami, do których dostęp daje muzykom zapis nutowy, są: 
 \begin{itemize}
   \item tempo utworu, czyli szybkość z jaką nuty powinny być grane, 
-  \item sygnatura czasowa, która wyznacza bazową strukture rytmiczną w jakiej dany utwór został napisany,
+  \item sygnatura czasowa, która wyznacza bazową strukturę rytmiczną w jakiej dany utwór został napisany,
   \item klucz w którym został napisany utwór, opisujący harmoniczną podstawę kompozycji, co w praktyce ogranicza dostępne wysokości tonu.
 \end{itemize} 
-Informacją, którą zapis nutowy nie zapewnia, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk, ponieważ każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest zwiazany z transkrypcją muzyki, jak i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
+Informacją, którą zapis nutowy nie zapewnia, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk, ponieważ każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest związany z transkrypcją muzyki, jak i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
 
 W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy, które są głównym przedmiotem analizy w kierunku transkrypcji muzycznej.
 \begin{figure}[H]
   \begin{center}
   \includegraphics[scale=0.5]{images/pieciolinia_logic.png}\\
-  (Przykład notacji muzycznej wygenerowanej z pliku MIDI w programie Logic Pro X. Widać na nim takie informacje jak metrum czy wysokości granych dźwięków)
+  Przykład notacji muzycznej wygenerowanej z pliku MIDI w programie Logic Pro X. Widać na nim takie informacje jak metrum czy wysokości granych dźwięków
   \end{center}
   \end{figure}
 \subsubsection{Rytm}
-W kontekście muzykologji, rytm jest bazową struktórą czasową utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całego utworu, ponieważ powszechną praktyką jest jego modyfikacja w trakcie trwania wykonania w celu uzyskania specyficznych efektów artystycznych. Bardzo częstą praktyką jest na przykład minimalne podnoszenie tempa na czas każdego z refrenów w celu ich wypuklenia na tle całości kompozycji.
+W kontekście muzykologii, rytm jest bazową strukturą czasową utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całego utworu, ponieważ powszechną praktyką jest jego modyfikacja w trakcie trwania wykonania w celu uzyskania specyficznych efektów artystycznych. Bardzo częstą praktyką jest na przykład minimalne podnoszenie tempa na czas każdego z refrenów w celu ich wypuklenia na tle całości kompozycji.
 
-Podstawową jednostką rytmiczną jest nuta. Miarą tempa utworu przeniesioną na domenę fizyczną są \textbf{uderzenia na minutę} \textit{(ang. beats per minute, BPM)} oznaczające liczbę ćwierćnut przypadających na jedną minutę. \textbf{Taktem} nazywamy odcinek zapisu muzycznego wizualnie oznaczony pionowymi kreskami. Takty tworzą regularne odcinki czasowe, a ich długość jest zależna od \textbf{metrum}. Metrum jest oznaczeniem metrycznym opisującym ile jakich jednostek mieści się w takcie. Dla przykłądu, najpopularniejszym metrum w muzyce pop jest 4/4, co oznacza, że w każdym takcie mieszczą się cztery ćwierć nuty.
+Podstawową jednostką rytmiczną jest nuta. Miarą tempa utworu przeniesioną na domenę fizyczną są \textbf{uderzenia na minutę} \textit{(ang. beats per minute, BPM)} oznaczające liczbę ćwierćnut przypadających na jedną minutę. \textbf{Taktem} nazywamy odcinek zapisu muzycznego wizualnie oznaczony pionowymi kreskami. Takty tworzą regularne odcinki czasowe, a ich długość jest zależna od \textbf{metrum}. Metrum jest oznaczeniem metrycznym opisującym ile jakich jednostek mieści się w takcie. Dla przykładu, najpopularniejszym metrum w muzyce pop jest 4/4, co oznacza, że w każdym takcie mieszczą się cztery ćwierć nuty.
 
 \subsubsection{Wysokość tonu}
 Wysokością tonu, czy też wysokością dźwięku, nazywana jest częstotliwość drgań źródła fali, czyli ton podstawowy. Zgodnie z zachodnimi standardami tworzenia muzyki, system równomiernie temperowany zakłada skwantowanie spektrum częstotliwości tak zwane półtony, czyli najmniejsze interwały. Każda z tak powstałych muzycznych nut ma przypisaną literę w celu odróżnienia, alfabetycznie od A do G wraz z ewentualnymi podwyższeniami (moll) czy obniżeniami (dur) półtonowymi. Tak nazwane wysokości są grupowane w oktawy, każda zawierająca 12 półtonów. Pełna nazwa granego dźwięku powinna zawierać nazwę literalną wraz z numerem oktawy.
 
-Obowiązujący obecnie strój zakłada referencyjne mierzenie czestotliwości zależnie od wysokości A4, która powinna być równa 440 Hz. Każda oktawa zaczyna się od częstotliwości dwa razy większej od poprzedniej. Standard MIDI mapuje daną częstotliowość bazową na liczbę rzeczywistą odpowiadającą wysokości dźwięku przy pomocy wzoru:
+Obowiązujący obecnie strój zakłada referencyjne mierzenie częstotliwości zależnie od wysokości A4, która powinna być równa 440 Hz. Każda oktawa zaczyna się od częstotliwości dwa razy większej od poprzedniej. Standard MIDI mapuje daną częstotliwością bazową na liczbę rzeczywistą odpowiadającą wysokości dźwięku przy pomocy wzoru:
 \begin{equation} \label{eq:midi_freq}
 p = 69 + 12 * \log{2}(\frac{f}{440 Hz})
 \end{equation}
@@ -214,7 +214,7 @@ Korzystając ze wzoru ~\ref{eq:midi_freq} dla wielokrotności liczby 440 można 
   \end{tabular}
 \end{center}
 
-Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkłąd częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadzę fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względów technicznych. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. Równierz z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Rozpoznawanie tylko tych sztywnych wysokości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacznie ograniczyłby jej skuteczność.
+Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkład częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadze fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względów technicznych. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. Równierz z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Rozpoznawanie tylko tych sztywnych wysokości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacznie ograniczyłby jej skuteczność.
 
 \subsubsection{Głośność}
 W notacji muzycznej nie używa się zbyt często słowa "głośność". To co słuchacz odbiera jako siłę dźwięku z punktu widzenia muzyka jest dynamiką granego fragmentu. Większość instrumentów używanych do tworzenia muzyki posiada zdolność wytworzenia zróżnicowanych w sile fal akustycznych. Podstawą skali dynamiki są dwa słowa kluczowe:
@@ -224,7 +224,7 @@ W notacji muzycznej nie używa się zbyt często słowa "głośność". To co s�
   \item \textbf{p} (piano) - cicho
 \end{itemize}
 
-Pomiędzy tymi stopniami są kroki pośrednie, odpowiednio mezzo-forte (dość głoścno) i mezzo-piano (dość cicho). Poza czterema wymienionymi przypadkami dostępne są równierz skrajności odpowiadające za bardzo gośny (odpowiednio - cichy) i możliwie najgłośniejszy (odpowiednio - najcichszy) odcień dynamiki. 
+Pomiędzy tymi stopniami są kroki pośrednie, odpowiednio mezzo-forte (dość głośność) i mezzo-piano (dość cicho). Poza czterema wymienionymi przypadkami dostępne są również skrajności odpowiadające za bardzo głośny (odpowiednio - cichy) i możliwie najgłośniejszy (odpowiednio - najcichszy) odcień dynamiki. 
 
 Z punktu widzenia algorytmicznej analizy muzyki problematyczne są dynamiki zwane crescendo i diminuendo. Odpowiadają one za kolejno stopniowe wzmacnianie i stopniowe osłabianie natężenia dynamiki. Łatwo jest pomylić takie zabiegi z innymi cechami sygnału audio.
 
@@ -233,11 +233,24 @@ Warto też wspomnieć o technice zwanej \textit{tremolo}, która określa artyku
 Z praktycznego punktu widzenia głośność w plikach muzycznych jest zdeterminowana przez to, jak dany utwór został wyprodukowany. W procesie nagrywania ogromne znaczenia ma położenie i rodzaj mikrofonu, jak i otoczenie w którym rejestrowany jest dźwięk. Charakterystyka niektórych powierzchni może sprawić, że fałszywie cichsze częstotliwości będą wychodziły na przód nagrania. Kompresja dynamiki utworu jest powrzechną praktyką podczas miksowania i masterowania utworów. Dzieje się tak ponieważ ludzie impulsywnie uważają głośniejsze utwory za lepsze, co doprowadziło rynek muzyczny do produkowania utworów o niemal stałej dynamice głośności. Choć temat ten jest w trakcie regulacji, przez między innymi wprowadzenie ograniczeń dynamiki na podstawie jednostki LUFS danego utworu, dokładne analizowanie głośności wielu istniejących nagrań może doprowadzić do nieprawdziwych wniosków.
 
 \subsubsection{Barwa dźwięku}
-Barwa dźwięku (inaczej tembr) jest cechą odwołującą się harmonicznej domeny sygnału fonicznego.
+Barwa dźwięku (inaczej tembr) jest cechą odwołującą się harmonicznej domeny sygnału fonicznego. Pozwala ona odróżnić od siebie dźwięki o tej samej głośności i wysokości grane na różnych instrumentach. Silne tony harmoniczne danej barwy sprawiają, że dźwięk jest bardziej wyrazisty. W przeciwnym wypadku, gdy siła tonów harmonicznych jest mała, sygnał staje się bardziej rozmyty dla odbiorcy. Barwa dźwięku jest zależna od amplitudy poszczególnych tonów harmonicznych, ich rozkładu w widmie jak i samej struktury tego widma.
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[scale=1.4]{images/spectogram_instruments.png}\\
+  Spektrogramy dźwięku C3 (130.81Hz) grane na różnych instrumentach pokazują różnice w harmonicznych każdego z wykonań. Wykresy zostały wygenerowane przy pomocy funkcji z sekcji "Funkcje pomocnicze". Więcej informacji w sekcji ~\ref{sec:implementacja}
+  \end{center}
+  \end{figure}
+
+Ułożenie tonów harmonicznych jest zintegrowane z harmonią pomiędzy różnymi granymi nutami. Gdy dwa dźwięki są grane w tym samym czasie, nakładające się na siebie harmoniczne sprawiają, że dźwięk brzmi pozornie spójnie. Generuje to dodatkowe komplikacje dla algorytmów wykrywających wysokość tonów, które muszą odseparować nakładające się na siebie nuty.
+
+Barwa dźwięku nie jest stała w czasie. Wysokie harmoniczne szybciej cichną w porównaniu do tych niższych. Sprawia to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego
 
 \subsection{Transformata Fouriera}
+\newpage
 
 \subsection{Estymacja składowej fundamentalnej}
+\newpage
 
 \subsection{Estymacja wielotonowa}
 
@@ -246,11 +259,24 @@ Barwa dźwięku (inaczej tembr) jest cechą odwołującą się harmonicznej dome
 \section{Klasyfikacja muzyki}
 
 \section{Generowanie muzyki}
+\newpage
 
 \section{Implementacja}
+\label{sec:implementacja}
 ~\ref{eq:midi_freq}
+\subsection{Funkcje pomocnicze}
+\newpage
+\subsection{Transpilacja}
+\newpage
 
-\section{Zakonczenie}
+\subsection{Składowanie danych}
+\newpage
 
-OKok
+\subsection{Generowanie muzyki}
+\newpage
+\subsection{Interfejs}
+\newpage
+\section{Zakończenie}
+\newpage
+
 \end{document}  
