@@ -1,11 +1,16 @@
 .bp3-button.bp3-minimal.is-active {
-    background-color: yellow;
+    background-color: $selected_backgroubd;
 }
 
 .bp3-button.bp3-minimal.is-active:hover {
-    background-color: yellow;
+    background-color: $selected_backgroubd;
 }
 
 .PqM-main-navbar img {
-    width: 60px
+    width: 85px;
+    cursor: pointer;
+    
+    &:hover {
+        background: $hover_background;
+    }
 }

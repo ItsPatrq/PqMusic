@@ -4,7 +4,9 @@ const strings = {
         navBarUploadMidi: "Upload MIDI",
         navBarTranscribe: "Transcribe",
         navBarUtility: "Utility",
-        rowLabelFqMIDI: "MIDI Frequency measurment"
+        rowLabelFqMIDI: "MIDI Frequency measurment",
+        rowLabelSpectogram: "Spectogram",
+        dropZoneDefaultMessage: "Drag or click to upload file(s)"
     },
     pl: {
 

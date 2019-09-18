@@ -1,7 +1,7 @@
 .PqM {
   text-align: center;
   height: 100vh;
-  background-color: #282c34;
+  background-color: $app_background_color;
   color: white;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .PqM-main-navbar {
-  color: #282c34;
+  color: $app_background_color;
 }
 
 body {
@@ -28,4 +28,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.PqM-dropZone {
+  background-color: lighten($app_background_color, 20%);
+  min-height: 50px;
 }

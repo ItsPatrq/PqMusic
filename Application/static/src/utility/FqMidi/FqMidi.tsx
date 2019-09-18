@@ -26,8 +26,9 @@ export const FqMidi: FC<FqMidiProps> = ({fqMidiValue, handleFqMidiValueChange}) 
     )
 
     return (
-        <RowFlex children={content}
-        label={strings.rowLabelFqMIDI}
+        <RowFlex
+            children={content}
+            label={strings.rowLabelFqMIDI}
         />
     );
 }

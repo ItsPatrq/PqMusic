@@ -39,14 +39,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; }
 
+.PqM-dropZone {
+  background-color: #545d6e;
+  min-height: 50px; }
+
 .bp3-button.bp3-minimal.is-active {
-  background-color: yellow; }
+  background-color: rgba(167, 182, 194, 0.85); }
 
 .bp3-button.bp3-minimal.is-active:hover {
-  background-color: yellow; }
+  background-color: rgba(167, 182, 194, 0.85); }
 
 .PqM-main-navbar img {
-  width: 60px; }
+  width: 85px;
+  cursor: pointer; }
+  .PqM-main-navbar img:hover {
+    background: rgba(167, 182, 194, 0.3); }
 
 .PqM-rows {
   width: 100%;

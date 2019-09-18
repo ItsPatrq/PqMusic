@@ -18,10 +18,10 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
         viewState: ViewState,
         text: string
     }
-    const getViewButton = (viewButtonProps:ViewButtonProps) => {
+    const getViewButton = (viewButtonProps: ViewButtonProps) => {
         const className = viewButtonProps.viewState === CurremtViewState ? "bp3-minimal is-active" : "bp3-minimal";
         return (
-            <Button 
+            <Button
                 className={className}
                 icon={viewButtonProps.iconName}
                 text={viewButtonProps.text}
@@ -63,7 +63,7 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
     return (
         <Navbar className="PqM-main-navbar">
             <Navbar.Group align={Alignment.LEFT}>
-                <Navbar.Heading><img src={logo} alt="PqMusic Logo"/></Navbar.Heading>
+                <Navbar.Heading onClick={() => OnViewStateChange(ViewState.home)}><img src={logo} alt="PqMusic Logo" /></Navbar.Heading>
                 <Navbar.Divider />
                 {getViewButtons()}
             </Navbar.Group>

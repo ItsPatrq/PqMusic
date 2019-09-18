@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { Button } from '@blueprintjs/core';
-import Dropzone, { DropEvent, DropzoneState, DropzoneProps } from 'react-dropzone'
+import Dropzone, { DropEvent, DropzoneState } from 'react-dropzone'
 import DataService from '../dataService/DataService';
 
 export class Transcribe extends Component<{}> {
@@ -9,10 +9,10 @@ export class Transcribe extends Component<{}> {
     if (acceptedFiles.length > 0) {
       DataService.SayHello(acceptedFiles[0])
       //reader.readAsBinaryString(accepted[0]);
-  }
-  if (rejectedFiles.length > 0) {
+    }
+    if (rejectedFiles.length > 0) {
       console.log(rejectedFiles, event)
-  }
+    }
   }
   public render() {
     return (
