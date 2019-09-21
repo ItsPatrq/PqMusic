@@ -3,13 +3,13 @@ import wave
 import pqutils
 import pylab
 
-def graph_spectrogram(file_name):
+def graph_spectrogram(file_name, result_path):
     sound_info, frame_rate = get_file_info(file_name)
     pylab.figure(num=None, figsize=(19, 12))
     pylab.subplot(111)
-    #pylab.title('Spektogram %r' % file_name)
+    pylab.title('Spektogram of %r' % pqutils.path_leaf(file_name))
     pylab.specgram(sound_info, Fs=frame_rate)
-    pylab.savefig('./spectogram/Violas.png')
+    pylab.savefig(result_path)
 
 def get_file_info(file_name):
     waveFilePath = pqutils.convertAudioFileToMp3(file_name)
@@ -19,6 +19,7 @@ def get_file_info(file_name):
     frame_rate = wav.getframerate()
     wav.close()
     return sound_info, frame_rate
+
 if __name__ == '__main__':
     file_name = './spectogram/Violas.mp3'
     graph_spectrogram(file_name)

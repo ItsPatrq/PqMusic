@@ -5,7 +5,7 @@ const strings = {
         navBarTranscribe: "Transcribe",
         navBarUtility: "Utility",
         rowLabelFqMIDI: "MIDI Frequency measurment",
-        rowLabelSpectogram: "Spectogram",
+        rowLabelSpectrogram: "Spectrogram",
         dropZoneDefaultMessage: "Drag or click to upload file(s)"
     },
     pl: {

@@ -7,7 +7,7 @@ import DataService from '../dataService/DataService';
 export class Transcribe extends Component<{}> {
   handleChange(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
     if (acceptedFiles.length > 0) {
-      DataService.SayHello(acceptedFiles[0])
+      DataService.Spectrogram(acceptedFiles[0])
       //reader.readAsBinaryString(accepted[0]);
     }
     if (rejectedFiles.length > 0) {

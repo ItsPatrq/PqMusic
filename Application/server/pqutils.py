@@ -1,4 +1,6 @@
 from pydub import AudioSegment
+import ntpath
+ntpath.basename("a/b/c")
 
 def convertAudioFileToMp3(file_path):
     if file_path.endswith(".mp3"):
@@ -8,4 +10,10 @@ def convertAudioFileToMp3(file_path):
 
     if file_path.endswith(".wav"):
         return file_path
-    raise BaseException("File extension not supported")
+
+    exception = BaseException("File extension not supported")
+    raise exception
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
