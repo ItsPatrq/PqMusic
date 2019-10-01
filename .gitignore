@@ -288,3 +288,5 @@ Application/resources/onsets-frames/train/model.ckpt.meta
 Application/server/__pycache__/pqutils.cpython-37.pyc
 *.wav
 *.mp3
+
+__pycache__
