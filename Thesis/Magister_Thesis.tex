@@ -17,6 +17,7 @@
 \DeclareQuoteAlias{croatian}{polish}
 \usepackage{biblatex}
 \addbibresource{References.bib}
+\usepackage{url}
 
 \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstep pomiędzy liniami?
@@ -250,6 +251,21 @@ Ułożenie tonów harmonicznych jest zintegrowane z harmonią pomiędzy różnym
 Barwa dźwięku nie jest stała w czasie. Wysokie harmoniczne szybciej cichną w porównaniu do tych niższych. Sprawia to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego \cite[64-65]{Homerecording:DlaKazdego}.
 
 \subsection{Transformata Fouriera}
+
+Z racji tego, że analiza surowych plików dźwiękowych jest wysoce skomplikowana i niepraktyczna w kontekście przetwarzania sygnałów, kluczowym jest przeniesienie tego problemu na płaszczyznę częstotliwości. Do tego celu powszechnie używane jest narzedzie matematyczne zwane \textbf{transformacją furiera}. Zastosowania tej funkcji są wysoce różnorodne dzięki jej uniwersalności, my jednak skupimy się na benefitach jakie przynosi ona w sferze przetwarzania sygnałów. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarays tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
+
+\begin{equation} \label{furier-base}
+F(f) = \int_{\inf}^{-\inf}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}x
+\end{equation}
+
+Gdzie F(f) nazywane jest transformatą Furiera f(t) lub widmem częstotliwościowym \cite{TransformacjaFurieraWroc}\cite{TransformacjaFurieraAgh}.
+
+\subsubsection{Dyskretna transformata Fouriera}
+
+Przyglądając się własnościom tranformacji Furiera łatwo zauważyć, że jednym z założeń jest aby f(t)\ref{furier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym zbiorze właśnie. W przypadku analizy sygnału sonicznego warunek ten jest niespełnialny, ponieważ przetwarzane są tylko ograniczone odcinki krzywej. W celach analitycznych na utworach muzycznych, zwłaszcza w kontekście transkrypcji muzycznej, transformata całego utworu nie jest szczególnie przydatna. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki, których transformata przyniesie dalsze wnioski.
+
+\textbf{Dyskretna transformata Fouriera (DTF)} jest \cite{TransformacjaFurieraWroc}\cite{TransformacjaFurieraelektronikab2b}
+
 \newpage
 
 \subsection{Estymacja składowej fundamentalnej}
