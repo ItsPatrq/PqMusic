@@ -2,14 +2,36 @@
 from flask import Flask, send_file, request, jsonify
 import os
 from flask_cors import CORS
-from spectogram import graph_spectrogram
+from utils.spectogram import *
 import uuid
 import shutil
+from utils.windowFunctionsPresentation import *
 
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 CORS(app)
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+def createRequestResponseFiles():
+    requestUuid = str(uuid.uuid1())
+    responseUuid = str(uuid.uuid1())
+    target = os.path.join(APP_ROOT, 'tmpFiles/')
+
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    requestFolderPath = os.path.join(target, 'request' + requestUuid)
+
+    if not os.path.isdir(requestFolderPath):
+        os.mkdir(requestFolderPath)
+
+    responseFolderPath = os.path.join(target, 'response' + responseUuid)
+
+    if not os.path.isdir(responseFolderPath):
+        os.mkdir(responseFolderPath)
+
+    return requestFolderPath, responseFolderPath, requestUuid, responseUuid
+    
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -20,26 +42,8 @@ def hello():
     return  "Hello world!"
 
 @app.route("/Spectrogram", methods=['POST'])
-def sayhello():
-    target = os.path.join(APP_ROOT, 'utils/')
-
-    if not os.path.isdir(target):
-        os.mkdir(target)
-
-    target = os.path.join(target, 'spectrogram/')
-
-    if not os.path.isdir(target):
-        os.mkdir(target)
-
-    requestFolderPath = os.path.join(target, 'request' + str(uuid.uuid1()))
-
-    if not os.path.isdir(requestFolderPath):
-        os.mkdir(requestFolderPath)
-
-    responseFolderPath = os.path.join(target, 'response' + str(uuid.uuid1()))
-
-    if not os.path.isdir(responseFolderPath):
-        os.mkdir(responseFolderPath)
+def spectrogram():
+    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFiles()
     
     for file in request.files.getlist("file"):
         filename = file.filename
@@ -50,8 +54,30 @@ def sayhello():
         file.save(requestFilePath)
 
         graph_spectrogram(requestFilePath, responseFilePath)
-    
-    shutil.rmtree(requestFolderPath)
+
+    #shutil.rmtree(requestFolderPath)
+    #shutil.rmtree(responseFolderPath)
+    return send_file(responseFilePath)
+
+@app.route("/HannWindow", methods=['GET', 'POST'])
+def getHannWindow():
+    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFiles()
+    responseFilePath = "/".join([responseFolderPath, 'HannWindow.png'])
+    hannWindow(responseFilePath)
+    return send_file(responseFilePath)
+
+@app.route("/HammingWindow", methods=['GET', 'POST'])
+def getHammingWindow():
+    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFiles()
+    responseFilePath = "/".join([responseFolderPath, 'HammingWindow.png'])
+    hammingWindow(responseFilePath)
+    return send_file(responseFilePath)
+
+@app.route("/RectangleWindow", methods=['GET', 'POST'])
+def getRectabgkeWubdiw():
+    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFiles()
+    responseFilePath = "/".join([responseFolderPath, 'RectangleWindow.png'])
+    rectangleWindow(responseFilePath)
     return send_file(responseFilePath)
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { FqMidi } from './FqMidi/FqMidi';
 import Spectrogram from './Spectrogram/Spectrogram';
+import WindowFunctions from './WindowFunctions/WindowFunctions';
 export type UtilityState = {
   fqMidiValue: number
 }
@@ -36,9 +37,8 @@ export class Utility extends Component<{}, UtilityState> {
           fqMidiValue={this.state.fqMidiValue} 
           handleFqMidiValueChange={this.handleFqMidiValueChange}
         />
-        <Spectrogram 
-
-        />
+        <Spectrogram />
+        <WindowFunctions />
         
         
       </div>

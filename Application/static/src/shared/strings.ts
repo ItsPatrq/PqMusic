@@ -6,7 +6,11 @@ const strings = {
         navBarUtility: "Utility",
         rowLabelFqMIDI: "MIDI Frequency measurment",
         rowLabelSpectrogram: "Spectrogram",
-        dropZoneDefaultMessage: "Drag or click to upload file(s)"
+        rowLabelWindowFunctions: "Download window function in plot",
+        dropZoneDefaultMessage: "Drag or click to upload file(s)",
+        buttonLabelDownloadHannWindow: "Hann Window",
+        buttonLabelDownloadHammingWindow: "Hamming Window",
+        buttonLabelDownloadRectangleWindow: "Rectangle Window"
     },
     pl: {
 

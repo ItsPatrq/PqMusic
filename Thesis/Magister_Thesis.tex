@@ -18,6 +18,8 @@
 \usepackage{biblatex}
 \addbibresource{References.bib}
 \usepackage{url}
+\usepackage{amsmath}
+
 
 \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstep pomiędzy liniami?
@@ -82,8 +84,10 @@
    showtabs=false,
    captionpos=b
 }
-
+\setlength{\parindent}{4em}
 \setlength {\marginparwidth }{2cm}
+\setlength{\parskip}{1em}
+\renewcommand{\baselinestretch}{1.5}
 \begin{document}
 
 \begin{titlepage}
@@ -121,7 +125,6 @@
 
 \pagenumbering{arabic}
 \tableofcontents 
-\todo[inline]{Dlaczego References pokazują się 2 razy i jak przetłumaczyć na PL}
 \clearpage
 
 \setcounter{secnumdepth}{0}
@@ -132,23 +135,25 @@
 
 \section{Słownik skrótów}
 \begin{itemize}
-\item \textbf{DAW} - \textit{ang. \textbf{D}igital \textbf{A}udio \textbf{W}orkstation}, pol. Cyfrowa Stacja Robocza 
-\item \textbf{MIDI} - \textit{ang. \textbf{M}usical \textbf{I}nstrument \textbf{D}igital \textbf{I}nterface}
-\item \textbf{AUX} - \textit{ang. \textbf{Aux}iliary}
-\item \textbf{W3C} - \textit{ang. \textbf{W}orld \textbf{W}ide \textbf{W}eb \textbf{C}onsortium}
-\item \textbf{SVG} - \textit{ang. \textbf{S}calable \textbf{V}ector \textbf{G}raphics}
-\item \textbf{HTML} - \textit{ang. \textbf{H}yper\textbf{t}ext \textbf{M}arkup \textbf{L}anguage}
-\item \textbf{CSS} - \textit{ang.  \textbf{C}ascading \textbf{S}tyle \textbf{S}heets}
-\item \textbf{JS} - \textit{\textbf{J}ava\textbf{S}cript}
-\item \textbf{DOM} - \textit{ang. \textbf{D}ocument \textbf{O}bject \textbf{M}odel}
-\item \textbf{API} - \textit{ang. \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface}
-\item \textbf{CLI} - \textit{ang. \textbf{C}ommand \textbf{L}ine \textbf{I}nterface}
-\item \textbf{CQRS} - \textit{ang. \textbf{C}ommand \textbf{Q}uery \textbf{R}esponsibility \textbf{S}egregation}
-\item \textbf{MVC} - \textit{ang. \textbf{M}odel-\textbf{V}iew-\textbf{C}ontroller}
-\item \textbf{URL} - \textit{ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator }
-\item \textbf{npm} - \textit{ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager}
-  \todo[inline]{Do przejrzenia listy i usunięcia niepotrzebnych}
-  
+  \item \textbf{FT} - \textit{ang. \textbf{F}ourier \textbf{T}ransform}, pol. Transformata Fouriera
+  \item \textbf{DFT} - \textit{ang. \textbf{D}iscrete \textbf{F}ourier \textbf{T}ransform}, pol. Dyskretna Transformata Fouriera
+  \item \textbf{FFT} - \textit{ang. \textbf{F}ast \textbf{F}ourier \textbf{T}ransform}, pol. Szybka Transformata Fouriera
+  \item \textbf{STFT} - \textit{ang. \textbf{S}gort- \textbf{T}ime \textbf{F}ourier \textbf{T}ransform}, pol. Krótkoczasowa Transformacja Furiera
+  \item \textbf{DAW} - \textit{ang. \textbf{D}igital \textbf{A}udio \textbf{W}orkstation}, pol. Cyfrowa Stacja Robocza 
+  \item \textbf{MIDI} - \textit{ang. \textbf{M}usical \textbf{I}nstrument \textbf{D}igital \textbf{I}nterface}, pol. Cyfrowy Interfejs Instrumentów Muzycznych
+  \item \textbf{AUX} - \textit{ang. \textbf{Aux}iliary}
+  \item \textbf{W3C} - \textit{ang. \textbf{W}orld \textbf{W}ide \textbf{W}eb \textbf{C}onsortium}
+  \item \textbf{HTML} - \textit{ang. \textbf{H}yper\textbf{t}ext \textbf{M}arkup \textbf{L}anguage}
+  \item \textbf{CSS} - \textit{ang.  \textbf{C}ascading \textbf{S}tyle \textbf{S}heets}
+  \item \textbf{JS} - \textit{\textbf{J}ava\textbf{S}cript}
+  \item \textbf{TS} - \textit{\textbf{T}ype\textbf{S}cript}
+  \item \textbf{DOM} - \textit{ang. \textbf{D}ocument \textbf{O}bject \textbf{M}odel}
+  \item \textbf{API} - \textit{ang. \textbf{A}pplication \textbf{P}rogramming \textbf{I}nterface}
+  \item \textbf{CLI} - \textit{ang. \textbf{C}ommand \textbf{L}ine \textbf{I}nterface}
+  \item \textbf{CQRS} - \textit{ang. \textbf{C}ommand \textbf{Q}uery \textbf{R}esponsibility \textbf{S}egregation}
+  \item \textbf{URL} - \textit{ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator }
+  \item \textbf{npm} - \textit{ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager}
+
 \end{itemize}
 \newpage
 \setcounter{secnumdepth}{2}
@@ -200,23 +205,28 @@ Obowiązujący obecnie strój zakłada referencyjne mierzenie częstotliwości z
 p = 69 + 12 * \log{2}(\frac{f}{440 Hz})
 \end{equation}
 
-Korzystając ze wzoru ~\ref{eq:midi_freq} dla wielokrotności liczby 440 można uzyskać tabelkę z częstotliwościami kolejnych dźwięków A w oktawach:
+Korzystając ze wzoru ~\ref{eq:midi_freq} dla wielokrotności liczby 440 można uzyskać tabelkę z częstotliwościami kolejnych dźwięków A w oktawach, jak w tabeli \ref{tab:FqMidi}.
 
-\begin{center}
-  \begin{tabular}{ |c|c|c| } 
-   \hline
-   p & f & Literalna nazwa wysokości dźwięku\\
-   \hline
-   33 & 55 & A2\\
-   45 & 110 & A2\\
-   57 & 220 & A3\\
-   69 & 440 & A4\\
-   81 & 880 & A5\\
-   93 & 1760 & A6\\
-   105 & 3520 & A7\\
-   \hline
-  \end{tabular}
-\end{center}
+\begin{table}[H]
+  \begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    p & f & Literalna nazwa wysokości dźwięku\\
+    \hline
+    33 & 55 & A1\\
+    45 & 110 & A2\\
+    57 & 220 & A3\\
+    69 & 440 & A4\\
+    81 & 880 & A5\\
+    93 & 1760 & A6\\
+    105 & 3520 & A7\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Wysokości kolejnych dźwięków A zgodna ze wzorem ~\ref{eq:midi_freq}}
+  \label{tab:FqMidi}
+\end{table}
+
 
 Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkład częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadze fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względów technicznych. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. Równierz z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Rozpoznawanie tylko tych sztywnych wysokości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacznie ograniczyłby jej skuteczność \cite[64-65]{Homerecording:DlaKazdego}.
 
@@ -250,22 +260,105 @@ Ułożenie tonów harmonicznych jest zintegrowane z harmonią pomiędzy różnym
 
 Barwa dźwięku nie jest stała w czasie. Wysokie harmoniczne szybciej cichną w porównaniu do tych niższych. Sprawia to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego \cite[64-65]{Homerecording:DlaKazdego}.
 
-\subsection{Transformata Fouriera}
+\subsection{Transformacja Fouriera}\label{sec:TF}
 
-Z racji tego, że analiza surowych plików dźwiękowych jest wysoce skomplikowana i niepraktyczna w kontekście przetwarzania sygnałów, kluczowym jest przeniesienie tego problemu na płaszczyznę częstotliwości. Do tego celu powszechnie używane jest narzedzie matematyczne zwane \textbf{transformacją furiera}. Zastosowania tej funkcji są wysoce różnorodne dzięki jej uniwersalności, my jednak skupimy się na benefitach jakie przynosi ona w sferze przetwarzania sygnałów. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarays tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
+Z racji tego, że analiza surowych plików dźwiękowych jest wysoce skomplikowana i niepraktyczna w kontekście przetwarzania sygnałów, kluczowym jest przeniesienie tego problemu na płaszczyznę częstotliwości. Do tego celu powszechnie używane jest narzedzie matematyczne zwane \textbf{transformacją fouriera}. Zastosowania tej funkcji są wysoce różnorodne dzięki jej uniwersalności, my jednak skupimy się na benefitach jakie przynosi ona w sferze przetwarzania sygnałów. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarays tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
 
-\begin{equation} \label{furier-base}
-F(f) = \int_{\inf}^{-\inf}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}x
+\begin{equation} \label{fourier-base}
+F(f) = \int_{\infty}^{-\infty}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}x
 \end{equation}
 
-Gdzie F(f) nazywane jest transformatą Furiera f(t) lub widmem częstotliwościowym \cite{TransformacjaFurieraWroc}\cite{TransformacjaFurieraAgh}.
+Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraAgh}.
 
-\subsubsection{Dyskretna transformata Fouriera}
+\subsubsection{Dyskretna transformacja Fouriera} \label{sec-DTF}
 
-Przyglądając się własnościom tranformacji Furiera łatwo zauważyć, że jednym z założeń jest aby f(t)\ref{furier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym zbiorze właśnie. W przypadku analizy sygnału sonicznego warunek ten jest niespełnialny, ponieważ przetwarzane są tylko ograniczone odcinki krzywej. W celach analitycznych na utworach muzycznych, zwłaszcza w kontekście transkrypcji muzycznej, transformata całego utworu nie jest szczególnie przydatna. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki, których transformata przyniesie dalsze wnioski.
+Przyglądając się własnościom tranformacji Fouriera łatwo zauważyć, że jednym z założeń jest aby f(t)\ref{fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym zbiorze właśnie. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania, co za tym idzie, w przypadku analizy sygnału sonicznego warunek ten jest również niespełnialny, ponieważ przetwarzane są tylko ograniczone odcinki krzywej, więc granice są zawsze skończone. W celach analitycznych na utworach muzycznych, zwłaszcza w kontekście transkrypcji muzycznej, transformata całego utworu nie jest szczególnie przydatna. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki, których transformata przyniesie dalsze wnioski.\cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}
 
-\textbf{Dyskretna transformata Fouriera (DTF)} jest \cite{TransformacjaFurieraWroc}\cite{TransformacjaFurieraelektronikab2b}
+\textbf{Dyskretna transformata Fouriera (DTF)} jest narzędziem matematycznym analogicznym do podstawowej transformaty Fouriera, lecz przeznaczonym do analizowania sygnału dyskretnego $x(n)$ o okresie $N$:
+\begin{equation} \label{fourier-cykl}
+  x(n) = x(n + mN)
+\end{equation}
+pozwalającym na analize pojedyńzczego okresu zadanego sygnału. Własność ta jest szczególnie przydatna przy komputerowej analizie sygnałów, w tym fonicznych. Jest to transformacja zawsze odwracalna. 
 
+DTF zakłada wyznaczenie iloczynu sygnału i okna prostokątnego, które to jest wycinkiem krzywej sygnału podlegającym analizie. W związku z cyklicznością zakładanego sygnału (\ref{fourier-cykl}) przyjmuje się, że analizowany sygnał jest okresowy z okresem równym $N$, co implikuje obliczenie dokładnie N składowych charmonicznych analizowanych danych (N różnych częstotliwości). Dyskretny czas, częstotliwość i skończona liczba próbek zadanego sygnału sprowadza omawianą transformacje do funkcji w pełni dyskretnej. Wynik dyskretyzacji TF jest następującą parą równań:
+\begin{equation} \label{DTF-equation1}
+  X(k) = \frac{1}{N}\sum_{n = 0}^{N-1} x(n)e^{-j \frac{2 \pi} {N} kn},  k = 0, 1, 2,..., N-1
+\end{equation}
+\begin{equation} \label{DTF-equation2}
+  x(n) = \sum_{k = 0}^{N-1} X(k)e^{j \frac{2 \pi} {N} kn}, n = 0, 1,  2,...,N-1
+\end{equation}
+
+Wynikiem transformacji będzie N liczb odpowiadających komeljo amplitudzie i fazie sinusoidów od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
+
+\subsubsection{Szybka transformacja Fouriera} \label{sec-FFT}
+Wydawało by się, że posiadając narzędzie tak potężne jak transformacja DTF omawiana w sekcji \ref{sec-DTF} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{DTF-equation1} i \ref{DTF-equation2} zmniejszających złożoność obliczeniową do conajwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT)} i to z nich korzysta się powrzechnie przy cyfrowej analizie sygnałów.
+
+Isnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popularnym algorytmem jest algorytm \textbf{Cooleya-Tukeya} w formie \textbf{Radix-2} (FFT o podstawie 2). Korzysta on z metodologji \textit{dziel i zwyciężaj}, dzieląc próbkę danych wielkości $N$ na dwie oddzielne przeplatane grupy wielkości $N_1$ i $N_2$ $(N_1 + N_2 = N)$ o indeksach parzystych (0, 2, 4, ...) i nieparzystych (1, 3, 5, ...) wykonując DFT na każdym ze zbiorów, a następnie odtworzenie kompletnego widma sygnału z otrzymanych wyników częściowych. W uproszczeniu algorytm wygląda następująco:
+\begin{enumerate}
+  \item{Zmiana kolejności próbek. Próbki dzielone są rekurencyjnie na próbki o indeksach parzystych i nieparzystych tworząc przeplatane ciągi, aż do uzyskania zbiorów dwuelementowych.}
+  \item{Na każdym z uzyskanych zbiorów wykonuje się DFT, czyli łącznie $\frac{N}{2}$ dwupunktowych DFT.}
+  \item{Proces składania widm powtażamy tak, że dwuprążkowe widma składane są w czteroprążkowe, czteroprążkowe w ośmioprążkowe itd., do momentu, w którym odtworzone zostanie widmo N-prążkowe, czyli kompletne widma sygnału.}
+\end{enumerate}
+Co daje łączną ilość etapów operacji równą $\log_2 N$. \cite[241-252]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+
+\subsubsection{Krótkoczasowa transformacja Fouriera}\label{sec:STFT}
+W rozdziale \ref{sec:TF} przeanalizowaliśmy działanie i podstawowe odmiany algorytmu transfromacji Fouriera, jednak aby można było wykorzystać w pełni to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie metody czasowo-częstotliwościowej TF. \textbf{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie analizowanej krzywej. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości wygląda następująco:
+\begin{equation} \label{STFT-equation1}
+  STFT^{T}_{x}(t,f) =\int_{-\infty}^{+\infty} x(\tau)\gamma^{*}(\tau - t)e^{-j2\pi f\tau}  \,\mathrm{d}\tau
+\end{equation}
+\begin{equation} \label{STFT-equation2}
+  STFT^{F}_{x}(t,f) = e^{-j2\pi ft} \int_{-\infty}^{+\infty} X(v) \Gamma^{*} (v-f) e^{j2\pi vt} {d}v
+\end{equation}
+
+W równaniu \ref{STFT-equation1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dopierany jest zgodnie z zapotrzebowaniem. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, poniważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi wysamplowane fragmenty, które poddawane są pokolei STFT powinny być jak najmniejsze, aby nie umkneły nawet najdrobniejsze zmiany tonu\cite{MultipleFundamentalFrequencyEstimation}.
+
+Równania \ref{STFT-equation1} oraz \ref{STFT-equation2} noszą metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej (\ref{STFT-equation1}) lub częstotliwościowej (\ref{STFT-equation2}). STFT wykonywane na dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wysamplowanego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm ten:
+\begin{enumerate}
+  \item odwrotnemu przekształceniu Fouriera fragmentu widma sygnału,
+  \item przesunięciu w częstotliwości sygnału czasowego otrzymanego z pkt. 1 do częstotliwości zerowej.
+\end{enumerate}
+\cite[455-458]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+
+Bardzo małe okna czasowe kładą większy nacisk na domenę czasową niż częstotliwościową. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwajac je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu. \cite{WindowChoiceStrategiesSTFT}
+
+W momęcie gdy w algorytmie okno nakłada się na siebie znacząca porcja danych jest zduplikowana. Aby zminimalizować ten negatywny efekt funkcja okna jest specjalnie dostosowywana. W ogólności, funkcja okna wydobywa odpowiednie wartości wewnątrz jej zakresie (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza wyznaczonym zasięgu. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli \ref{tab:definicjeOkien} przedstawione są funkcje, które mogą być użyte jako okna czasowe wraz z ich analityczbymi wzorami widm $W(\omega)$\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{RobustMethodOfMeasurmentOfFundamentalFq}.
+\begin{table}[H]
+  \begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    Nazwa funkcji & $w(t)$ & $W(\omega)$\\
+    \hline
+    Prostokątna & $p_T (t) = \left\{
+      \begin{array}{ll}
+        1 \text{ dla } |t| <= T\\
+        0 \text{ dla } |t| > T\\
+      \end{array}
+    \right.  $ & $2\frac{\sin \omega T}{\omega}$\\
+    \hline
+    Trójkątne (Bartletta) & $q_T = \left\{
+      \begin{array}{ll}
+        1-|t|/T \text{ dla } |t| <= T\\
+        0 \text{ dla } |t| > T\\
+      \end{array}
+    \right. $ & $T[\frac{\sin(\omega T / 2)}{\omega T/2}]^2$\\
+    \hline
+    Hanninga (Hanna) & $[0,5 + 0,5 \cos(\pi t / T)]p_T (t)$ & 
+    $\frac{\pi^2 \sin(\omega T))}{\omega(\pi^2 - T^2 \omega^2)}$\\
+    \hline
+    Hamminga & $[0,54 + 0,46\cos(\pi t/T)]p_T (t)$ & 
+    $\frac{(1,08\pi^2 - 0,16T^2\omega^2)}{\omega(\pi^2 - T^2 \omega^2))}\sin(\omega T)$\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Definicje funkcji okien czasowych $w(t)$ i analityczne wzory ich widm $W(\omega)$}
+  \label{tab:definicjeOkien}
+\end{table}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=1.4]{images/WindowFunctions.png}
+    \caption{Przykład funkcji okna czasowego dla ramki audio zawierającej 2048 sampli}
+  \end{center}
+\end{figure}
 \newpage
 
 \subsection{Estymacja składowej fundamentalnej}
@@ -300,6 +393,5 @@ Przyglądając się własnościom tranformacji Furiera łatwo zauważyć, że je
 
 
 \printbibliography
-
 
 \end{document}  

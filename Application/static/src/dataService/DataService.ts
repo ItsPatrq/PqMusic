@@ -40,6 +40,54 @@ class DataService implements DataService {
             DownloadFile(file, "spectrogram.png", "image/png");
         });
     }
+
+    public HannWindow() {
+        const request = superagent.post(env_url + "HannWindow").responseType("blob");
+        const formData = new FormData();
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const file = res.xhr.response;
+            DownloadFile(file, "HannWindow.png", "image/png");
+        });
+    }
+
+    public HammingWindow() {
+        const request = superagent.post(env_url + "HammingWindow").responseType("blob");
+        const formData = new FormData();
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const file = res.xhr.response;
+            DownloadFile(file, "HammingWindow.png", "image/png");
+        });
+    }
+
+    public RectangleWindow() {
+        const request = superagent.post(env_url + "RectangleWindow").responseType("blob");
+        const formData = new FormData();
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const file = res.xhr.response;
+            DownloadFile(file, "RectangleWindow.png", "image/png");
+        });
+    }
 }
 
 export default new DataService();
