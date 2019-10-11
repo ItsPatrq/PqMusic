@@ -41,6 +41,23 @@ class DataService implements DataService {
         });
     }
 
+    public Transcribe(file: File) {
+        const request = superagent.post(env_url + "Transcribe").responseType("blob");
+        const formData = new FormData();
+        formData.append('file', file);
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const file = res.xhr.response;
+            DownloadFile(file, "out.mid", "audio/midi");
+        });
+    }
+
     public HannWindow() {
         const request = superagent.post(env_url + "HannWindow").responseType("blob");
         const formData = new FormData();

@@ -4,6 +4,7 @@ const strings = {
         navBarUploadMidi: "Upload MIDI",
         navBarTranscribe: "Transcribe",
         navBarUtility: "Utility",
+        navBarGenerate: "Generate music",
         rowLabelFqMIDI: "MIDI Frequency measurment",
         rowLabelSpectrogram: "Spectrogram",
         rowLabelWindowFunctions: "Download window function in plot",

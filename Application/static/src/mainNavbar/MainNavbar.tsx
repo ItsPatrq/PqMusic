@@ -51,11 +51,18 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
             viewState: ViewState.utility
         });
 
+        const generateButton = getViewButton({
+            iconName: "music",
+            text: strings.navBarGenerate,
+            viewState: ViewState.generate
+        });
+
         return (
             <Fragment>
                 {homeButton}
                 {uploadMidiButton}
                 {transcribeButton}
+                {generateButton}
                 {utilityButton}
             </Fragment>
         );

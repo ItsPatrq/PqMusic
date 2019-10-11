@@ -8,7 +8,7 @@ import strings from '../shared/strings';
 export class Transcribe extends Component<{}> {
   handleChange(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
     if (acceptedFiles.length > 0) {
-
+      DataService.Transcribe(acceptedFiles[0])
       //reader.readAsBinaryString(accepted[0]);
     }
     if (rejectedFiles.length > 0) {
