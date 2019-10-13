@@ -41,7 +41,7 @@ export const Spectrogram: FC = () => {
     return (
         <RowFlex
             children={content}
-            label={strings.rowLabelSpectrogram}
+            label={strings.rowLabels.utils.spectrogram}
         />
     );
 }

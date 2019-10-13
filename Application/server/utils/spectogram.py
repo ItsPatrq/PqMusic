@@ -1,6 +1,6 @@
 import os
 import wave
-from . pqutils import *
+from  .pqutils import *
 import pylab
 
 def graph_spectrogram(file_name, result_path):

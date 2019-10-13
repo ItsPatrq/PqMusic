@@ -6,14 +6,17 @@ from utils.spectogram import *
 import uuid
 import shutil
 from utils.windowFunctionsPresentation import *
-from transcription.onesets_frames.model_initialization import *
 from transcription.onesets_frames.transcribe import *
 
 
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 CORS(app)
-
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+#region transcription initialization
+onsetsFrames = OnesetsFrames()
+
+#endregion
 
 def createRequestResponseFiles():
     requestUuid = str(uuid.uuid1())
@@ -39,10 +42,6 @@ def createRequestResponseFiles():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return  send_file("../static/build/index.html")
-
-@app.route("/hello")
-def hello():
-    return  "Hello world!"
 
 @app.route("/Spectrogram", methods=['POST'])
 def spectrogram():
@@ -83,8 +82,8 @@ def getRectabgkeWubdiw():
     rectangleWindow(responseFilePath)
     return send_file(responseFilePath)
 
-@app.route("/Transcribe", methods=['GET', 'POST'])
-def transcribe():
+@app.route("/TranscribeByOnsetsFrames", methods=['GET', 'POST'])
+def transcribeByOnsetsFrames():
     requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFiles()
     for file in request.files.getlist("file"):
         filename = file.filename
@@ -94,9 +93,14 @@ def transcribe():
 
         file.save(requestFilePath)
 
-        transcribe(requestFilePath, responseFilePath)
+        onsetsFrames.transcribe(requestFilePath, responseFilePath)
 
     return send_file(responseFilePath)
+
+@app.route("/GenerateTransform", methods=['GET', 'POST'])
+def generateTransform():
+
+    return
 
 if __name__ == "__main__":
     app.run()

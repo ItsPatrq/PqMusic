@@ -38,7 +38,7 @@ export const WindowFunctions: FC = () => {
     return (
         <RowFlex
             children={content}
-            label={strings.rowLabelWindowFunctions}
+            label={strings.rowLabels.utils.windowFunctions}
         />
     );
 }

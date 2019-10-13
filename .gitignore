@@ -277,15 +277,9 @@ train/checkpoint
 train/model.ckpt-100154.data-00000-of-00001
 train/model.ckpt-100154.index
 train/model.ckpt-100154.meta
-Application/resources/onsets-frames/checkpoint.zip
-Application/resources/onsets-frames/maestro_checkpoint-old.zip
-Application/resources/onsets-frames/maestro_checkpoint.zip
-Application/resources/onsets-frames/onsets_frames_dataset_maestro_v1.0.0.zip
-Application/resources/onsets-frames/train/checkpoint
-Application/resources/onsets-frames/train/model.ckpt.data-00000-of-00001
-Application/resources/onsets-frames/train/model.ckpt.index
-Application/resources/onsets-frames/train/model.ckpt.meta
-Application/server/__pycache__/pqutils.cpython-37.pyc
+
+Application/resources/
+__pycache__/
 *.wav
 *.mp3
 

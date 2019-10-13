@@ -5,9 +5,19 @@ const strings = {
         navBarTranscribe: "Transcribe",
         navBarUtility: "Utility",
         navBarGenerate: "Generate music",
-        rowLabelFqMIDI: "MIDI Frequency measurment",
-        rowLabelSpectrogram: "Spectrogram",
-        rowLabelWindowFunctions: "Download window function in plot",
+        rowLabels: {
+            transcription: {
+                onesetsAndFrames: "Onesets and Frames (Magenta default transcription model)",
+            },
+            utils: {
+                windowFunctions: "Download window function in plot",
+                fqMIDI: "MIDI Frequency measurment",
+                spectrogram: "Spectrogram",
+            },
+            generate: {
+                transform: "Upload base track and generate track by Transform method"
+            }
+        },
         dropZoneDefaultMessage: "Drag or click to upload file(s)",
         buttonLabelDownloadHannWindow: "Hann Window",
         buttonLabelDownloadHammingWindow: "Hamming Window",

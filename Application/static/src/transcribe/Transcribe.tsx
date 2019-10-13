@@ -1,38 +1,51 @@
 import React, { Component } from 'react';
 
-import { Button } from '@blueprintjs/core';
 import Dropzone, { DropEvent, DropzoneState } from 'react-dropzone'
 import DataService from '../dataService/DataService';
 import strings from '../shared/strings';
+import { RowFlex } from '../shared/components/rowFlex/RowFlex';
 
 export class Transcribe extends Component<{}> {
-  handleChange(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
+  handleOnesetsAndFramesChange(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
     if (acceptedFiles.length > 0) {
-      DataService.Transcribe(acceptedFiles[0])
-      //reader.readAsBinaryString(accepted[0]);
+      DataService.TranscribeByOnsetsFrames(acceptedFiles[0])
     }
     if (rejectedFiles.length > 0) {
       console.log(rejectedFiles, event)
     }
   }
+
+  getOnesetsAndFramesContent() {
+    const dropzoneContent = (props: DropzoneState) => (
+      <section>
+        <div {...props.getRootProps()}>
+          <input {...props.getInputProps()} />
+          <p className="PqM-dropZone">{strings.dropZoneDefaultMessage}</p>
+        </div>
+      </section>
+    )
+
+    return (
+      <Dropzone
+          accept={['audio/mp3', 'audio/wav']}
+          onDrop={this.handleOnesetsAndFramesChange}
+          multiple={false}
+      >
+          {dropzoneContent}
+      </Dropzone>
+    );
+  }
+
   public render() {
     return (
       <div className="PqM-Transcribe">
         <div className="PqM-header">
           Transcribe
           </div>
-        <div>
-          Onsets and Frames
-        </div>
-        <Dropzone
-          accept='audio/mp3'
-          onDrop={this.handleChange}
-          multiple={false}
-        >
-          {dropzoneContent}
-        </Dropzone>
-        <br />
-        <Button type="submit" className="bp3-intent-primary" text="Wyslij" />
+        <RowFlex
+          children={this.getOnesetsAndFramesContent()}
+          label={strings.rowLabels.transcription.onesetsAndFrames}
+        />
       </div>
     );
   }
@@ -41,11 +54,3 @@ export class Transcribe extends Component<{}> {
 
 export default Transcribe;
 
-const dropzoneContent = (props: DropzoneState) => (
-  <section>
-    <div {...props.getRootProps()}>
-      <input {...props.getInputProps()} />
-      <p className="PqM-dropZone">{strings.dropZoneDefaultMessage}</p>
-    </div>
-  </section>
-)
