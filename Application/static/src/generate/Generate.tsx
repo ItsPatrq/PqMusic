@@ -6,16 +6,25 @@ import strings from '../shared/strings';
 import { RowFlex } from '../shared/components/rowFlex/RowFlex';
 
 export class Generate extends Component<{}> {
-  handleTransformChange(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
+  handleUnconditionedTransform(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
     if (acceptedFiles.length > 0) {
-      DataService.GenerateTransform()
+      DataService.GenerateUnconditionedTransform(acceptedFiles[0])
     }
     if (rejectedFiles.length > 0) {
       console.log(rejectedFiles, event)
     }
   }
 
-  getGenerateTransformContent() {
+  handleConditionedTransform(acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) {
+    if (acceptedFiles.length > 0) {
+      DataService.GenerateConditionedTransform(acceptedFiles[0])
+    }
+    if (rejectedFiles.length > 0) {
+      console.log(rejectedFiles, event)
+    }
+  }
+
+  getUnconditionedTransform() {
     const dropzoneContent = (props: DropzoneState) => (
       <section>
         <div {...props.getRootProps()}>
@@ -27,8 +36,29 @@ export class Generate extends Component<{}> {
 
     return (
       <Dropzone
-          accept={['audio/mp3', 'audio/wav']}
-          onDrop={this.handleTransformChange}
+          accept={['audio/midi']}
+          onDrop={this.handleUnconditionedTransform}
+          multiple={false}
+      >
+          {dropzoneContent}
+      </Dropzone>
+    );
+  }
+
+  getConditionedTransform() {
+    const dropzoneContent = (props: DropzoneState) => (
+      <section>
+        <div {...props.getRootProps()}>
+          <input {...props.getInputProps()} />
+          <p className="PqM-dropZone">{strings.dropZoneDefaultMessage}</p>
+        </div>
+      </section>
+    )
+
+    return (
+      <Dropzone
+          accept={['audio/midi']}
+          onDrop={this.handleConditionedTransform}
           multiple={false}
       >
           {dropzoneContent}
@@ -43,8 +73,12 @@ export class Generate extends Component<{}> {
           Generate
           </div>
         <RowFlex
-          children={this.getGenerateTransformContent()}
-          label={strings.rowLabels.generate.transform}
+          children={this.getUnconditionedTransform()}
+          label={strings.rowLabels.generate.unconditionedTransform}
+        />
+        <RowFlex
+          children={this.getConditionedTransform()}
+          label={strings.rowLabels.generate.melodyConditionedTransform}
         />
       </div>
     );

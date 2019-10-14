@@ -106,8 +106,25 @@ class DataService implements DataService {
         });
     }
 
-    public GenerateTransform() {
-        const request = superagent.post(env_url + "GenerateTransform").responseType("blob");
+    public GenerateUnconditionedTransform(file: File) {
+        const request = superagent.post(env_url + "GenerateTransformUnconditioned").responseType("blob");
+        const formData = new FormData();
+        formData.append('file', file);
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const file = res.xhr.response;
+            DownloadFile(file, "out.midi", "audio/midi");
+        });
+    }
+
+    public GenerateConditionedTransform(file: File) {
+        const request = superagent.post(env_url + "GenerateTransformMelodyConditioned").responseType("blob");
         const formData = new FormData();
         request.send(formData);
         request.end((err, res) => {
@@ -118,7 +135,7 @@ class DataService implements DataService {
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
             const file = res.xhr.response;
-            DownloadFile(file, "out.wav", "audio/wav");
+            DownloadFile(file, "out.midi", "audio/midi");
         });
     }
 }

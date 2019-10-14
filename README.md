@@ -2,7 +2,7 @@
 
 ## Requirements:
 1. ffmpeg (brew install ffmpeg)
-2. FluidSynth _(brew install fluid-synth)_ ->
+2. FluidSynth (1.1) _(brew install fluid-synth)_ ->
 (brew install pkg-config
 (git clone https://github.com/FluidSynth/fluidsynth.git
 cd fluidsynth

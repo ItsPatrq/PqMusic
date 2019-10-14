@@ -25,7 +25,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 class OnesetsFrames:
     orig_ctypes_util_find_library = ctypes.util.find_library
-    CHECKPOINT_DIR = '../../../resources/onsets-frames/train'
+    filePath = os.path.dirname(os.path.abspath(__file__))
+    CHECKPOINT_DIR = os.path.join(filePath, '../../../resources/onsets-frames/train')
     modelInitialized = False
     def proxy_find_library(self, lib):
         if lib == 'fluidsynth':

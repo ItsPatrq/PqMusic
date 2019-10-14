@@ -15,7 +15,10 @@ const strings = {
                 spectrogram: "Spectrogram",
             },
             generate: {
-                transform: "Upload base track and generate track by Transform method"
+                unconditionedTransform: "Select premier for a unconditional transform model",
+                melodyConditionedTransform: "Select melody to be accompanied by the model (if your MIDI file is polyphonic, the notes with highest pitch will be used as the melody).",
+                lstm: "Generate piece by basic LSTM network",
+                performanceRnn: "Generate piece by Performance RNN Model",
             }
         },
         dropZoneDefaultMessage: "Drag or click to upload file(s)",
