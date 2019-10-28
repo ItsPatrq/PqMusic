@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # server.py
 from flask import Flask, send_file, request, jsonify
 import os
@@ -102,7 +104,7 @@ def transcribeByOnsetsFrames():
 
 @app.route("/GenerateTransformUnconditioned", methods=['GET', 'POST'])
 def GenerateTransformUnconditioned():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    requestFolderPath, responseFolderPath, _, _ = createRequestResponseFolders()
 
     for file in request.files.getlist("file"):
        filename = file.filename
@@ -122,4 +124,4 @@ def generateTransformMelodyConditioned():
     return send_file(res)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5001)
