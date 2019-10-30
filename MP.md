@@ -13,3 +13,11 @@
 CNN + LSTM
 
 loss function is the sum of two cross-entropy losses: one from the onset side and one from the frame side. Within the frame-based loss term, we apply a weighting to encourage accuracy at the start of the note. Because the weight vector assigns higher weights to the early frames of notes, the model is incentivized to predict the beginnings of notes accurately, thus preserving the most important musical events of the piece.
+
+
+
+pycuda
+
+fftcuda
+
+
