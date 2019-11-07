@@ -1,0 +1,37 @@
+Traceback (most recent call last):
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\tools.py", line 428, in context_dependent_memoize
+    return ctx_dict[cur_ctx][args]
+KeyError: <pycuda._driver.Context object at 0x0000027E61A95270>
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "tmp.py", line 89, in <module>
+    gpu_example()
+  File "tmp.py", line 83, in gpu_example
+    ans = (2 * a_gpu).get()
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\gpuarray.py", line 495, in __rmul__
+    return self._axpbz(scalar, 0, result)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\gpuarray.py", line 358, in _axpbz
+    func = elementwise.get_axpbz_kernel(self.dtype, out.dtype)
+  File "<F:\Users\Patryq\Miniconda3\lib\site-packages\decorator.py:decorator-gen-8>", line 2, in get_axpbz_kernel
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\tools.py", line 432, in context_dependent_memoize
+    result = func(*args)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\elementwise.py", line 425, in get_axpbz_kernel
+    "axpb")
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\elementwise.py", line 161, in get_elwise_kernel
+    arguments, operation, name, keep, options, **kwargs)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\elementwise.py", line 147, in get_elwise_kernel_and_types
+    keep, options, **kwargs)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\elementwise.py", line 75, in get_elwise_module
+    options=options, keep=keep)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\compiler.py", line 291, in __init__
+    arch, code, cache_dir, include_dirs)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\compiler.py", line 254, in compile
+    return compile_plain(source, options, keep, nvcc, cache_dir, target)
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\compiler.py", line 78, in compile_plain
+    checksum.update(preprocess_source(source, options, nvcc).encode("utf-8"))
+  File "F:\Users\Patryq\Miniconda3\lib\site-packages\pycuda\compiler.py", line 55, in preprocess_source
+    cmdline, stderr=stderr)
+pycuda.driver.CompileError: nvcc preprocessing of C:\Users\Patryq\AppData\Local\Temp\tmpeq9jq22z.cu failed
+[command: nvcc --preprocess -arch sm_61 -m64 -If:\users\patryq\miniconda3\lib\site-packages\pycuda\cuda C:\Users\Patryq\AppData\Local\Temp\tmpeq9jq22z.cu --compiler-options -EP]

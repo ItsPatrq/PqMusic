@@ -49,7 +49,29 @@ Pierwsze algorytmy szukające częstotliwości funamentalnych operowały na wej�
 ### Algorytmy wykorzystukące okresowość do wygenerowania wagowej hipotezy fundamentalnej częstotliwości:
 * ACF -> autocorelation function _[Lawrence Rabiner. Ontheuseofautocorrelationanalysisforpitchdetection. IEEE TransactionsonAcoustics,Speech,andSignalProcessing,25(1):24–33,1977]_
 
-    asdas $\sum{}$
+    -- wzory --
+    
 * NCCF -> Normalized Cross-corelation function  _[David Talkin A robust algorithm for pitch tracking (RAPT). Speech Coding and Synthesis,495:518,1995.]_ (w tym artykule także "What is pitch?")
 
+### Algorytmy wykorzystujące okresowość w częstotliwości
+* autokorelacja
 
+* Cepstrum ((spec)^-1 trum) jako widmo log widma. (Analiza cepstralna) (autokorelacja na cepstrum)
+
+* HPC (Harmonic Product Spectrum) - usuwanie co 2, co 3... ze spektrum po czym przemnożenie ich przez siebie co powinno odkryć F0
+
+### Oparte na harmoni
+
+Dla fundamentalnej częstotliwości jej h-harmoniczna jest dana wzorem f_h = hf_0 +- f_r gdzie f_r chroni przed szumem nieharmoniczności, które mozna oznaczyć wzorem f_h = hf_0 sqrt(1 + (h^2 - 1)B) gdzie B jest czynnikiem nieharmoniczności. Odnajdywane są harmoniczne w zakresie testowym, i sumowana głośność. Na podstawie tej głośności hipotezy fundamentalnej są ważone, i ta z najwyższą wagą jest wybierana.
+
+
+## MUlti
+
+### analiza spektralna
+
+* rozróżnienie źródeł fundamentalnych. Założenie - nie ma dużej zmiany w głośności pomiędzy kolejnymi nutami, oraz im wyższa częstotliwość tym niższa głośność. Jeśli się to nie zgadza -> harmoniczne się na siebie nakładają
+
+
+funkcja okna stosowana jest w DTF do nałożenia okresowości do okna (konkatenacja tych okien)
+
+ SI-PLCA (+GPU support)
