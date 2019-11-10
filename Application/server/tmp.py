@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 from tqdm import tqdm
 from utils.profile import profile, print_prof_data
-from pycuda.tools import make_default_context
 import skcuda.fft as cu_fft
+import pycuda.driver
+import pycuda.tools
 import pycuda.gpuarray as gpuarray
-import pycuda.autoinit
+import pyaudio
+
+
 frame_width = 2048
 hamming = np.hamming(frame_width)
 file_path = './chopin-nocturne.wav'
@@ -59,7 +62,7 @@ def fft_gpu(data):
 
     xgpu = gpuarray.to_gpu(data)
     y = gpuarray.empty(data.shape, np.float32)
-    plan_forward = cu_fft.Plan(data.shape // 2 + 1, np.float32, np.float32)
+    plan_forward = cu_fft.Plan(data.shape, np.float32, np.complex64 )
     cu_fft.fft(xgpu, y, plan_forward)
 
     out = y.get()
@@ -83,13 +86,40 @@ def gpu_example():
     ans = (2 * a_gpu).get()
     return ans
 
-sample_rate, data = load_normalized_sound_file(file_path)
-count_fft(data)
-#fft_gpu(data)
-gpu_example()
-print_prof_data()
+def create_sine(hz):
+    p = pyaudio.PyAudio()
+    fs = 44100
+    volume = 0.5
+    durotian = 55.0
+    samples = (np.sin(2*np.pi*np.arange(fs*durotian)*hz/fs)).astype(np.float32)
+
+    stream = p.open(format=pyaudio.paFloat32,
+                    channels=1,
+                    rate=fs,
+                    output=True)
+    stream.write(volume * samples)
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+if __name__ == "__main__":
+    pycuda.driver.init()
+    dev = pycuda.driver.Device(0) # replace n with your device number
+    ctx = dev.make_context()
+
+    sample_rate, data = load_normalized_sound_file(file_path)
+    count_fft(data)
+
+    #fft_gpu(data)
+    fft_gpu(data)
+    ctx.pop()
+    print_prof_data()
 
 
-
-#print_wave_file(sample_rate, data, file_path.split('/')[-1][:-4])
-print("ok")
+    create_sine(440)
+    #print_wave_file(sample_rate, data, file_path.split('/')[-1][:-4])
+    pycuda.tools.clear_context_caches()
+    #kurwa jego jebana mać 
+    
+    print("ok")
+    
