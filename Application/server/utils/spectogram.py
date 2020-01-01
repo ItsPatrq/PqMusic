@@ -1,6 +1,6 @@
 import os
 import wave
-from  .pqutils import *
+from  .pqutils import convertAudioFileToWave, path_leaf
 import pylab
 
 def graph_spectrogram(file_name, result_path):
@@ -12,7 +12,7 @@ def graph_spectrogram(file_name, result_path):
     pylab.savefig(result_path)
 
 def get_file_info(file_name):
-    waveFilePath = convertAudioFileToMp3(file_name)
+    waveFilePath = convertAudioFileToWave(file_name)
     wav = wave.open(waveFilePath, 'r')
     frames = wav.readframes(-1)
     sound_info = pylab.fromstring(frames, 'Int16')
@@ -22,4 +22,4 @@ def get_file_info(file_name):
 
 if __name__ == '__main__':
     file_name = './spectogram/Violas.mp3'
-    graph_spectrogram(file_name)
+    graph_spectrogram(file_name, '.')

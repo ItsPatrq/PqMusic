@@ -1,128 +1,154 @@
 import numpy as np
-from scipy.io import wavfile
 import matplotlib.pyplot as plt
-from scipy.fftpack import fft
+from scipy.fftpack import fft, ifft
 from tqdm import tqdm
 from utils.profile import profile, print_prof_data
-import skcuda.fft as cu_fft
 import pycuda.driver
 import pycuda.tools
 import pycuda.gpuarray as gpuarray
 import pycuda.cumath
 import pyaudio
 import math
-
-def fourier_to_hz(freq, fw, br):
-  return freq*br/fw
-
-def hz_to_fourier(freq, fw, br):
-  return int(np.round(freq*fw/br))
-# common display resources
-
-freqlabels_log = [50, 100, 200, 400, 800, 1600, 3200, 6000]
-
-def freqticks_log(fw, br):
-  ticks = []
-  for f in freqlabels_log:
-    ticks.append(hz_to_fourier(f, fw, br))
-  return ticks
-
-freqlabels = [400, 800, 1600, 2400, 3200, 4800, 6000]
-
-def freqticks(fw, br, upper_bound = 0):
-  ticks = []
-  for f in freqlabels:
-    k = hz_to_fourier(f, fw, br)
-    if upper_bound > 0 and k > upper_bound:
-      break
-    ticks.append(k)
-  return ticks
-
-seclabels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-
-def periodticks(br=44100):
-  ticks = []
-  for f in freqlabels_log:
-    ticks.append(br/f)
-  return ticks
-
-def secticks(fw, br):
-  ticks = []
-  for t in seclabels:
-    ticks.append(fourier_to_hz(t, fw, br))
-  return ticks
-
-notelabels = ["C2", "G2", "C3", "G3", "C4", "G4", "C5", "G5", "C6", "G6"]
-noteticks  = [36, 43, 48, 55, 60, 67, 72, 79, 84, 91]
+import utils.pqutils as pqutils
+from reikna import fft as cu_fft
+import cusignal
 
 frame_width = 2048
-hamming = np.hamming(frame_width)
-file_path = './chopin-nocturne.wav'
 spacing = 2048
-#file_path = './chopin-nocturne.wav'
-
-def toMono(data):
-    if len(data.shape) == 2 and data.shape[1] == 2:
-        return (data[:, 0]/2 + data[:, 1]/2)
-    else:
-        return data
-
-
-def normalize_data(sample_rate, data):
-    if(data.dtype == np.int16):
-            data_normalization = 2**16
-    elif (data.dtype == np.int32):
-        data_normalization = 2**32
-    else:
-        raise Exception("16 and 32 bit audio files only supported")
-
-    mono = toMono(data)
-
-    return np.array(mono) / float(data_normalization)
-
-def print_wave_file(sample_rate, normalized_data, wave_name):
-    time_space = np.linspace(0, len(normalized_data)/sample_rate, num=len(normalized_data))
-    plt.figure()
-    plt.title("wave " + wave_name)
-    plt.xlabel("time (seconds)")
-    plt.ylabel("amplitude[" + str(math.floor(normalized_data.min())) + ":" + str(math.ceil(normalized_data.max())) +"] (data)")
-    plt.yticks(np.arange(math.floor(normalized_data.min()), math.ceil(normalized_data.max()), 0.1))
-    plt.plot(time_space, normalized_data)
-    plt.show()
-
-def load_normalized_sound_file(file_path):
-    if file_path.endswith(".wav") == False:
-        raise Exception("Only .wav files allowed")
-
-    sample_rate, data = wavfile.read(file_path)
-    normalized_data = normalize_data(sample_rate, data)
-
-    return sample_rate, normalized_data
+file_path = './test_sounds/Sine_sequence_simplest.wav'
+#file_path = './test_sounds/chopin-nocturne.wav'
 
 @profile
 def fft_gpu(data):
     xgpu = gpuarray.to_gpu(data)
+    hamming_gpu = gpuarray.to_gpu(np.hamming(frameWidth))
     spectra = []
+    frame = gpuarray.empty(data[:frame_width].shape, np.complex128)
+    plan_forward = cu_fft.Plan(data[:frame_width].shape, np.float64, np.complex128)
 
     for i in tqdm(range(0, int((len(data) - frame_width) / spacing))):
-        frame = gpuarray.empty(data[:frame_width].shape, np.complex128)
-        plan_forward = cu_fft.Plan(data[:frame_width].shape, np.float64, np.complex128 )
-        cu_fft.fft(xgpu[i * spacing:i*spacing+frame_width], frame, plan_forward)
-        spectra.append((pycuda.cumath.log(frame.__abs__())).get()[:(int(np.floor(frame_width/2)))])
+
+        cu_fft.fft((xgpu[i * spacing:i*spacing+frame_width] * hamming_gpu), frame, plan_forward)
+        spectra.append((pycuda.cumath.log(frame.__abs__())).get()[:(int(np.floor(frame_width/2) - 1))])
 
     return spectra
 
 
 
 @profile
-def count_fft(data):
+def count_fft(data, frameWidth, spacing):
+    hamming = np.hamming(frameWidth)
     spectra = []
-    for i in tqdm(range(0, int((len(data) - frame_width) / spacing))):
-        frame_complex = fft((data[i*spacing:i*spacing+frame_width]) * hamming)
+    for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
+        frame_complex = fft((data[i*spacing:i*spacing+frameWidth]) * hamming)
         frame_len = int(np.floor(len(frame_complex)/2))
         frame_amplitude = np.log(abs(frame_complex))
         spectra.append(frame_amplitude[:(frame_len - 1)])
     return spectra
+
+
+@profile
+def cepstrogram(data, frameWidth, spacing, sampleRate):
+    spectra = []
+    cepstrum = []
+    bestFq = []
+    hamming = np.hamming(frame_width)
+
+    for i in tqdm(range(0, int((len(data)-frameWidth)/spacing))):
+        frame = data[i*spacing:i*spacing+frameWidth]
+        frame = frame*hamming
+        complex_fourier = fft(frame)
+        fft_len = int(np.floor(len(complex_fourier)/2))
+        power_sp = np.log(abs(complex_fourier))
+
+        spectra.append(power_sp[:(fft_len-1)])
+
+        cepst = abs(fft(power_sp).real)[:fft_len//2]/frameWidth
+        cepstrum.append(cepst)
+        cepst[0:8] = np.zeros(8)
+        maxPeriod = np.argmax(cepst[30:]) + 30
+        bestFq.append(sampleRate/maxPeriod)
+    
+    return spectra, cepstrum, bestFq
+
+@profile
+def cepstrogramGPU(data, frameWidth, spacing, sampleRate):
+    xgpu = gpuarray.to_gpu(data)
+    hamming_gpu = gpuarray.to_gpu(np.hamming(frameWidth))
+    spectra = []
+    cepstrum = []
+    bestFq = []
+    frame_complex = gpuarray.empty((frame_width,), np.complex128)
+    
+    #Dlaczego tutaj ta 1 w shape jest tak bardzo wazna? Bez niej duzo wynikow od konca ma wartosc -inf
+    plan_forward = cu_fft.Plan((frame_width,1), np.float64, np.complex128)
+    fft_len = int(np.floor(frameWidth/2))
+    for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
+        cu_fft.fft((xgpu[i * spacing:i*spacing+frameWidth] * hamming_gpu), frame_complex, plan_forward)
+        power_sp = (pycuda.cumath.log(frame_complex.__abs__()))
+        spectra.append(power_sp.get()[:fft_len - 1])
+        cu_fft.fft(power_sp, frame_complex, plan_forward)
+        cepst = frame_complex.real.__abs__().get()[:fft_len//2]/frameWidth
+        cepstrum.append(cepst)
+        cepst[0:8] = np.zeros(8)
+        maxPeriod = np.argmax(cepst[30:]) + 30
+        
+        bestFq.append(sampleRate/maxPeriod)
+
+    return spectra, cepstrum, bestFq
+
+# Autocorrelation of Log Spectrum https://www.researchgate.net/publication/232643468_Robust_method_of_measurement_of_fundamental_frequency_by_ACLOS_autocorrelation_of_log_spectrum
+# + pytanie o użycie grafik
+# https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
+def ACLOS(data, frameWidth, spacing, sampleRate):
+    # to be exactly as in paper
+    frameWidth = 1024
+    spacing = 1024
+    # 
+
+    correlogram = []
+    bestFq = []
+    hann = np.hanning(frameWidth)
+
+    def ac(data, minLag, maxLag):
+        # w teiri dwie pętle, ale *= leci po wszystkich elementach
+        n = len(data)
+        result = []
+        print(maxLag)
+        for lag in range(0, maxLag):
+            sumArray = np.zeros(n + lag)
+            sumArray[:n] = data
+            sumArray[:n-lag] *= data[lag:]
+            sum = np.sum(sumArray[:n-lag])
+            result.append(float(sum/(n-lag)))
+
+        return result
+
+    for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
+        frame = data[i*spacing:i*spacing+frameWidth] * hann
+        assert len(frame) == frameWidth
+
+        frame = np.concatenate([frame, np.zeros(frameWidth)])
+        assert len(frame) == frameWidth * 2
+
+        frame_complex = fft(frame)
+        frame_amplitude = np.log(abs(frame_complex))
+        print(len(frame_amplitude))
+        autocorrelation = ac(frame_amplitude, 20, len(frame_amplitude))
+        print(len(autocorrelation))
+        correlogram.append(autocorrelation)
+        bestFq.append(np.argmax(autocorrelation))
+
+    return correlogram, bestFq
+
+
+# # http://www.ii.uib.no/~espenr/hovedfag/thesis.pdf p 31
+# def crossCorelation():
+#     autocorr_func_gpu = ...
+#     samples = [...]
+#     for i in range((0, int((len(data) - frame_width) / spacing))):
+#         frame = cpu_fft
+        
 
 def gpu_example():
     a = np.ones(4000, dtype=np.float32)
@@ -134,54 +160,51 @@ def create_sine(hz, sample_rate, durotian):
     samples = np.arange(sample_rate * durotian) / sample_rate
     return  np.sin(2 * np.pi * hz * samples)
 
-def to_wave(signal, frame_rate, name):
-    signal = signal * 32767
-    signal = np.int16(signal)
-    wavfile.write(name + ".wav", frame_rate, signal)
-
-
-def plot_spectrogram(spectra, fw, spacing, br, upper_bound=0):
-    H = np.array(spectra)
-    if upper_bound > 0:
-        plt.imshow(H.T[:upper_bound], origin='lower',
-                aspect='auto', interpolation='nearest')
-        plt.yscale('log')
-        plt.yticks(freqticks(fw, br, upper_bound), freqlabels)
-    else:
-        plt.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
-        plt.yscale('log')
-        plt.yticks(freqticks(fw, br), freqlabels)
-    plt.ylabel('frequency (Hz)')
-
-    plt.xlabel('time (seconds)')
-    sec_length = int(len(spectra)*spacing/br)
-    plt.xticks(secticks(spacing, br)[:sec_length], seclabels[:sec_length])
-    plt.show()
-
-
     
 if __name__ == "__main__":
+    frameWidth = 2048
+    spacing = 2048
+
+
     pycuda.driver.init()
     dev = pycuda.driver.Device(0) # replace n with your device number
     ctx = dev.make_context()
 
-    sample_rate, data = load_normalized_sound_file(file_path)
+    sample_rate, data = pqutils.loadNormalizedSoundFIle(file_path)
 
-    sine_data = create_sine(440, 44100, 20)
-    fft2 = fft_gpu(sine_data)
+    sine_data = create_sine(440, 44100, 10)
+    # fft2 = fft_gpu(sine_data)
 
-    fft1 = count_fft(sine_data)
+    # fft1 = count_fft(sine_data)
 
-    print("FFT CPU:", len(fft1), fft1[0].shape, fft1[0].dtype, fft1[1] )
-    print("FFT GPU:", len(fft2), fft2[0].shape,fft2[0].dtype, fft2[1])
+    # print("FFT CPU:", len(fft1), fft1[0].shape, fft1[0].dtype, fft1[1] )
+    # print("FFT GPU:", len(fft2), fft2[0].shape,fft2[0].dtype, fft2[1])
 
-    plot_spectrogram(fft1, frame_width, spacing, sample_rate)
-    plot_spectrogram(fft2, frame_width, spacing, sample_rate)
+    # pqutils.plotSpectrogram(fft1, frame_width, spacing, 44100)
+    # pqutils.plotSpectrogram(fft2, frame_width, spacing, 44100)
+
+    # spectra, cepstrum, bestFq = cepstrogramGPU(data, frame_width, spacing, sample_rate)
+
+    # pqutils.plotSpectrogram(spectra, frame_width, spacing, 44100)
+    # pqutils.plot_correlogram(cepstrum, frame_width, spacing, sample_rate)
+    # pqutils.plot_pitches(bestFq, spacing, sample_rate)
+   
+
+    # spectra, cepstrum, bestFq = cepstrogram(data, frame_width, spacing, sample_rate)
+
+    # pqutils.plotSpectrogram(spectra, frame_width, spacing, 44100)
+    #pqutils.plot_correlogram(cepstrum, frame_width, spacing, sample_rate)
+    #pqutils.plot_pitches(bestFq, spacing, sample_rate)
+
+    correlogram, bestFq = ACLOS(data, frame_width, spacing, sample_rate)
+    pqutils.plot_correlogram(correlogram, frame_width, spacing, sample_rate)
+    pqutils.plot_pitches(bestFq, spacing, sample_rate)
+    
 
     ctx.pop()
     print_prof_data()
 
-    #print_wave_file(sample_rate, data, file_path.split('/')[-1][:-4])
+    #pqutils.printWave(sample_rate, data, file_path.split('/')[-1][:-4])
     pycuda.tools.clear_context_caches()
     
     print("ok")

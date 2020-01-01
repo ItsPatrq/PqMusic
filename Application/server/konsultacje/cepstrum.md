@@ -1,0 +1,5 @@
+Spektrum tonu powinno mieć piki o regularnych odstępach. Takie piki nie są tonami jeśli nie są regularnie względem siebie rozłożone. Aby otrzymać ich regularność należy na transformacie furiera zastosować transformate furiera, ale nie od razu, ponieważ fft od fft to praktycnzie sygnał wejściowy. Na transformacie trzeba zastosować wartość absolutną (aby pozbyć się części urojonej w której jest niepotrzebna nam informacja o przesunięciu), na niej logarytm, co jest ogólnie stosowane w celu uzyskania ciśneinia akustycznego. Log sprowadza piki do tego samego zakresu co czyni je mniej więcej okresowe. Na końcu stosuje się odwróconą transformate furiera, przenoszac domene na stoczęśtliwość (quefrency). Wynikowa skala jest odwrócona: dźwięki z wyższą częstotliwością mają mocno oddalone od siebie wydźwięki w domenie częstotliwości
+
+jeśli pik jest na pozycji 109 quefrency, a klip został nagrany w 48000 sampli na sekunde, to pik ten odpowiada 48000 / 109 = 440 Hz
+
+IFFT(log(abs(FFT(s)))) == real(FFT(log(abs(FFT(s))))) == cepstrum

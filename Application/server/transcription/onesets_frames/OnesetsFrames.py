@@ -67,7 +67,7 @@ class OnesetsFrames:
     def transcribe(self, requestFilePath, responseFilePath):
         self.initializeModel()
 
-        waveFilePath = convertAudioFileToMp3(requestFilePath)
+        waveFilePath = convertAudioFileToWave(requestFilePath)
         exampleFile = open(waveFilePath, 'rb')
         uploaded = {
             str(exampleFile.name): exampleFile.read()
