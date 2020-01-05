@@ -48,7 +48,8 @@ def normalizeData(sample_rate, data):
   elif (data.dtype == np.int32):
     dataNormalization = 2**32
   else:
-    raise Exception("16 and 32 bit audio files only supported")
+    raise Exception("Received " + str(data.dtype) +
+                    " dtype while 16 and 32 bit audio files only supported")
 
   mono = toMono(data)
 

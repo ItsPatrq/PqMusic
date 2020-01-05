@@ -96,11 +96,11 @@ def plot_wave(sample_rate, normalized_data, wave_name):
   plt.show()
 
 
-def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True):
+def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True, showColorbar=True):
   fig, ax = plt.subplots()
   fig.suptitle(title, fontsize=16)
   H = np.array(data)
-  ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
+  image = ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
   ax.set_ylabel('lag (samples)')
   ax.set_xlabel('time (seconds)')
 
@@ -110,6 +110,8 @@ def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True):
 
   ax.set_ylim([0, len(H.T)])
   ax.set_xlim([0, len(H) - 1])
+
+  if showColorbar: fig.colorbar(image)
 
   if show: plt.show()
   return fig, ax
@@ -130,6 +132,7 @@ def plot_pitches(pitches, spacing, sampleRate, log=True, title='Estimation of f0
   minHearableFq = 20
   ax.set_ylim([minHearableFq, 22049])
   ax.set_xlim([0, len(pitches)-1])
+  ax.grid()
 
   if show: plt.show()
   return fig, ax
@@ -145,13 +148,12 @@ def plot_midi(notes, spacing, br):
   plt.show()
 
 
-def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=True):
+def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=True, showColorbar=True):
   fig, ax = plt.subplots()
   spectra = np.array(spectra)
   fig.suptitle(title, fontsize=16)
   frameWidth = len(spectra.T)
-  print(frameWidth)
-  ax.imshow(spectra.T, interpolation='nearest', origin='lower', aspect='auto')
+  image = ax.imshow(spectra.T, interpolation='nearest', origin='lower', aspect='auto')
   ax.set_yscale('log')
   ax.set_yticks(getFqTicks(sampleRate, frameWidth)[0])
   ax.set_yticklabels(getFqTicks(sampleRate, frameWidth)[1])
@@ -166,6 +168,8 @@ def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=Tru
   minHearableFq = hz_to_fft(sampleRate, frameWidth)[20]
   ax.set_ylim([minHearableFq, frameWidth])
   ax.set_xlim([0, len(spectra)- 1])
+
+  if showColorbar: fig.colorbar(image)
 
   if show: plt.show()
   return fig, ax

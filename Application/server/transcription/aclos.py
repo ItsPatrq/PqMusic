@@ -11,6 +11,7 @@ import math
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz
 from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_correlation, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from utils.profile import profile, print_prof_data
+from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 
 # Autocorrelation of Log Spectrum
@@ -24,6 +25,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     spectra = []
     bestLag = []
     bestFq = []
+    lifteredSpectra = []
     hann = np.hanning(frameWidth)
     zeroPadding = np.zeros(frameWidth)
     fftToFq = fft_to_hz(sampleRate // 2, frameWidth)
@@ -55,17 +57,20 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
         frame = data[i*spacing:i*spacing+frameWidth] * hann
         frame = np.concatenate((frame, zeroPadding))
-        frame_complex = fft(frame)
-        fft_len = int(np.floor(len(frame_complex)/2))
-        power_spec = abs(frame_complex) ** 2
-        power_spec = power_spec[:fft_len]
+        frameComplex = fft(frame)
+        fftLen = int(np.floor(len(frameComplex)/2))
+        powerSpec = abs(frameComplex)
+        lifteredPowerSpec = lifterOnPowerSpec(powerSpec, LifterType.sine)
 
-        autocorrelation, interpolatedAutocorrelation = ac(power_spec, 5, frameWidth // 2 + 1)
+        powerSpec = powerSpec[:fftLen]
+        lifteredPowerSpec = lifteredPowerSpec[:fftLen]
 
-        correlogram.append(autocorrelation)
+        autocorrelation, interpolatedAutocorrelation = ac(lifteredPowerSpec, 5, frameWidth // 2 + 1)
+
+        correlogram.append(autocorrelation,)
         interpolatedAutocorrelogram.append(interpolatedAutocorrelation)
-        spectra.append(power_spec)
-        
+        spectra.append(powerSpec)
+        lifteredSpectra.append(lifteredPowerSpec)
         bestLag.append(np.argmax(autocorrelation))
         bestFq.append(countBestFq(interpolatedAutocorrelation, len(autocorrelation)))
 
@@ -73,12 +78,12 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     return correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra
 
 if __name__ == "__main__":
-    frameWidth = 2048
+    frameWidth = 4096
     spacing = 2048
     filePath = path.dirname(path.abspath(__file__))
-    #filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
+    filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
-    filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
+    #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
     sine_data = create_sine(220, sampleRate, 5)
