@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-
-
+from utils.plots import plot_pitches, plot_correlogram
+from utils.general import loadNormalizedSoundFIle
 import numpy as np
 from tqdm import tqdm
 import sys
@@ -8,8 +7,6 @@ from os import path
 from math import ceil, floor
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from utils.general import loadNormalizedSoundFIle
-from utils.plots import plot_pitches, plot_correlogram
 
 # autocorrelation function on the waveform
 def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
@@ -45,13 +42,14 @@ if __name__ == "__main__":
     fqMaxx = 2000
     frameWidth = 2048
     spacing = 2048
-    
+
     filePath = path.dirname(path.abspath(__file__))
     filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 
-    correlogram, best_frequencies = autocorrelation(data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
+    correlogram, best_frequencies = autocorrelation(
+        data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
 
     plot_pitches(best_frequencies, spacing, sampleRate)
     plot_correlogram(correlogram, spacing, sampleRate)

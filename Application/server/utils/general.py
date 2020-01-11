@@ -72,7 +72,8 @@ def fft_to_hz(sampleRate, numberOfSamples):
   return (sampleRate / 2) * np.linspace(0, 1, numberOfSamples)
 
 def hz_to_fft(sampleRate, numberOfSamples):
-  return np.arange(1, sampleRate // 2) * numberOfSamples / (sampleRate / 2)
+  halfSR = sampleRate // 2 + 1 if sampleRate % 2 == 1 else sampleRate // 2
+  return np.arange(0, halfSR) * numberOfSamples / (sampleRate / 2)
 
 def create_sine(hz, sample_rate, durotian):
   samples = np.arange(sample_rate * durotian) / sample_rate

@@ -9,12 +9,12 @@ from tqdm import tqdm
 import pyaudio
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz
-from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_correlation, plot_pitches, plot_correlogram, plot_interpolated_correlation
+from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from utils.profile import profile, print_prof_data
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
 
-def cepstrum(data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
+def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
     hamming = np.hamming(frameWidth)
     spectrogram = []
     cepstra = []
@@ -52,11 +52,11 @@ if __name__ == "__main__":
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
-    cepstra, spectra, bestFq = cepstrum(data, sampleRate, frameWidth, frameWidth, spacing)
+    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
 
     plot_pitches(bestFq, spacing, sampleRate)
     plot_spectrogram(spectra, spacing, sampleRate)
-    plot_correlogram(cepstra, spacing, sampleRate)
+    plot_cepstrogram(cepstra, spacing, sampleRate)
 
 
     print("ok")

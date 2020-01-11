@@ -89,7 +89,7 @@ if __name__ == "__main__":
     sine_data = create_sine(220, sampleRate, 5)
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
 
-    correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
+    correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(sine_data, sampleRate, frameWidth, spacing)
     print(np.shape(spectra), spacing, sampleRate)
     plot_spectrogram(spectra, spacing, sampleRate)
     

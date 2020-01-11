@@ -4,15 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from .general import hz_to_fourier, fourier_to_hz, hz_to_fft
+import pylab
 
 defaultFqTicks = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]
 defaultFqTickLabels = [20, 50, 100, 200, 500, '1k', '2k', '5k', '10k', '20k']
-
-def secTicks(frameWidth, bitRate, secLength):
-  ticks = []
-  for t in np.arange(1, secLength + 1):
-    ticks.append(fourier_to_hz(t, frameWidth, bitRate))
-  return ticks
 
 def getTimeTicks(spacing, sampleRate, secLength):
   ticks = [0]
@@ -76,7 +71,6 @@ def plot_correlation(data, sampleRate):
 def plot_interpolated_correlation(interpolation, corelation, title="Correlation"):
   interp_x = np.linspace(0, len(corelation)-1, num=len(corelation)*10)
   x = np.arange(0, len(corelation))
-  print(np.argmax(interpolation(interp_x)), np.argmax(corelation))
   plt.plot(x, corelation, '-', interp_x, interpolation(interp_x), '--')
   plt.legend(['data', 'interpolated'], loc='best')
   plt.title(title)
@@ -116,6 +110,27 @@ def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True, 
   if show: plt.show()
   return fig, ax
 
+def plot_cepstrogram(data, spacing, sampleRate, title='cepstrogram', show=True, showColorbar=True):
+  fig, ax = plt.subplots()
+  fig.suptitle(title, fontsize=16)
+  H = np.array(data)
+  image = ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
+  
+  ax.set_ylabel('Quefrency')
+  ax.set_xlabel('time (seconds)')
+
+  secLength = len(data)*spacing/sampleRate
+  ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength))
+
+  ax.set_ylim([0, len(H.T)])
+  ax.set_xlim([0, len(H) - 1])
+
+  if showColorbar: fig.colorbar(image)
+
+  if show: plt.show()
+  return fig, ax
+
 def plot_pitches(pitches, spacing, sampleRate, log=True, title='Estimation of f0', show=True):
   fig, ax = plt.subplots()
   fig.suptitle(title, fontsize=16)
@@ -138,15 +153,21 @@ def plot_pitches(pitches, spacing, sampleRate, log=True, title='Estimation of f0
   return fig, ax
 
 
-def plot_midi(notes, spacing, br):
-  plt.title("piano roll")
-  plt.imshow(np.array(notes).T, origin='lower',
-             aspect='auto', interpolation='nearest')
-  plt.xlabel('time (seconds)')
-  secLength = int(len(notes)*spacing/br)
-  plt.xticks(secTicks(spacing, br, secLength), np.arange(1, secLength))
-  plt.show()
+def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, title='Piano roll', show=True, showColorbar=True):
+  fig, ax = plt.subplots()
+  fig.suptitle(title, fontsize=16)
+  image = ax.imshow(np.array(notes).T, origin='lower',
+             aspect='auto', interpolation='nearest', cmap=pylab.cm.gray_r)
+  ax.set_xlabel('time (seconds)')
+  secLength = len(notes)*spacing/sampleRate
+  ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_ylim([minNote, maxNote])
+  if showColorbar: fig.colorbar(image)
 
+  if show: plt.show()
+
+  return fig, ax
 
 def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=True, showColorbar=True):
   fig, ax = plt.subplots()
@@ -171,5 +192,15 @@ def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=Tru
 
   if showColorbar: fig.colorbar(image)
 
+  if show: plt.show()
+  return fig, ax
+
+def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True,):
+  fig, ax = plt.subplots()
+  ax.bar(peaks.nonzero()[0], peaks[peaks.nonzero()[0]], barwidth, color='black')
+  ax.set_xticks(getFqTicks(sampleRate, frameWidth)[0][:-2])
+  ax.set_xticklabels(getFqTicks(sampleRate, frameWidth)[1][:-2])
+  ax.set_xlabel('frequency (Hz)')
+  ax.set_ylabel('amplitude')
   if show: plt.show()
   return fig, ax
