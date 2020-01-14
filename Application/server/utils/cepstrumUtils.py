@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.fftpack import fft, ifft
 import enum
+from reikna import fft as cu_fft
+from reikna.cluda import dtypes, cuda_api
 
 class LifterType(enum.Enum):
     sine = 1
@@ -77,6 +79,24 @@ def inverse_complex_cepstrum(ceps, ndelay):
     spectrum = np.exp(log_spectrum.real + 1j * wrap(log_spectrum.imag, ndelay))
     x = np.fft.ifft(spectrum).real
     return x
+
+
+def complex_cepst_from_signal_gpu(data):
+    def unwrap(phase):
+        n = np.size(phase)
+        unwrapped = np.unwrap(phase)
+        center = (n + 1) // 2
+        ndelay = np.array(np.round(unwrapped[center] / np.pi))
+        unwrapped -= np.pi * ndelay[..., None] * np.arange(n) / center
+        return unwrapped, ndelay
+
+    spectrum = fft(data)
+    logSpec = np.log(np.abs(spectrum)) 
+    unwrapped_phase, ndelay = unwrap(np.angle(spectrum))
+    logSpWithIm = logSpec + 1j * unwrapped_phase
+    ceps = ifft(logSpWithIm).real
+
+    return ceps, ndelay, spectrum, logSpec
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt

@@ -157,7 +157,7 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, title='Piano 
   fig, ax = plt.subplots()
   fig.suptitle(title, fontsize=16)
   image = ax.imshow(np.array(notes).T, origin='lower',
-             aspect='auto', interpolation='nearest', cmap=pylab.cm.gray_r)
+             aspect='auto', interpolation='nearest', cmap=pylab.cm.gray_r) # pylint: disable=no-member
   ax.set_xlabel('time (seconds)')
   secLength = len(notes)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
@@ -204,3 +204,7 @@ def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True,):
   ax.set_ylabel('amplitude')
   if show: plt.show()
   return fig, ax
+
+def plot_spectrogram_with_onsets(spectra, spacing, sampleRate, onsets, title='Spectrogram', show=True, showColorbar=True):
+  fig, ax = plot_spectrogram(spectra, spacing, sampleRate, title, False, showColorbar)
+  #TODO: https://stackoverflow.com/questions/12864294/adding-an-arbitrary-line-to-a-matplotlib-plot-in-ipython-notebook

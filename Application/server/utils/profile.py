@@ -1,5 +1,6 @@
 import time
 from functools import wraps
+import numpy as np
 
 PROF_DATA = {}
 
@@ -21,6 +22,16 @@ def profile(fn):
 
     return with_profiling
 
+def print_normalize_profile_data(n):
+    for fname, data in PROF_DATA.items():
+        sortedByPow = np.sort(data[1])
+        sortedByPow = sortedByPow[n:]
+        sortedByPow = sortedByPow[:n]
+        max_time = max(sortedByPow)
+        avg_time = sum(sortedByPow) / len(sortedByPow)
+        print("Function %s called %d times. " % (fname, data[0]),)
+        print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
+        
 def print_prof_data():
     for fname, data in PROF_DATA.items():
         max_time = max(data[1])

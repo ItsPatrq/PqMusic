@@ -9,67 +9,45 @@ import pycuda.gpuarray as gpuarray
 import pycuda.cumath
 import pyaudio
 import math
-import utils.pqutils as pqutils
 from reikna import fft as cu_fft
-import cusignal
-
-frame_width = 2048
-spacing = 2048
-file_path = './test_sounds/Sine_sequence_simplest.wav'
-#file_path = './test_sounds/chopin-nocturne.wav'
+from reikna.cluda import dtypes, cuda_api
+from utils.plots import plot_spectrogram
+from utils.cepstrumUtilsGpu import CepstrumUtilsGpu
 
 @profile
-def fft_gpu(data):
-    xgpu = gpuarray.to_gpu(data)
-    hamming_gpu = gpuarray.to_gpu(np.hamming(frameWidth))
+def fft_gpu2(data, frameWidth = 512, spacing = 512):
+    api = cuda_api()
+    thr = api.Thread.create()
+
+    data_dev = thr.to_device(data)
+    hamming_dev = thr.to_device(np.hamming(frameWidth))
+    res_dev = thr.empty_like(data_dev[:frameWidth])
+
+    fft = cu_fft.FFT(res_dev)
+    fft_compiled = fft.compile(thr)
+
     spectra = []
-    frame = gpuarray.empty(data[:frame_width].shape, np.complex128)
-    plan_forward = cu_fft.Plan(data[:frame_width].shape, np.float64, np.complex128)
 
-    for i in tqdm(range(0, int((len(data) - frame_width) / spacing))):
-
-        cu_fft.fft((xgpu[i * spacing:i*spacing+frame_width] * hamming_gpu), frame, plan_forward)
-        spectra.append((pycuda.cumath.log(frame.__abs__())).get()[:(int(np.floor(frame_width/2) - 1))])
+    for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
+        fft_compiled(res_dev, data_dev[i * spacing:i*spacing+frameWidth] * hamming_dev, inverse=0)
+        result = res_dev.__abs__().get()
+        spectra.append(result[:(frameWidth // 2)])
 
     return spectra
-
 
 
 @profile
 def count_fft(data, frameWidth, spacing):
     hamming = np.hamming(frameWidth)
     spectra = []
+    print(data)
     for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
         frame_complex = fft((data[i*spacing:i*spacing+frameWidth]) * hamming)
         frame_len = int(np.floor(len(frame_complex)/2))
-        frame_amplitude = np.log(abs(frame_complex))
+        frame_amplitude = abs(frame_complex)
         spectra.append(frame_amplitude[:(frame_len - 1)])
     return spectra
 
-
-@profile
-def cepstrogram(data, frameWidth, spacing, sampleRate):
-    spectra = []
-    cepstrum = []
-    bestFq = []
-    hamming = np.hamming(frame_width)
-
-    for i in tqdm(range(0, int((len(data)-frameWidth)/spacing))):
-        frame = data[i*spacing:i*spacing+frameWidth]
-        frame = frame*hamming
-        complex_fourier = fft(frame)
-        fft_len = int(np.floor(len(complex_fourier)/2))
-        power_sp = np.log(abs(complex_fourier))
-
-        spectra.append(power_sp[:(fft_len-1)])
-
-        cepst = abs(fft(power_sp).real)[:fft_len//2]/frameWidth
-        cepstrum.append(cepst)
-        cepst[0:8] = np.zeros(8)
-        maxPeriod = np.argmax(cepst[30:]) + 30
-        bestFq.append(sampleRate/maxPeriod)
-    
-    return spectra, cepstrum, bestFq
 
 @profile
 def cepstrogramGPU(data, frameWidth, spacing, sampleRate):
@@ -97,50 +75,6 @@ def cepstrogramGPU(data, frameWidth, spacing, sampleRate):
 
     return spectra, cepstrum, bestFq
 
-# Autocorrelation of Log Spectrum https://www.researchgate.net/publication/232643468_Robust_method_of_measurement_of_fundamental_frequency_by_ACLOS_autocorrelation_of_log_spectrum
-# + pytanie o użycie grafik
-# https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
-def ACLOS(data, frameWidth, spacing, sampleRate):
-    # to be exactly as in paper
-    frameWidth = 1024
-    spacing = 1024
-    # 
-
-    correlogram = []
-    bestFq = []
-    hann = np.hanning(frameWidth)
-
-    def ac(data, minLag, maxLag):
-        # w teiri dwie pętle, ale *= leci po wszystkich elementach
-        n = len(data)
-        result = []
-        print(maxLag)
-        for lag in range(0, maxLag):
-            sumArray = np.zeros(n + lag)
-            sumArray[:n] = data
-            sumArray[:n-lag] *= data[lag:]
-            sum = np.sum(sumArray[:n-lag])
-            result.append(float(sum/(n-lag)))
-
-        return result
-
-    for i in tqdm(range(0, int((len(data) - frameWidth) / spacing))):
-        frame = data[i*spacing:i*spacing+frameWidth] * hann
-        assert len(frame) == frameWidth
-
-        frame = np.concatenate([frame, np.zeros(frameWidth)])
-        assert len(frame) == frameWidth * 2
-
-        frame_complex = fft(frame)
-        frame_amplitude = np.log(abs(frame_complex))
-        print(len(frame_amplitude))
-        autocorrelation = ac(frame_amplitude, 20, len(frame_amplitude))
-        print(len(autocorrelation))
-        correlogram.append(autocorrelation)
-        bestFq.append(np.argmax(autocorrelation))
-
-    return correlogram, bestFq
-
 
 # # http://www.ii.uib.no/~espenr/hovedfag/thesis.pdf p 31
 # def crossCorelation():
@@ -164,48 +98,21 @@ def create_sine(hz, sample_rate, durotian):
 if __name__ == "__main__":
     frameWidth = 2048
     spacing = 2048
-
+    sampleRate = 44100
+    file_path = './test_sounds/Sine_sequence_simplest.wav'
+    #file_path = './test_sounds/chopin-nocturne.wav'
 
     pycuda.driver.init()
     dev = pycuda.driver.Device(0) # replace n with your device number
     ctx = dev.make_context()
+    #cepstrogramGPU = CepstrumUtilsGpu(cuda_api(), frameWidth)
 
-    sample_rate, data = pqutils.loadNormalizedSoundFIle(file_path)
+    sine_data = create_sine(220, sampleRate, 10)
 
-    sine_data = create_sine(440, 44100, 10)
-    # fft2 = fft_gpu(sine_data)
-
-    # fft1 = count_fft(sine_data)
-
-    # print("FFT CPU:", len(fft1), fft1[0].shape, fft1[0].dtype, fft1[1] )
-    # print("FFT GPU:", len(fft2), fft2[0].shape,fft2[0].dtype, fft2[1])
-
-    # pqutils.plotSpectrogram(fft1, frame_width, spacing, 44100)
-    # pqutils.plotSpectrogram(fft2, frame_width, spacing, 44100)
-
-    # spectra, cepstrum, bestFq = cepstrogramGPU(data, frame_width, spacing, sample_rate)
-
-    # pqutils.plotSpectrogram(spectra, frame_width, spacing, 44100)
-    # pqutils.plot_correlogram(cepstrum, frame_width, spacing, sample_rate)
-    # pqutils.plot_pitches(bestFq, spacing, sample_rate)
-   
-
-    # spectra, cepstrum, bestFq = cepstrogram(data, frame_width, spacing, sample_rate)
-
-    # pqutils.plotSpectrogram(spectra, frame_width, spacing, 44100)
-    #pqutils.plot_correlogram(cepstrum, frame_width, spacing, sample_rate)
-    #pqutils.plot_pitches(bestFq, spacing, sample_rate)
-
-    correlogram, bestFq = ACLOS(data, frame_width, spacing, sample_rate)
-    pqutils.plot_correlogram(correlogram, frame_width, spacing, sample_rate)
-    pqutils.plot_pitches(bestFq, spacing, sample_rate)
-    
-
+    res = cepstrogramGPU.real_cepst_from_signal(sine_data[:frameWidth])
+    print(res)
     ctx.pop()
-    print_prof_data()
-
-    #pqutils.printWave(sample_rate, data, file_path.split('/')[-1][:-4])
     pycuda.tools.clear_context_caches()
     
-    print("ok")
+    print_prof_data()
     

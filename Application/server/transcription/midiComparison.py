@@ -1,0 +1,1 @@
+raise NotImplementedError("TODO: propably should be in utils.midi")

@@ -28,7 +28,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     lifteredSpectra = []
     hann = np.hanning(frameWidth)
     zeroPadding = np.zeros(frameWidth)
-    fftToFq = fft_to_hz(sampleRate // 2, frameWidth)
+    fftToFq = fft_to_hz(sampleRate, frameWidth)
     fqMaxError = sampleRate // frameWidth
 
 
@@ -60,7 +60,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
         frameComplex = fft(frame)
         fftLen = int(np.floor(len(frameComplex)/2))
         powerSpec = abs(frameComplex)
-        lifteredPowerSpec = lifterOnPowerSpec(powerSpec, LifterType.sine)
+        lifteredPowerSpec = lifterOnPowerSpec(powerSpec, LifterType.sine, 8)
 
         powerSpec = powerSpec[:fftLen]
         lifteredPowerSpec = lifteredPowerSpec[:fftLen]
@@ -86,11 +86,12 @@ if __name__ == "__main__":
     #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
-    sine_data = create_sine(220, sampleRate, 5)
-    sine_data += (create_sine(440, sampleRate, 5) * 0.2)
+    sine_data = create_sine(440, sampleRate, 5)
+    sine_data += (create_sine(880, sampleRate, 5) * 0.4)
+    sine_data += (create_sine(1320, sampleRate, 5) * 0.2)
 
-    correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(sine_data, sampleRate, frameWidth, spacing)
-    print(np.shape(spectra), spacing, sampleRate)
+
+    correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
     plot_spectrogram(spectra, spacing, sampleRate)
     
     plot_correlogram(correlogram, spacing, sampleRate)

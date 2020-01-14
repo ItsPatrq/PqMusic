@@ -8,16 +8,17 @@ from copy import deepcopy
 from os import path
 from itertools import combinations
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from utils.cepstrumUtils import real_cepst_from_signal
+from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
 
-def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=512, sizeOfZeroPadding=512, spacing=512,
-                                            minF0=75, maxF0=4000, peakDistance=2, relevantPowerThreashold=8, maxInharmonyDegree=0.1, minHarmonicsPerCandidate=2,
-											maxHarmonicsPerCandidate=20, maxCandidates=10, maxParallelNotes = 6, gamma=0.1, minNoteMs=100):
+def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
+                                            minF0=75, maxF0=6000, peakDistance=8, relevantPowerThreashold=9, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
+											maxHarmonicsPerCandidate=20, maxCandidates=10, maxParallelNotes = 6, gamma=0.05, minNoteMs=80,
+											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 30, useGpu = False):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -90,7 +91,11 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=51
 		frame = data[i*spacing:i*spacing+frameWidth] * hann
 		frame = np.concatenate((frame, zeropad))
 		frameComplex = fft(frame)
-		return abs(frameComplex)[:fftLen]
+		powerSpWindow = abs(frameComplex)
+		if useLiftering:
+			return lifterOnPowerSpec(powerSpWindow, LifterType.sine, lifteringCoefficient)[:fftLen]
+		else:
+			return powerSpWindow[:fftLen]
 
 	def getPeaksAndCandidates(powerSpWindow):
 		peaks = np.zeros(len(powerSpWindow))
@@ -98,7 +103,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=51
 
 		for k in range(1, len(powerSpWindow)-1):
 			currPower = powerSpWindow[k]
-			if currPower > relevantPowerThreashold and np.argmax(powerSpWindow[k-peakDistance:k+peakDistance+1]) + k-peakDistance == k:
+			if currPower > relevantPowerThreashold and np.argmax(powerSpWindow[max(k-peakDistance, 0):k+peakDistance+1]) + k-peakDistance == k:
 				peaks[k] = currPower
 				if k > k0 and k < k1:
 					candidate.append(k)
@@ -154,7 +159,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=51
 				del currPattern[patternHarmonicsToDelete[i]]
 				
 			currPatternPowers = np.array(currPattern)
-			currPatternPowers = currPatternPowers.T[1]
+			currPatternPowers = currPatternPowers.T[1] # pylint: disable=unsubscriptable-object
 			totalPatternLoudness = np.sum(currPatternPowers)
 			highestLoudness, lowestLoudness = updateMinMaxL(totalPatternLoudness, highestLoudness, lowestLoudness)
 			if(len(currPatternPowers) > 2):
@@ -174,15 +179,15 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=51
 			pianoRollRow = np.zeros(maxMidiPitch)
 			for notePitch, amplitude in resNotes[i].items():
 				amplitude = min(np.round(amplitude * 1.8), 127)
-				if i >= 1 and i+1 < len(resNotes):
-					if notePitch+1 in resNotes[i-1] and notePitch+1 in resNotes[i+1]:
-						pianoRollRow[notePitch+1] = amplitude
-					elif notePitch-1 in resNotes[i-1] and notePitch - 1 in resNotes[i+1]:
-						pianoRollRow[notePitch-1] = amplitude
-					else:
-						pianoRollRow[notePitch] = amplitude
-				else:
-					pianoRollRow[notePitch] = amplitude
+				# if i >= 1 and i+1 < len(resNotes):
+				# 	if notePitch+1 in resNotes[i-1] and notePitch+1 in resNotes[i+1]:
+				# 		pianoRollRow[notePitch+1] = amplitude
+				# 	elif notePitch-1 in resNotes[i-1] and notePitch - 1 in resNotes[i+1]:
+				# 		pianoRollRow[notePitch-1] = amplitude
+				# 	else:
+				# 		pianoRollRow[notePitch] = amplitude
+				# else:
+				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
 		resultNotes = []
@@ -205,7 +210,8 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate=1024, frameWidth=51
 					onsetIdx = i - currDurotian
 					currVelocity /= currDurotian
 					currDurotianMs = currDurotian * spacing / sampleRate + noteTail
-					resultNotes.append(MidiNote(note, currVelocity, onsetIdx * spacing / sampleRate, currDurotianMs))
+					if currVelocity > minNoteVelocity:
+						resultNotes.append(MidiNote(note, currVelocity, onsetIdx * spacing / sampleRate, currDurotianMs))
 					currDurotian = 0
 					currVelocity = 0
 				else:
@@ -257,9 +263,9 @@ if __name__ == "__main__":
 	frameWidth = 8192
 	spacing = 1024
 	filePath = path.dirname(path.abspath(__file__))
-	filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-	#file_path = '../test_sounds/Sine_sequence.wav'
-	#filePath = path.join(filePath, '../test_sounds/areFE.wav')
+	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
+	#filePath = '../test_sounds/Sine_sequence.wav'
+	filePath = path.join(filePath, '../test_sounds/areFE.wav')
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
 	sampleRate = 44100
 
@@ -273,7 +279,7 @@ if __name__ == "__main__":
 	#plot_pitches(best_frequencies, spacing, sampleRate)
 	#plot_spectrogram(all_weights, spacing, sampleRate)
 
-	write_midi(resMidi, "./res.mid", spacing/sampleRate, 4)
+	write_midi(resMidi, "./res2.mid", spacing/sampleRate, 4)
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)
