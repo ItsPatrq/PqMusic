@@ -54,7 +54,7 @@ def spectral_removal(inputData, soundToBeRemoved, occurances, sampleRate, frameW
 	
 	return copiedData
 
-def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4096, sizeOfZeroPadding=4096, spacing=4096):
+def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4096, sizeOfZeroPadding=4096, spacing=4096, onsetMissplace=10):
 	zeropad = np.zeros(sizeOfZeroPadding)
 	def corr(a, b):
 		div = np.linalg.norm(a) * np.linalg.norm(b) #cosine of angle between those two vectors
@@ -68,7 +68,7 @@ def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4
 		currSoundsCorrelations = []
 		for soundIndex, sound in enumerate(exampleSounds):
 			currCorrelations = []
-			for shiftedOnset in range(max(onset-10, 0), min(onset+10, len(inputData))):
+			for shiftedOnset in range(max(onset-onsetMissplace, 0), min(onset+onsetMissplace, len(inputData))):
 				for i in range(0, int(math.ceil((len(sound) - frameWidth) / spacing))):
 					if len(inputData) < shiftedOnset+i*spacing:
 						break
@@ -84,10 +84,7 @@ def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4
 			possibleEvents[onset] = currSoundsCorrelations[maxElement][1]
 	return possibleEvents
 
-
-
-if __name__ == "__main__":
-
+def drums_removal_example():
 	frameWidth = 2048
 	spacing = 512
 	filePath = path.dirname(path.abspath(__file__))
@@ -103,11 +100,10 @@ if __name__ == "__main__":
 		path.join(filePath, '../test_sounds/example/track_hiHat2.wav'),
 	]
 
-	for path in paths:
-		_, soundData = loadNormalizedSoundFIle(path)
+	for currPath in paths:
+		_, soundData = loadNormalizedSoundFIle(currPath)
 		sounds.append(soundData)
 	sampleRate = 44100
-
 	onsets = detect_onsets(trackPath)
 	res1 = cross_correlation(data, onsets, sounds, sampleRate, frameWidth, frameWidth, spacing)
 	occurances = []
@@ -119,3 +115,6 @@ if __name__ == "__main__":
 	for i in range(0, len(sounds)):
 		res = spectral_removal(data, sounds[i], occurances[i], sampleRate)
 	to_wave(res, sampleRate, "costam.wav")
+
+if __name__ == "__main__":
+	drums_removal_example()
