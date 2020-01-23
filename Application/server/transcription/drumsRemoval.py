@@ -8,8 +8,7 @@ import numpy as np
 from tqdm import tqdm
 from scipy.fftpack import fft, ifft
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
-from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier
+from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, to_wave
 
 # right now using aubio library, might implement own later
 def detect_onsets(filePath, method="default", windowSize=1024):
@@ -32,9 +31,28 @@ def detect_onsets(filePath, method="default", windowSize=1024):
 		if read < hop_s: break
 	return onsets
 
-def remove_a_from_b():
-	raise NotImplementedError()
-	#by spectra or amplitude? ? ?
+
+def spectral_removal(inputData, soundToBeRemoved, occurances, sampleRate, frameWidth=4096, sizeOfZeroPadding=4096):
+	copiedData = np.array(inputData)
+	zeropad = np.zeros(sizeOfZeroPadding)
+
+	def remove_a_from_b(a, b):
+		fftA = fft(np.concatenate((a, zeropad)))
+		fftB = fft(np.concatenate((b, zeropad)))
+		fftA -= fftB.real
+		return ifft(fftA).real[:len(a)]
+
+	for occurance in occurances:
+		for i in range(0, int(math.ceil((len(soundToBeRemoved) - frameWidth) / frameWidth))):
+			if len(copiedData) < occurance+i*frameWidth:
+				break
+			maxDataLen = min(len(soundToBeRemoved) - i*frameWidth, frameWidth, len(copiedData) - (occurance+i*frameWidth))
+			baseSoundWindow = copiedData[(occurance+i*frameWidth):(occurance+i*frameWidth+maxDataLen)]
+			removedSoundWindow = soundToBeRemoved[(i*frameWidth):(i*frameWidth+maxDataLen)]
+			removed = remove_a_from_b(baseSoundWindow, removedSoundWindow)
+			copiedData[(occurance+i*frameWidth):(occurance+i*frameWidth+maxDataLen)] = removed
+	
+	return copiedData
 
 def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4096, sizeOfZeroPadding=4096, spacing=4096):
 	zeropad = np.zeros(sizeOfZeroPadding)
@@ -46,30 +64,32 @@ def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4
 		return crossCorrelation / div
 
 	possibleEvents = {}
-	for onset in onsets:
+	for onset in tqdm(onsets):
 		currSoundsCorrelations = []
-		for sound in exampleSounds:
+		for soundIndex, sound in enumerate(exampleSounds):
 			currCorrelations = []
-			for i in range(0, int(math.ceil((len(sound) - frameWidth) / spacing))):
-				if len(inputData) < onset+i*spacing:
-					break
-				maxDataLen = min(len(sound) - i*spacing, frameWidth, len(inputData) - (onset+i*spacing))
-				baseSoundWindow = inputData[(onset+i*spacing):(onset+i*spacing+maxDataLen)]
-				testedSoundWindow = sound[(i*spacing):(i*spacing+maxDataLen)]
-				correlation = corr(baseSoundWindow, testedSoundWindow)
-				currCorrelations.append(max(correlation))
-			avg = sum(currCorrelations) / len(currCorrelations)
-			print(avg)
-			currSoundsCorrelations.append(avg)
-		if round(max(currSoundsCorrelations), 1) >= 0.3:
-			possibleEvents[onset] = np.argmax(currSoundsCorrelations)
-	print(possibleEvents)
+			for shiftedOnset in range(max(onset-10, 0), min(onset+10, len(inputData))):
+				for i in range(0, int(math.ceil((len(sound) - frameWidth) / spacing))):
+					if len(inputData) < shiftedOnset+i*spacing:
+						break
+					maxDataLen = min(len(sound) - i*spacing, frameWidth, len(inputData) - (shiftedOnset+i*spacing))
+					baseSoundWindow = inputData[(shiftedOnset+i*spacing):(shiftedOnset+i*spacing+maxDataLen)]
+					testedSoundWindow = sound[(i*spacing):(i*spacing+maxDataLen)]
+					correlation = corr(baseSoundWindow, testedSoundWindow)
+					currCorrelations.append(max(correlation))
+				avg = sum(currCorrelations) / len(currCorrelations)
+				currSoundsCorrelations.append((avg, soundIndex))
+		maxElement = np.argmax(np.array(currSoundsCorrelations).T[0]) #pylint: disable=unsubscriptable-object
+		if round(currSoundsCorrelations[maxElement][0], 1) >= 0.3:
+			possibleEvents[onset] = currSoundsCorrelations[maxElement][1]
+	return possibleEvents
+
 
 
 if __name__ == "__main__":
 
 	frameWidth = 2048
-	spacing = 2048
+	spacing = 512
 	filePath = path.dirname(path.abspath(__file__))
 	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 	#filePath = '../test_sounds/Sine_sequence.wav'
@@ -89,4 +109,13 @@ if __name__ == "__main__":
 	sampleRate = 44100
 
 	onsets = detect_onsets(trackPath)
-	cross_correlation(data, onsets, sounds, sampleRate, frameWidth, frameWidth, spacing)
+	res1 = cross_correlation(data, onsets, sounds, sampleRate, frameWidth, frameWidth, spacing)
+	occurances = []
+	while len(occurances) < len(sounds):
+		occurances.append([])
+	for key, value in res1.items():
+		occurances[value].append(key)
+	
+	for i in range(0, len(sounds)):
+		res = spectral_removal(data, sounds[i], occurances[i], sampleRate)
+	to_wave(res, sampleRate, "costam.wav")
