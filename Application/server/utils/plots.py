@@ -169,12 +169,14 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, title='Piano 
 
   return fig, ax
 
-def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=True, showColorbar=True):
+def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=True, showColorbar=True, transpose=True):
   fig, ax = plt.subplots()
   spectra = np.array(spectra)
   fig.suptitle(title, fontsize=16)
-  frameWidth = len(spectra.T)
-  image = ax.imshow(spectra.T, interpolation='nearest', origin='lower', aspect='auto')
+  if transpose:
+    spectra = spectra.T
+  frameWidth = len(spectra)
+  image = ax.imshow(spectra, interpolation='nearest', origin='lower', aspect='auto')
   ax.set_yscale('log')
   ax.set_yticks(getFqTicks(sampleRate, frameWidth)[0])
   ax.set_yticklabels(getFqTicks(sampleRate, frameWidth)[1])
@@ -182,13 +184,13 @@ def plot_spectrogram(spectra, spacing, sampleRate, title='Spectrogram', show=Tru
   ax.set_ylabel('frequency (Hz)')
   ax.set_xlabel('time (seconds)')
   
-  secLength = len(spectra)*spacing/sampleRate
+  secLength = len(spectra.T)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
   ax.set_xticklabels(getTimeTickLabels(secLength))
 
   minHearableFq = hz_to_fft(sampleRate, frameWidth)[20]
   ax.set_ylim([minHearableFq, frameWidth])
-  ax.set_xlim([0, len(spectra)- 1])
+  ax.set_xlim([0, len(spectra.T)- 1])
 
   if showColorbar: fig.colorbar(image)
 

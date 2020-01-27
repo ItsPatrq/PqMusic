@@ -1,4 +1,4 @@
-.PqM-rows {
+.PqM-row-wrapper {
     width: 100%;
     clear: both;
     float: left;
@@ -6,16 +6,16 @@
     .PqM-row {
         clear: both;
         float: left;
-        padding: 10px 10px 10px 230px;
+        padding: 10px 25px 10px 200px;
         position: relative;
         margin: 20px 0 0;
         width: 100%;
 
         &_label {
             float: left;
-            margin-left: -210px;
+            margin-left: -190px;
             text-align: right;
-            width: 191px;
+            width: 180px;
         }
     }
 }

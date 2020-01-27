@@ -37,6 +37,20 @@ def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
   return correlogram, bestFq
 
 
+def autocorrelationWrap(filePath, resPath):
+  fqMin = 50
+  fqMaxx = 2000
+  frameWidth = 2048
+  spacing = 2048
+  sampleRate, data = loadNormalizedSoundFIle(filePath)
+  correlogram, best_frequencies = autocorrelation(
+      data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
+  fig, ax = plot_pitches(best_frequencies, spacing, sampleRate, show=False)
+  fig.savefig(resPath)
+  #fig, ax = plot_correlogram(correlogram, spacing, sampleRate, show=False)
+  #fig.savefig(path.join(resPath, 'correlogram.png'))
+
+
 if __name__ == "__main__":
     fqMin = 50
     fqMaxx = 2000

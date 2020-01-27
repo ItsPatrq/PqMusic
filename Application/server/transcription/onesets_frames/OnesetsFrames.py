@@ -17,7 +17,7 @@ from magenta.protobuf import music_pb2
 from magenta.music import sequences_lib
 import ctypes.util
 
-from utils.pqutils  import *
+from utils.general  import *
 
 # Ignore warnings caused by pyfluidsynth
 import warnings

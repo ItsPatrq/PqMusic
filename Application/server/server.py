@@ -8,19 +8,15 @@ from utils.spectogram import *
 import uuid
 import shutil
 from utils.windowFunctionsPresentation import *
-from transcription.onesets_frames.OnesetsFrames import OnesetsFrames
-from generate.musicTransformer.MusicTransformer import MusicTransformer
-
+from transcription.ac import autocorrelationWrap
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 CORS(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 #region transcription initialization
-onsetsFrames = OnesetsFrames()
 
 #endregion
 #region generate
-musicTransformer = MusicTransformer()
 #endregion
 
 def createRequestResponseFolders():
@@ -87,19 +83,22 @@ def getRectabgkeWubdiw():
     rectangleWindow(responseFilePath)
     return send_file(responseFilePath)
 
-@app.route("/TranscribeByOnsetsFrames", methods=['POST'])
-def transcribeByOnsetsFrames():
+@app.route("/TranscribeByAutoCorrelation", methods=['POST'])
+def transcribeByAutoCorrelation():
     requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    
     for file in request.files.getlist("file"):
         filename = file.filename
         requestFilePath = "/".join([requestFolderPath, filename])
         responseFilePath = "/".join([responseFolderPath, filename])
-        responseFilePath = responseFilePath[:-3] + "mid"
+        responseFilePath = responseFilePath[:-3] + "png"
 
         file.save(requestFilePath)
 
-        onsetsFrames.transcribe(requestFilePath, responseFilePath)
+        autocorrelationWrap(requestFilePath, responseFilePath)
 
+    #shutil.rmtree(requestFolderPath)
+    #shutil.rmtree(responseFolderPath)
     return send_file(responseFilePath)
 
 @app.route("/GenerateTransformUnconditioned", methods=['GET', 'POST'])
@@ -124,4 +123,4 @@ def generateTransformMelodyConditioned():
     return send_file(res)
 
 if __name__ == "__main__":
-    app.run(port=5001)
+    app.run(port=5000)

@@ -18,7 +18,7 @@ import pycuda.driver
 import pycuda.tools
 import pycuda.gpuarray as gpuarray
 import pycuda.cumath
-from reikna import fft as cu_fft
+from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
 from utils.profile import profile, print_prof_data, print_normalize_profile_data
 
@@ -56,7 +56,7 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
     powerSp_dev = thr.array((frameWidth + sizeOfZeroPadding,), np.complex128)
     res_dev = thr.array((frameWidth + sizeOfZeroPadding,), np.complex128)
 
-    fft = cu_fft.FFT(res_dev)
+    fft = gpu_fft.FFT(res_dev)
     fft_compiled = fft.compile(thr)
 
     cepstra = []
@@ -72,7 +72,6 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
         fft_compiled(res_dev, powerSpDev, inverse=1)
         cepst = res_dev.get().real
         cepst = cepst[:int(np.floor(len(cepst)/4))]
-
 
         cepst[0:9] = np.zeros(9)
         cepstra.append(cepst)

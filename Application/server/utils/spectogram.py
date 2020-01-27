@@ -1,6 +1,6 @@
 import os
 import wave
-from  .pqutils import convertAudioFileToWave, path_leaf
+from  .general import convertAudioFileToWave, path_leaf
 import pylab
 
 def graph_spectrogram(file_name, result_path):

@@ -11,6 +11,23 @@ class DataService implements DataService {
     constructor() {
         this.Spectrogram = this.Spectrogram.bind(this);
     }
+    private GenericRequest(file: File, methodName: string, callback:(res:any) => any){
+        const request = superagent.post(env_url + methodName).responseType("blob");
+        const formData = new FormData();
+        formData.append('file', file);
+        request.send(formData);
+        request.end((err, res) => {
+            if(err || !res.ok) {
+                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                return;
+            }
+            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+
+            const response = res.xhr.response;
+            callback(response);
+        });
+    }
+
     private GetRequest(methodName: string, callback?: (this: XMLHttpRequest) => any, responseType: XMLHttpRequestResponseType = "json") {
         let request = new XMLHttpRequest();
         const url = env_url + methodName;
@@ -56,6 +73,14 @@ class DataService implements DataService {
             const file = res.xhr.response;
             DownloadFile(file, "out.mid", "audio/midi");
         });
+    }
+
+    public TranscribeByAutoCorrelation(file: File) {
+        const callback = (resFile:File) => {
+            console.log(resFile)
+            DownloadFile(resFile, "out.png", "image/png");
+        }
+        this.GenericRequest(file, "TranscribeByAutoCorrelation", callback);
     }
 
     public HannWindow() {
