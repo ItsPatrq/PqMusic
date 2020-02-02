@@ -110,11 +110,12 @@ def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True, 
   if show: plt.show()
   return fig, ax
 
-def plot_cepstrogram(data, spacing, sampleRate, title='cepstrogram', show=True, showColorbar=True):
+def plot_cepstrogram(data, spacing, sampleRate, title='cepstrogram', show=True, showColorbar=True, transpose=True):
   fig, ax = plt.subplots()
   fig.suptitle(title, fontsize=16)
   H = np.array(data)
-  image = ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
+  if transpose: H = H.T
+  image = ax.imshow(H, origin='lower', aspect='auto', interpolation='nearest')
   
   ax.set_ylabel('Quefrency')
   ax.set_xlabel('time (seconds)')
@@ -123,8 +124,8 @@ def plot_cepstrogram(data, spacing, sampleRate, title='cepstrogram', show=True, 
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
   ax.set_xticklabels(getTimeTickLabels(secLength))
 
-  ax.set_ylim([0, len(H.T)])
-  ax.set_xlim([0, len(H) - 1])
+  ax.set_ylim([0, len(H)])
+  ax.set_xlim([0, len(H.T) - 1])
 
   if showColorbar: fig.colorbar(image)
 

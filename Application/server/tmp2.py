@@ -1,41 +1,3 @@
-"""
-This example demonstrates how to write an analogue of the ``matplotlib.mlab.specgram``
-function using Reikna. The main difficulty here is to split the task into transformations
-and computation cores and assemble them into a single computation.
- 
-To map the task to the transformation/computation model, one needs to separate the steps
-into those that do not require the communication between threads, and those that do.
-The former will be transformations, the latter will be computations.
- 
-``specgram`` does the following:
- 
-* Reshapes the initial 1D array into a 2D with an overlap between rows;
-* Applies a window function;
-* Performs an FFT over the rows;
-* Crops the negative frequencies part of the result (default behavior);
-* Calculates the spectrum. The actual formula here depends on the ``mode`` parameter.
-  This example uses ``mode='amplitude'`` to make the example simpler,
-  because the default ``mode='psd'`` does a bit of additional scaling.
-  Implementing other modes is left as an exercise for the reader.
- 
-Of all these, only FFT is a computation, the rest can be implemented as transformations.
- 
-Note that ``specgram`` returns the array of shape ``(frequencies, times)``.
-Reikna's batched FFT is most effective when performed over the last axis of the array,
-so we will operate with ``(times, frequencies)`` array and transpose it in the end.
-Transposition is also a computation, so we will have to chain it after the FFT.
- 
-Since the FFT requires a complex-valued array, we will need an additional transformation that
-typecasts the initial real-valued array into complex numbers. One could write a custom
-computation that does that, but we will use two predefined transformations
-(from the ``reikna.transformations`` module): ``combine_complex`` (creates a complex array
-out of real and imaginary parts) and ``broadcast_const`` (to fill the complex part with zeroes).
- 
-CAVEAT: In the steps above, two of the transformations (the initial reshape and the frequency crop)
-will change the shape of the array. Currently such transformations can only be leaves of the
-transformation tree, so we will have to swap the cropping step and the spectrum calculating step.
-"""
-
 import numpy
 
 import matplotlib
@@ -54,28 +16,7 @@ from utils.general import loadNormalizedSoundFIle
 from pycuda import cumath
 
 from utils.plots import plot_spectrogram, plot_cepstrogram
-
-
-def get_data():
-
-    dt = 0.0005
-    t = numpy.arange(0.0, 20.0, dt)
-    s1 = numpy.sin(2*numpy.pi*100*t)
-    s2 = 2*numpy.sin(2*numpy.pi*400*t)
-
-    # create a transient "chirp"
-    mask = numpy.where(numpy.logical_and(t > 10, t < 12), 1.0, 0.0)
-    s2 = s2 * mask
-
-    # add some noise into the mix
-    nse = 0.01*numpy.random.randn(len(t))
-
-    x = s1 + s2 + nse  # the signal
-    NFFT = 1024       # the length of the windowing segments
-    Fs = int(1.0/dt)  # the sampling frequency
-
-    return x, dict(NFFT=NFFT, Fs=Fs, noverlap=900, pad_to=2048)
-
+from transcription.cepstrumF0Analysis import cepstrumF0Analysis
 
 def hanning_window(arr, NFFT):
     """
@@ -143,11 +84,7 @@ def rolling_frame(arr, NFFT, noverlap, pad_to):
         # note that only the "store_same"-using argument can serve as a connector!
         connectors=['output'])
 
-def log_pow(arr_t, order):
-    """
-    Returns a transformation that calculates the ``order``-norm
-    (1 output, 1 input): ``output = abs(input) ** order``.
-    """
+def log_pow(arr_t):
     if dtypes.is_complex(arr_t.dtype):
         out_dtype = dtypes.real_for(arr_t.dtype)
     else:
@@ -159,13 +96,13 @@ def log_pow(arr_t, order):
             Parameter('input', Annotation(arr_t, 'i'))],
         """
         ${input.ctype} val = ${input.load_same};
-        ${output.ctype} norm = ${norm}(val.x);
-        norm = log(norm);
+        ${output.ctype} norm = ${norm}(val);
+        norm = log(norm) / 2;
         ${output.store_same}(norm);
         """,
         render_kwds=dict(
-            norm=functions.norm(out_dtype),
-            order=order))
+            norm=functions.norm(arr_t.dtype),
+            ))
 
 def crop_frequencies(arr):
     """
@@ -230,8 +167,10 @@ class Spectrogram(Computation):
         window_trf = window(real_fft_arr, NFFT)
         broadcast_zero_trf = transformations.broadcast_const(real_fft_arr, 0)
         to_complex_trf = transformations.combine_complex(fft_arr)
-        log_pow_trf = log_pow(fft_arr, 1)
- 
+        #amplitude_trf = transformations.norm_const(fft_arr, 1)
+        log_pow_trf = log_pow(fft_arr)
+        crop_trf = crop_frequencies(log_pow_trf.output)
+
         fft = FFT(fft_arr, axes=(1,))
         fft.parameter.input.connect(
             to_complex_trf, to_complex_trf.output,
@@ -246,27 +185,17 @@ class Spectrogram(Computation):
         fft.parameter.unwindowed_input.connect(
             rolling_frame_trf, rolling_frame_trf.output, flat_input=rolling_frame_trf.input)
 
+        # fft.parameter.output.connect(
+        #     amplitude_trf, amplitude_trf.input, amplitude=amplitude_trf.output)
+
         fft.parameter.output.connect(
-            log_pow_trf, log_pow_trf.input, amplitude=log_pow_trf.output)
+            log_pow_trf, log_pow_trf.input, log=log_pow_trf.output)
 
-        ifft = FFT(fft_arr, axes=(1,))
-        ifft.parameter.input.connect(
-            to_complex_trf, to_complex_trf.output,
-            input_real=to_complex_trf.real, input_imag=to_complex_trf.imag)
-
-        ifft.parameter.input_imag.connect(
-            broadcast_zero_trf, broadcast_zero_trf.output)
-
-
-        crop_trf = crop_frequencies_ceps(ifft.parameter.output)
-
-        ifft.parameter.output.connect(
+        fft.parameter.log.connect(
             crop_trf, crop_trf.input, cropped_amplitude=crop_trf.output)
  
         self._fft = fft
-        self._ifft = ifft
-        self._transpose = Transpose(ifft.parameter.cropped_amplitude)
-        self._transpose2 = Transpose(fft.parameter.amplitude)
+        self._transpose = Transpose(fft.parameter.cropped_amplitude)
  
         Computation.__init__(self,
             [Parameter('output', Annotation(self._transpose.parameter.output, 'o')),
@@ -274,37 +203,24 @@ class Spectrogram(Computation):
  
     def _build_plan(self, plan_factory, device_params, output, input_):
         plan = plan_factory()
-        temp = plan.temp_array_like(self._fft.parameter.amplitude)
-        temp2 = plan.temp_array_like(self._ifft.parameter.cropped_amplitude)
+        temp = plan.temp_array_like(self._fft.parameter.cropped_amplitude)
         plan.computation_call(self._fft, temp, input_)
-        plan.computation_call(self._ifft, temp2, temp, inverse=1)
 
-        plan.computation_call(self._transpose, output, temp2)
+        plan.computation_call(self._transpose, output, temp)
         return plan
 
 if __name__ == '__main__':
     filePath = path.dirname(path.abspath(__file__))
     filePath = path.join(filePath, 'test_sounds/piano-c3-d3-c3-b2.wav')
-    #file_path = '../test_sounds/Sine_sequence.wav'
-    #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-
     sampleRate, data = loadNormalizedSoundFIle(filePath)
+
     fake_params = dict(Fs=sampleRate, NFFT=1024, noverlap=512, pad_to=2048)
-    numpy.random.seed(125)
     
-    x, params = get_data()
     x = data
     params = fake_params
 
 
-    fig = plt.figure()
-    s = fig.add_subplot(2, 1, 1)
-    spectre, freqs, ts = specgram(x, mode='magnitude', **params)
-    s.imshow(
-        numpy.log(spectre),
-        extent=(ts[0], ts[-1], freqs[0], freqs[-1]),
-        aspect='auto',
-        origin='lower')
+    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, 1024, 1024, 512)
 
     api = any_api()
     thr = api.Thread.create()
@@ -319,16 +235,9 @@ if __name__ == '__main__':
     print('!!!!!!', numpy.min(spectre_reikna))
 
     #assert numpy.allclose(spectre, spectre_reikna)
-    s = fig.add_subplot(2, 1, 2)
-    im = s.imshow(
-        spectre_reikna,
-        extent=(ts[0], ts[-1], freqs[0], freqs[-1]),
-        aspect='auto',
-        origin='lower')
-    fig.savefig('demo_specgram.png')
-
-    print(spectre_reikna)
     #plot_spectrogram(spectre_reikna, 1024 - 900, sampleRate, transpose=False)
-    plot_cepstrogram(spectre_reikna, 1024 - 900, sampleRate, transpose=False)
+    plot_spectrogram(spectre_reikna, 512, sampleRate, transpose=False)
+    plot_spectrogram(spectra, 512, sampleRate)
+
 
 

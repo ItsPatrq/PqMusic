@@ -24,7 +24,7 @@ from utils.profile import profile, print_prof_data, print_normalize_profile_data
 
 @profile
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
-    hamming = np.hamming(frameWidth)
+    hanning = np.hanning(frameWidth)
     spectrogram = []
     cepstra = []
     bestFq = []
@@ -32,7 +32,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
 
     for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
         frame = data[i*spacing:i*spacing+frameWidth]
-        frame = frame*hamming
+        frame = frame*hanning
         frame = np.concatenate((frame, zeroPadding))
         cepst, powerSp, spectr = real_cepst_from_signal(frame)
         fftLen = int(np.floor(len(spectr)/2))
@@ -83,7 +83,7 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
 
 if __name__ == "__main__":
     frameWidth = 2048
-    spacing = 2048
+    spacing = 1024
     filePath = path.dirname(path.abspath(__file__))
     filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
@@ -94,28 +94,27 @@ if __name__ == "__main__":
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
-    for i in range(100):
-        cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
 
-    plot_pitches(bestFq, spacing, sampleRate)
-    plot_spectrogram(spectra, spacing, sampleRate)
+    #plot_pitches(bestFq, spacing, sampleRate)
+    #plot_spectrogram(spectra, spacing, sampleRate)
     plot_cepstrogram(cepstra, spacing, sampleRate)
 
     #GPU
-    pycuda.driver.init() # pylint: disable=no-member
-    # replace 0 with your device number. In this case, 0 is appropriate
-    dev = pycuda.driver.Device(0) # pylint: disable=no-member
-    ctx = dev.make_context()
-    api = cuda_api()
-    thr = api.Thread.create()
-    for i in range(100):
-        cepstra, bestFq = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, frameWidth, spacing)
+    # pycuda.driver.init() # pylint: disable=no-member
+    # # replace 0 with your device number. In this case, 0 is appropriate
+    # dev = pycuda.driver.Device(0) # pylint: disable=no-member
+    # ctx = dev.make_context()
+    # api = cuda_api()
+    # thr = api.Thread.create()
+    # for i in range(100):
+    #     cepstra, bestFq = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, frameWidth, spacing)
 
-    plot_pitches(bestFq, spacing, sampleRate)
-    plot_cepstrogram(cepstra, spacing, sampleRate)
+    # plot_pitches(bestFq, spacing, sampleRate)
+    # plot_cepstrogram(cepstra, spacing, sampleRate)
 
-    ctx.pop()
-    pycuda.tools.clear_context_caches()
-    print_prof_data()
-    print_normalize_profile_data(10)
+    # ctx.pop()
+    # pycuda.tools.clear_context_caches()
+    # print_prof_data()
+    # print_normalize_profile_data(10)
 

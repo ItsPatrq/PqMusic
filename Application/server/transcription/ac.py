@@ -45,7 +45,7 @@ def autocorrelationWrap(filePath, resPath):
   sampleRate, data = loadNormalizedSoundFIle(filePath)
   correlogram, best_frequencies = autocorrelation(
       data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
-  fig, ax = plot_pitches(best_frequencies, spacing, sampleRate, show=False)
+  fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False)
   fig.savefig(resPath)
   #fig, ax = plot_correlogram(correlogram, spacing, sampleRate, show=False)
   #fig.savefig(path.join(resPath, 'correlogram.png'))

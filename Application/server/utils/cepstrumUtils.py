@@ -42,14 +42,14 @@ def lifterOnCeps(ceps, lifterType=LifterType.triangle, coefficient=2):
 def real_cepst_from_signal(data):
     spectrum = fft(data)
     logSp = np.log(np.abs(spectrum))
-    ceps = ifft(logSp).real
+    ceps = np.abs(ifft(logSp).real)
     return ceps, logSp, spectrum
 
 def ceps_to_log_spec(ceps):
-    return np.fft.fft(ceps)
+    return fft(ceps)
 
 def ceps_to_pow_spec(ceps):
-    return np.exp(np.fft.fft(ceps).real)
+    return np.exp(fft(ceps).real)
 
 def complex_cepst_from_signal(data):
     def unwrap(phase):
