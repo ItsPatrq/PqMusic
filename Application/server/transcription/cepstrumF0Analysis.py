@@ -21,6 +21,7 @@ import pycuda.cumath
 from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
 from utils.profile import profile, print_prof_data, print_normalize_profile_data
+from utils.cepstrumUtilsGpu import Cepstrogram
 
 @profile
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
@@ -30,7 +31,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
     bestFq = []
     zeroPadding = np.zeros(sizeOfZeroPadding)
 
-    for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
+    for i in range(0, int(math.ceil((len(data) - frameWidth) / spacing))):
         frame = data[i*spacing:i*spacing+frameWidth]
         frame = frame*hanning
         frame = np.concatenate((frame, zeroPadding))
@@ -47,43 +48,28 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
     return cepstra, spectrogram, bestFq
 
 @profile
-def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
-    zeroPadding = np.zeros(sizeOfZeroPadding)
-    hamming = np.hamming(frameWidth)
-    hamming = np.concatenate((hamming, zeroPadding))
+def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512, compiledCepstrum=None):
+    if compiledCepstrum is None:
+        params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
+        compiledCepstrum = Cepstrogram(
+            data, NFFT=params['NFFT'], noverlap=params['noverlap'], pad_to=params['pad_to']).compile(thr)
 
-    hamming_dev = thr.to_device(hamming)
-    powerSp_dev = thr.array((frameWidth + sizeOfZeroPadding,), np.complex128)
-    res_dev = thr.array((frameWidth + sizeOfZeroPadding,), np.complex128)
-
-    fft = gpu_fft.FFT(res_dev)
-    fft_compiled = fft.compile(thr)
-
-    cepstra = []
-    bestFq = []
-    #TODO: Czy nie lepiej wrzucic całego data do GPU na start? Jedyny problem jaki z tym mam jest taki, ze nie wiem jak potem dodać zero padding do tego
-    #najlepiej by było kazde i w iteracji wrzucić do innego wąku, tylko nie wiem jak
-    for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
-        data_dev = thr.to_device(np.concatenate((data[i * spacing:i*spacing+frameWidth], zeroPadding)) + 0j) * hamming_dev
-    
-        fft_compiled(powerSp_dev, data_dev, inverse=0)
-        powerSpDev = cumath.log(powerSp_dev.__abs__()).astype(np.complex128)
-
-        fft_compiled(res_dev, powerSpDev, inverse=1)
-        cepst = res_dev.get().real
-        cepst = cepst[:int(np.floor(len(cepst)/4))]
-
-        cepst[0:9] = np.zeros(9)
-        cepstra.append(cepst)
-        
-        maxperiod = np.argmax(cepst)
-        bestFq.append(sampleRate/maxperiod)
-
-    return cepstra, bestFq
+    data_dev = thr.to_device(data)
+    ceps_dev = thr.empty_like(compiledCepstrum.parameter.output)
+    compiledCepstrum(ceps_dev, data_dev)
+    cepstra = ceps_dev.get()
+    # bestFq = []
+    # for cepst in cepstra:
+    #     maxperiod = np.argmax(cepst)
+    #     if maxperiod == 0:
+    #         bestFq.append(0)
+    #     else:
+    #         bestFq.append(sampleRate/maxperiod)
+    return cepstra, compiledCepstrum
 
 if __name__ == "__main__":
     frameWidth = 2048
-    spacing = 1024
+    spacing = 512
     filePath = path.dirname(path.abspath(__file__))
     filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
@@ -94,27 +80,30 @@ if __name__ == "__main__":
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
-    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    for i in range(0, 100):
+        cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
 
-    #plot_pitches(bestFq, spacing, sampleRate)
+    plot_pitches(bestFq, spacing, sampleRate)
     #plot_spectrogram(spectra, spacing, sampleRate)
     plot_cepstrogram(cepstra, spacing, sampleRate)
 
     #GPU
-    # pycuda.driver.init() # pylint: disable=no-member
-    # # replace 0 with your device number. In this case, 0 is appropriate
-    # dev = pycuda.driver.Device(0) # pylint: disable=no-member
-    # ctx = dev.make_context()
-    # api = cuda_api()
-    # thr = api.Thread.create()
-    # for i in range(100):
-    #     cepstra, bestFq = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, frameWidth, spacing)
+    pycuda.driver.init() # pylint: disable=no-member
+    # replace 0 with your device number. In this case, 0 is appropriate
+    dev = pycuda.driver.Device(0) # pylint: disable=no-member
+    ctx = dev.make_context()
+    api = cuda_api()
+    thr = api.Thread.create()
+    compiledCepstrum = None
+    for i in range(0, 100):
+        cepstra, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, frameWidth, spacing, compiledCepstrum)
 
     # plot_pitches(bestFq, spacing, sampleRate)
-    # plot_cepstrogram(cepstra, spacing, sampleRate)
+    plot_cepstrogram(cepstra[:][:1024], spacing, sampleRate, transpose=False)
+    plot_pitches(bestFq, spacing, sampleRate)
 
-    # ctx.pop()
-    # pycuda.tools.clear_context_caches()
-    # print_prof_data()
-    # print_normalize_profile_data(10)
+    ctx.pop()
+    pycuda.tools.clear_context_caches()
+    print_prof_data()
+    print_normalize_profile_data(10)
 
