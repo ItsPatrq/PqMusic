@@ -149,7 +149,6 @@ def plot_pitches(pitches, spacing, sampleRate, log=True, title='Estimation of f0
   ax.set_ylim([minHearableFq, 22049])
   ax.set_xlim([0, len(pitches)-1])
   ax.grid()
-
   if show: plt.show()
   return fig, ax
 

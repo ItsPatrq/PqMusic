@@ -71,3 +71,6 @@ body {
       margin-left: -190px;
       text-align: right;
       width: 180px; }
+
+.PqM-dialog.with-res-images {
+  width: min-content; }

@@ -14,9 +14,9 @@ export const DropZoneWrapper: FC<DropZoneWrapperProps> = ({ callback, multiple =
             callback(acceptedFiles);
         }
         if (rejectedFiles.length > 0) {
-          console.log(rejectedFiles, event)
+            console.log(rejectedFiles, event)
         }
-      }
+    }
     const getWrappedDropzone = () => {
         const dropzoneContent = (props: DropzoneState) => (
             <section>

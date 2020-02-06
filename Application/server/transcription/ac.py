@@ -6,6 +6,7 @@ import sys
 from os import path
 from math import ceil, floor
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from io import BytesIO
 
 
 # autocorrelation function on the waveform
@@ -39,21 +40,23 @@ def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
 
 def autocorrelationWrap(filePath, resPath):
   fqMin = 50
-  fqMaxx = 2000
+  fqMax = 2000
   frameWidth = 2048
   spacing = 2048
   sampleRate, data = loadNormalizedSoundFIle(filePath)
   correlogram, best_frequencies = autocorrelation(
-      data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
+      data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
   fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False)
-  fig.savefig(resPath)
-  #fig, ax = plot_correlogram(correlogram, spacing, sampleRate, show=False)
-  #fig.savefig(path.join(resPath, 'correlogram.png'))
+  fig2, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False)
+  pitches, correlogram = BytesIO(), BytesIO()
+  fig.savefig(pitches, format="png")
+  fig2.savefig(correlogram, format="png")
+  return pitches, correlogram
 
 
 if __name__ == "__main__":
     fqMin = 50
-    fqMaxx = 2000
+    fqMax = 2000
     frameWidth = 2048
     spacing = 2048
 
@@ -63,7 +66,7 @@ if __name__ == "__main__":
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 
     correlogram, best_frequencies = autocorrelation(
-        data, frameWidth, sampleRate, frameWidth, fqMin, fqMaxx)
+        data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
 
     plot_pitches(best_frequencies, spacing, sampleRate)
     plot_correlogram(correlogram, spacing, sampleRate)

@@ -5,7 +5,10 @@ import { DefaultToaster } from '../shared/components/toaster/DefaultToaster';
 const env_url = "http://127.0.0.1:5000/"
 type XMLHttpRequestParameters = string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
 
-
+interface ITranscribeByAutoCorrelationResult {
+    pitches: string,
+    correlogram: string
+}
 
 class DataService implements DataService {
     constructor() {
@@ -24,6 +27,7 @@ class DataService implements DataService {
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
             const response = res.xhr.response;
+            debugger;
             callback(response);
         });
     }
@@ -34,7 +38,7 @@ class DataService implements DataService {
         request.open('POST', url, true);
         request.onload = callback || null;
         request.onerror = function (this: XMLHttpRequest) {
-            console.error(`Error occured during sending request ${url}`);
+            console.error(`Error occurred during sending request ${url}`);
         }
         request.responseType = responseType;
         request.setRequestHeader('Content-type', 'audio/mp3');
@@ -75,12 +79,15 @@ class DataService implements DataService {
         });
     }
 
-    public TranscribeByAutoCorrelation(file: File) {
-        const callback = (resFile:File) => {
-            console.log(resFile)
-            DownloadFile(resFile, "out.png", "image/png");
-        }
-        this.GenericRequest(file, "TranscribeByAutoCorrelation", callback);
+    public TranscribeByAutoCorrelation(file: File, callback: (result: ITranscribeByAutoCorrelationResult) => void) {
+        this.GenericRequest(file, "TranscribeByAutoCorrelation", (res:Blob) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const x = JSON.parse(reader.result as string)
+                callback(x as ITranscribeByAutoCorrelationResult)
+            }
+            reader.readAsText(res);
+        });
     }
 
     public HannWindow() {
