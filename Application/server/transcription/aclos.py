@@ -79,9 +79,9 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
 
 if __name__ == "__main__":
     frameWidth = 4096
-    spacing = 2048
+    spacing = 1024
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
+    filePath = path.join(filePath, '../test_sounds/spectrogram/flute.wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
     #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 

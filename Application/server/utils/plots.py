@@ -80,10 +80,9 @@ def plot_wave(sample_rate, normalized_data, wave_name):
   time_space = np.linspace(0, len(normalized_data) /
                            sample_rate, num=len(normalized_data))
   plt.figure()
-  plt.title("wave " + wave_name)
-  plt.xlabel("time (seconds)")
-  plt.ylabel("amplitude[" + str(math.floor(normalized_data.min())) +
-             ":" + str(math.ceil(normalized_data.max())) + "] (data)")
+  plt.xlabel("czas (sekundy)")
+  plt.ylabel("amplituda[" + str(math.floor(normalized_data.min())) +
+             ":" + str(math.ceil(normalized_data.max())) + "]")
   plt.yticks(np.arange(math.floor(normalized_data.min()),
                        math.ceil(normalized_data.max()), 0.1))
   plt.plot(time_space, normalized_data)

@@ -1,5 +1,14 @@
 {
     "python.pythonPath": "/Users/patryq/opt/anaconda3/bin/python",
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "cSpell.words": [
+        "xlabel",
+        "xlim",
+        "xticklabels",
+        "xticks",
+        "ylabel",
+        "ylim",
+        "yticks"
+    ]
 }
