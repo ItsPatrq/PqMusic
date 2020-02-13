@@ -21,7 +21,7 @@
 \usepackage{amsmath}
 \usepackage{hyphenat}
 
-\setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
+%% \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstęp pomiędzy liniami?
 
 \newcommand{\makecell}[2][@{}c@{}]{\begin{tabular}{#1}#2\end{tabular}}
@@ -84,7 +84,7 @@
 \hyphenation{FORTRAN Wi-ki-books pow-szech-ną}
 \setlength{\parindent}{4em}
 \setlength {\marginparwidth }{2cm}
-\setlength{\parskip}{1em}
+\setlength{\parskip}{0em} %odstęp pomiędzy paragrafami
 \renewcommand{\baselinestretch}{1.5}
 \begin{document}
 
@@ -302,14 +302,31 @@ Ułożenie tonów harmonicznych jest zintegrowane z harmonią pomiędzy różnym
 Barwa dźwięku nie jest stała w czasie. Harmoniczne o wysokich częstotliwościach szybciej cichną w porównaniu do tych o niższych. Powoduje to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego \cite[64-65]{Homerecording:DlaKazdego} \cite{MultipleFundamentalFrequencyEstimation}.
 
 Istotnym pojęciem przy omawianiu barwy dźwięku jest \textbf{formant}. Formantem nazywane jest pasmo częstotliwości, w którego obrębie częstotliwości harmoniczne są wzmocnione względem pozostałych częstotliwości danego sygnału. Formanty mogą sprawić, że harmoniczne będą miały większą amplitudę niż częstotliwość fundamentalna. Istnienie tego zjawiska fonicznego uniemożliwia poprawność podejścia, w którym jako częstotliwość fundamentalna wybierana była by ta, o największej amplitudzie w analizowanym oknie \cite[62-63]{BarwaDzwieku:Formant}.
-\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13?}
+\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Bibliografia - czy może byc "and" pomiędzy autorami?}
 
 \subsubsection{Modelowanie systemu transkrypcji}
 Muzyka jako ogół cech, jak i pojedyńczy utwór muzyczny posiadają bardzo wiele własności na podstawie których można opierać analizę. W celu zoptymalizowania algorytmu automatycznej transkrypcji należy przefiltrować wszystkie te dane i zdecydować się, które uznać za istotne, a które można uznać za zaniedbywalne. Strukturyzacja algorytmu i dobór reprezentacji danych jest równie istotna przy projektowaniu algorytmu.
 
-Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania muzyki przez ludzki umysł dowodzą, że analiza dźwięku jest dzielona na pod-zadania. Pewne własności muzyki są odseparowywane od reszty bez szerszej perspektywy. Daje to informacje o tym, że modularyzacja podejścia do transkrypcji może być właściwym rozwiązaniem tego problemu. W automatycznej transkrypcji muzyki często używa się innych reprezentacji danych do analizy wysokości dźwięku, w których większy nacisk kładzie się na wierne odwzorowanie częstotliwości, a innych do analizy rytmu, w których najważniejsze jest dokładność w domenie czasu.
+Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania muzyki przez ludzki umysł dowodzą, że analiza dźwięku jest dzielona na pod-zadania. Pewne własności muzyki są odseparowywane od reszty bez szerszej perspektywy. Daje to informacje o tym, że modularyzacja podejścia do transkrypcji może być właściwym rozwiązaniem tego problemu. W automatycznej transkrypcji muzyki często używa się innych reprezentacji danych do analizy wysokości dźwięku, w których większy nacisk kładzie się na wierne odwzorowanie częstotliwości, a innych do analizy rytmu, w których najważniejsze jest dokładność w domenie czasu \cite[37-46]{Transcription:Zatorre:AuditoryCortex}\cite[231-246]{Transcription:Tervaniemi:AuditoryCortexFunctions}.
 
+\subsubsection{Reprezentacja danych średniego poziomu}
+Koncepcja pojęcia \textit{Reprezentacja danych średniego poziomu} pozwala na utworzenie pewnego rodzaju pośrednika pomiędzy akustyczną reprezentacją dźwięku, a tą formalnie zapisaną. Sygnał muzyczny w czystej postaci jest mało informatywny, nie możemy z niego wyczytać chociażby poszczególnych nut utworu, tak jak jest to widoczne w zapisie nutowym. W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy sugerują, że celem użycia tego narzędzia jest stworzenie pośredniego stopnia abstrakcji, które będzie działało jak interfejs do analizy audio i do ułatwienia konstrukcji systemów transkrypcji.
 
+Najczęściej używaną reprezentacją danych na średnim poziomie przy analizie sygnału akustycznego jest szybka transformacja Fouriera (dokładniej opisana w sekcji \ref{sec:FFT}) sygnału w kolejnych oknach czasowych. W ogólności wszystkie funkcje pozwalające na przeniesienie sygnału z domeny czasowej na domenę częstotliwości są niezwykle istotne w analizie dźwięku. W tej pracy zostaną przedstawione algorytmy bazujące na tej właśnie reprezentacji danych (jak np. Autokorelacja czy metody operujące na cepstrum). \todo[inline]{reference sections}
+
+W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy uważają, że powszechnym wyborem dla reprezentacji danych na średnim poziomie jest bazowanie na \textit{ścieżkach sinusoidalnych}. W tym przypadku sygnał akustyczny jest przedstawiony jako suma sinusoid o zmiennych w czasie częstotliwościach i amplitudach. Korzyścią, jaka płynie z tej reprezentacji jest łatwe przedstawienie instrumentów tonalnych. Problem z tym podejściem zaczyna się przy wielotonalnych sygnałach, gdzie dźwięki nakładają się na siebie w domenie częstotliwości i czasu. 
+
+Modele bazujące na słuchu człowieka są również używane jako reprezentacje danych na średnim poziomie. Sposób w jaki ludzki mózg przetwarza muzykę jest w zasadzie tym, co jest istotą transkrypcji, więc naturalnym wydaje się próba naśladowania procesów neuronowych. Sposób ten ma podłoże neuropsychologiczne. Modele słuchowe można napotkać w pracach \cite{Transcription:Karjalainen:MultipitchAnalysisModel}, \cite{Transcription:Zatorre:AuditoryCortex} czy \cite{Transcription:Meddis:VirtualPitchOnNerve}.
+
+Nie ma jednoznacznej reguły, która decydowałaby o trafności reprezentacji danych na średnim poziomie. Dobór metody powinien być świadomy, zgodny z wymaganiami systemu transkrypcji w którym reprezentacja ma zostać użyta \cite[13-15]{Transcription:Zatorre:AuditoryCortex}. Różnice w reprezentacjach można zaobserwować na wykresach na rysunku \ref{fig:mid_level_representation}. 
+
+\begin{figure}[t]
+  \begin{center}
+  \includegraphics[scale=0.3]{images/mid_level_representation.jpg}\\
+  \caption{Grafy przedstawiają 3 różne reprezentacje danych na średnim poziomie tego samego dźwięku trąbki grającej dźwięk C4. Lewy wykres przedstawia spectrogram na logarytmicznej skali częstotliwości. Środkowy wykres przedstawia reprezentację ścieżek sinusoidalnych, przy czym szerokość lini oznacza amplitudę poszczególnych sinusoid. Prawy wykres przedstawia prosty model słuchowy. Wykres z \cite[14]{Transcription:Zatorre:AuditoryCortex}}
+  \label{fig:mid_level_representation}
+  \end{center}
+\end{figure}
 
 \subsection{Transformacja Fouriera}\label{sec:TF}
 Z racji tego, że analiza surowych plików dźwiękowych jest wysoce skomplikowana i niepraktyczna w kontekście analizy sygnałów muzycznych, kluczowym jest przeniesienie tego problemu na płaszczyznę częstotliwości. Do tego celu powszechnie używane jest narzędzie matematyczne o nazwie \textbf{transformata fouriera}. Zastosowania tej funkcji są wysoce różnorodne dzięki jej uniwersalności, my jednak skupimy się na benefitach jakie przynosi ona w sferze przetwarzania sygnałów. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarays tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
@@ -340,7 +357,7 @@ DTF zakłada wyznaczenie iloczynu sygnału i okna prostokątnego, które to jest
 
 Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
 
-\subsubsection{Szybka transformacja Fouriera} \label{sec-FFT}
+\subsubsection{Szybka transformacja Fouriera} \label{sec:FFT}
 Wydawało by się, że posiadając narzędzie tak potężne jak transformacja DTF omawiana w sekcji \ref{sec-DTF} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{DTF-equation1} i \ref{DTF-equation2} zmniejszających złożoność obliczeniową do conajwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT)} i to z nich korzysta się powrzechnie przy cyfrowej analizie sygnałów.
 
 Isnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popularnym algorytmem jest algorytm \textbf{Cooleya-Tukeya} w formie \textbf{Radix-2} (FFT o podstawie 2). Korzysta on z metodologii \textit{dziel i zwyciężaj}, dzieląc próbkę danych wielkości $N$ na dwie oddzielne przeplatane grupy wielkości $N_1$ i $N_2$ $(N_1 + N_2 = N)$ o indeksach parzystych (0, 2, 4, ...) i nieparzystych (1, 3, 5, ...) wykonując DFT na każdym ze zbiorów, a następnie odtworzenie kompletnego widma sygnału z otrzymanych wyników częściowych. W uproszczeniu algorytm wygląda następująco:
