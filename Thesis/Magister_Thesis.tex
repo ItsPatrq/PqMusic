@@ -152,6 +152,7 @@
   \item \textbf{URL} - \textit{ang. \textbf{U}niform \textbf{R}esource \textbf{L}ocator }
   \item \textbf{npm} - \textit{ang. \textbf{N}ode \textbf{P}ackage \textbf{M}anager}
   \item \textbf{IOI} - \textit{ang. \textbf{I}nter-\textbf{o}nset \textbf{i}nterval, pol. Odstęp pomiędzy początkami dźwięków}
+  \item \textbf{TFR} - \textit{ang. \textbf{T}ime-\textbf{F}requency \textbf{R}epresentation, pol. Reprezentacja Czasu-Częstotliwości}
 \end{itemize}
 \newpage
 \setcounter{secnumdepth}{2}
@@ -215,7 +216,7 @@ Zbadanie rytmiki wymaga wyznaczenia metrum i długości poszczególnych jednoste
 
 W skład rytmu wchodzi również \textbf{grupowanie}. Termin ten odwołuje się do powiązań pomiędzy pojedyńczymi dźwiękami, które razem tworzą łączną frazy, a te z kolei dalej grupowane tworzą większe i bardziej złożone jednostki w hierarchicznej strukturze \cite[12-35]{Transcription:Lerdahl:GenerativeTheory}. 
 
-\subsubsection{Wysokość tonu}
+\subsubsection{Wysokość tonu}\label{subsec:pitch}
 
 Wysokość tonu, czy też wysokość dźwięku, jest percepcyjnym atrybutem za pomocą którego porządkowane są dźwięki na skali częstotliwości, od najniższych do najwyższych. Jest to pojęcie tożsame z częstotliwością sygnału sinusoidalnego zgodnego z tym, które jest odebrane przez ludzkie ucho \cite[3491-3502]{Transcription:Hartmann:PitchPeriodicityAuditoryOrganization}. 
 
@@ -299,12 +300,12 @@ Barwa dźwięku (inaczej tembr) jest cechą odwołującą się do harmonicznej d
 
 Ułożenie tonów harmonicznych jest zintegrowane z harmonią pomiędzy różnymi granymi nutami. Gdy dwa dźwięki są grane w tym samym czasie, nakładające się na siebie harmoniczne sprawiają, że dźwięk brzmi pozornie spójnie. Generuje to dodatkowe komplikacje dla algorytmów wykrywających wysokość tonów, które muszą odseparować nakładające się na siebie nuty.
 
-Barwa dźwięku nie jest stała w czasie. Harmoniczne o wysokich częstotliwościach szybciej cichną w porównaniu do tych o niższych. Powoduje to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego \cite[64-65]{Homerecording:DlaKazdego} \cite{MultipleFundamentalFrequencyEstimation}.
+Barwa dźwięku nie jest stała w czasie. Harmoniczne o wysokich częstotliwościach szybciej cichną w porównaniu do tych o niższych. Powoduje to, że nie tylko ogólna głośność jest mniejsza, ale i barwa ulega modyfikacji. Dla instrumentów dętych czy skrzypiec cechy jak wysokość tonu, głośność i barwa pozostają relatywnie stałe przez cały okres grania nuty, natomiast dźwięk pianina rozmywa się w czasie. Ta cecha barwy dźwięku musi zostać zaadresowana przy próbie dokładnej analizy sygnału fonicznego \cite[64-65]{Homerecording:DlaKazdego} \cite[804–816]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}.
 
 Istotnym pojęciem przy omawianiu barwy dźwięku jest \textbf{formant}. Formantem nazywane jest pasmo częstotliwości, w którego obrębie częstotliwości harmoniczne są wzmocnione względem pozostałych częstotliwości danego sygnału. Formanty mogą sprawić, że harmoniczne będą miały większą amplitudę niż częstotliwość fundamentalna. Istnienie tego zjawiska fonicznego uniemożliwia poprawność podejścia, w którym jako częstotliwość fundamentalna wybierana była by ta, o największej amplitudzie w analizowanym oknie \cite[62-63]{BarwaDzwieku:Formant}.
-\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Bibliografia - czy może byc "and" pomiędzy autorami?}
+%%\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Bibliografia - czy może byc "and" pomiędzy autorami? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można?}
 
-\subsubsection{Modelowanie systemu transkrypcji}
+\subsection{Modelowanie systemu transkrypcji}
 Muzyka jako ogół cech, jak i pojedyńczy utwór muzyczny posiadają bardzo wiele własności na podstawie których można opierać analizę. W celu zoptymalizowania algorytmu automatycznej transkrypcji należy przefiltrować wszystkie te dane i zdecydować się, które uznać za istotne, a które można uznać za zaniedbywalne. Strukturyzacja algorytmu i dobór reprezentacji danych jest równie istotna przy projektowaniu algorytmu.
 
 Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania muzyki przez ludzki umysł dowodzą, że analiza dźwięku jest dzielona na pod-zadania. Pewne własności muzyki są odseparowywane od reszty bez szerszej perspektywy. Daje to informacje o tym, że modularyzacja podejścia do transkrypcji może być właściwym rozwiązaniem tego problemu. W automatycznej transkrypcji muzyki często używa się innych reprezentacji danych do analizy wysokości dźwięku, w których większy nacisk kładzie się na wierne odwzorowanie częstotliwości, a innych do analizy rytmu, w których najważniejsze jest dokładność w domenie czasu \cite[37-46]{Transcription:Zatorre:AuditoryCortex}\cite[231-246]{Transcription:Tervaniemi:AuditoryCortexFunctions}.
@@ -328,68 +329,88 @@ Nie ma jednoznacznej reguły, która decydowałaby o trafności reprezentacji da
   \end{center}
 \end{figure}
 
-\subsection{Transformacja Fouriera}\label{sec:TF}
-Z racji tego, że analiza surowych plików dźwiękowych jest wysoce skomplikowana i niepraktyczna w kontekście analizy sygnałów muzycznych, kluczowym jest przeniesienie tego problemu na płaszczyznę częstotliwości. Do tego celu powszechnie używane jest narzędzie matematyczne o nazwie \textbf{transformata fouriera}. Zastosowania tej funkcji są wysoce różnorodne dzięki jej uniwersalności, my jednak skupimy się na benefitach jakie przynosi ona w sferze przetwarzania sygnałów. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarays tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
 
-\begin{equation} \label{fourier-base}
-F(f) = \int_{\infty}^{-\infty}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}x
+
+\subsection{Transformata Fouriera}\label{sec:TF}
+Pliki dźwiękowe zawierają informacje, które reprezentują siłę ciśnienia akustycznego w domenie czasu. Jest to jedna z reprezentacji, która może być analizowana w celu zbadania konkretnych cech sygnału, lecz jest ona bezpośrednim efektem nagrania muzyki i możliwości jej bezpośredniego odtworzenia. Dokładna analiza relacji sygnału muzycznego, jego reprezentacja jak i jego zrozumienie odbywa się po przeniesieniu na płaszczyznę częstotliwości. W muzyce zachodniej, F0 w zapisie nutowym definiuje się jako wysokość dźwięku w rozumieniu częstotliwości, co zostało po omówione w sekcji \ref{subsec:pitch}.
+
+Aby z sygnału akustycznego w domenie czasu uzyskać dane w domenie częstotliwości powszechnie używane jest narzędzie matematyczne o nazwie \textbf{transformata Fouriera}. Funkcja ta jest uniwersalna i powszechnie stosowana w analizie sygnałów, w tej pracy jednak skupię się się na opisaniu sposobów wykorzystywania jej do celów analizy sygnałów akustycznych. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarys tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
+
+\begin{equation} \label{eq:fourier-base}
+CFT_x(f) = X(f) = \int_{-\infty}^{\infty}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}t
 \end{equation}
+Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym. Wynik transformaty jest listą liczb zespolonych, dzięki czemu można ją odwrócić przy pomocy odwrotnej transformaty Fouriera (IFFT, ang. \textit{Inverse Furier Transformation}) opisanej wzorem:
 
-Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraAgh}.
+\begin{equation} \label{eq:inverse:fourier-base}
+ICFT_x(f) = \int_{-\infty}^{\infty}\textit{F}(t)e^ {j2\pi ft}\mathrm{d}t = x(t)
+\end{equation}
+\cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraAgh}\cite[22-25]{Transcription:Anssi:SignalProcessingMethods}.
 
-\subsubsection{Dyskretna transformacja Fouriera} \label{sec-DTF}
+Do analizy całego spektrum utworu muzycznego, pojedyńcza transformata Fouriera może nie być wystarczająca ze względu na długość i zróżnicowanie utworu względem czasu. Reprezentacja czasu-częstotliwości pozwala na przedstawienie sygnału w postaci zespolonej w domenie czasu i częstotliwości (ang. time–frequency representation, TFR). W celu uzyskania takiej reprezentacji przy pomocy FFT z zastosowaniem okna czasowego, co jest szerzej opisane w sekcji \ref{sec:STFT}. Okna te pełnią rolę prostego TFR, spektrogramu jak i reprezentację czasową czy reprezentację opóźnienia czasowego \cite[21-22]{Transcription:Anssi:SignalProcessingMethods}.
 
-Przyglądając się własnościom tranformacji Fouriera łatwo zauważyć, że jednym z założeń jest aby f(t)\ref{fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym zbiorze właśnie. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania, co za tym idzie, w przypadku analizy sygnału sonicznego warunek ten jest również niespełnialny, ponieważ przetwarzane są tylko ograniczone odcinki krzywej, więc granice są zawsze skończone. W celach analitycznych na utworach muzycznych, zwłaszcza w kontekście transkrypcji muzycznej, transformata całego utworu nie jest szczególnie przydatna. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki, których transformata przyniesie dalsze wnioski.\cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}
+\subsubsection{Dyskretna transformata Fouriera} \label{sec:DFT}
+Jednym z założeń transformacji Fouriera jest aby f(t)\ref{eq:fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym właśnie zbiorze. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania w analizie sygnału akustycznego, ponieważ przetwarzane są tylko skończone długości krzywych, co powoduje, że granice są zawsze skończone. W celach analitycznych na sygnałach, zwłaszcza w kontekście transkrypcji muzycznej, dane brane pod uwagę są brane z ograniczonego przedziału czasowego. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}.
 
-\textbf{Dyskretna transformata Fouriera (DTF)} jest narzędziem matematycznym analogicznym do podstawowej transformaty Fouriera, lecz przeznaczonym do analizowania sygnału dyskretnego $x(n)$ o okresie $N$:
-\begin{equation} \label{fourier-cykl}
+\textbf{Dyskretna transformata Fouriera (DFT)} jest narzędziem matematycznym analogicznym do podstawowej transformaty Fouriera, lecz przeznaczonym do analizowania sygnału dyskretnego $x(n)$ o okresie $N$, opisanego następującym wzorem:
+\begin{equation} \label{eq:DFT-periodicy}
   x(n) = x(n + mN)
 \end{equation}
-pozwalającym na analize pojedyńzczego okresu zadanego sygnału. Własność ta jest szczególnie przydatna przy komputerowej analizie sygnałów, w tym fonicznych. Jest to transformacja zawsze odwracalna. 
+Pozwala ona na analizę pojedyńczego okresu zadanego sygnału. Własność ta jest szczególnie przydatna przy komputerowej analizie sygnałów, w tym fonicznych. Jest to transformacja zawsze odwracalna. 
 
-DTF zakłada wyznaczenie iloczynu sygnału i okna prostokątnego, które to jest wycinkiem krzywej sygnału podlegającym analizie. W związku z cyklicznością zakładanego sygnału (\ref{fourier-cykl}) przyjmuje się, że analizowany sygnał jest okresowy z okresem równym $N$, co implikuje obliczenie dokładnie N składowych charmonicznych analizowanych danych (N różnych częstotliwości). Dyskretny czas, częstotliwość i skończona liczba próbek zadanego sygnału sprowadza omawianą transformacje do funkcji w pełni dyskretnej. Wynik dyskretyzacji TF jest następującą parą równań:
-\begin{equation} \label{DTF-equation1}
-  X(k) = \frac{1}{N}\sum_{n = 0}^{N-1} x(n)e^{-j \frac{2 \pi} {N} kn},  k = 0, 1, 2,..., N-1
+DFT zakłada wyznaczenie iloczynu sygnału i okna prostokątnego (o którym więcej znaleźć można w sekcji \ref{sec:STFT}), które to jest wycinkiem krzywej sygnału podlegającym analizie. W związku z cyklicznością zakładanego sygnału (\ref{eq:DFT-periodicy}) przyjmuje się, że analizowany sygnał jest okresowy z okresem równym $N$, co implikuje obliczenie dokładnie N składowych harmonicznych analizowanych danych (N różnych częstotliwości). Dyskretny czas, częstotliwość i skończona liczba próbek zadanego sygnału sprowadza omawianą transformacje do funkcji w pełni dyskretnej. Wynik dyskretyzacji TF jest następujące równanie:
+\begin{equation} \label{eq:DFT}
+  DFT_x(k) = X(k) = \sum_{n = 0}^{N-1} x(n)e^{-j{2 \pi}kn},  k = 0, 1, 2,..., N-1
 \end{equation}
-\begin{equation} \label{DTF-equation2}
-  x(n) = \sum_{k = 0}^{N-1} X(k)e^{j \frac{2 \pi} {N} kn}, n = 0, 1,  2,...,N-1
+DFT, tak samo jak FT jest odwracalna, co można opisać wzorem:
+\begin{equation} \label{eq:IDFT}
+  IDFT_x(n) = \sum_{k = 0}^{N-1} X(k)e^{j2\pi kn} = x(n), n = 0, 1, 2,..., N-1
 \end{equation}
-
-Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
+Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie. Jak opisuje Tomasz Zieliński w \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}, DFT stanowi pewną aproksymację $N$-elementowego wektora próbek analizowanego sygnału za pomocą $N$ ortogonalnych wektorów bazowych $N$-elementowych, z wyjątkiem sytuacji, kiedy w sygnale występuje składowa sinusoidalna, która nie jest częścią zbioru wektorów bazowych, bo w takim wypadku zostanie ona przedstawiona jako suma większej liczby sygnałów "bazowych", co oznacza, że jej widmo ulegnie rozmyciu.
 
 \subsubsection{Szybka transformacja Fouriera} \label{sec:FFT}
-Wydawało by się, że posiadając narzędzie tak potężne jak transformacja DTF omawiana w sekcji \ref{sec-DTF} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{DTF-equation1} i \ref{DTF-equation2} zmniejszających złożoność obliczeniową do conajwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT)} i to z nich korzysta się powrzechnie przy cyfrowej analizie sygnałów.
+DFT omawiana w sekcji \ref{sec:DFT} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza, że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla najlepszych pod względem mocy obliczeniowej współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{eq:DFT} i \ref{eq:IDFT} zmniejszających złożoność obliczeniową do co najwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT, z ang. Fast Fourier Transform)} i to z nich korzysta się powszechnie przy cyfrowej analizie sygnałów.
 
-Isnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popularnym algorytmem jest algorytm \textbf{Cooleya-Tukeya} w formie \textbf{Radix-2} (FFT o podstawie 2). Korzysta on z metodologii \textit{dziel i zwyciężaj}, dzieląc próbkę danych wielkości $N$ na dwie oddzielne przeplatane grupy wielkości $N_1$ i $N_2$ $(N_1 + N_2 = N)$ o indeksach parzystych (0, 2, 4, ...) i nieparzystych (1, 3, 5, ...) wykonując DFT na każdym ze zbiorów, a następnie odtworzenie kompletnego widma sygnału z otrzymanych wyników częściowych. W uproszczeniu algorytm wygląda następująco:
+Istnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popularnym algorytmem jest algorytm \textbf{Cooleya-Tukeya} w formie \textbf{Radix-2} (FFT o podstawie 2). Korzysta on z metodologii \textit{dziel i zwyciężaj}, dzieląc próbkę danych wielkości $N$ na dwie oddzielne przeplatane grupy wielkości $N_1$ i $N_2$ $(N_1 + N_2 = N)$ o indeksach parzystych (0, 2, 4, ...) i nieparzystych (1, 3, 5, ...) wykonując DFT na każdym ze zbiorów, a następnie odtwarza kompletne widmo sygnału z otrzymanych wyników częściowych. W uproszczeniu algorytm wygląda następująco:
 \begin{enumerate}
   \item{Zmiana kolejności próbek. Próbki dzielone są rekurencyjnie na próbki o indeksach parzystych i nieparzystych tworząc przeplatane ciągi, aż do uzyskania zbiorów dwuelementowych.}
   \item{Na każdym z uzyskanych zbiorów wykonuje się DFT, czyli łącznie $\frac{N}{2}$ dwupunktowych DFT.}
-  \item{Proces składania widm powtażamy tak, że dwuprążkowe widma składane są w czteroprążkowe, czteroprążkowe w ośmioprążkowe itd., do momentu, w którym odtworzone zostanie widmo N-prążkowe, czyli kompletne widma sygnału.}
+  \item{Proces składania widm powtażamy tak, że dwuprążkowe widma składane są w czteroprążkowe, czteroprążkowe w ośmioprążkowe itd., do momentu, w którym odtworzone zostanie widmo N-prążkowe, czyli kompletne widmo sygnału.}
 \end{enumerate}
 Co daje łączną ilość etapów operacji równą $\log_2 N$. \cite[241-252]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
 
-\subsubsection{Krótkoczasowa transformacja Fouriera}\label{sec:STFT}
-W rozdziale \ref{sec:TF} przeanalizowaliśmy działanie i podstawowe odmiany algorytmu transfromacji Fouriera, jednak aby można było wykorzystać w pełni to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie metody czasowo-częstotliwościowej TF. \textbf{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie analizowanej krzywej. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości wygląda następująco:
-\begin{equation} \label{STFT-equation1}
+\subsubsection{Krótkoczasowa transformata Fouriera}\label{sec:STFT}
+Do tej pory przeanalizowane zostało działanie i podstawowe odmiany algorytmu transformacji Fouriera, jednak aby można było wykorzystać to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie reprezentacji czasu-częstotliwości TFR. \textbf{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie czasowym analizowanego sygnału. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości prezentuje się następująco:
+\begin{equation} \label{eq:STFT1}
   STFT^{T}_{x}(t,f) =\int_{-\infty}^{+\infty} x(\tau)\gamma^{*}(\tau - t)e^{-j2\pi f\tau}  \,\mathrm{d}\tau
 \end{equation}
-\begin{equation} \label{STFT-equation2}
+\begin{equation} \label{eq:STFT2}
   STFT^{F}_{x}(t,f) = e^{-j2\pi ft} \int_{-\infty}^{+\infty} X(v) \Gamma^{*} (v-f) e^{j2\pi vt} {d}v
 \end{equation}
 
-W równaniu \ref{STFT-equation1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dopierany jest zgodnie z zapotrzebowaniem. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, poniważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi wysamplowane fragmenty, które poddawane są pokolei STFT powinny być jak najmniejsze, aby nie umkneły nawet najdrobniejsze zmiany tonu\cite{MultipleFundamentalFrequencyEstimation}.
+W równaniu \ref{eq:STFT1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dobierany jest zgodnie z zapotrzebowaniem, które sprowadza się do charakterystyki analizowanych danych. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, ponieważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi zsamplowane fragmenty, które poddawane są STFT powinny być jak najmniejsze, aby analiza była wrażliwa na nawet najdrobniejsze zmiany w tonie w celu właściwego wykrycia formantów \cite[804–816]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}\cite[56-57, 256-258]{Transcription:Hess:PitchDetectionOfSpeechSignals}.
 
-Równania \ref{STFT-equation1} oraz \ref{STFT-equation2} noszą metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej (\ref{STFT-equation1}) lub częstotliwościowej (\ref{STFT-equation2}). STFT wykonywane na dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wysamplowanego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm ten:
+Równania \ref{eq:STFT1} oraz \ref{eq:STFT2} noszą metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej (\ref{eq:STFT1}) lub częstotliwościowej (\ref{eq:STFT2}). STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
 \begin{enumerate}
-  \item odwrotnemu przekształceniu Fouriera fragmentu widma sygnału,
-  \item przesunięciu w częstotliwości sygnału czasowego otrzymanego z pkt. 1 do częstotliwości zerowej.
+  \item \label{sec:STFT:item1}odwrotnym przekształceniem Fouriera fragmentu widma sygnału poprzez przesunięcie w częstotliwości widmo okna $\Gamma(v -f)$,
+  \item przesunięciem w częstotliwości sygnału czasowego otrzymanego z punktu \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.
 \end{enumerate}
 \cite[455-458]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
 
-Bardzo małe okna czasowe kładą większy nacisk na domenę czasową niż częstotliwościową. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwajac je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu. \cite{WindowChoiceStrategiesSTFT}
+Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż częstotliwościowej. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwając je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu (np. długość okna równa 2048 sampli, a przesunięcie równe 1024 sample spowoduje nakładanie się na siebie okien przy jednoczesnym podwojeniu ilości koniecznych obliczeń). Dokładniejszy opis tego zjawiska wraz z szczegółowym opisem istotnych cech, jakie wpływają na trafność wyboru długości i algorytmu okna można znaleźć w \cite{WindowChoiceStrategiesSTFT}.
 
-W momęcie gdy w algorytmie okno nakłada się na siebie znacząca porcja danych jest zduplikowana. Aby zminimalizować ten negatywny efekt funkcja okna jest specjalnie dostosowywana. W ogólności, funkcja okna wydobywa odpowiednie wartości wewnątrz jej zakresie (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza wyznaczonym zasięgu. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli \ref{tab:definicjeOkien} przedstawione są funkcje, które mogą być użyte jako okna czasowe wraz z ich analityczbymi wzorami widm $W(\omega)$\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{RobustMethodOfMeasurmentOfFundamentalFq}.
-\begin{table}[H]
+
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[scale=1.4]{images/WindowFunctions.png}
+    \caption{Przykład funkcji okna czasowego dla ramki audio zawierającej 2048 sampli}
+    \label{fig:WindowFunctions}
+  \end{center}
+\end{figure}
+
+
+W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych jest duplikowana. Ilość redundantnych danych jest proporcjonalna do szerokości nakładania się na siebie okien. Aby zminimalizować ten negatywny efekt, na okno nakładana jest funkcja dalej zwana funkcją okna. W ogólności, funkcja okna wydobywa odpowiednio przemnożone wartości wewnątrz jej zakresu (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza obrębem zakresu okna. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli ~\ref{tab:definicjeOkien} przedstawione są funkcje $w(t)$, które często wykorzystywane są jako okna czasowe w analizie sygnału akustycznego, wraz z ich analitycznymi wzorami widm $W(\omega)$. Graficzna reprezentację okna prostokątnego, Hanna oraz Hamminga można zobaczyć na rysunku \ref{fig:WindowFunctions}\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{RobustMethodOfMeasurmentOfFundamentalFq}.
+
+\begin{table}[t]
   \begin{center}
     \begin{tabular}{ |c|c|c| } 
     \hline
@@ -420,12 +441,17 @@ W momęcie gdy w algorytmie okno nakłada się na siebie znacząca porcja danych
   \caption{Definicje funkcji okien czasowych $w(t)$ i analityczne wzory ich widm $W(\omega)$}
   \label{tab:definicjeOkien}
 \end{table}
+
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=1.4]{images/WindowFunctions.png}
-    \caption{Przykład funkcji okna czasowego dla ramki audio zawierającej 2048 sampli}
+    \includegraphics[scale=0.7]{images/ZeroPadding.jpg}
+    \caption{Przykład analizy częstotliwościowej przy pomocy z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}}
+    \label{fig:ZeroPadding}
   \end{center}
 \end{figure}
+
+Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} \cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
+
 \newpage
 
 \subsection{Estymacja składowej fundamentalnej F0}
@@ -435,44 +461,44 @@ W momęcie gdy w algorytmie okno nakłada się na siebie znacząca porcja danych
 Zaimplementowana transkrypcja przez harmoniczne
 
 \newpage
-\section{Klasyfikacja muzyki}
-\cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
-\todo[inline]{Najprawdopodobniej rozdział do usunięcia, lub do czysto teoretycznego opisu}
+% \section{Klasyfikacja muzyki}
+% \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
+% \todo[inline]{Najprawdopodobniej rozdział do usunięcia, lub do czysto teoretycznego opisu}
 
-\section{Generowanie muzyki}
-\begin{figure}[H]
-  \begin{center}
-    \includegraphics[scale=0.25]{images/pianoTransformerDiagram.png}
-    \caption{z https://magenta.tensorflow.org/piano-transformer, diagram przedstawiający działanie modelu Music Transformer. Do wyszukania odpowiednich klipów z YouTube został wykorzystany model AudioSet \cite{audioSet} do wyodrębnienia audio jedynie z pianinem.}
-  \end{center}
-\end{figure}
-\todo[inline]{Czy można tak używać grafiki z innych stron? Czy odniesienie do strony w bibliografi jest prawidłowe?}
+% \section{Generowanie muzyki}
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[scale=0.25]{images/pianoTransformerDiagram.png}
+%     \caption{z https://magenta.tensorflow.org/piano-transformer, diagram przedstawiający działanie modelu Music Transformer. Do wyszukania odpowiednich klipów z YouTube został wykorzystany model AudioSet \cite{audioSet} do wyodrębnienia audio jedynie z pianinem.}
+%   \end{center}
+% \end{figure}
+% \todo[inline]{Czy można tak używać grafiki z innych stron? Czy odniesienie do strony w bibliografi jest prawidłowe?}
 
-\cite{DBLP:journals/corr/abs-1809-04281}\cite{DBLP:journals/corr/VaswaniSPUJGKP17}
-\cite{DBLP:journals/corr/HuangW16}
-\cite{DBLP:journals/corr/abs-1810-12247}
-\newpage
+% \cite{DBLP:journals/corr/abs-1809-04281}\cite{DBLP:journals/corr/VaswaniSPUJGKP17}
+% \cite{DBLP:journals/corr/HuangW16}
+% \cite{DBLP:journals/corr/abs-1810-12247}
+% \newpage
 
-\section{Implementacja}
-\label{sec:implementacja}
-~\ref{eq:midi_freq}
-\subsection{Funkcje pomocnicze}
-\newpage
-\subsection{Transpilacja}
-\begin{figure}[H]
-  \begin{center}
-    \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
-    \caption{z https://magenta.tensorflow.org/onsets-frames, diagram przedstawiający architekture sieci Onesets and Frames.}
-  \end{center}
-\end{figure}
-\cite{DBLP:journals/corr/LuongPM15}
-\newpage
+% \section{Implementacja}
+% \label{sec:implementacja}
+% ~\ref{eq:midi_freq}
+% \subsection{Funkcje pomocnicze}
+% \newpage
+% \subsection{Transpilacja}
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
+%     \caption{z https://magenta.tensorflow.org/onsets-frames, diagram przedstawiający architekture sieci Onesets and Frames.}
+%   \end{center}
+% \end{figure}
+% \cite{DBLP:journals/corr/LuongPM15}
+% \newpage
 
-\subsection{Składowanie danych}
-\newpage
+% \subsection{Składowanie danych}
+% \newpage
 
-\subsection{Generowanie muzyki}
-\newpage
+% \subsection{Generowanie muzyki}
+% \newpage
 \subsection{Interfejs}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 \newpage
