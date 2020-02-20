@@ -15,7 +15,7 @@
 \usepackage{enumitem}
 \usepackage{csquotes}
 \DeclareQuoteAlias{croatian}{polish}
-\usepackage{biblatex}
+\usepackage[maxbibnames=99]{biblatex}
 \addbibresource{References.bib}
 \usepackage{url}
 \usepackage{amsmath}
@@ -158,7 +158,7 @@
 \setcounter{secnumdepth}{2}
 
 \section{Transkrypcja muzyki}
-Sygnały akustyczne przechowywane są w postaci binarnych plików dźwiękowych, których zawartością są sygnały foniczne w formie cyfrowej. Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można pójść na kompromis z jakością skompresowanego sygnału \cite[66]{Homerecording:DlaKazdego}. Częstotliwość próbkowania ma również znaczący wpływ na wynikowy rozmiar plików, jak i ilość bitów przeznaczony na pojedyńczy sampel. Wszystkie cechy jakie posiada cyfrowa reprezentacja rzeczywistego dźwięku muszą być wzięte pod uwagę podczas jej przetwarzania.
+Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane są w postaci binarnych plików binarnych, których zawartością są sygnały foniczne w formie cyfrowej. Sygnały cyfrowe są sygnałami dyskretnymi czasu dyskretnego, które zostały poddane procesowi kwantowania wartości, przykładowo do najbliższych liczb całkowitych \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można pójść na kompromis z jakością skompresowanego sygnału \cite[66]{Homerecording:DlaKazdego}. Częstotliwość próbkowania ma również znaczący wpływ na wynikowy rozmiar plików, jak i ilość bitów przeznaczony na pojedyńczy sampel. Wszystkie cechy jakie posiada cyfrowa reprezentacja rzeczywistego dźwięku muszą być wzięte pod uwagę podczas jej przetwarzania.
 
 W kontekście algorytmów generujących muzykę, binarne pliki dźwiękowe nie posiadają efektywnej struktury pozwalającej na trzymanie akustycznych informacji o melodii czy rytmice. Cechy, które można wydobyć ze zdigitalizowanego strumienia audio mogą posłużyć za istotne wskaźniki przy klasyfikacji zbiorów, natomiast kluczowe informacje odnoszące się do struktury kompozycji i harmonii poszczególnych sekcji szukać należy w transkrypcji danego utworu. 
 
@@ -166,12 +166,17 @@ W kontekście algorytmów generujących muzykę, binarne pliki dźwiękowe nie p
 
 \textbf{Transkrypcja muzyki} to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki i możliwości jej wiernego odtworzenia. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analizę zdigitalizowanego sygnału fonicznego. Do zadań tego procesu często zalicza się odseparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych trudności transkrypcji.
 
+Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem "Program komputerowy do wydobywania wysokości dźwięku" \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 XX wieku w pracach [567] i [37], a później polifoniczne podejście zostało zaprezentowane przez Goto i Muraoka w pracy [236] \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
+
+Kompletna transkrypcja wymagała by dokładnej analizy wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Z racji tego, że złożoność tego zadania jest bardzo duża, a w niektórych przypadkach nawet teoretycznie niemożliwa, celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem częściowej transkrypcji nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
+
+Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzycznej są jednak nadal gorsze w rezultatach od profesjonalistów w dziedzinie muzyki. Rozwiązanie, które dawałoby rzetelne rezultaty w ogólnym zastosowaniu na muzyce jeszcze nie istnieje. Jednakże, z odpowiednimi założeniami co do sygnału źródłowego, najnowsze metody potrafią dokonać kompletnej transkrypcji utworu muzycznego. Restrykcje w analizowanym sygnale często sprowadzają się do ograniczenia polifoniczności (ilości jednoczesnych dźwięków) \cite{Transcription:BayesianHarmonicModels}, użycia tylko konkretnego instrumentu \cite{Transcription:Hawthorne:OnsetsAndFrames} czy braku interferencji z dźwiękami perkusyjnymi \cite{Transcription:Kameoka:HarmonicSeparation}.
 
 Bez automatyzacji procesu, transkrypcja wykonywana manualnie zakładała profesjonalną wiedzę słuchacza, który iteracyjnie odsłuchując dany utwór ustala grane instrumenty wraz z częstotliwością fundamentalną lub akordem, która jest na nich grany. Wymusza to osobie transkrybującej wyróżnienie poszczególnych granych dźwięków, wyodrębniając jego długość, wysokość i korelacje do pozostałych granych dźwięków. Ludzkie ucho postrzega dźwięk relatywnie, co powoduje, że dużo łatwiej jest porównywać dźwięki niż je analizować w odizolowaniu, toteż referencyjne dźwięki, jak na przykład skala zagrana na pianinie, są często wykorzystywane przy tradycyjnym przebiegu procesu transkrypcji. W rezultacie zadanie to jest skomplikowane i wymaga dużego nakładu czasowego nawet dla profesjonalistów z doświadczeniem w dziedzinie muzykologii.
 
 W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony w oparciu o przykłady już istniejących rozwiązań.  Celem tych rozważań jest przybliżenie ogólnej koncepcji transkrypcji muzycznej, teorii na jakiej się opierają, \todo[inline]{Move somewhere}oraz próba zoptymalizowania części z nich poprzez zrównoleglenie obliczeń wykorzystując kartę graficzną.
 
-\subsection{Jak "działa" muzyka}
+\subsection{Jak "działa" muzyka}\label{sec:JakDzialaMuzyka}
 Przed dalszymi rozważaniami istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Muzyka, równoznaczne z utworem muzycznym, jest uporządkowanym zbiory dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy zadanego sygnału akustycznego. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na rozdzielne części, można wyróżnić cztery rozdzielne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów transkrypcji muzycznej. Są to:
 \begin{itemize}
 \item Rytm
@@ -339,7 +344,7 @@ Aby z sygnału akustycznego w domenie czasu uzyskać dane w domenie częstotliwo
 \begin{equation} \label{eq:fourier-base}
 CFT_x(f) = X(f) = \int_{-\infty}^{\infty}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}t
 \end{equation}
-Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym. Wynik transformaty jest listą liczb zespolonych, dzięki czemu można ją odwrócić przy pomocy odwrotnej transformaty Fouriera (IFFT, ang. \textit{Inverse Furier Transformation}) opisanej wzorem:
+Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym. Wynik transformaty jest listą liczb zespolonych, dzięki czemu można ją odwrócić przy pomocy odwrotnej transformaty Fouriera (IFFT, ang. \textit{Inverse Fourier Transformation}) opisanej wzorem:
 
 \begin{equation} \label{eq:inverse:fourier-base}
 ICFT_x(f) = \int_{-\infty}^{\infty}\textit{F}(t)e^ {j2\pi ft}\mathrm{d}t = x(t)
@@ -442,6 +447,12 @@ W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych j
   \label{tab:definicjeOkien}
 \end{table}
 
+Przy analizie częstotliwości składowych widmowych sygnału na uwadzę należy mieć również twierdzenie Nyquista, zwane także jako twierdzenie Kotielnikowa - Shannona lub \textbf{twierdzeniem o próbkowaniu}. Mówi ono o istnieniu częstotliwości Nyquista, która opisana jest wzorem:
+\begin{equation} \label{eq:NyquistFq}
+  f_Nyquist = \frac{1}{2}v
+\end{equation}
+gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksymalną częstotliwością, jaką można wydobyć z sygnału o zadanej częstotliwości próbkowania. Odwracając proces, wzór \ref{eq:NyquistFq} mówi o tym, że częstotliwość próbkowania $v = \frac{1}{\delta t}$ musi być dobrana tak, aby była dwa razy większa od maksymalnej częstotliwości występującej w sygnale.
+
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.7]{images/ZeroPadding.jpg}
@@ -452,13 +463,29 @@ W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych j
 
 Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania lub zastosowanie interpolacji, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} \cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
 
+\subsubsection{Przetwarzanie transformacji Fouriera}
+Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum \cite[501-507]{Transcription:Talkin:RAPT}. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
+$$S_k = ln||STFT_k||$$
+gdzie $STFT_k$ jest $k$-tym komponentem spektrogramu.
+\todo[inline]{Wykres STFT vs log(||STFT||)}
 \newpage
 
 \subsection{Estymacja składowej fundamentalnej F0}
+W tym rozdziale skupie się na opisaniu wybranych metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
+
+Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej muzyki, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków bez wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które będę stosować w tym rozdziale jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na instrumencie jednocześnie. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}.
+
+\subsubsection{Algorytmy operujące na domenie czasu}
+
+\subsubsection{Algorytmy operujące na domenie częstotliwości}
+\subsubsection{Cepstrum}
+\cite{Transcription:Noll:CepstrumPitchDetermination}
 \newpage
 
-\subsection{Estymacja wielotonowa}
+\subsection{Estymacja wielotonowa}\label{sec:MultiPitch}
 Zaimplementowana transkrypcja przez harmoniczne
+\subsubsection{Harmoniczność}
+
 
 \newpage
 % \section{Klasyfikacja muzyki}
@@ -499,7 +526,7 @@ Zaimplementowana transkrypcja przez harmoniczne
 
 % \subsection{Generowanie muzyki}
 % \newpage
-\subsection{Interfejs}
+\subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 \newpage
 \section{Zakończenie}
