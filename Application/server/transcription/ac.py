@@ -1,3 +1,7 @@
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
 from utils.plots import plot_pitches, plot_correlogram
 from utils.general import loadNormalizedSoundFIle
 import numpy as np
@@ -61,7 +65,7 @@ if __name__ == "__main__":
     spacing = 2048
 
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
+    filePath = path.join(filePath, '../test_sounds/areFE.wav')
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 

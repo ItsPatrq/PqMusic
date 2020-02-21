@@ -155,7 +155,7 @@
   \item \textbf{TFR} - \textit{ang. \textbf{T}ime-\textbf{F}requency \textbf{R}epresentation, pol. Reprezentacja Czasu-Częstotliwości}
 \end{itemize}
 \newpage
-\setcounter{secnumdepth}{2}
+\setcounter{secnumdepth}{4}
 
 \section{Transkrypcja muzyki}
 Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane są w postaci binarnych plików binarnych, których zawartością są sygnały foniczne w formie cyfrowej. Sygnały cyfrowe są sygnałami dyskretnymi czasu dyskretnego, które zostały poddane procesowi kwantowania wartości, przykładowo do najbliższych liczb całkowitych \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można pójść na kompromis z jakością skompresowanego sygnału \cite[66]{Homerecording:DlaKazdego}. Częstotliwość próbkowania ma również znaczący wpływ na wynikowy rozmiar plików, jak i ilość bitów przeznaczony na pojedyńczy sampel. Wszystkie cechy jakie posiada cyfrowa reprezentacja rzeczywistego dźwięku muszą być wzięte pod uwagę podczas jej przetwarzania.
@@ -166,7 +166,7 @@ W kontekście algorytmów generujących muzykę, binarne pliki dźwiękowe nie p
 
 \textbf{Transkrypcja muzyki} to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki i możliwości jej wiernego odtworzenia. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analizę zdigitalizowanego sygnału fonicznego. Do zadań tego procesu często zalicza się odseparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych trudności transkrypcji.
 
-Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem "Program komputerowy do wydobywania wysokości dźwięku" \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 XX wieku w pracach [567] i [37], a później polifoniczne podejście zostało zaprezentowane przez Goto i Muraoka w pracy [236] \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
+Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem "Program komputerowy do wydobywania wysokości dźwięku" \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 XX wieku w pracach naukowych \cite{Transcription:Schloss:AutomaticTranscriptionOfPercussiveMusic} i \cite{Transcription:Bilmes:TimingIsOfTHeEssence} \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
 
 Kompletna transkrypcja wymagała by dokładnej analizy wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Z racji tego, że złożoność tego zadania jest bardzo duża, a w niektórych przypadkach nawet teoretycznie niemożliwa, celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem częściowej transkrypcji nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
 
@@ -473,11 +473,43 @@ gdzie $STFT_k$ jest $k$-tym komponentem spektrogramu.
 \subsection{Estymacja składowej fundamentalnej F0}
 W tym rozdziale skupie się na opisaniu wybranych metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
 
-Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej muzyki, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków bez wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które będę stosować w tym rozdziale jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na instrumencie jednocześnie. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}.
+Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które będę stosować w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
-\subsubsection{Algorytmy operujące na domenie czasu}
+\subsubsection{Funkcja Autokorelacji}\label{sec:f0:ac}
+Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności które powtarzały się okresowo co $T$ były analizowane jako kandydaci do bycia F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest obecna w wielu nowoczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji w celu znalezienia wysokości dźwięku.
 
-\subsubsection{Algorytmy operujące na domenie częstotliwości}
+\textbf{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara jest korelacją pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych \cite[32-33]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o tak zwane przesunięcie (ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
+
+W pracy naukowej \cite{Transcription:Lawrence:AutocorrelationForPitchDetection} Lawrence używa funkcji autokorelacji do wykrycia częstotliwości fundamentalnych w zadanym sygnale monofonicznym. Zakłada on, że badany sygnał jest quasi-periodyczny, co oznacza, że sygnał posiada cechy pojawiające się w prawie równych odstępach, lecz nie koniecznie dokładnie periodyczny. Sygnał w pełni periodyczny jest przedmiotem analizy czysto teoretycznej, ponieważ sygnał akustyczny musiałby pozostać bez zmian w amplitudzie i częstotliwości przez cały swój okres, podczas gdy sygnał quasi-periodyczny zakłada zmiany w strukturze sygnału względem czasu. Funkcja autokorelacji na takim sygnale byłaby funkcją długości okresu opisującą zgodność przesuniętego o ten okres sygnału z sygnałem bazowym. 
+
+Wzór na ogólną postać funkcji autokorelacji od długości okresu $h(t)$ jako:
+
+\begin{equation}\label{eq:AC}
+  R(k) = \lim_{N \to \infty} \frac{1}{2N + 1} \sum_{n=-N}^{N} h(n)h(n + k)
+\end{equation}
+gdzie $k$ jest opóźnieniem, $n$ reprezentuje moment w czasie a N reprezentuje długość badanej funkcji. Jak można zaobserwować w \ref{eq:AC} założeniem jest, że sygnał bazowy jest nieskończenie długi (tak samo jak przy TF opisanej w sekcji \ref{sec:TF}). Do rozważań w kontekście analizy sygnału fonicznego będziemy używać wariancji krótkoczasowej tego wzoru, operującej na oknach danych (analogicznie do STFT opisanej w sekcji \ref{sec:STFT}) opisanej w \cite{Transcription:Talkin:RAPT} jako:
+
+\begin{equation}\label{eq:STAC}
+  R(i,k) = \sum_{j=m}^{m + N - k - 1} h_jh_{j+k}, m = iz
+\end{equation}
+gdzie $i$ jest indeksem badanego okna, $z$ jest odstępem pomiędzy oknami audio (ilość sampli), a N jest długością okna. Zgodnie z twierdzeniem Nyquista opisanym w sekcji \ref{sec:STFT} długość okna powinna być co najmniej dwa razy większa niż największe oczekiwane opóźnienie jakie może wystąpić w analizowanym sygnale akustycznym Implementacja estymacji F0 przy pomocy autokorelacji przy pomocy wzoru \ref{eq:STAC} została opisana dokładniej w sekcji \ref{sec:impl:alg:ac}.
+
+Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej opisana w sekcji \ref{sec:f0:rapt}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.1]{images/Amplitude.jpg}
+    \caption{lorem ipsum}
+    \label{fig:ACResults}
+  \end{center}
+\end{figure}
+
+Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach w ilustracji \ref{fig:ACResults}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
+
+
+\todo[inline]{Znaleźć utwór klasyczny zagrany na jednym instrumencie do wykresów. Dodać PL do plotów (najlepiej jako flaga w utilsach)}
+\subsubsection{Znormalizowana funkcja korelacji krzyżowej}\label{sec:f0:rapt}
+
 \subsubsection{Cepstrum}
 \cite{Transcription:Noll:CepstrumPitchDetermination}
 \newpage
@@ -526,6 +558,12 @@ Zaimplementowana transkrypcja przez harmoniczne
 
 % \subsection{Generowanie muzyki}
 % \newpage
+\section{Implementacja}\label{sec:impl}
+
+\subsection{Algorytmy}\label{sec:impl:alg}
+
+\subsubsection{Autokorelacja}\label{sec:impl:alg:ac}
+
 \subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 \newpage
