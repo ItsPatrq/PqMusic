@@ -2,7 +2,7 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from utils.plots import plot_pitches, plot_correlogram
+from utils.plots import plot_pitches, plot_correlogram, plot_wave
 from utils.general import loadNormalizedSoundFIle
 import numpy as np
 from tqdm import tqdm
@@ -65,12 +65,15 @@ if __name__ == "__main__":
     spacing = 2048
 
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/areFE.wav')
+    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 
     correlogram, best_frequencies = autocorrelation(
         data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
 
+    print(sampleRate)
+
     plot_pitches(best_frequencies, spacing, sampleRate)
     plot_correlogram(correlogram, spacing, sampleRate)
+    plot_wave(data, sampleRate, "are FE", "eng")

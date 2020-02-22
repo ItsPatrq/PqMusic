@@ -3,6 +3,8 @@
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "cSpell.words": [
+        "Korelogram",
+        "quefrency",
         "xlabel",
         "xlim",
         "xticklabels",
@@ -10,5 +12,11 @@
         "ylabel",
         "ylim",
         "yticks"
+    ],
+    "cSpell.ignoreWords": [
+        "cmap",
+        "pylab",
+        "yscale",
+        "yticklabels"
     ]
 }
