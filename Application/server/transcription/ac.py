@@ -72,8 +72,6 @@ if __name__ == "__main__":
     correlogram, best_frequencies = autocorrelation(
         data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
 
-    print(sampleRate)
-
     plot_pitches(best_frequencies, spacing, sampleRate)
     plot_correlogram(correlogram, spacing, sampleRate)
     plot_wave(data, sampleRate, "are FE", "eng")
