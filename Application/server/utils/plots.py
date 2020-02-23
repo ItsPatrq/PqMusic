@@ -1,4 +1,4 @@
-from pydub import AudioSegment
+#from pydub import AudioSegment
 import ntpath
 import numpy as np
 import matplotlib.pyplot as plt
@@ -45,6 +45,9 @@ strings = {
   }
 }
 
+ticksFontSize = 18
+labelsFontSize = 32
+
 def getStr(language, strName):
   return strings.get(language).get(strName)
 
@@ -55,7 +58,7 @@ def getTimeTicks(spacing, sampleRate, secLength):
   ticks = [0]
   fullSecs = int(math.floor(secLength))  
 
-  for t in np.arange(1, fullSecs + 1):
+  for t in np.arange(3, fullSecs, 3):
     ticks.append(t*sampleRate/spacing)
   ticks.append(int(secLength*sampleRate/spacing) - 1)
   
@@ -63,7 +66,7 @@ def getTimeTicks(spacing, sampleRate, secLength):
 
 def getTimeTickLabels(secLength):
   fullSecs = int(math.floor(secLength))
-  tickLabels = list(np.concatenate(([0], np.arange(1, fullSecs + 1), [round(secLength, 3)])))
+  tickLabels = list(np.concatenate(([0], np.arange(3, fullSecs, 3), [round(secLength, 3)])))
   return tickLabels
 
 def getFqTicks(sampleRate, frameWidth):
@@ -122,27 +125,35 @@ def plot_wave(normalized_data, sample_rate, wave_name, language = "eng"):
   time_space = np.linspace(0, len(normalized_data) /
                            sample_rate, num=len(normalized_data))
   plt.figure()
-  plt.title(getStr(language, "audioWave") + wave_name)
-  plt.xlabel(getStr(language, "time"))
+  plt.title(getStr(language, "audioWave") + " " + wave_name)
+  plt.xlabel(getStr(language, "time"), fontsize=labelsFontSize)
   plt.ylabel(getStr(language, "amplitude") + " [" + str(math.floor(normalized_data.min())) +
-             ":" + str(math.ceil(normalized_data.max())) + "]")
+             ":" + str(math.ceil(normalized_data.max())) + "]", fontsize=labelsFontSize)
   plt.yticks(np.arange(math.floor(normalized_data.min()),
-                       math.ceil(normalized_data.max()), 0.1))
+                       math.ceil(normalized_data.max()), 0.1), fontsize=ticksFontSize)
+  secLength = len(normalized_data)/sample_rate
+
+  plt.xticks(getTimeTickLabels(secLength), getTimeTickLabels(secLength),fontsize=ticksFontSize)
   plt.plot(time_space, normalized_data)
   plt.show()
 
 
-def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True, showColorbar=True, language = "eng"):
+def plot_correlogram(data, spacing, sampleRate, show=True, showColorbar=True, language = "eng"):
   fig, ax = plt.subplots()
-  fig.suptitle(title, fontsize=16)
+  fig.suptitle(getStr(language, "correlogram"), fontsize=labelsFontSize)
   H = np.array(data)
   image = ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
-  ax.set_ylabel(getStr(language, "lag"))
-  ax.set_xlabel(getStr(language, "time"))
+  ax.set_ylabel(getStr(language, "lag"), fontsize=labelsFontSize)
+  ax.set_xlabel(getStr(language, "time"), fontsize=labelsFontSize)
 
   secLength = len(data)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
-  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
+  ax.set_yticks(np.arange(0, len(data), 200))
+  ax.set_yticklabels(np.arange(0, len(data), 200), fontsize=ticksFontSize)
+
+
+  ax.set_yticklabels(ax.get_yticklabels(), fontsize=ticksFontSize)
 
   ax.set_ylim([0, len(H.T)])
   ax.set_xlim([0, len(H) - 1])
@@ -154,7 +165,7 @@ def plot_correlogram(data, spacing, sampleRate, title='Correlogram', show=True, 
 
 def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng"):
   fig, ax = plt.subplots()
-  fig.suptitle(getStr(language, "cepstrogram"), fontsize=16)
+  fig.suptitle(getStr(language, "cepstrogram"), fontsize=labelsFontSize)
   H = np.array(data)
   if transpose: H = H.T
   image = ax.imshow(H, origin='lower', aspect='auto', interpolation='nearest')
@@ -176,16 +187,16 @@ def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, tr
 
 def plot_pitches(pitches, spacing, sampleRate, log=True, show=True, language = "eng"):
   fig, ax = plt.subplots()
-  fig.suptitle(getStr(language,"f0Estimation"), fontsize=16)
-  ax.plot(np.arange(len(pitches)), pitches)
-  ax.set_ylabel(getStr(language, "fq"))
+  fig.suptitle(getStr(language,"f0Estimation"), fontsize=labelsFontSize)
+  ax.plot(np.arange(len(pitches)), pitches, linewidth=2)
+  ax.set_ylabel(getStr(language, "fq"), fontsize=labelsFontSize)
   if log: ax.set_yscale("log")
   ax.set_yticks(defaultFqTicks)
-  ax.set_yticklabels(defaultFqTickLabels)
-  ax.set_xlabel(getStr(language, "time"))
+  ax.set_yticklabels(defaultFqTickLabels, fontsize=ticksFontSize)
+  ax.set_xlabel(getStr(language, "time"), fontsize=labelsFontSize)
   secLength = len(pitches)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
-  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
 
   minHearableFq = 20
   ax.set_ylim([minHearableFq, 22049])

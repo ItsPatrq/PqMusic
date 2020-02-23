@@ -20,7 +20,9 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{hyphenat}
-
+\usepackage{graphicx}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
 %% \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstęp pomiędzy liniami?
 
@@ -292,7 +294,7 @@ Z praktycznego punktu widzenia głośność w plikach muzycznych jest zdetermino
   \end{center}
 \end{figure}
 
-\subsubsection{Barwa dźwięku}
+\subsubsection{Barwa dźwięku}\label{sec:barwaDzwieku}
 Barwa dźwięku (inaczej tembr) jest cechą odwołującą się do harmonicznej domeny sygnału fonicznego. Pozwala ona na odróżnienie od siebie dźwięków o tej samej głośności i wysokości granych na różnych instrumentach. Silne tony harmoniczne danej barwy sprawiają, że dźwięk jest bardziej wyrazisty. W przeciwnym wypadku, gdy siła tonów harmonicznych jest mała, sygnał staje się bardziej rozmyty dla odbiorcy. Barwa dźwięku jest zależna od amplitudy poszczególnych tonów harmonicznych, ich rozkładu w widmie jak i samej struktury tego widma. Jest to dobrze widoczne na rysunku \ref{fig:spektrogram}.
 
 \begin{figure}[t]
@@ -384,17 +386,18 @@ Istnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popular
 Co daje łączną ilość etapów operacji równą $\log_2 N$. \cite[241-252]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
 
 \subsubsection{Krótkoczasowa transformata Fouriera}\label{sec:STFT}
-Do tej pory przeanalizowane zostało działanie i podstawowe odmiany algorytmu transformacji Fouriera, jednak aby można było wykorzystać to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie reprezentacji czasu-częstotliwości TFR. \textbf{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie czasowym analizowanego sygnału. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości prezentuje się następująco:
-\begin{equation} \label{eq:STFT1}
-  STFT^{T}_{x}(t,f) =\int_{-\infty}^{+\infty} x(\tau)\gamma^{*}(\tau - t)e^{-j2\pi f\tau}  \,\mathrm{d}\tau
+Do tej pory przeanalizowane zostało działanie i podstawowe odmiany algorytmu transformacji Fouriera, jednak aby można było wykorzystać to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie reprezentacji czasu-częstotliwości TFR. \textbf{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie czasowym analizowanego sygnału. Pojedyńcze okno o indeksie $i_0$ z funkcją okna $w$ opisane jest wzorem:
+\begin{equation} \label{eq:windowing}
+  s_{i_0}^w = x(t)w(t_0 - t)
 \end{equation}
-\begin{equation} \label{eq:STFT2}
-  STFT^{F}_{x}(t,f) = e^{-j2\pi ft} \int_{-\infty}^{+\infty} X(v) \Gamma^{*} (v-f) e^{j2\pi vt} {d}v
+Do funkcji okna standardowo używa się funkcji Gaussiana, Hamminga, Hanninga lub kwadratowej (choć tą ostatnią używa się tylko w wyjątkowych sytuacjach). Dokłądniejszy ich opis znajduje się pod koniec tego rozdziału. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości można zbudować na podstawie równania \ref{eq:windowing} i FFT jako FT kolejnych okien:
+\begin{equation} \label{eq:STFT1}
+  STFT^{W}_{x}(t,f) = CFT_{s \frac{w}{t}}(f) = \int_{-\infty}^{+\infty} x(\tau)w(t - \tau)e^{-j2\pi f\tau}  \,\mathrm{d}\tau.
 \end{equation}
 
 W równaniu \ref{eq:STFT1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dobierany jest zgodnie z zapotrzebowaniem, które sprowadza się do charakterystyki analizowanych danych. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, ponieważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi zsamplowane fragmenty, które poddawane są STFT powinny być jak najmniejsze, aby analiza była wrażliwa na nawet najdrobniejsze zmiany w tonie w celu właściwego wykrycia formantów \cite[804–816]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}\cite[56-57, 256-258]{Transcription:Hess:PitchDetectionOfSpeechSignals}.
 
-Równania \ref{eq:STFT1} oraz \ref{eq:STFT2} noszą metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej (\ref{eq:STFT1}) lub częstotliwościowej (\ref{eq:STFT2}). STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
+Równanie \ref{eq:STFT1} nosi nazwę metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej lub częstotliwościowej. STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
 \begin{enumerate}
   \item \label{sec:STFT:item1}odwrotnym przekształceniem Fouriera fragmentu widma sygnału poprzez przesunięcie w częstotliwości widmo okna $\Gamma(v -f)$,
   \item przesunięciem w częstotliwości sygnału czasowego otrzymanego z punktu \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.
@@ -447,13 +450,19 @@ W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych j
   \label{tab:definicjeOkien}
 \end{table}
 
-Przy analizie częstotliwości składowych widmowych sygnału na uwadzę należy mieć również twierdzenie Nyquista, zwane także jako twierdzenie Kotielnikowa - Shannona lub \textbf{twierdzeniem o próbkowaniu}. Mówi ono o istnieniu częstotliwości Nyquista, która opisana jest wzorem:
+\subsubsection{Przetwarzanie transformacji Fouriera}\label{sec:przetwarzanieFFT}
+Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum \cite[501-507]{Transcription:Talkin:RAPT}. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
+$$S_k^w(t,f) = ln||STFT_k^w(t,f)||$$
+gdzie $STFT_k$ jest $k$-tym komponentem spektrogramu. Częstą techniką jest również użycia potęgowania zamiast logarytmu, co zostało dokłądniej opisane w sekcji \ref{sec:f0:tfr}.
+\todo[inline]{Wykres STFT vs log(||STFT||)}
+
+Przy analizie częstotliwości składowych widmowych sygnału na uwadzę należy mieć twierdzenie Nyquista, zwane także jako twierdzenie Kotielnikowa - Shannona lub \textbf{twierdzeniem o próbkowaniu}. Mówi ono o istnieniu częstotliwości Nyquista, która opisana jest wzorem:
 \begin{equation} \label{eq:NyquistFq}
   f_Nyquist = \frac{1}{2}v
 \end{equation}
 gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksymalną częstotliwością, jaką można wydobyć z sygnału o zadanej częstotliwości próbkowania. Odwracając proces, wzór \ref{eq:NyquistFq} mówi o tym, że częstotliwość próbkowania $v = \frac{1}{\delta t}$ musi być dobrana tak, aby była dwa razy większa od maksymalnej częstotliwości występującej w sygnale.
 
-\begin{figure}[H]
+\begin{figure}[t]
   \begin{center}
     \includegraphics[scale=0.7]{images/ZeroPadding.jpg}
     \caption{Przykład analizy częstotliwościowej przy pomocy z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}}
@@ -463,11 +472,6 @@ gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksyma
 
 Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania lub zastosowanie interpolacji, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} \cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
 
-\subsubsection{Przetwarzanie transformacji Fouriera}
-Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum \cite[501-507]{Transcription:Talkin:RAPT}. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
-$$S_k = ln||STFT_k||$$
-gdzie $STFT_k$ jest $k$-tym komponentem spektrogramu.
-\todo[inline]{Wykres STFT vs log(||STFT||)}
 \newpage
 
 \subsection{Estymacja składowej fundamentalnej F0}
@@ -494,23 +498,54 @@ gdzie $k$ jest opóźnieniem, $n$ reprezentuje moment w czasie a N reprezentuje 
 \end{equation}
 gdzie $i$ jest indeksem badanego okna, $z$ jest odstępem pomiędzy oknami audio (ilość sampli), a N jest długością okna. Zgodnie z twierdzeniem Nyquista opisanym w sekcji \ref{sec:STFT} długość okna powinna być co najmniej dwa razy większa niż największe oczekiwane opóźnienie jakie może wystąpić w analizowanym sygnale akustycznym Implementacja estymacji F0 przy pomocy autokorelacji przy pomocy wzoru \ref{eq:STAC} została opisana dokładniej w sekcji \ref{sec:impl:alg:ac}.
 
-Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej opisana w sekcji \ref{sec:f0:rapt}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego.
-
-\begin{figure}[H]
-  \begin{center}
-    \includegraphics[scale=0.1]{images/Amplitude.jpg}
-    \caption{lorem ipsum}
-    \label{fig:ACResults}
-  \end{center}
+\begin{figure}[t]
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/AC/fala_cropped.png}
+    \caption{Fala dźwiękowa}
+    \label{fig:ACResults:wave}
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/AC/f0Thick_cropped.png}
+    \caption{Estymacja F0}
+    \label{fig:ACResults:f0}
+  \end{subfigure}
+  \newline
+  \begin{subfigure}{1\textwidth}
+    \centering
+    % include third image
+    \includegraphics[width=.6\linewidth]{images/AC/korelogram_cropped.png}  
+    \caption{Korelogram}
+    \label{fig:ACResults:corr}
+  \end{subfigure}
+  \caption{Wynik autokorelacji na ,,Odzie do radości'' IX symfonii Beethovena zagranej monofonicznie na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 2048 sampli. Wybór F0 polegał na wybraniu największego współczynnika korelacji w oknie. Wykresy wygenerowane przy pomocy implementacji opisanej w sekcji \ref{sec:impl:alg:ac}.}
+  \label{fig:ACResults}
 \end{figure}
 
-Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach w ilustracji \ref{fig:ACResults}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
+Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej, która stara się zminimalizować defekty funkcji autokorelacji. Dokładny jej opis można znaleźć w \cite{Transcription:Talkin:RAPT}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego.
+
+Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na wykresie \ref{fig:ACResults:corr}. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
+
+\subsubsection{Analiza TFR} \label{sec:f0:tfr}
+Analiza sygnału w postaci reprezentacja średniego poziomu TFR, w przeciwieństwie do operowania na nieprzetworzonym sygnale cyfrowym jak w sekcji \ref{sec:f0:ac}, skupia się na badaniu relacji w częstotliwościach danego sygnału. Najpopularniejszą reprezentacja TRF jest zdefiniowana jako STFT na kolejnych fragmentach (oknach) sygnału. Docelową postacią tych okien jest spektrogram, ale w celu jego uzyskania należy SFTF przedstawić jako wektor energii. Robione jest to przy pomocy kwadratu modułu STFT:
+
+\begin{equation} \label{eq:powSpec}
+  SP_x^w(t,f) = |STFT_x^w(t,f)|^2
+\end{equation} 
+Wynik powyższego równania \ref{eq:powSpec} nazywany jest potocznie widmem mocy (z ang. \textit{power spectrum}). W celu uzyskania spektrogramu używa się również innych metod, jak na przykład logarytmu z modułu (jak zostało to opisane w sekcji \ref{sec:przetwarzanieFFT}), w zależności od specyfiki problemu.
+
+Zmiana funkcji okna $w$ zmieni specyfikę STFT, co przekłada się na inny wynikowy spektrogram. DŁugość okna jest także istotną cechą spektrogramu. Zmiany w dokładności poszczególnych wartości spektrogramu przy różnych długościach okna opisane są w sekcji \ref{sec:STFT}.
+
+Naiwnym podejściem byłoby wybranie za F0 ten pik w spektrum, który ma największą energię. Niestety jednak nie jest to zawsze prawidłowy wybór - częstotliwość fundamentalna wcale nie musi być tą, która ma najwięcej energii w sygnale akustycznym. Ze względu na charakterystyki różnych instrumentów, formanty, szum i inne zniekształcenia kolejne harmoniczne mogą być wzmocnione ponad F0.
+
+Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu sensu w rozmieszczeniu harmonicznych względem siebie. Z zasady harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości. Ta charakterystyka sonicznych fal jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej jako najbardziej niezawodna
+
+Używanie zasady harmoniczności, lub hybryda tych dwóch podejść poprzez ważenie energii częstotliwością jest znacznie bardziej pewną metodą wyznaczania częstotliwości fundamentalnej
+
+\subsubsection{Analiza cepstralna}
 
 
-\todo[inline]{Znaleźć utwór klasyczny zagrany na jednym instrumencie do wykresów. Dodać PL do plotów (najlepiej jako flaga w utilsach)}
-\subsubsection{Znormalizowana funkcja korelacji krzyżowej}\label{sec:f0:rapt}
-
-\subsubsection{Cepstrum}
 \cite{Transcription:Noll:CepstrumPitchDetermination}
 \newpage
 

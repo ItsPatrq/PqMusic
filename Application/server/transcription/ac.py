@@ -72,6 +72,6 @@ if __name__ == "__main__":
     correlogram, best_frequencies = autocorrelation(
         data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
 
-    plot_pitches(best_frequencies, spacing, sampleRate)
-    plot_correlogram(correlogram, spacing, sampleRate)
-    plot_wave(data, sampleRate, "are FE", "eng")
+    plot_pitches(best_frequencies, spacing, sampleRate, language="pl")
+    plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)
+    plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl")
