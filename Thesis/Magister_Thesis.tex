@@ -465,7 +465,7 @@ gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksyma
 \begin{figure}[t]
   \begin{center}
     \includegraphics[scale=0.7]{images/ZeroPadding.jpg}
-    \caption{Przykład analizy częstotliwościowej przy pomocy z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}}
+    \caption{Przykład analizy częstotliwościowej z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}}
     \label{fig:ZeroPadding}
   \end{center}
 \end{figure}
@@ -528,25 +528,48 @@ Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacj
 Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na wykresie \ref{fig:ACResults:corr}. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
 
 \subsubsection{Analiza TFR} \label{sec:f0:tfr}
-Analiza sygnału w postaci reprezentacja średniego poziomu TFR, w przeciwieństwie do operowania na nieprzetworzonym sygnale cyfrowym jak w sekcji \ref{sec:f0:ac}, skupia się na badaniu relacji w częstotliwościach danego sygnału. Najpopularniejszą reprezentacja TRF jest zdefiniowana jako STFT na kolejnych fragmentach (oknach) sygnału. Docelową postacią tych okien jest spektrogram, ale w celu jego uzyskania należy SFTF przedstawić jako wektor energii. Robione jest to przy pomocy kwadratu modułu STFT:
+Analiza sygnału w postaci reprezentacji średniego poziomu TFR, w przeciwieństwie do operowania na nieprzetworzonym sygnale cyfrowym, jak miało to miejsce w sekcji \ref{sec:f0:ac}, skupia się na badaniu relacji w domenie częstotliwości danego sygnału. Najpopularniejszą reprezentacja TRF jest zdefiniowana jako STFT na kolejnych fragmentach (oknach) sygnału. Docelową postacią jest zbór okien tworzących spektrogram, ale w celu jego uzyskania należy SFTF przedstawić jako wektor energii. Jednym ze sposobów w jaki można uzyskać taką postać jest to wykonanie kwadratu modułu z STFT:
 
 \begin{equation} \label{eq:powSpec}
   SP_x^w(t,f) = |STFT_x^w(t,f)|^2
 \end{equation} 
-Wynik powyższego równania \ref{eq:powSpec} nazywany jest potocznie widmem mocy (z ang. \textit{power spectrum}). W celu uzyskania spektrogramu używa się również innych metod, jak na przykład logarytmu z modułu (jak zostało to opisane w sekcji \ref{sec:przetwarzanieFFT}), w zależności od specyfiki problemu.
+Wynik powyższego równania \ref{eq:powSpec} nazywany jest potocznie widmem mocy (z ang. \textit{power spectrum}). W celu uzyskania spektrogramu używa się również innych metod, jak na przykład logarytmu z modułu (co zostało to opisane w sekcji \ref{sec:przetwarzanieFFT}). Wybór metodyki zależny jest od tego, które cechy sygnału wejściowego są bardziej, a które mniej istotne w kontekście algorytmu analizującego. Użycie widma mocy wiąże się z uwydatnieniem już wyraźnych cech, wraz z zwiększeniem istotności szumu w sygnale.
 
-Zmiana funkcji okna $w$ zmieni specyfikę STFT, co przekłada się na inny wynikowy spektrogram. DŁugość okna jest także istotną cechą spektrogramu. Zmiany w dokładności poszczególnych wartości spektrogramu przy różnych długościach okna opisane są w sekcji \ref{sec:STFT}.
+\begin{figure}[t]
+  \begin{subfigure}{.49\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Spectrogram/spectrogram_1024_cropped.jpg}
+    \caption{Spektrogram z długością okna 1024 sample}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Spectrogram/spectrogram_4096_cropped.jpg}
+    \caption{Spektrogram z długością okna 4096 sample}
+  \end{subfigure}
+  \caption{Spektrogramy sygnału sekwencji C3-D3-C3-B2 zagranej na pianinie wyliczone przy pomocy STFT z oknem Hanna długości odpowiednio 1024 i 4096 dla wykresów (a) i (b) z odstępami o długości 512 sampli.}
+  \label{fig:windowSize}
+\end{figure}
 
-Naiwnym podejściem byłoby wybranie za F0 ten pik w spektrum, który ma największą energię. Niestety jednak nie jest to zawsze prawidłowy wybór - częstotliwość fundamentalna wcale nie musi być tą, która ma najwięcej energii w sygnale akustycznym. Ze względu na charakterystyki różnych instrumentów, formanty, szum i inne zniekształcenia kolejne harmoniczne mogą być wzmocnione ponad F0.
+Zmiana funkcji okna $w$ zmieni specyfikę STFT, co przekłada się na inny wynikowy spektrogram. Długość użytego okna jest także istotną cechą spektrogramu. Zmiany w dokładności poszczególnych wartości spektrogramu przy różnych długościach okna opisane są w sekcji \ref{sec:STFT} i widoczne na ilustracji \ref{fig:windowSize}.
 
-Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu sensu w rozmieszczeniu harmonicznych względem siebie. Z zasady harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości. Ta charakterystyka sonicznych fal jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej jako najbardziej niezawodna
+Podczas analizy spektrogramu, naiwnym podejściem byłoby wybranie za F0 ten pik w spektrum, który ma największą energię. Niestety jednak nie jest to zawsze prawidłowy wybór - częstotliwość fundamentalna wcale nie musi być tą, która ma najwięcej energii w sygnale akustycznym. Ze względu na charakterystyki różnych instrumentów, formanty, szum i inne zniekształcenia opisane dokłądniej w sekcji \ref{sec:barwaDzwieku} kolejne harmoniczne mogą być wzmocnione ponad F0.
 
-Używanie zasady harmoniczności, lub hybryda tych dwóch podejść poprzez ważenie energii częstotliwością jest znacznie bardziej pewną metodą wyznaczania częstotliwości fundamentalnej
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[scale=0.46]{images/Spectrogram/spectrum_4096_cropped.png}
+    \caption{Przykład pojedyńczego komponentu spektralnego ze spektrogramu \ref{fig:windowSize} o długości okna 4096. Można zaobserwować, że na przestrzeni spektrum piki pojawiają się periodycznie w domenie częstotliwości.}
+    \label{fig:spectralComponent}
+  \end{center}
+\end{figure}
+
+Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu sensu w rozmieszczeniu harmonicznych względem siebie. Zgodnie z regułą harmoniczności, harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości, co można zauważyć na rysunku \ref{fig:spectralComponent}. Ta charakterystyka akustycznych fal jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej jako najbardziej niezawodna. Wystarczy zlokalizować pik o najmniejszej częstotliwości wraz z największą ilością pików pasujących jako kolejne harmoniczne. Używanie zasady harmoniczności, lub hybryda tych dwóch podejść poprzez ważenie energii częstotliwością jest znacznie bardziej pewną metodą wyznaczania częstotliwości fundamentalnej niż opieranie się na samym ciśnieniu akustycznym.
 
 \subsubsection{Analiza cepstralna}
+Z racji tego, że spektrum samo w sobie jest periodyczne, można spróbować użyć metodologi wykrywającej cykliczności już na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Stworzyli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku F0, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego sygnału \cite{Transcription:Childers:CepstruGuide}.
+
+Cepstrum zostało dokładnie opisane w pracy \cite{Transcription:Bogert:FirstCepstrum}, a następnie w roku 1967 zastosowane do wykrywania wysokości dźwięku w \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w historii cepstrum w \cite{Transcription:Oppenheim:HistoryOfCepstrum} równolegle z tymi pracami, niezależnie powstała praca naukowa \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Miała ona pokrywać się wnioskami z pracą na temat cepstrum, przyspieszając jego rozwój i skale zastosowań.
 
 
-\cite{Transcription:Noll:CepstrumPitchDetermination}
 \newpage
 
 \subsection{Estymacja wielotonowa}\label{sec:MultiPitch}
