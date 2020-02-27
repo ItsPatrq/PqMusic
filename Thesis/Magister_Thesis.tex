@@ -346,14 +346,14 @@ Aby z sygnału akustycznego w domenie czasu uzyskać dane w domenie częstotliwo
 \begin{equation} \label{eq:fourier-base}
 CFT_x(f) = X(f) = \int_{-\infty}^{\infty}\textit{f}(t)e^ {-j2\pi ft}\mathrm{d}t
 \end{equation}
-Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym. Wynik transformaty jest listą liczb zespolonych, dzięki czemu można ją odwrócić przy pomocy odwrotnej transformaty Fouriera (IFFT, ang. \textit{Inverse Fourier Transformation}) opisanej wzorem:
+Gdzie F(f) nazywane jest transformatą Fouriera f(t) lub widmem częstotliwościowym. Wynik transformaty jest listą liczb zespolonych, dzięki czemu można ją odwrócić przy pomocy odwrotnej transformaty Fouriera (IFT, ang. \textit{Inverse Fourier Transformation}) opisanej wzorem:
 
 \begin{equation} \label{eq:inverse:fourier-base}
 ICFT_x(f) = \int_{-\infty}^{\infty}\textit{F}(t)e^ {j2\pi ft}\mathrm{d}t = x(t)
 \end{equation}
 \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraAgh}\cite[22-25]{Transcription:Anssi:SignalProcessingMethods}.
 
-Do analizy całego spektrum utworu muzycznego, pojedyńcza transformata Fouriera może nie być wystarczająca ze względu na długość i zróżnicowanie utworu względem czasu. Reprezentacja czasu-częstotliwości pozwala na przedstawienie sygnału w postaci zespolonej w domenie czasu i częstotliwości (ang. time–frequency representation, TFR). W celu uzyskania takiej reprezentacji przy pomocy FFT z zastosowaniem okna czasowego, co jest szerzej opisane w sekcji \ref{sec:STFT}. Okna te pełnią rolę prostego TFR, spektrogramu jak i reprezentację czasową czy reprezentację opóźnienia czasowego \cite[21-22]{Transcription:Anssi:SignalProcessingMethods}.
+Do analizy całego spektrum utworu muzycznego, pojedyńcza transformata Fouriera może nie być wystarczająca ze względu na długość i zróżnicowanie utworu względem czasu. Reprezentacja czasu-częstotliwości pozwala na przedstawienie sygnału w postaci zespolonej w domenie czasu i częstotliwości (ang. time–frequency representation, TFR). W celu uzyskania takiej reprezentacji przy pomocy FT z zastosowaniem okna czasowego, co jest szerzej opisane w sekcji \ref{sec:STFT}. Okna te pełnią rolę prostego TFR, spektrogramu jak i reprezentację czasową czy reprezentację opóźnienia czasowego \cite[21-22]{Transcription:Anssi:SignalProcessingMethods}.
 
 \subsubsection{Dyskretna transformata Fouriera} \label{sec:DFT}
 Jednym z założeń transformacji Fouriera jest aby f(t)\ref{eq:fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym właśnie zbiorze. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania w analizie sygnału akustycznego, ponieważ przetwarzane są tylko skończone długości krzywych, co powoduje, że granice są zawsze skończone. W celach analitycznych na sygnałach, zwłaszcza w kontekście transkrypcji muzycznej, dane brane pod uwagę są brane z ograniczonego przedziału czasowego. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}.
@@ -375,7 +375,7 @@ DFT, tak samo jak FT jest odwracalna, co można opisać wzorem:
 Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie. Jak opisuje Tomasz Zieliński w \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}, DFT stanowi pewną aproksymację $N$-elementowego wektora próbek analizowanego sygnału za pomocą $N$ ortogonalnych wektorów bazowych $N$-elementowych, z wyjątkiem sytuacji, kiedy w sygnale występuje składowa sinusoidalna, która nie jest częścią zbioru wektorów bazowych, bo w takim wypadku zostanie ona przedstawiona jako suma większej liczby sygnałów "bazowych", co oznacza, że jej widmo ulegnie rozmyciu.
 
 \subsubsection{Szybka transformacja Fouriera} \label{sec:FFT}
-DFT omawiana w sekcji \ref{sec:DFT} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza, że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla najlepszych pod względem mocy obliczeniowej współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{eq:DFT} i \ref{eq:IDFT} zmniejszających złożoność obliczeniową do co najwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT, z ang. Fast Fourier Transform)} i to z nich korzysta się powszechnie przy cyfrowej analizie sygnałów.
+DFT omawiana w sekcji \ref{sec:DFT} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza, że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla najlepszych pod względem mocy obliczeniowej współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{eq:DFT} i \ref{eq:IDFT} zmniejszających złożoność obliczeniową do co najwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT, z ang. Fast Fourier Transform)} i to z nich korzysta się powszechnie przy cyfrowej analizie sygnałów \cite{Transcription:Tukey:FFT}.
 
 Istnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popularnym algorytmem jest algorytm \textbf{Cooleya-Tukeya} w formie \textbf{Radix-2} (FFT o podstawie 2). Korzysta on z metodologii \textit{dziel i zwyciężaj}, dzieląc próbkę danych wielkości $N$ na dwie oddzielne przeplatane grupy wielkości $N_1$ i $N_2$ $(N_1 + N_2 = N)$ o indeksach parzystych (0, 2, 4, ...) i nieparzystych (1, 3, 5, ...) wykonując DFT na każdym ze zbiorów, a następnie odtwarza kompletne widmo sygnału z otrzymanych wyników częściowych. W uproszczeniu algorytm wygląda następująco:
 \begin{enumerate}
@@ -416,7 +416,7 @@ Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż 
 \end{figure}
 
 
-W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych jest duplikowana. Ilość redundantnych danych jest proporcjonalna do szerokości nakładania się na siebie okien. Aby zminimalizować ten negatywny efekt, na okno nakładana jest funkcja dalej zwana funkcją okna. W ogólności, funkcja okna wydobywa odpowiednio przemnożone wartości wewnątrz jej zakresu (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza obrębem zakresu okna. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli ~\ref{tab:definicjeOkien} przedstawione są funkcje $w(t)$, które często wykorzystywane są jako okna czasowe w analizie sygnału akustycznego, wraz z ich analitycznymi wzorami widm $W(\omega)$. Graficzna reprezentację okna prostokątnego, Hanna oraz Hamminga można zobaczyć na rysunku \ref{fig:WindowFunctions}\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{RobustMethodOfMeasurmentOfFundamentalFq}.
+W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych jest duplikowana. Ilość redundantnych danych jest proporcjonalna do szerokości nakładania się na siebie okien. Aby zminimalizować ten negatywny efekt, na okno nakładana jest funkcja dalej zwana funkcją okna. W ogólności, funkcja okna wydobywa odpowiednio przemnożone wartości wewnątrz jej zakresu (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza obrębem zakresu okna. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli ~\ref{tab:definicjeOkien} przedstawione są funkcje $w(t)$, które często wykorzystywane są jako okna czasowe w analizie sygnału akustycznego, wraz z ich analitycznymi wzorami widm $W(\omega)$. Graficzna reprezentację okna prostokątnego, Hanna oraz Hamminga można zobaczyć na rysunku \ref{fig:WindowFunctions}\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{Transcription:Kunieda:Aclos}.
 
 \begin{table}[t]
   \begin{center}
@@ -452,7 +452,9 @@ W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych j
 
 \subsubsection{Przetwarzanie transformacji Fouriera}\label{sec:przetwarzanieFFT}
 Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum \cite[501-507]{Transcription:Talkin:RAPT}. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
-$$S_k^w(t,f) = ln||STFT_k^w(t,f)||$$
+\begin{equation}\label{eq:logPowSpec}
+S_k^w(t,f) = ln||STFT_k^w(t,f)||
+\end{equation}
 gdzie $STFT_k$ jest $k$-tym komponentem spektrogramu. Częstą techniką jest również użycia potęgowania zamiast logarytmu, co zostało dokłądniej opisane w sekcji \ref{sec:f0:tfr}.
 \todo[inline]{Wykres STFT vs log(||STFT||)}
 
@@ -564,13 +566,79 @@ Podczas analizy spektrogramu, naiwnym podejściem byłoby wybranie za F0 ten pik
 
 Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu sensu w rozmieszczeniu harmonicznych względem siebie. Zgodnie z regułą harmoniczności, harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości, co można zauważyć na rysunku \ref{fig:spectralComponent}. Ta charakterystyka akustycznych fal jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej jako najbardziej niezawodna. Wystarczy zlokalizować pik o najmniejszej częstotliwości wraz z największą ilością pików pasujących jako kolejne harmoniczne. Używanie zasady harmoniczności, lub hybryda tych dwóch podejść poprzez ważenie energii częstotliwością jest znacznie bardziej pewną metodą wyznaczania częstotliwości fundamentalnej niż opieranie się na samym ciśnieniu akustycznym.
 
-\subsubsection{Analiza cepstralna}
+\subsubsection{Analiza cepstralna}\label{sec:f0:ceps}
 Z racji tego, że spektrum samo w sobie jest periodyczne, można spróbować użyć metodologi wykrywającej cykliczności już na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Stworzyli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku F0, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego sygnału \cite{Transcription:Childers:CepstruGuide}.
 
-Cepstrum zostało dokładnie opisane w pracy \cite{Transcription:Bogert:FirstCepstrum}, a następnie w roku 1967 zastosowane do wykrywania wysokości dźwięku w \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w historii cepstrum w \cite{Transcription:Oppenheim:HistoryOfCepstrum} równolegle z tymi pracami, niezależnie powstała praca naukowa \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Miała ona pokrywać się wnioskami z pracą na temat cepstrum, przyspieszając jego rozwój i skale zastosowań.
+Cepstrum zostało pierwotnie opisane w pracy \cite{Transcription:Bogert:FirstCepstrum}, a następnie, dwa lata później w roku 1967, zastosowane do wykrywania wysokości dźwięku w ramach \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w pracy naukowej dotyczącej historii cepstrum (\cite[95-99]{Transcription:Oppenheim:HistoryOfCepstrum}) równolegle z tymi pracami, niezależnie powstawała praca doktorancka \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Miała ona mieć szczególne zastosowanie w metodologii cepstrum, pokrywając się wnioskami  i przyspieszając tempo jego rozwoju. Dalsze prace Oppenheima opisujące między innymi charakterystyki splotu harmonicznych, które są reminiscent do spektrum logarytmu spektrum, którym to właśnie jest cepstrum. Odkrycia te przyczyniły się do między innymi stosowania cepstrum na oknach czasowych (tak jak STFT) czy opisanie zespolonego cepstrum, które pozwala na odwrócenie tej transformacji, otwierając drogę do takich metod jak filtrowanie w domenie cepstralnej.
 
 
-\newpage
+Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstCepstrum} została zdefiniowana jako "spektrum mocy z logarytmu spektrum mocy". Nawiązując do wzoru \ref{eq:logPowSpec}, cepstrum mocy okna o indeksie $k$ z oknem $w$ liczy się jako 
+\begin{equation}\label{eq:ceps1}
+  C_k^w(t, f) = |(S_k^w(t,f)|^2.
+\end{equation}
+Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analicztyczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtra splotowego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
+
+Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectrum} (z ang. spektrum). Bogert, Healy i Tukey w pracy \cite{Transcription:Bogert:FirstCepstrum} opisali szereg terminologii związanej z cepstrum, między innymi takie jak:
+\begin{table}[H]\centering
+  \begin{tabular}{lll}
+  \textit{rahmonics} & zamiast & \textit{harmonics} (z ang. harmoniczność) \\
+  \textit{liftering} & zamiast & \textit{filtering} (z ang. filtrowanie) \\
+  \textit{quefrency} & zamiast & \textit{frequency} (z ang. częstotliwość) \\
+  \textit{gamnitude} & zamiast & \textit{magnitude} (z ang. wielkość)
+  \end{tabular}
+\end{table}
+\noindent Wytłumaczeniem tej lingwistyki, w której znajome wyrazy były modyfikowane w celu uzyskania czegoś podobnego, ale mimo wszystko troche innego, było zadeklarowane następująco: "Ogólnie rzecz biorąc, działamy po stronie częstotliwości w sposób powszechnie stosowany po stronie czasu i odwrotnie"\cite{Transcription:Bogert:FirstCepstrum} \cite[1-4]{Transcription:Randall:CepstrumHistory}.
+
+Cepstrum przedstawia piki tam, gdzie oryginalny sygnał w przestrzeni czasu\-amplitudy posiada echo. Ta nowa reprezentacja spektralnej domeny nie jest już domeną częstotliwości, ani też nie jest to domena czasu. Przez ten fakt, aby nie mieszać tych pojęć ze znanymi pojęciami Bogert nazwał domenę cepstrum jako domena \textit{quefrency}, która tak naprawdę jest domeną częstotliwości spektralnych pików oryginalnego sygnału.
+
+W przypadku lifterowania, czyli filtrowania w domenie quefrency, przydatnym wzorem jest cepstrum sygnału ciągłego $x(t)$:
+\begin{equation}\label{eq:ceps:continous}
+Cep_x(\tau) \ ICFT_{log(|X|)}(\tau) = \int_{-\infty}^{\infty}  log(|X(f)|)e^{j2\pi f\tau}\,\mathrm{d}f, 
+\end{equation}
+gdzie  $X(f)$ oznacza TF. Zgodnie ze wzorem \ref{eq:ceps:continous} filtrowanie sygnału w domenie częstotliwości przez wynik $X(f)H(F)$ staje się, po wzięciu $log$, sumą $log[X(f)] + log[H(f)]$ gdzie $H(f)$ jest filtrem częstotliwościowym \cite[25-27]{Transcription:Anssi:SignalProcessingMethods}.
+
+\begin{figure}[t]
+  \begin{subfigure}{.49\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Cepstrum/spec_cropped.png}
+    \caption{Spektrogram}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Cepstrum/log_pow_spec_cropped.png}
+    \caption{Logarytm spektrogramu mocy}
+  \end{subfigure}
+  \newline
+  \begin{subfigure}{.49\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Cepstrum/cepstrogram_cropped.png}
+    \caption{Cepstrum}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/Cepstrum/estymacjaF0_cropped.png}
+    \caption{Estymacja F0}
+  \end{subfigure}
+  \caption{Wynik cepstrum na na ,,Odzie do radości'' IX symfonii Beethovena zagranej monofonicznie na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli. Wybór F0 polegał na wybraniu największego współczynnika cepstralnego w oknie. Wykresy wygenerowane przy pomocy implementacji opisanej w sekcji \ref{sec:impl:alg:ceps}.}
+  \label{fig:cepstrumF0}
+\end{figure}
+
+Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do znalezienia częstotliwości fundamentalnej w monofonicznym sygnale. Podejście to operuje na cepstrum mocy, które opisane jest wzorem \ref{eq:ceps1}, dla kolejnych okien czasowych. Tak pozyskane cepstrum badane jest w kontekście kandydatów F0, i wybierany ten, z największym współczynnikiem. Dokładna implementacja opisana jest w sekcji \ref{sec:impl:alg:ceps}. Metoda ta jest podatna na wyznaczanie wielokrotności F0, zamiast faktycznej częstotliwości fundamentalnej, tak jak metoda autokorelacji \ref{sec:f0:ac}. Ten defekt można zaobserwować na ilustracji \ref{fig:cepstrumF0}. To podejście nie radzi sobie też z sygnałami zawierającej dużą ilość szumów, co jest przedstawione w \cite[233-235]{Transcription:Kunieda:Aclos}. Mimo tych wad, metodyka cepstrum jest powszechnie stosowana w analizie sygnałów. Jej ważnym zastosowaniem jest filtrowanie przy pomocy lifteringu, które używane jest między innymi w opisanym algorytmie ACLOS \ref{sec:f0:aclos}.
+
+\subsubsection{Autokorelacja na }\label{sec:f0:aclos}
+Badanie cykliczności spektrum, do którego jednym z narzędzi jest cepstrum opisane w \ref{sec:f0:ceps}, można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność na cyfrowej fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
+
+Nazwa algorytmu ACLOS jest skrótem od \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma. Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z ta różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną w zależności od pików na poszczególnych pasmach sygnału, czo czyni ten algorytm dużo bardziej skomplikowany niż ACLOS.
+
+\begin{figure}[t]
+  \begin{center}
+    \includegraphics[scale=0.29]{images/ACLOS_flow.jpg}
+    \caption{Schemat działania algorytmu ACLOS do wykrywania wysokości dźwięku. Schemat z \cite[233]{Transcription:Kunieda:Aclos}.}
+    \label{fig:aclos:flow}
+  \end{center}
+\end{figure}
+
+Schemat działania algorytmu ACLOS dla okna Hanninga o długości 512 sampli przedstawiony jest na rysunku \ref{fig:aclos:flow}. W zależności od długości okna zmieniać się będzie wynikowa częstotliwość i maksymalna częstotliwość jaką można wykryć w sygnale (zgodnie z równaniem Nyquista \ref{eq:NyquistFq}). 
 
 \subsection{Estymacja wielotonowa}\label{sec:MultiPitch}
 Zaimplementowana transkrypcja przez harmoniczne
@@ -621,6 +689,7 @@ Zaimplementowana transkrypcja przez harmoniczne
 \subsection{Algorytmy}\label{sec:impl:alg}
 
 \subsubsection{Autokorelacja}\label{sec:impl:alg:ac}
+\subsubsection{Cepstrum}\label{sec:impl:alg:ceps}
 
 \subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}

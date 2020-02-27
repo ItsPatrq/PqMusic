@@ -18,7 +18,7 @@ strings = {
     "interpolated": "zinterpolowany",
     "lag": "Opóźnienie (w ilości sampli)",
     "correlogram": "Korelogram",
-    "quefrency": "Domena Cepstrum",
+    "quefrency": "Quefrency",
     "cepstrogram": "Cepstrogram",
     "f0Estimation": "Estymacja F0",
     "pianoRoll": "Rolka Pianina",
@@ -170,12 +170,14 @@ def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, tr
   if transpose: H = H.T
   image = ax.imshow(H, origin='lower', aspect='auto', interpolation='nearest')
   
-  ax.set_ylabel(getStr(language, "quefrency"))
-  ax.set_xlabel(getStr(language, "time"))
+  ax.set_ylabel(getStr(language, "quefrency"), fontsize=labelsFontSize)
+  ax.set_xlabel(getStr(language, "time"), fontsize=labelsFontSize)
 
   secLength = len(data)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
-  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
+  ax.set_yticks(np.arange(0, len(data), 200))
+  ax.set_yticklabels(np.arange(0, len(data), 200), fontsize=ticksFontSize)
 
   ax.set_ylim([0, len(H)])
   ax.set_xlim([0, len(H.T) - 1])
@@ -225,21 +227,21 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, sh
 def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng"):
   fig, ax = plt.subplots()
   spectra = np.array(spectra)
-  fig.suptitle(getStr(language, "spectrogram"), fontsize=16)
+  fig.suptitle(getStr(language, "spectrogram"), fontsize=labelsFontSize)
   if transpose:
     spectra = spectra.T
   frameWidth = len(spectra)
   image = ax.imshow(spectra, interpolation='nearest', origin='lower', aspect='auto')
   ax.set_yscale('log')
   ax.set_yticks(getFqTicks(sampleRate, frameWidth)[0])
-  ax.set_yticklabels(getFqTicks(sampleRate, frameWidth)[1])
+  ax.set_yticklabels(getFqTicks(sampleRate, frameWidth)[1], fontsize=ticksFontSize)
 
-  ax.set_ylabel(getStr(language, "fq"))
-  ax.set_xlabel(getStr(language, "time"))
+  ax.set_ylabel(getStr(language, "fq"), fontsize=labelsFontSize)
+  ax.set_xlabel(getStr(language, "time"), fontsize=labelsFontSize)
   
   secLength = len(spectra.T)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
-  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
 
   minHearableFq = hz_to_fft(sampleRate, frameWidth)[20]
   ax.set_ylim([minHearableFq, frameWidth])
