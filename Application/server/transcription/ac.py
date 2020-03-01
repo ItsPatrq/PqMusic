@@ -2,7 +2,7 @@ import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
-from utils.plots import plot_pitches, plot_correlogram, plot_wave
+from utils.plots import plot_pitches, plot_correlogram, plot_wave, plot_correlation
 from utils.general import loadNormalizedSoundFIle
 import numpy as np
 from tqdm import tqdm
@@ -65,7 +65,10 @@ if __name__ == "__main__":
     spacing = 2048
 
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    #filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
+    #filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
+
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 
@@ -74,4 +77,10 @@ if __name__ == "__main__":
 
     plot_pitches(best_frequencies, spacing, sampleRate, language="pl")
     plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)
-    plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl")
+    plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl", x_axis_as_samples=True)
+
+    plot_correlation(correlogram[10], sampleRate, "pl")
+    x = correlogram[10]
+    xarg = np.argmax(x)
+    x[(xarg-8):(xarg+8)] = np.zeros(16)
+    print(np.argmax(x), xarg)

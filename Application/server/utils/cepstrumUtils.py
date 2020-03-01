@@ -41,7 +41,7 @@ def lifterOnCeps(ceps, lifterType=LifterType.triangle, coefficient=2):
 
 def real_cepst_from_signal(data):
     spectrum = fft(data)
-    logSp = np.log(np.abs(spectrum))
+    logSp = np.abs(spectrum)
     ceps = np.abs(ifft(logSp)) ** 2
     return ceps, logSp, spectrum
 
@@ -170,26 +170,25 @@ if __name__ == "__main__":
 
     def test3():
         filePath = path.dirname(path.abspath(__file__))
-        filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
+        filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
         fs, signal = loadNormalizedSoundFIle(filePath)
-        samples = len(signal[:2048])
+        samples = 2048 * 2
         t = np.arange(samples) / fs
-        spec =  abs(fft(signal[:2048]))
+        spec =  np.abs(fft(signal[(samples * 2):(samples*3)]))
         #ceps, ndelay, spectrum, logSp = complex_cepst_from_signal(signal[:2048])
         #liftering
         print(spec)
-        liftered = lifterOnPowerSpec(spec, LifterType.sine, 9)
+        liftered = lifterOnPowerSpec(spec, LifterType.sine, 10)
         #triangular = lifterOnPowerSpec(spec, LifterType.triangle, 1)
         print(spec, liftered)
         #end of liftering
 
         fig = plt.figure()
         ax1 = fig.add_subplot(111)
-        ax1.plot(t[:(len(t)//2)], spec[:(len(t)//2)], '-')
+        ax1.plot(t[:(len(t)//2)], spec[:(len(t)//2)], '--')
         ax1.plot(t[:(len(t)//2)], liftered[:(len(t)//2)], '-')
         #ax1.plot(t[:(len(t)//2)], triangular[:(len(t)//2)], '-')
-        ax1.legend(['data', 'lifter'], loc='best')
-        ax1.set_xlabel('fq in seconds')
+        ax1.legend(['spektrum mocy', 'przefiltrowane spektrum mocy'], loc='best')
 
         plt.show()
 

@@ -10,12 +10,13 @@ strings = {
   'pl': {
     "audioWave": "Fala dźwiękowa",
     "time": "Czas (w sekundach)",
+    "timeSamples": "Czas (w ilości sampli)",
     "amplitude":  "Amplituda",
     "spectrumLineComponent": "Liniowy komponent widma",
     "fq": "Częstotliwość (w Hz)",
     "magnitude": "Wielkość",
     "data": "Dane",
-    "interpolated": "zinterpolowany",
+    "interpolated": "Interpolacja",
     "lag": "Opóźnienie (w ilości sampli)",
     "correlogram": "Korelogram",
     "quefrency": "Quefrency",
@@ -23,11 +24,14 @@ strings = {
     "f0Estimation": "Estymacja F0",
     "pianoRoll": "Rolka Pianina",
     "spectrogram": "Spektrogram",
-    "peaks": "Piki"
+    "peaks": "Piki",
+    "aclos": "ACLOS",
+    "correlation": "Korelacja"
   },
   'eng': {
     "audioWave": "Audio wave",
     "time": "Time (in seconds)",
+    "timeSamples": "Time (in samples)",
     "amplitude":  "Amplitude",
     "spectrumLineComponent": "Spectrum Line Component",
     "fq": "Frequency (in Hz)",
@@ -41,7 +45,9 @@ strings = {
     "f0Estimation": "Estimation of f0",
     "pianoRoll": "Piano Roll",
     "spectrogram": "Spectrogram",
-    "peaks": "Peaks"
+    "peaks": "Peaks",
+    "aclos": "ACLOS",
+    "correlation": "Correlation"
   }
 }
 
@@ -58,7 +64,7 @@ def getTimeTicks(spacing, sampleRate, secLength):
   ticks = [0]
   fullSecs = int(math.floor(secLength))  
 
-  for t in np.arange(3, fullSecs, 3):
+  for t in np.arange(3, fullSecs - 3, 3):
     ticks.append(t*sampleRate/spacing)
   ticks.append(int(secLength*sampleRate/spacing) - 1)
   
@@ -66,7 +72,7 @@ def getTimeTicks(spacing, sampleRate, secLength):
 
 def getTimeTickLabels(secLength):
   fullSecs = int(math.floor(secLength))
-  tickLabels = list(np.concatenate(([0], np.arange(3, fullSecs, 3), [round(secLength, 3)])))
+  tickLabels = list(np.concatenate(([0], np.arange(3, fullSecs - 3, 3), [round(secLength, 3)])))
   return tickLabels
 
 def getFqTicks(sampleRate, frameWidth):
@@ -93,9 +99,9 @@ def plot_spectrum_line_component(data, sampleRate, rawData=[], language = "eng")
   assert len(X_m) == len(fr)
 
   ax2.plot(fr, X_m)
-  ax2.set_title(getStr(language, "spectrumLineComponent"))
-  ax2.set_xlabel(getStr(language, "fq"))
-  ax2.set_ylabel(getStr(language, "magnitude"))
+  ax2.set_title(getStr(language, "spectrumLineComponent"), fontsize=labelsFontSize)
+  ax2.set_xlabel(getStr(language, "fq"), fontsize=labelsFontSize)
+  ax2.set_ylabel(getStr(language, "magnitude"), fontsize=labelsFontSize)
   ax2.tick_params(
       axis='y',          # changes apply to the y-axis
       which='both',      # both major and minor ticks are affected
@@ -107,10 +113,61 @@ def plot_spectrum_line_component(data, sampleRate, rawData=[], language = "eng")
   return fig
 
 
-def plot_correlation(data, sampleRate):
-  fr = np.arange(0, len(data))
+def plot_spectrum_line_component_only(data, sampleRate, show=True, language = "eng"):
+  n = np.size(data)
+  fr = (sampleRate / 2) * np.linspace(0, 1, n/2)
+  X_m = data[:int(n/2)]
+  fig, ax = plt.subplots(nrows=1)
+  ax.plot(fr, X_m)
+  ax.set_title(getStr(language, "spectrumLineComponent"), fontsize=labelsFontSize)
+  ax.set_xlabel(getStr(language, "fq"), fontsize=labelsFontSize)
+  ax.set_ylabel(getStr(language, "magnitude"), fontsize=labelsFontSize)
+  ax.tick_params(
+      axis='y',          # changes apply to the y-axis
+      which='both',      # both major and minor ticks are affected
+      left=False,      # ticks along the bottom edge are off
+      top=False,         # ticks along the top edge are off
+      labelleft=False)  # labels along the bottom edge are off
 
-  plt.plot(fr, data)
+  fig.tight_layout()
+  if show: plt.show()
+  return fig, ax
+
+def plot_spectrum_line_components(dataBase, data1, data2, data3, sampleRate, show=True, language = "eng"):
+  n = np.size(dataBase)
+  fr = (sampleRate / 2) * np.linspace(0, 1, n/2)
+  X_m = dataBase[:int(n/2)]
+  x1_m = data1[:int(n/2)]
+  x2_m = data2[:int(n/2)]
+  x3_m = data3[:int(n/2)]
+  fig, ax = plt.subplots(nrows=1)
+  ax.plot(fr, X_m, '-', fr, x1_m, '--',fr, x2_m, '--', fr, x3_m, '--')
+  ax.set_title(getStr(language, "spectrumLineComponent"), fontsize=labelsFontSize)
+  ax.set_xlabel(getStr(language, "fq"), fontsize=labelsFontSize)
+  ax.set_ylabel(getStr(language, "magnitude"), fontsize=labelsFontSize)
+  plt.legend(["Em3", "E3", "G3", "B3"], loc='best')
+  ax.tick_params(
+      axis='y',          # changes apply to the y-axis
+      which='both',      # both major and minor ticks are affected
+      left=False,      # ticks along the bottom edge are off
+      top=False,         # ticks along the top edge are off
+      labelleft=False)  # labels along the bottom edge are off
+
+  fig.tight_layout()
+  if show: plt.show()
+  return fig, ax
+
+
+
+def plot_correlation(data, sampleRate, language='eng'):
+  plt.figure()
+  plt.title(getStr(language, "correlation"), fontsize=labelsFontSize)
+  plt.xlabel(getStr(language, "lag"), fontsize=labelsFontSize)
+  plt.ylabel(getStr(language, "correlation"), fontsize=labelsFontSize)
+
+  plt.xticks(np.arange(0, len(data), 250), np.arange(0, len(data), 250),fontsize=ticksFontSize)
+  plt.yticks(fontsize=ticksFontSize)
+  plt.plot(np.arange(0, len(data)), data)
   plt.show()
 
 def plot_interpolated_correlation(interpolation, corelation, title="Correlation", language = "eng"):
@@ -118,23 +175,34 @@ def plot_interpolated_correlation(interpolation, corelation, title="Correlation"
   x = np.arange(0, len(corelation))
   plt.plot(x, corelation, '-', interp_x, interpolation(interp_x), '--')
   plt.legend([getStr(language, "data"), getStr(language, "interpolated")], loc='best')
-  plt.title(title)
+  plt.title(getStr(language, "aclos"), fontsize=labelsFontSize)
+  plt.xlabel(getStr(language, "lag"), fontsize=labelsFontSize)
+  plt.ylabel(getStr(language, "magnitude"), fontsize=labelsFontSize)
+  plt.xticks(fontsize=ticksFontSize)
+  plt.yticks(fontsize=ticksFontSize)
   plt.show()
 
-def plot_wave(normalized_data, sample_rate, wave_name, language = "eng"):
+def plot_wave(normalized_data, sample_rate, wave_name, language = "eng", x_axis_as_samples = False):
   time_space = np.linspace(0, len(normalized_data) /
                            sample_rate, num=len(normalized_data))
   plt.figure()
   plt.title(getStr(language, "audioWave") + " " + wave_name)
-  plt.xlabel(getStr(language, "time"), fontsize=labelsFontSize)
   plt.ylabel(getStr(language, "amplitude") + " [" + str(math.floor(normalized_data.min())) +
              ":" + str(math.ceil(normalized_data.max())) + "]", fontsize=labelsFontSize)
   plt.yticks(np.arange(math.floor(normalized_data.min()),
                        math.ceil(normalized_data.max()), 0.1), fontsize=ticksFontSize)
   secLength = len(normalized_data)/sample_rate
 
-  plt.xticks(getTimeTickLabels(secLength), getTimeTickLabels(secLength),fontsize=ticksFontSize)
-  plt.plot(time_space, normalized_data)
+  if x_axis_as_samples:
+    plt.xticks(np.arange(0, len(normalized_data), 250), np.arange(0, len(normalized_data), 250),fontsize=ticksFontSize)
+    plt.plot(np.arange(0, len(normalized_data)), normalized_data)
+    plt.xlabel(getStr(language, "timeSamples"), fontsize=labelsFontSize)
+
+  else:
+    plt.xticks(getTimeTickLabels(secLength), getTimeTickLabels(secLength),fontsize=ticksFontSize)
+    plt.plot(time_space, normalized_data)
+    plt.xlabel(getStr(language, "time"), fontsize=labelsFontSize)
+
   plt.show()
 
 
@@ -149,8 +217,8 @@ def plot_correlogram(data, spacing, sampleRate, show=True, showColorbar=True, la
   secLength = len(data)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
   ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
-  ax.set_yticks(np.arange(0, len(data), 200))
-  ax.set_yticklabels(np.arange(0, len(data), 200), fontsize=ticksFontSize)
+  ax.set_yticks(np.arange(0, len(H.T), 200))
+  ax.set_yticklabels(np.arange(0, len(H.T), 200), fontsize=ticksFontSize)
 
 
   ax.set_yticklabels(ax.get_yticklabels(), fontsize=ticksFontSize)

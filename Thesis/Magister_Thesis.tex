@@ -21,6 +21,7 @@
 \usepackage{amsmath}
 \usepackage{hyphenat}
 \usepackage{graphicx}
+\usepackage{caption}
 \usepackage{subcaption}
 \captionsetup{compatibility=false}
 %% \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
@@ -35,8 +36,9 @@
 %%     bieżącego rozdziału.
 \renewcommand{\sectionmark}[1]{\markright{#1}}
 \fancyhf{}
-\fancyhead[LO]{\small \emph{\nouppercase{\leftmark}}}
-\fancyhead[RE]{\small \emph{\nouppercase{\rightmark}}}
+
+\fancyhead[LO]{\small \emph{\nouppercase{\rightmark}}}
+\fancyhead[RE]{\small \emph{\nouppercase{\thesubsection}}}
 
 \cfoot{\fancyplain{}{\thepage}}
 
@@ -88,6 +90,9 @@
 \setlength {\marginparwidth }{2cm}
 \setlength{\parskip}{0em} %odstęp pomiędzy paragrafami
 \renewcommand{\baselinestretch}{1.5}
+\captionsetup[figure]{labelfont=it,textfont={it}}
+\captionsetup[table]{labelfont=it,textfont={it}}
+
 \begin{document}
 
 \begin{titlepage}
@@ -474,10 +479,10 @@ gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksyma
 
 Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania lub zastosowanie interpolacji, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} \cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
 
-\newpage
+\clearpage
 
-\subsection{Estymacja składowej fundamentalnej F0}
-W tym rozdziale skupie się na opisaniu wybranych metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
+\subsection{Estymacja składowej fundamentalnej F0}\label{sec:f0}
+Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
 
 Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które będę stosować w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
@@ -499,6 +504,11 @@ gdzie $k$ jest opóźnieniem, $n$ reprezentuje moment w czasie a N reprezentuje 
   R(i,k) = \sum_{j=m}^{m + N - k - 1} h_jh_{j+k}, m = iz
 \end{equation}
 gdzie $i$ jest indeksem badanego okna, $z$ jest odstępem pomiędzy oknami audio (ilość sampli), a N jest długością okna. Zgodnie z twierdzeniem Nyquista opisanym w sekcji \ref{sec:STFT} długość okna powinna być co najmniej dwa razy większa niż największe oczekiwane opóźnienie jakie może wystąpić w analizowanym sygnale akustycznym Implementacja estymacji F0 przy pomocy autokorelacji przy pomocy wzoru \ref{eq:STAC} została opisana dokładniej w sekcji \ref{sec:impl:alg:ac}.
+
+Z jednego okna danych w wyniku brane jest to przesunięcie, które ma największy współczynnik korelacji. Aby z tego przesunięcia uzyskać częstotliwość, należy podzielić częstotliwość samplowania przez to przesunięcie, ponieważ domena czasu w dyskretnym sygnale na jakiej operuje autokorelacja jest tak naprawdę domeną ilości sampli.
+\begin{equation}\label{eq:AC:hz}
+  fq = \Delta/lag
+\end{equation}
 
 \begin{figure}[t]
   \begin{subfigure}{.5\textwidth}
@@ -525,7 +535,7 @@ gdzie $i$ jest indeksem badanego okna, $z$ jest odstępem pomiędzy oknami audio
   \label{fig:ACResults}
 \end{figure}
 
-Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej, która stara się zminimalizować defekty funkcji autokorelacji. Dokładny jej opis można znaleźć w \cite{Transcription:Talkin:RAPT}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego.
+Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej, która stara się zminimalizować defekty funkcji autokorelacji. Dokładny jej opis można znaleźć w \cite{Transcription:Talkin:RAPT}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego Jest to opisane dokładniej w sekcji \ref{sec:MultiPitch:monofon}.
 
 Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na wykresie \ref{fig:ACResults:corr}. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
 
@@ -576,7 +586,7 @@ Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstC
 \begin{equation}\label{eq:ceps1}
   C_k^w(t, f) = |(S_k^w(t,f)|^2.
 \end{equation}
-Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analicztyczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtra splotowego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
+Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analityczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtra splotowego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
 
 Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectrum} (z ang. spektrum). Bogert, Healy i Tukey w pracy \cite{Transcription:Bogert:FirstCepstrum} opisali szereg terminologii związanej z cepstrum, między innymi takie jak:
 \begin{table}[H]\centering
@@ -625,23 +635,120 @@ gdzie  $X(f)$ oznacza TF. Zgodnie ze wzorem \ref{eq:ceps:continous} filtrowanie 
 
 Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do znalezienia częstotliwości fundamentalnej w monofonicznym sygnale. Podejście to operuje na cepstrum mocy, które opisane jest wzorem \ref{eq:ceps1}, dla kolejnych okien czasowych. Tak pozyskane cepstrum badane jest w kontekście kandydatów F0, i wybierany ten, z największym współczynnikiem. Dokładna implementacja opisana jest w sekcji \ref{sec:impl:alg:ceps}. Metoda ta jest podatna na wyznaczanie wielokrotności F0, zamiast faktycznej częstotliwości fundamentalnej, tak jak metoda autokorelacji \ref{sec:f0:ac}. Ten defekt można zaobserwować na ilustracji \ref{fig:cepstrumF0}. To podejście nie radzi sobie też z sygnałami zawierającej dużą ilość szumów, co jest przedstawione w \cite[233-235]{Transcription:Kunieda:Aclos}. Mimo tych wad, metodyka cepstrum jest powszechnie stosowana w analizie sygnałów. Jej ważnym zastosowaniem jest filtrowanie przy pomocy lifteringu, które używane jest między innymi w opisanym algorytmie ACLOS \ref{sec:f0:aclos}.
 
-\subsubsection{Autokorelacja na }\label{sec:f0:aclos}
+\subsubsection{ACLOS}\label{sec:f0:aclos}
 Badanie cykliczności spektrum, do którego jednym z narzędzi jest cepstrum opisane w \ref{sec:f0:ceps}, można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność na cyfrowej fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
 
 Nazwa algorytmu ACLOS jest skrótem od \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma. Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z ta różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną w zależności od pików na poszczególnych pasmach sygnału, czo czyni ten algorytm dużo bardziej skomplikowany niż ACLOS.
 
 \begin{figure}[t]
   \begin{center}
-    \includegraphics[scale=0.29]{images/ACLOS_flow.jpg}
+    \includegraphics[scale=0.29]{images/ACLOS/ACLOS_flow.jpg}
     \caption{Schemat działania algorytmu ACLOS do wykrywania wysokości dźwięku. Schemat z \cite[233]{Transcription:Kunieda:Aclos}.}
     \label{fig:aclos:flow}
   \end{center}
 \end{figure}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.49]{images/ACLOS/data_lifter_cropped.png}
+    \caption{Wykres przedstawiający spektrum na pojedyńczym oknie przed i po nałożeniu lifteringu ze współczynnikiem równym 10}
+    \label{fig:aclos:lifter}
+  \end{center}
+\end{figure}
+Schemat działania algorytmu ACLOS dla okna Hanninga o długości 512 sampli przedstawiony jest na rysunku \ref{fig:aclos:flow}. W zależności od długości okna zmieniać się będzie wynikowa częstotliwość i maksymalna częstotliwość jaką można wykryć w sygnale (zgodnie z równaniem Nyquista przedstawionym w \ref{eq:NyquistFq}). Do okna doklejana jest odpowiednia ilość zer jako margines, które mają na celu zwiększenie częstotliwości widma, co zostało opisane w sekcji \ref{sec:przetwarzanieFFT}. W oryginalnej pracy dodano 512 zer, aby wynikowe okno miało długość 1024. Na rozszerzonym o wektor zer oknie wyliczana zostaje szybka transformata fouriera, a z niej wynik przetwarzany jest do logarytmu spektrum mocy zgodnie ze wzorem \ref{eq:powSpec}. Następną operacją jaka jest wykonywana na analizowanych danych jest filtrowanie w domenie cepstrum. Liftering ma w tym przypadku na celu wyrównanie spektrum i zmniejszenie wpływu jaki ma na wynik szum. Wynik działania lifteringu można zaobserwować na wykresie na rysunku \ref{fig:aclos:lifter}. Na tak przygotowanym oknie wykonywana jest funkcja autokorelacji $R(j)$, która ma postać:
+\begin{align}\label{eq:Aclos:ACf}
+  R(j)& = \frac{1}{N}\sum_{i=0}^{N-1}f(i)f(i + j)&
+  j = 0, 1, ..., M
+\end{align}
+gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza maksymalną harmoniczną, która jest brana pod uwagę, $j$ jest częstotliwością dla której badany jest współczynnik autokorelacji a $M$ oznacza maksymalną częstotliwość, jaką może posiadać F0 w analizowanym sygnale.
 
-Schemat działania algorytmu ACLOS dla okna Hanninga o długości 512 sampli przedstawiony jest na rysunku \ref{fig:aclos:flow}. W zależności od długości okna zmieniać się będzie wynikowa częstotliwość i maksymalna częstotliwość jaką można wykryć w sygnale (zgodnie z równaniem Nyquista \ref{eq:NyquistFq}). 
+\begin{figure}[ht]
+  \begin{subfigure}{.49\textwidth}
+    \includegraphics[width=1.\linewidth]{images/ACLOS/Korelogram_cropped.png}
+    \caption{Korelogram}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
+    \includegraphics[width=1.\linewidth]{images/ACLOS/Estymacja_f0_cropped.png}
+    \caption{Estymacja F0}
+  \end{subfigure}
+  \newline
+  \begin{subfigure}{0.5\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/ACLOS/interpolacja_full_cropped.png}
+    \caption{Okno autokorelacji i jego interpolacja}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=1.\linewidth]{images/ACLOS/Interpolacja_superzoomed_cropped.png}
+    \caption{Wykres (c) w przybliżeniu}
+  \end{subfigure}
+  \caption{Wynik ACLOS na na ,,Odzie do radości'' IX symfonii Beethovena zagranej monofonicznie na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli. Wykresy (c) i (d) przedstawiają wynik równania \ref{eq:Aclos:ACf} na tym samym oknie po zastosowaniu lifteringu. Wykresy wygenerowane przy pomocy implementacji opisanej w sekcji \ref{sec:impl:alg:aclos}.}
+  \label{fig:aclos:results}
+\end{figure}
 
+Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyznaczenie F0 na podstawie maksymalnego wyniku \ref{eq:Aclos:ACf}. Szerokość pasma pojedyńczego spektralnego komponentu zależne jest od przyjętej długości okna, a pasmo to jest zakresem, w którym znajduje się znalezione F0. Autorzy używają interpolacji wokół wartości wyznaczonej przez autokorelacje co w rezultacie umożliwia uzyskanie większej dokładności wyznaczonej częstotliwości fundamentalnej. Możliwości użycia autokorelacji w metodykach wykrywania F0 zostały już pokazane między innymi w pracy \cite[1046-1047]{Transcription:Suzuki:EstimationOfMistunedFrequency}.
+
+
+Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest chwiejna. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
+
+\clearpage
 \subsection{Estymacja wielotonowa}\label{sec:MultiPitch}
-Zaimplementowana transkrypcja przez harmoniczne
+Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym polifonicznym. polifoniczny sygnał to taki, w którym występują co najmniej dwa dźwięki w tym samym czasie. Problem ten jest znacznie bardziej skomplikowany od wyznaczania pojedyńczego F0 opisanego w \ref{sec:f0}. Wiele z własności sygnałów akustycznych, jak periodyczność czy rozróżnialna barwa nie są wystarczające w celach transkrypcji wielotonowej, ponieważ nakładające się na siebie wysokości dźwięków mieszają miedzy sobą również ich cechy.
+
+Współczesna muzyka zachodnia jest w mocnym stopniu ustrukturyzowana zarówno w domenie czasu jak i częstotliwości. Tempo i rytm, w którym dany utwór jest grany, jest informacją zawartą w domenie czasu. Dzięki wzorcom, które są zachowywane w muzyce, można te informacje wydobyć. W domenie częstotliwości natomiast widoczne są zależności pomiędzy poszczególnymi wysokościami dźwięków. Było to już wielokrotnie udowadniane, jak na przykład w \cite[1325-1326]{Transcription:Mcintyre:OnTheOscilation}, że pojedyńczej zagranej nucie towarzyszy, poza częstotliwością fundamentalną, szereg wydźwięków. Wibracje te badane przez fizyków były dostosowywane tak, żeby pasowały do modeli normalnych. Struktura częstotliwości różni się w zależności od użytego instrumentu i sposobu w jaki została zagrana. Częstotliwość i rozmieszczenie harmonicznych jest odgórnie ustalona przez instrument i sposób w jaki zostanie zagrana nuta. Pomimo że harmoniczne zawsze posiadają pewne odchylenie od bycia w perfekcyjnej harmonii (to znaczy nie są dokłądną algebraiczną wielokrotnością częstotliwości F0, a oscylują w jej okolicy) dla konkretnego instrumentu i sposobu zagrania będą odgórnie zdefiniowane przez pewien model matematyczny \cite[1326-1327]{Transcription:Mcintyre:OnTheOscilation}. Jak opisuje Manuel Davy w \cite[203-204]{Transcription:Anssi:SignalProcessingMethods} struktura muzyki tonalnej może zostać wykorzystana do budowy modeli bayesowskich, czyli modeli matematycznych w kontekście probabilistycznym, które prowadzą do najprostszego modelu wyjaśniającego daną fale dźwiękową. Pomimo tego, że modele te wydają się naturalnym rozwiązaniem estymacji wielotonowej, ponieważ rozwiązuje problem dużej ilości parametrów w fali dźwiękowej, których nie można wyestymować beż zakładania pewnych założeń, nie są one często wykorzystywane. Wspomniana wcześniej praca \cite{Transcription:BayesianHarmonicModels} jest przykładem wykorzystania modeli bayesowskich do analizowania sygnałów muzycznych, w tym wykrywania F0.
+
+\subsubsection{Wyniki algorytmów do sygnałów monofonicznych}\label{sec:MultiPitch:monofon}
+W rozdziale \ref{sec:f0} struktura częstotliwości rozumiała była jako obraz pojedyńczej częstotliwości fundamentalnej, z którego jednoznacznie wynika, jaka wysokość dźwięku jest grana w danym momencie czasu. Duża większość muzyki jest polifoniczna i tylko momentami skomplikowane kompozycje dopuszczają się brzmienia jedynie pojedynczych nut. W takich utworach metodologie transkrypcji muzyki monofonicznej są nieefektywne.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.38]{images/AC/korelogram_multif0_cropped.png}
+    \caption{Funkcja autokorelacji \ref{eq:AC} zastosowana na nagraniu Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli z odstępami długości 2048 sampli.}
+    \label{fig:multi:ac}
+  \end{center}
+\end{figure}
+
+Funkcja autokorelacji w domenie czasu/mocy, jak opisana w sekcji \ref{sec:f0:ac} polegała na znalezieniu powtarzalności w fali dźwiękowej. Ta cykliczność była bezpośrednim efektem periodyczności pojedyńczych dźwięków. Gdy w tym samym czasie granych jest więcej nut, nawet na pojedyńczym instrumencie, AC nie jest w stanie odróżnić ich od siebie. Na rysunku \ref{fig:multi:ac} przedstawiony jest korelogram, wygenerowany analogicznie do korelogramu na \ref{fig:ACResults:corr} z tą różnicą, że sygnał bazowy jest w tym przypadku polifoniczny. Rezultat jest nieczytelny i nie można na jego podstawie wnioskować żadnej z dźwięków granych w utworze.
+
+\begin{figure}[ht]
+  \begin{subfigure}{1.\textwidth}
+    \centering
+    \includegraphics[width=.49\linewidth]{images/Em/Corelogram_cropped.png}
+    \caption{Korelogram}
+  \end{subfigure}
+  \newline
+  \begin{subfigure}{0.5\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/waveform_zoom_samples_cropped.png}
+    \caption{Sygnał fali dźwiękowej w przybliżeniu}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/corelation_cropped.png}
+    \caption{Wykres autokorelacji okna danych}
+  \end{subfigure}
+  \caption{Wynik funkcji autokorelacji na nagraniu akordu Em zagranym na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 2048 sampli. Wykresy (c) jest reprezentacją wyników AC na jedenastym oknie (próbce danych od 20480 do 22528 sampli z sygnału wejściowego).}
+  \label{fig:multi:ac:em}
+\end{figure}
+
+Przyglądając się z bliska pojedyńczemu wynikowi funkcji autokorelacji jak widać na rysunku \ref{fig:multi:ac:em} można zauważyć, że piki znajdują się w nieregularnych odstępach a sama wartość funkcji korelacji nie jest bliska maksymalnej wartości. Na omawianej ilustracji grany jest akord E-mol 3, czyli dokładnie dźwięki E3, G3 i B3, którym odpowiadają częstotliwości F0 odpowiednio 164.81, 196.00 i 246.94 Hz. Na badanym oknie korelacji najwyższym pik jest w miejscu o przesunięciu 266, czyli najsilniejsza hipotezą co do F0 byłaby częstotliwość 165,8 Hz (zgodnie ze wzorem \ref{eq:AC:hz} w badanym przypadku częstotliwość wyliczana jest poprzez $44100 / 266 \approx 165,8$), co jest wartością najbliższą do częstotliwości dźwięku E3. Najniższa nuta w akordzie nazywana jest bazową, i to ona jest najbardziej charakterystyczna dla ludzkiego ucha. Z racji tego, że ma ona najniższą częstotliwość, ma też najwyższą amplitudę (z reguły im wyższa częstotliwość tym niższa amplituda), co daje wyższą szanse na znalezienie tych nut w dźwięku przy wykorzystaniu funkcji autokorelacji w domenie czasu. Drugi pik pod względem rezultatu autokorelacji jest dla przesunięcia równego 534, co odpowiada częstotliwości równej 52,6 Hz. Ta częstotliwość nie jest częścią granego dźwięku, nie jest również żadna z jej wielokrotności.
+
+Algorytmy operujące na dziedzinie częstotliwości mają dużo większe powodzenie w wykrywaniu równoległych F0, jednak algorytmika stojąca za tymi metodami jest dużo bardziej skomplikowana niż w przypadku monofonicznych utworów ze względu na dużo bardziej skomplikowane widma. Spektrogram sygnałów polifonicznych nie jest tak wyraźnym wskaźnikiem jak był w przypadku monofonicznym. Częstotliwości harmonicznych mogą się na siebie nakładać, zniekształcając ich cykliczność jak i modulując wyraźnosć formantów.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.38]{images/Spectrogram/spectrogram_multi_2048_512.png}
+    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli.}
+    \label{fig:multi:spectrogram}
+  \end{center}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.325]{images/Em/spectral_component_em3_partials_2048_512.png}
+    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli.}
+    \label{fig:multi:spectrogram}
+  \end{center}
+\end{figure}
+
+
 \subsubsection{Harmoniczność}
 
 
@@ -690,6 +797,7 @@ Zaimplementowana transkrypcja przez harmoniczne
 
 \subsubsection{Autokorelacja}\label{sec:impl:alg:ac}
 \subsubsection{Cepstrum}\label{sec:impl:alg:ceps}
+\subsubsection{ACLOS}\label{sec:impl:alg:aclos}
 
 \subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}

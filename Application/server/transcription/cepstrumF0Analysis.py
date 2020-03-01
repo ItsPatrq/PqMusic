@@ -9,7 +9,7 @@ from tqdm import tqdm
 import pyaudio
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine
-from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
+from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from utils.profile import profile, print_prof_data
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
@@ -74,21 +74,38 @@ if __name__ == "__main__":
     frameWidth = 2048
     spacing = 512
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    #filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
     #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
+    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
+    filePathMain = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
 
-    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    sampleRate, data = loadNormalizedSoundFIle(filePathMain)
     sine_data = create_sine(220, sampleRate, 5)
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
+    
+    #for i in range(0, 10):
+    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    #---------------------------
+    filePath1 = path.join(filePath, '../test_sounds/EmPiano/E3.wav')
+    sampleRate, data = loadNormalizedSoundFIle(filePath1)
 
-    for i in range(0, 10):
-        cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    cepstra, spectra1, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    filePath2 = path.join(filePath, '../test_sounds/EmPiano/G3.wav')
+    sampleRate, data = loadNormalizedSoundFIle(filePath2)
 
-    plot_pitches(bestFq, spacing, sampleRate, language='pl')
+    cepstra, spectra2, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    filePath3 = path.join(filePath, '../test_sounds/EmPiano/B3.wav')
+    sampleRate, data = loadNormalizedSoundFIle(filePath3)
+    cepstra, spectra3, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+
+    #plot_pitches(bestFq, spacing, sampleRate, language='pl')
     plot_spectrogram(spectra, spacing, sampleRate, language='pl', showColorbar=False)
-    plot_cepstrogram(cepstra, spacing, sampleRate, language='pl', showColorbar=False)
+    plot_spectrum_line_component_only(spectra[5], sampleRate, language="pl")
+    plot_spectrum_line_components(spectra[5],spectra1[5],spectra2[5],spectra3[5], sampleRate, language="pl")
+    plt.show()
+    #plot_cepstrogram(cepstra, spacing, sampleRate, language='pl', showColorbar=False)
 
     #GPU
     #pycuda.driver.init() # pylint: disable=no-member

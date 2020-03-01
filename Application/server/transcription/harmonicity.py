@@ -16,8 +16,8 @@ from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
 
 def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
-                                            minF0=75, maxF0=6000, peakDistance=8, relevantPowerThreashold=9, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
-											maxHarmonicsPerCandidate=20, maxCandidates=10, maxParallelNotes = 6, gamma=0.05, minNoteMs=80,
+                                            minF0=75, maxF0=6000, peakDistance=8, relevantPowerThreashold=7, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
+											maxHarmonicsPerCandidate=20, maxCandidates=10, maxParallelNotes = 5, gamma=0.05, minNoteMs=90,
 											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 30, useGpu = False):
 
 	#region init values
@@ -265,7 +265,8 @@ if __name__ == "__main__":
 	filePath = path.dirname(path.abspath(__file__))
 	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 	#filePath = '../test_sounds/Sine_sequence.wav'
-	filePath = path.join(filePath, '../test_sounds/areFE.wav')
+	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+	filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
 	sampleRate = 44100
 

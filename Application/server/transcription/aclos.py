@@ -78,10 +78,12 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     return correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra
 
 if __name__ == "__main__":
-    frameWidth = 4096
-    spacing = 1024
+    frameWidth = 2048
+    spacing = 512
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/spectrogram/flute.wav')
+    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
+    #filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
     #file_path = '../test_sounds/Sine_sequence.wav'
     #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 
@@ -92,13 +94,13 @@ if __name__ == "__main__":
 
 
     correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
-    plot_spectrogram(spectra, spacing, sampleRate)
+    plot_spectrogram(spectra, spacing, sampleRate, showColorbar=False, language="pl")
     
-    plot_correlogram(correlogram, spacing, sampleRate)
-    plot_pitches(bestFq, spacing, sampleRate)
-    fig = plot_spectrum_line_component(spectra[5], sampleRate, data[:frameWidth])
-    plt.show()
-    plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10])
+    # plot_correlogram(correlogram, spacing, sampleRate, language='pl', showColorbar=False)
+    # plot_pitches(bestFq, spacing, sampleRate, language='pl')
+    # fig = plot_spectrum_line_component(spectra[5], sampleRate, data[:frameWidth])
+    # plt.show()
+    # plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10], language='pl')
 
 
     print("ok")
