@@ -244,8 +244,8 @@ def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, tr
   secLength = len(data)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
   ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
-  ax.set_yticks(np.arange(0, len(data), 200))
-  ax.set_yticklabels(np.arange(0, len(data), 200), fontsize=ticksFontSize)
+  ax.set_yticks(np.arange(0, len(H), 100))
+  ax.set_yticklabels(np.arange(0, len(H), 100), fontsize=ticksFontSize)
 
   ax.set_ylim([0, len(H)])
   ax.set_xlim([0, len(H.T) - 1])

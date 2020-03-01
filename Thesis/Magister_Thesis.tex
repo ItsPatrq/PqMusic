@@ -181,7 +181,7 @@ Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzycznej są jednak
 
 Bez automatyzacji procesu, transkrypcja wykonywana manualnie zakładała profesjonalną wiedzę słuchacza, który iteracyjnie odsłuchując dany utwór ustala grane instrumenty wraz z częstotliwością fundamentalną lub akordem, która jest na nich grany. Wymusza to osobie transkrybującej wyróżnienie poszczególnych granych dźwięków, wyodrębniając jego długość, wysokość i korelacje do pozostałych granych dźwięków. Ludzkie ucho postrzega dźwięk relatywnie, co powoduje, że dużo łatwiej jest porównywać dźwięki niż je analizować w odizolowaniu, toteż referencyjne dźwięki, jak na przykład skala zagrana na pianinie, są często wykorzystywane przy tradycyjnym przebiegu procesu transkrypcji. W rezultacie zadanie to jest skomplikowane i wymaga dużego nakładu czasowego nawet dla profesjonalistów z doświadczeniem w dziedzinie muzykologii.
 
-W tym rozdziale przedstawię wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony w oparciu o przykłady już istniejących rozwiązań.  Celem tych rozważań jest przybliżenie ogólnej koncepcji transkrypcji muzycznej, teorii na jakiej się opierają, \todo[inline]{Move somewhere}oraz próba zoptymalizowania części z nich poprzez zrównoleglenie obliczeń wykorzystując kartę graficzną.
+W tym rozdziale przedstawiony jest wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony w oparciu o przykłady już istniejących rozwiązań.  Celem tych rozważań było przybliżenie ogólnej koncepcji transkrypcji muzycznej, teorii na jakiej się opierają, \todo[inline]{Move somewhere}oraz próba zoptymalizowania części z nich poprzez zrównoleglenie obliczeń wykorzystując kartę graficzną.
 
 \subsection{Jak "działa" muzyka}\label{sec:JakDzialaMuzyka}
 Przed dalszymi rozważaniami istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Muzyka, równoznaczne z utworem muzycznym, jest uporządkowanym zbiory dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy zadanego sygnału akustycznego. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na rozdzielne części, można wyróżnić cztery rozdzielne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów transkrypcji muzycznej. Są to:
@@ -253,7 +253,7 @@ Istnieją oczywiście instrumenty, które generują dźwięki o dowolnych F0, a 
 
 Ciekawą własnością niemalże wszystkich kultur muzycznych jest podobieństwo do siebie odpowiednich nut w oktawach. Nuty A2, A3 i A4 dla przykładu mają taką samą rolę w kontekście harmoniczności. Brzmią one bardzo podobnie do siebie, jedynie różnią się wysokością. Ze względu na tą cechę, opisany wyżej system redukuje liczbę wszystkich istniejących dźwięków do jedynie 12 klas dźwięków, po 1 na każdą z nut w oktawie. Korzystając ze wzoru ~\ref{eq:midi_freq} dla wielokrotności liczby 440 można uzyskać tabelkę z częstotliwościami dźwięków \textbf{A} w kolejnych oktawach, jak w tabeli \ref{tab:FqMidi}.
 
-\begin{table}[H]
+\begin{table}[ht]
   \begin{center}
     \begin{tabular}{ |c|c|c| } 
     \hline
@@ -325,7 +325,7 @@ Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania
 \subsubsection{Reprezentacja danych średniego poziomu}
 Koncepcja pojęcia \textit{Reprezentacja danych średniego poziomu} pozwala na utworzenie pewnego rodzaju pośrednika pomiędzy akustyczną reprezentacją dźwięku, a tą formalnie zapisaną. Sygnał muzyczny w czystej postaci jest mało informatywny, nie możemy z niego wyczytać chociażby poszczególnych nut utworu, tak jak jest to widoczne w zapisie nutowym. W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy sugerują, że celem użycia tego narzędzia jest stworzenie pośredniego stopnia abstrakcji, które będzie działało jak interfejs do analizy audio i do ułatwienia konstrukcji systemów transkrypcji.
 
-Najczęściej używaną reprezentacją danych na średnim poziomie przy analizie sygnału akustycznego jest szybka transformacja Fouriera (dokładniej opisana w sekcji \ref{sec:FFT}) sygnału w kolejnych oknach czasowych. W ogólności wszystkie funkcje pozwalające na przeniesienie sygnału z domeny czasowej na domenę częstotliwości są niezwykle istotne w analizie dźwięku. W tej pracy zostaną przedstawione algorytmy bazujące na tej właśnie reprezentacji danych (jak np. Autokorelacja czy metody operujące na cepstrum). \todo[inline]{reference sections}
+Najczęściej używaną reprezentacją danych na średnim poziomie przy analizie sygnału akustycznego jest szybka transformacja Fouriera (dokładniej opisana w sekcji \ref{sec:FFT}) sygnału w kolejnych oknach czasowych. W ogólności wszystkie funkcje pozwalające na przeniesienie sygnału z domeny czasowej na domenę częstotliwości są niezwykle istotne w analizie dźwięku. W tej pracy znajduje się opis algorytmów operujących na tej właśnie reprezentacji danych (analiza tej reprezentacji opisana jest w sekcji \ref{sec:f0:tfr}, algorytmy jak ACLOS opisany w sekcji \ref{sec:f0:aclos} czy cepstrum opisane w \ref{sec:f0:ceps} działają jedynie na widmie sygnału).
 
 W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy uważają, że powszechnym wyborem dla reprezentacji danych na średnim poziomie jest bazowanie na \textit{ścieżkach sinusoidalnych}. W tym przypadku sygnał akustyczny jest przedstawiony jako suma sinusoid o zmiennych w czasie częstotliwościach i amplitudach. Korzyścią, jaka płynie z tej reprezentacji jest łatwe przedstawienie instrumentów tonalnych. Problem z tym podejściem zaczyna się przy wielotonalnych sygnałach, gdzie dźwięki nakładają się na siebie w domenie częstotliwości i czasu. 
 
@@ -484,7 +484,7 @@ Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, 
 \subsection{Estymacja składowej fundamentalnej F0}\label{sec:f0}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
 
-Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które będę stosować w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
+Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które jest stosowane w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
 \subsubsection{Funkcja Autokorelacji}\label{sec:f0:ac}
 Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności które powtarzały się okresowo co $T$ były analizowane jako kandydaci do bycia F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest obecna w wielu nowoczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji w celu znalezienia wysokości dźwięku.
@@ -622,7 +622,7 @@ gdzie  $X(f)$ oznacza TF. Zgodnie ze wzorem \ref{eq:ceps:continous} filtrowanie 
   \begin{subfigure}{.49\textwidth}
     \centering
     \includegraphics[width=1.\linewidth]{images/Cepstrum/cepstrogram_cropped.png}
-    \caption{Cepstrum}
+    \caption{Cepstrogram}
   \end{subfigure}
   \begin{subfigure}{.5\textwidth}
     \centering
@@ -638,15 +638,17 @@ Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do z
 \subsubsection{ACLOS}\label{sec:f0:aclos}
 Badanie cykliczności spektrum, do którego jednym z narzędzi jest cepstrum opisane w \ref{sec:f0:ceps}, można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność na cyfrowej fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
 
-Nazwa algorytmu ACLOS jest skrótem od \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma. Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z ta różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną w zależności od pików na poszczególnych pasmach sygnału, czo czyni ten algorytm dużo bardziej skomplikowany niż ACLOS.
-
-\begin{figure}[t]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.29]{images/ACLOS/ACLOS_flow.jpg}
     \caption{Schemat działania algorytmu ACLOS do wykrywania wysokości dźwięku. Schemat z \cite[233]{Transcription:Kunieda:Aclos}.}
     \label{fig:aclos:flow}
   \end{center}
 \end{figure}
+
+Nazwa algorytmu ACLOS jest skrótem od \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma. Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z ta różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną w zależności od pików na poszczególnych pasmach sygnału, czo czyni ten algorytm dużo bardziej skomplikowany niż ACLOS.
+
+
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.49]{images/ACLOS/data_lifter_cropped.png}
@@ -730,28 +732,98 @@ Funkcja autokorelacji w domenie czasu/mocy, jak opisana w sekcji \ref{sec:f0:ac}
 
 Przyglądając się z bliska pojedyńczemu wynikowi funkcji autokorelacji jak widać na rysunku \ref{fig:multi:ac:em} można zauważyć, że piki znajdują się w nieregularnych odstępach a sama wartość funkcji korelacji nie jest bliska maksymalnej wartości. Na omawianej ilustracji grany jest akord E-mol 3, czyli dokładnie dźwięki E3, G3 i B3, którym odpowiadają częstotliwości F0 odpowiednio 164.81, 196.00 i 246.94 Hz. Na badanym oknie korelacji najwyższym pik jest w miejscu o przesunięciu 266, czyli najsilniejsza hipotezą co do F0 byłaby częstotliwość 165,8 Hz (zgodnie ze wzorem \ref{eq:AC:hz} w badanym przypadku częstotliwość wyliczana jest poprzez $44100 / 266 \approx 165,8$), co jest wartością najbliższą do częstotliwości dźwięku E3. Najniższa nuta w akordzie nazywana jest bazową, i to ona jest najbardziej charakterystyczna dla ludzkiego ucha. Z racji tego, że ma ona najniższą częstotliwość, ma też najwyższą amplitudę (z reguły im wyższa częstotliwość tym niższa amplituda), co daje wyższą szanse na znalezienie tych nut w dźwięku przy wykorzystaniu funkcji autokorelacji w domenie czasu. Drugi pik pod względem rezultatu autokorelacji jest dla przesunięcia równego 534, co odpowiada częstotliwości równej 52,6 Hz. Ta częstotliwość nie jest częścią granego dźwięku, nie jest również żadna z jej wielokrotności.
 
-Algorytmy operujące na dziedzinie częstotliwości mają dużo większe powodzenie w wykrywaniu równoległych F0, jednak algorytmika stojąca za tymi metodami jest dużo bardziej skomplikowana niż w przypadku monofonicznych utworów ze względu na dużo bardziej skomplikowane widma. Spektrogram sygnałów polifonicznych nie jest tak wyraźnym wskaźnikiem jak był w przypadku monofonicznym. Częstotliwości harmonicznych mogą się na siebie nakładać, zniekształcając ich cykliczność jak i modulując wyraźnosć formantów.
-
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.38]{images/Spectrogram/spectrogram_multi_2048_512.png}
-    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli.}
+    \includegraphics[scale=0.38]{images/Spectrogram/spectrogram_multi_2048_512_cropped.png}
+    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli, marginesem zer o długości 2048 i z odstępami długości 512 sampli.}
     \label{fig:multi:spectrogram}
   \end{center}
 \end{figure}
 
-\begin{figure}[ht]
+Algorytmy operujące na dziedzinie częstotliwości mają dużo większe powodzenie w wykrywaniu równoległych F0, jednak algorytmika stojąca za tymi metodami jest dużo bardziej skomplikowana niż w przypadku monofonicznych utworów ze względu na dużo bardziej skomplikowane widma. Spektrogram sygnałów polifonicznych nie jest tak wyraźnym wskaźnikiem jak był w przypadku monofonicznym. Częstotliwości harmonicznych mogą się na siebie nakładać, zniekształcając ich cykliczność jak i modulując wyraźność formantów.
+
+
+Widma poszczególnych dźwięków nakładają się na siebie, wzmacniając pewne częstotliwości, a inne wytłumiając. Przykład takiego zjawiska można zaobserwować na rysunku \ref{fig:multi:spectra:partials}. Nagranie akordu Em3 nagranego na pianinie widać linią ciągłą, natomiast pojedyńczo nagrane dźwięki E3, G3 oraz B3 są przedstawione jako osobne krzywe. Widać na tym wykresie, że wynikowa krzywa Em żadko nakłada się dokłądnie z linią pojedyńczej nuty, a jest raczej nową strukturą z częścią cech wspólnych.
+
+\begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=0.325]{images/Em/spectral_component_em3_partials_2048_512.png}
-    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina zagranym na pianinie w Em. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli.}
-    \label{fig:multi:spectrogram}
+    \includegraphics[scale=0.325]{images/Em/spectral_component_em3_partials_2048_512_cropped.png}
+    \caption{Spektralne komponenty nagrania akordu Em zagranego na pianinie oraz trzech poszczególnych nut zagranych na tym samym pianinie nagranych osobno. Użyto okna Hanna o długości 2048 sampli i marginesu zer długości 2048.}
+    \label{fig:multi:spectra:partials}
   \end{center}
 \end{figure}
 
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.27]{images/Em/spectrogram_Em_2048_512_cropped.png}
+    \caption{Spektrogram nagrania akordu Em zagranego na pianinie. Użyto okna Hanna o długości 2048 sampli z marginesem zer długości 2048 i marginesu zer długości 2048.}
+    \label{fig:multi:em:spectrogram}
+  \end{center}
+\end{figure}
 
-\subsubsection{Harmoniczność}
+Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos} są nieefektywne z powodu nakładających się na siebie dźwięków w spektrum. Echo, które wykrywa cepstrum, jest pomieszane pomiędzy dźwiękami, co mocno komplikuje wnioskowanie z tej reprezentacji. ACLOS natomiast traci pewność wyniku z tych samych powodów co funkcja autokorelacji opisana wyżej w tej sekcji. Można zaobserwować na wykresach \ref{fig:multi:ceps:estimation} i \ref{fig:multi:aclos:estimation} że oba te algorytmy wykryły F0 w okolicach dźwięku G (ACLOS około 190 Hz, co jest najbliższe dźwiękowi G3 obecnemu w sygnale, a Cepstrum około 400, co jest wielokrotnością G3). Przyglądając się rozbitemu na poszczególne spektra wykresowi \ref{fig:multi:spectra:partials} można wywnioskować, że nuta ta ma najwięcej wspólnych harmonicznych z pozostałymi, więc właśnie ona wydaje się być najsilniejsza w widmie.
 
+\begin{figure}[h]
+  \begin{subfigure}{0.5\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/cepstrogram_cropped.png}
+    \caption{Cepstrogram}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/cepstra_estimation_cropped.png}
+    \caption{Estymacja F0}
+    \label{fig:multi:ceps:estimation}
+  \end{subfigure}
+  \caption{Wynik cepstrum na nagraniu akordu Em zagranym na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli.}
+  \label{fig:multi:ceps}
+\end{figure}
 
+\begin{figure}[h]
+  \begin{subfigure}{0.5\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/Aclos_corelogram_cropped.png}
+    \caption{Korelogram}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=1.\linewidth]{images/Em/Aclos_estymacja_cropped.png}
+    \caption{Estymacja F0}
+    \label{fig:multi:aclos:estimation}
+  \end{subfigure}
+  \caption{Wynik ACLOS na nagraniu akordu Em zagranym na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli.}
+  \label{fig:multi:aclos}
+\end{figure}
+
+\subsubsection{Metody oparte o modele generatywne}
+W książce \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych ze względu na charakter algorytmu jaki jest użyty i są jednocześnie oparte o generatywny model fali akustycznych. Algorytmy te czerpią z modeli bayesowskich. Rozróżnili oni metody oparte o zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w \cite[744-745]{Transcription:McAulay:SinusoidalRepresentationF0}), oraz grupy modeli off-line i on-line.
+
+Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estymacji. Operują one analizując całą falę dźwiękową. Założeniem tych algorytmów jest segmentacja danych w taki sposób, że każdy z segmentów ma niezmienne wysokości granych dźwięków. Ograniczenie to wymusza na systemie transkrypcji użycia jakiejś formy wykrywania początków dźwięków. Algorytmy te bazują również na pojęciu prawdopodobieństwa, które to opisane jest matematycznym modelem wraz z gęstością. Algorytmy w tej grupie często działają według pewnych założeń co do barwy dźwięków (instrumentów czy głosu) występujących w sygnale.
+
+Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżona jest metoda Yeh'a i Röbel'a dotycząca automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Yeh:JointEvaluationF0} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i \cite{Transcription:Pertus:Inharmonicity}.
+
+\paragraph{Gładkość spektrum}
+W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że polifoniczny, quasi-harmoniczny sygnał można przedstawić za pomocą poniższego wzoru:
+\begin{equation}\label{eq:Yeh:signal}
+y[n] = \{ \sum_{m=1}^{M}\sum_{h_m = 1}^{H_m}a_m,h_m[n]cos((1 + \delta_{m,h_m})h_m\omega_m n + \phi_m [n])\} + v[n],
+\end{equation}
+Gdzie $n$ jest indeksem czasu, $M$ jest liczbą źródeł dźwięków, $H_m$ jest liczbą części dla $m$-tego źródła, $\omega_m$ reprezentuje F0 źródła $m$ a $\phi_m[n]$ jest fazą. Tak zarysowany sygnał jest w dalszej kolejności analizowany w oparciu o poszczególne komponenty. Warto zwrócić uwagę, że zakłada się szum o na tyle małej amplitudzie, że możliwym jest znalezienie poszczególnych sinusoidów składowych.
+
+Innym istotnym wzorem opisującym sygnał źródłowy jest jego reprezentacja w domenie częstotliwości. W swojej pracy Klapuri \cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} zdefiniowała kształt spektrum takiego sygnału jako funkcję częstotliwości:
+\begin{equation}\label{eq:Klapuri:spectrum}
+X(k) = H(k)S(k) + N(k)
+\end{equation}
+gdzie $X(k)$ jest dyskretnym spektrum mocy akustycznego sygnału źródłowego, $S(k)$ jest jest spektrum mocy wibrującego systemu, którego częstotliwość fundamentalna jest mierzona, $H(k)$ jest charakterystyką środowiska w którym dźwięk został wygenerowany wraz z fizycznymi charakterystykami instrumentu, który filtruje źródło dźwięku i wszystkimi innymi czynnikami wpływający na modulacje nagrywanego sygnału, a $N(k)$ jest spektrum mocy szumu addytywnego. Proces eliminacji $H(k)$ nosi nazwę \textit{wstępne wybielanie}.
+
+\cite{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+
+\subsubsection{Onsets and Frames}
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
+    \caption{z https://magenta.tensorflow.org/onsets-frames, diagram przedstawiający architekture sieci Onesets and Frames.}
+  \end{center}
+\end{figure}
+\cite{DBLP:journals/corr/LuongPM15}
+\todo[inline]{Czy tłumaczyć diagram?}
+\todo[inline]{Do poprawy wykresy funkcji okna}
+\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można? Jak opisać implementacje i jak ma wyglądać sekcja "dodatków"?}
 \newpage
 % \section{Klasyfikacja muzyki}
 % \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
@@ -777,14 +849,6 @@ Algorytmy operujące na dziedzinie częstotliwości mają dużo większe powodze
 % \subsection{Funkcje pomocnicze}
 % \newpage
 % \subsection{Transpilacja}
-% \begin{figure}[H]
-%   \begin{center}
-%     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
-%     \caption{z https://magenta.tensorflow.org/onsets-frames, diagram przedstawiający architekture sieci Onesets and Frames.}
-%   \end{center}
-% \end{figure}
-% \cite{DBLP:journals/corr/LuongPM15}
-% \newpage
 
 % \subsection{Składowanie danych}
 % \newpage
@@ -798,7 +862,8 @@ Algorytmy operujące na dziedzinie częstotliwości mają dużo większe powodze
 \subsubsection{Autokorelacja}\label{sec:impl:alg:ac}
 \subsubsection{Cepstrum}\label{sec:impl:alg:ceps}
 \subsubsection{ACLOS}\label{sec:impl:alg:aclos}
-
+\subsubsection{Gaussion Smoothness}\label{sec:impl:alg:specSmoothnes}
+\subsubsection{Onsets And Frames}
 \subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 \newpage

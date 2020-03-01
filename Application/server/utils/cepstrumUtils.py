@@ -41,7 +41,7 @@ def lifterOnCeps(ceps, lifterType=LifterType.triangle, coefficient=2):
 
 def real_cepst_from_signal(data):
     spectrum = fft(data)
-    logSp = np.abs(spectrum)
+    logSp = np.log(np.abs(spectrum))
     ceps = np.abs(ifft(logSp)) ** 2
     return ceps, logSp, spectrum
 
