@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper,twoside]{mwart}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{amssymb}
 \usepackage[polish]{babel}
 \usepackage{polski}
 \usepackage{indentfirst}
@@ -798,7 +799,8 @@ Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estyma
 
 Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżona jest metoda Yeh'a i Röbel'a dotycząca automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Yeh:JointEvaluationF0} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i \cite{Transcription:Pertus:Inharmonicity}.
 
-\paragraph{Gładkość spektrum} W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że polifoniczny, quasi-harmoniczny sygnał można przedstawić za pomocą poniższego wzoru:
+\paragraph{Przetwarzanie wstępne} 
+W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że polifoniczny, quasi-harmoniczny sygnał można przedstawić za pomocą poniższego wzoru:
 \begin{equation}\label{eq:Yeh:signal}
 y[n] = \{ \sum_{m=1}^{M}\sum_{h_m = 1}^{H_m}a_m,h_m[n]cos((1 + \delta_{m,h_m})h_m\omega_m n + \phi_m [n])\} + v[n],
 \end{equation}
@@ -810,7 +812,7 @@ X(k) = H(k)S(k) + N(k)
 \end{equation}
 gdzie $X(k)$ jest dyskretnym spektrum mocy akustycznego sygnału źródłowego, $S(k)$ jest jest spektrum mocy wibrującego systemu, którego częstotliwość fundamentalna jest mierzona, $H(k)$ jest charakterystyką środowiska w którym dźwięk został wygenerowany wraz z fizycznymi charakterystykami instrumentu, który filtruje źródło dźwięku i wszystkimi innymi czynnikami wpływający na modulacje nagrywanego sygnału, a $N(k)$ jest spektrum mocy szumu addytywnego. 
 
-Generalizując, proces przygotowujący sygnał do transkrypcji można opisać jako eliminację $H(k)$ oraz $N(k)$ zgodnie z wzorem \ref{eq:Klapuri:spectrum}. Szum $N(k)$ można tłumić poprzez odejmowanie w dziedzinie spektrum mocy. Proces eliminacji $H(k)$ nosi nazwę \textit{wstępne wybielanie} i można go dokonać poprzez liftering wysoko przepustowy (filtrowane są niższe wartości od zadanej w domenie quefrency). Odruchowym byłoby użycie obu tych metod aby w wyniku dostać możliwie dokładne $S(k)$, jednak zgodnie z badaniami opisanymi w \cite[85-86]{Transcription:Hermansky:RecognitionInNoise} kaskadowe wykonywanie algorytmów redukujących modulacje akustyczne nie polepsza wyniku działania algorytmów przetwarzających tak przygotowany sygnał. Klapuri w \cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} przedstawia metodę krzywienia magnitudy która wyrównuje $H(k)$ i jednocześnie pozwala na liniowe odjęcie szumu z kaskadowy sposób. Wykrzywianie to dla spektrum mocy $X(k)$ opisane jest wzorem
+Generalizując, proces przygotowujący sygnał do transkrypcji muzycznej można opisać jako eliminację $H(k)$ oraz $N(k)$ zgodnie ze wzorem \ref{eq:Klapuri:spectrum}. Szum $N(k)$ można tłumić poprzez odejmowanie w dziedzinie spektrum mocy. Proces eliminacji $H(k)$ nosi nazwę \textit{wstępne wybielanie} i można go dokonać poprzez liftering wysoko przepustowy (filtrowane są niższe wartości od zadanej w domenie quefrency). Odruchowym byłoby użycie obu tych metod, aby w wyniku dostać możliwie dokładne $S(k)$, jednak zgodnie z badaniami opisanymi w \cite[85-86]{Transcription:Hermansky:RecognitionInNoise} kaskadowe wykonywanie algorytmów redukujących szum i modulacje akustyczne nie polepsza wyniku działania algorytmów przetwarzających tak przygotowany sygnał. Klapuri w \cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} przedstawia metodę krzywienia magnitudy która wyrównuje $H(k)$ i jednocześnie pozwala na liniowe odjęcie szumu w kaskadowy sposób. Opisane wykrzywianie dla spektrum mocy $X(k)$ zdefiniowane jest wzorem
 \begin{equation}\label{eq:klapuri:warping}
   Y(k) = \ln\{ 1 + \frac{1}{g}X(K)\}
 \end{equation}
@@ -818,9 +820,25 @@ gdzie g opisane jest wzorem
 \begin{equation}\label{eq:klapuri:warping:g}
   g = [ \frac{1}{k_1 - k_0 + 1} \sum_{l=k_0}^{k_1}X(l)^{\frac{1}{3}}]^3
 \end{equation}
-Wartości $k_0$ i $k_1$ odpowiadają odpowiednio minimalnej i maksymalnej częstotliwości jaka jest dopuszczalna w algorytmie estymującym F0. Jednym z założeń tego podejścia jest znacznie większa amplituda $H(k)S(k)$ od amplitudy szumu $N(k)$. Drugim założeniem jest to, że większość komponentów spektralnych na odcinku od $k_0$ do $k_1$  ma moc na poziomie szumu, a jedynie kilka z nich są faktycznymi pikami. Z tymi założeniami zadaniem $\frac{1}{g}$ jest skalowanie sygnału wejściowego tak, że szum zostaje na równym poziomie, a piki są wyraźnie widoczne ponad tym poziomie. Wzór \ref{eq:klapuri:warping:g} nakłąda na szum liniową transformację krzywienia magnitudy, podczas gdy piki w widmie przechodzą transformację logarytmiczną. Powszechne jest również eliminowanie szumów $N(k)$ poprzez branie pod uwagę widma tylko ponad pewnym ustalonym progiem tak, aby wszystkie komponenty poniżej tego progu mogły być uznane za szum. Zakłada się też, że charakterystyka otoczenia $H(k)$ ma na widmie na tyle mały efekt, że można ją pominąć \cite{Transcription:Pertus:Inharmonicity}. Założenie to ogranicza jakość nagrań muzycznych branych pod uwagę w kontekście badania F0 do tych, które zostały nagrane profesjonalnie (sprzętem zaniedbywalnie modyfikującym charakterystykę granych instrumentów, w pomieszczeniu o neutralnej w kontekście modulacji fal dźwiękowych akustyce), aby zminimalizować $H(k)$.
-\cite{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+Wartości $k_0$ i $k_1$ odpowiadają odpowiednio minimalnej i maksymalnej częstotliwości jaka jest dopuszczalna w algorytmie estymującym F0. Jednym z założeń tego podejścia jest znacznie większa amplituda $H(k)S(k)$ od amplitudy szumu $N(k)$. Drugim założeniem jest to, że większość komponentów spektralnych na odcinku od $k_0$ do $k_1$  ma moc na poziomie szumu, a jedynie kilka komponentów jest faktycznymi pikami. Z tymi założeniami zadaniem mnożenia przez $\frac{1}{g}$ jest skalowanie sygnału wejściowego tak, że szum zostaje na równym poziomie, a piki są wyraźnie widoczne ponad tym poziomie. Wzór \ref{eq:klapuri:warping:g} nakłąda na szum liniową transformację krzywienia magnitudy, podczas gdy piki w widmie przechodzą transformację logarytmiczną. Powszechne jest również eliminowanie szumów $N(k)$ poprzez branie pod uwagę widma tylko ponad pewnym ustalonym progiem tak, aby wszystkie komponenty poniżej tego progu mogły być uznane za szum. Zakłada się też, że charakterystyka otoczenia $H(k)$ ma na widmie na tyle mały efekt, że można ją pominąć \cite{Transcription:Pertus:Inharmonicity}. Założenie to ogranicza jakość nagrań muzycznych branych pod uwagę w kontekście badania F0 do tych, które zostały nagrane profesjonalnie (sprzętem zaniedbywalnie modyfikującym charakterystykę granych instrumentów, w pomieszczeniu o neutralnej w kontekście modulacji fal dźwiękowych akustyce), aby zminimalizować wpływ $H(k)$.
 
+\paragraph{Gładkość spektrum}
+Według zasady przytoczonej już wcześniej, wysokie częstotliwości w sygnale mają z reguły mniejszą magnitudę. Jest to spowodowane rozłożeniem energii w fali akustycznej - wygnał o dużych częstotliwościach oscyluje w krótkich interwałach, co samo w sobie wymaga energii, podczas gdy sygnał o niższej częstotliwości tą samą energią zyskuje na amplitudzie. W rezultacie, kształt widma sygnału akustycznego ma postać rozkładu prawoskośnego. Ta cecha spektrum jest niezwykle użyteczna w kontekście transkrypcji muzycznej.
+
+Przy założeniu, że częstotliwość fundamentalna F0 ma $n$ harmonicznych w badanym spektrum, oznaczonych kolejno $f_0, f_1, f_2, ..., f_n$, zasada gładkości spektrum mówi, ze magnitudy kolejnych harmonicznych sygnału pozostają w następującej relacji:
+\begin{equation}\label{eq:specSmooth:principle}
+  m(f_0) > m(f_1) > m(f_2) > ... > m(f_n)
+\end{equation}
+gdzie $m(f_n)$ jest magnitudą $n$-tej harmonicznej.
+
+W ogólności, wykorzystanie gładkości spektrum w procesie transkrypcji polega na założeniu, ze obwiednia widma sygnału akustycznego jest relatywnie gładka i wraz ze wzrostem częstotliwości obserwowanego komponentu spektralnego zmniejsza się jego moc. W przypadku, gdy w spektrum istnieje skok w magnitudzie pomiędzy sąsiednimi harmonicznymi danego kandydata F0, który zakłóca kształt widma, można podejrzewać, że skok ten jest wynikiem nałożenia się na siebie harmonicznych różnych F0.
+
+
+Sytuacja, w której część harmonicznych dwóch różnych częstotliwości funamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w  \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
+\begin{equation}\label{eq:specSmooth:klapuri:overlap}
+  F_R = \frac{m}{n}F_s
+\end{equation}
+gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{eq:specSmooth:klapuri:overlap}, częstotliwości harmoniczne dwóch różnych częstotliwości fundamentalnych mogą się pokrywać nawzajem tylko wtedy, kiedy częstotliwości fundamentalne są między sobą w relacji wymiernej. Jak opisuje Klapuri w \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation}, gdy dwa dźwięki są w opisanej wyżej relacji, to każda $m$=ta harmoniczna $mk$ dźwięku $S$ nakłada się z $n$-tą harmoniczną $nk$ dźwięku $R$, gdzie $k \geqslant 1$. Ściślej ujmując, $hF_S = jF_R$ dla każdej pary $h=mk$ i $j=nk$ gdy \ref{eq:specSmooth:klapuri:overlap} jest prawdziwe.
 \subsubsection{Onsets and Frames}
 \begin{figure}[H]
   \begin{center}
