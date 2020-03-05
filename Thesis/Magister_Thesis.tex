@@ -834,11 +834,27 @@ gdzie $m(f_n)$ jest magnitudą $n$-tej harmonicznej.
 W ogólności, wykorzystanie gładkości spektrum w procesie transkrypcji polega na założeniu, ze obwiednia widma sygnału akustycznego jest relatywnie gładka i wraz ze wzrostem częstotliwości obserwowanego komponentu spektralnego zmniejsza się jego moc. W przypadku, gdy w spektrum istnieje skok w magnitudzie pomiędzy sąsiednimi harmonicznymi danego kandydata F0, który zakłóca kształt widma, można podejrzewać, że skok ten jest wynikiem nałożenia się na siebie harmonicznych różnych F0.
 
 
-Sytuacja, w której część harmonicznych dwóch różnych częstotliwości funamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w  \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
+Sytuacja, w której część harmonicznych dwóch różnych częstotliwości fundamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w  \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
 \begin{equation}\label{eq:specSmooth:klapuri:overlap}
   F_R = \frac{m}{n}F_s
 \end{equation}
 gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{eq:specSmooth:klapuri:overlap}, częstotliwości harmoniczne dwóch różnych częstotliwości fundamentalnych mogą się pokrywać nawzajem tylko wtedy, kiedy częstotliwości fundamentalne są między sobą w relacji wymiernej. Jak opisuje Klapuri w \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation}, gdy dwa dźwięki są w opisanej wyżej relacji, to każda $m$=ta harmoniczna $mk$ dźwięku $S$ nakłada się z $n$-tą harmoniczną $nk$ dźwięku $R$, gdzie $k \geqslant 1$. Ściślej ujmując, $hF_S = jF_R$ dla każdej pary $h=mk$ i $j=nk$ gdy \ref{eq:specSmooth:klapuri:overlap} jest prawdziwe.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.38]{images/spectral_smoothnes_kapuri.jpg}
+    \caption{Zobrazowanie zasady gładkości spektrum. Logarytmiczne spektrum mocy zawierające dwa dźwięki. Widmo zostało przefiltrowane przez liftering wysoko przepustowy. Wykres z \cite[3383]{Transcription:Klapuri:MultipitchEstimationAndSeparation}.}
+    \label{fig:specSmooth:kapuri}
+  \end{center}
+\end{figure}
+
+Klapuri kategoryzuje trudności związane z relacjami wysokości dźwięków na dwie grupy:
+\begin{itemize}
+\item{} W trakcie usuwania wykrytego dźwięku ze spektrum, harmoniczne innego dźwięku mogą być usunięte, co spowoduje utrudnienie albo nawet uniemożliwienie wykrycia tego dźwięku
+\item{} Dwie lub więcej F0 są ze sobą w takiej relacji, że w widmie pojawia się nieistniejący dźwięk ,,duch''. Dzieje się tak np. gdy dwa F0, o częstotliwościach odpowiednio $2F$ i $3F$ są grane równolegle, harmoniczne obu dźwięków nakładają się z co drugimi i trzecimi harmonicznymi nie granego dźwięku o częstotliwości F0 równej $F$. Tak powstały dźwięk może zostać niewłaściwie wykryty przez algorytmy transkrypcji.
+\end{itemize}
+Trudności te mają być zminimalizowane poprzez nałożenia funkcji wygadzającej na badane spektrum. Przykład przedstawiony na rysunku \ref{fig:specSmooth:kapuri} obrazuje funkcję wygładzenia (cieńka linia) nałożoną na spektrum podczas badania pierwszego dźwięku, które obrazuje, że co trzeci pik jest wysoko ponad zakładaną krzywą, i to one zostałyby w widmie po odjęciu wygładzonego widma pierwszego dźwięku ze spektrum sygnału. Ten sam mechanizm może pozwolić na wyeliminowanie nieistniejących dźwięków ,,duchów''.
+
 \subsubsection{Onsets and Frames}
 \begin{figure}[H]
   \begin{center}
@@ -847,9 +863,9 @@ gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{
   \end{center}
 \end{figure}
 \cite{DBLP:journals/corr/LuongPM15}
-\todo[inline]{Czy tłumaczyć diagram?}
+\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można? Jak opisać implementacje i jak ma wyglądać sekcja "dodatków"? Czy można cytować Degree of Bachelor (licencjat). Czy tłumaczyć diagramy i wykresy brane z książek po eng?}
 \todo[inline]{Do poprawy wykresy funkcji okna}
-\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można? Jak opisać implementacje i jak ma wyglądać sekcja "dodatków"?}
+
 \newpage
 % \section{Klasyfikacja muzyki}
 % \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
