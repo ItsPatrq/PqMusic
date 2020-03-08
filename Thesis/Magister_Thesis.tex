@@ -24,6 +24,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{csquotes}
 \captionsetup{compatibility=false}
 %% \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstęp pomiędzy liniami?
@@ -134,8 +135,24 @@
 \clearpage
 
 \setcounter{secnumdepth}{0}
-\section{Wstęp}
-\label{sec:wstep}
+\section{Wstęp}\label{sec:wstep}
+Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane są w postaci binarnych plików binarnych, których zawartością są sygnały foniczne w formie cyfrowej. Sygnały cyfrowe są sygnałami dyskretnymi czasu dyskretnego, które zostały poddane procesowi kwantowania wartości, przykładowo do najbliższych liczb całkowitych \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można pójść na kompromis z jakością skompresowanego sygnału \cite[66]{Homerecording:DlaKazdego}. Częstotliwość próbkowania ma również znaczący wpływ na wynikowy rozmiar plików, jak i ilość bitów przeznaczony na pojedyńczy sampel. Wszystkie cechy jakie posiada cyfrowa reprezentacja rzeczywistego dźwięku muszą być wzięte pod uwagę podczas jej przetwarzania.
+
+W kontekście algorytmów generujących muzykę, binarne pliki dźwiękowe nie posiadają efektywnej struktury pozwalającej na trzymanie akustycznych informacji o melodii czy rytmice. Cechy, które można wydobyć ze zdigitalizowanego strumienia audio mogą posłużyć za istotne wskaźniki przy klasyfikacji zbiorów, natomiast kluczowe informacje odnoszące się do struktury kompozycji i harmonii poszczególnych sekcji szukać należy w transkrypcji danego utworu. 
+
+%% z PWN : transkrypcja [łac. transcriptio ‘przepisywanie’], muz. opracowanie utworu muz. na inny niż w oryginale zespół wykonawczy (orkiestracja) lub inny instrument; Pytanie czy rozszerzenie tego znaczenia w języku polskim jest poprawne? także zapisanie utworu inną notacją muz.; transkrybować — zapisywać znakami współcz. notacji muz. utwory zapisane dawnymi systemami notacyjnymi, np. notacją modalną, menzuralną. Po ENG transkrypcja jest zgodna z rozdziałem
+
+\textit{Transkrypcja muzyki} to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki i możliwości jej wiernego odtworzenia. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analizę zdigitalizowanego sygnału fonicznego. Do zadań tego procesu często zalicza się odseparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych trudności transkrypcji.
+
+Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem ,,Program komputerowy do wydobywania wysokości dźwięku'' (tłumaczenie własne) \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 XX wieku w pracach naukowych \cite{Transcription:Schloss:AutomaticTranscriptionOfPercussiveMusic} i \cite{Transcription:Bilmes:TimingIsOfTHeEssence} \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
+
+Kompletna transkrypcja wymagała by dokładnej analizy wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Z racji tego, że złożoność tego zadania jest bardzo duża, a w niektórych przypadkach nawet teoretycznie niemożliwa, celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem częściowej transkrypcji nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
+
+Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzycznej są jednak nadal gorsze w rezultatach od profesjonalistów w dziedzinie muzyki. Rozwiązanie, które dawałoby rzetelne rezultaty w ogólnym zastosowaniu na muzyce jeszcze nie istnieje. Jednakże, z odpowiednimi założeniami co do sygnału źródłowego, najnowsze metody potrafią dokonać kompletnej transkrypcji utworu muzycznego. Restrykcje w analizowanym sygnale często sprowadzają się do ograniczenia polifoniczności (ilości jednoczesnych dźwięków) \cite{Transcription:BayesianHarmonicModels}, użycia tylko konkretnego instrumentu \cite{Transcription:Hawthorne:OnsetsAndFrames} czy braku interferencji z dźwiękami perkusyjnymi \cite{Transcription:Kameoka:HarmonicSeparation}.
+
+Bez automatyzacji procesu, transkrypcja wykonywana manualnie zakładała profesjonalną wiedzę słuchacza, który iteracyjnie odsłuchując dany utwór ustala grane instrumenty wraz z częstotliwością fundamentalną lub akordem, która jest na nich grany. Wymusza to osobie transkrybującej wyróżnienie poszczególnych granych dźwięków, wyodrębniając jego długość, wysokość i korelacje do pozostałych granych dźwięków. Ludzkie ucho postrzega dźwięk relatywnie, co powoduje, że dużo łatwiej jest porównywać dźwięki niż je analizować w odizolowaniu, toteż referencyjne dźwięki, jak na przykład skala zagrana na pianinie, są często wykorzystywane przy tradycyjnym przebiegu procesu transkrypcji. W rezultacie zadanie to jest skomplikowane i wymaga dużego nakładu czasowego nawet dla profesjonalistów z doświadczeniem w dziedzinie muzykologii.
+
+W tym rozdziale przedstawiony jest wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony w oparciu o przykłady już istniejących rozwiązań.  Celem tych rozważań było przybliżenie ogólnej koncepcji transkrypcji muzycznej, teorii na jakiej się opierają, \todo[inline]{Move somewhere}oraz próba zoptymalizowania części z nich poprzez zrównoleglenie obliczeń wykorzystując kartę graficzną.
 
 \newpage
 
@@ -165,27 +182,8 @@
 \newpage
 \setcounter{secnumdepth}{4}
 
-\section{Transkrypcja muzyki}
-Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane są w postaci binarnych plików binarnych, których zawartością są sygnały foniczne w formie cyfrowej. Sygnały cyfrowe są sygnałami dyskretnymi czasu dyskretnego, które zostały poddane procesowi kwantowania wartości, przykładowo do najbliższych liczb całkowitych \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można pójść na kompromis z jakością skompresowanego sygnału \cite[66]{Homerecording:DlaKazdego}. Częstotliwość próbkowania ma również znaczący wpływ na wynikowy rozmiar plików, jak i ilość bitów przeznaczony na pojedyńczy sampel. Wszystkie cechy jakie posiada cyfrowa reprezentacja rzeczywistego dźwięku muszą być wzięte pod uwagę podczas jej przetwarzania.
-
-W kontekście algorytmów generujących muzykę, binarne pliki dźwiękowe nie posiadają efektywnej struktury pozwalającej na trzymanie akustycznych informacji o melodii czy rytmice. Cechy, które można wydobyć ze zdigitalizowanego strumienia audio mogą posłużyć za istotne wskaźniki przy klasyfikacji zbiorów, natomiast kluczowe informacje odnoszące się do struktury kompozycji i harmonii poszczególnych sekcji szukać należy w transkrypcji danego utworu. 
-
-%% z PWN : transkrypcja [łac. transcriptio ‘przepisywanie’], muz. opracowanie utworu muz. na inny niż w oryginale zespół wykonawczy (orkiestracja) lub inny instrument; Pytanie czy rozszerzenie tego znaczenia w języku polskim jest poprawne? także zapisanie utworu inną notacją muz.; transkrybować — zapisywać znakami współcz. notacji muz. utwory zapisane dawnymi systemami notacyjnymi, np. notacją modalną, menzuralną. Po ENG transkrypcja jest zgodna z rozdziałem
-
-\textbf{Transkrypcja muzyki} to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny, taki jak zapis nutowy, z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki i możliwości jej wiernego odtworzenia. Algorytmiczne podejście do tego problemu obejmuje rozpoznanie rytmu i wysokości tonu poprzez analizę zdigitalizowanego sygnału fonicznego. Do zadań tego procesu często zalicza się odseparowanie od siebie poszczególnych instrumentów w danym utworze muzycznym, ponieważ nakładanie się na siebie sygnały odrębnych źródeł stanowi jeden z większych trudności transkrypcji.
-
-Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem "Program komputerowy do wydobywania wysokości dźwięku" \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 XX wieku w pracach naukowych \cite{Transcription:Schloss:AutomaticTranscriptionOfPercussiveMusic} i \cite{Transcription:Bilmes:TimingIsOfTHeEssence} \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
-
-Kompletna transkrypcja wymagała by dokładnej analizy wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Z racji tego, że złożoność tego zadania jest bardzo duża, a w niektórych przypadkach nawet teoretycznie niemożliwa, celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem częściowej transkrypcji nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
-
-Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzycznej są jednak nadal gorsze w rezultatach od profesjonalistów w dziedzinie muzyki. Rozwiązanie, które dawałoby rzetelne rezultaty w ogólnym zastosowaniu na muzyce jeszcze nie istnieje. Jednakże, z odpowiednimi założeniami co do sygnału źródłowego, najnowsze metody potrafią dokonać kompletnej transkrypcji utworu muzycznego. Restrykcje w analizowanym sygnale często sprowadzają się do ograniczenia polifoniczności (ilości jednoczesnych dźwięków) \cite{Transcription:BayesianHarmonicModels}, użycia tylko konkretnego instrumentu \cite{Transcription:Hawthorne:OnsetsAndFrames} czy braku interferencji z dźwiękami perkusyjnymi \cite{Transcription:Kameoka:HarmonicSeparation}.
-
-Bez automatyzacji procesu, transkrypcja wykonywana manualnie zakładała profesjonalną wiedzę słuchacza, który iteracyjnie odsłuchując dany utwór ustala grane instrumenty wraz z częstotliwością fundamentalną lub akordem, która jest na nich grany. Wymusza to osobie transkrybującej wyróżnienie poszczególnych granych dźwięków, wyodrębniając jego długość, wysokość i korelacje do pozostałych granych dźwięków. Ludzkie ucho postrzega dźwięk relatywnie, co powoduje, że dużo łatwiej jest porównywać dźwięki niż je analizować w odizolowaniu, toteż referencyjne dźwięki, jak na przykład skala zagrana na pianinie, są często wykorzystywane przy tradycyjnym przebiegu procesu transkrypcji. W rezultacie zadanie to jest skomplikowane i wymaga dużego nakładu czasowego nawet dla profesjonalistów z doświadczeniem w dziedzinie muzykologii.
-
-W tym rozdziale przedstawiony jest wciąż nierozwiązany problem automatycznej transkrypcji muzycznej, nakreślając najbardziej problematyczne rejony w oparciu o przykłady już istniejących rozwiązań.  Celem tych rozważań było przybliżenie ogólnej koncepcji transkrypcji muzycznej, teorii na jakiej się opierają, \todo[inline]{Move somewhere}oraz próba zoptymalizowania części z nich poprzez zrównoleglenie obliczeń wykorzystując kartę graficzną.
-
-\subsection{Jak "działa" muzyka}\label{sec:JakDzialaMuzyka}
-Przed dalszymi rozważaniami istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Muzyka, równoznaczne z utworem muzycznym, jest uporządkowanym zbiory dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy zadanego sygnału akustycznego. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na rozdzielne części, można wyróżnić cztery rozdzielne składowe, których zbadanie i zinterpretowanie jest przedmiotem algorytmów transkrypcji muzycznej. Są to:
+\section{Jak ,,działa'' muzyka}\label{sec:JakDzialaMuzyka}
+W celu usystematyzowania pojęć i nadania fundamentu do dalszych rozważań istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Utwór muzyczny jest uporządkowanym zbiorem dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy (magnitudy) zadanego sygnału akustycznego. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na możliwie odseparowane części, wyróżnia się cztery rozdzielne składowe, których zbadanie i poprawne zinterpretowanie jest przedmiotem algorytmów transkrypcji muzycznej. Są to:
 \begin{itemize}
 \item Rytm
 \item Wysokość tonu
@@ -208,7 +206,7 @@ W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy,
   \end{center}
 \end{figure}
 
-\subsubsection{Rytm}
+\subsection{Rytm}
 
 
 W kontekście muzykologii, rytm jest relacją czasową pomiędzy poszczególnymi dźwiękami, tworzącą strukturę rytmiczną utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całej kompozycji, ponieważ powszechną praktyką kompozytorów jest jego modyfikacja na przestrzeni piosenki w celu uzyskania konkretnych efektów artystycznych. Dla przykładu, minimalne podnoszenie tempa na czas każdego z refrenów jest powszechnie stosowane w muzyce popularnej.
@@ -229,7 +227,7 @@ Zbadanie rytmiki wymaga wyznaczenia metrum i długości poszczególnych jednoste
 
 W skład rytmu wchodzi również \textbf{grupowanie}. Termin ten odwołuje się do powiązań pomiędzy pojedyńczymi dźwiękami, które razem tworzą łączną frazy, a te z kolei dalej grupowane tworzą większe i bardziej złożone jednostki w hierarchicznej strukturze \cite[12-35]{Transcription:Lerdahl:GenerativeTheory}. 
 
-\subsubsection{Wysokość tonu}\label{subsec:pitch}
+\subsection{Wysokość tonu}\label{subsec:pitch}
 
 Wysokość tonu, czy też wysokość dźwięku, jest percepcyjnym atrybutem za pomocą którego porządkowane są dźwięki na skali częstotliwości, od najniższych do najwyższych. Jest to pojęcie tożsame z częstotliwością sygnału sinusoidalnego zgodnego z tym, które jest odebrane przez ludzkie ucho \cite[3491-3502]{Transcription:Hartmann:PitchPeriodicityAuditoryOrganization}. 
 
@@ -276,8 +274,8 @@ Ciekawą własnością niemalże wszystkich kultur muzycznych jest podobieństwo
 
 Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkład częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadze fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względu na charakterystykę instrumentu czy też techniczne parametry nagrania. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. W tej pracy badane będą jedynie utwory bazujące na wyżej opisanym systemie, jednak na uwadzę należy mieć fakt, że nie jest to uniwersalne rozwiązanie. Również z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Nieharmoniczność najczęściej ustala się na poziomie 5\%, lecz nie istnieje sformalizowany zakres. Próba rozpoznawania jedynie konkretnych częstotliwości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacząco ograniczyłby jej uniwersalność \cite[64-65]{Homerecording:DlaKazdego} \cite[7-11]{Transcription:Anssi:SignalProcessingMethods}.
 
-\subsubsection{Głośność}
-Termin głośności z reguły nie odnosi się do pojedyńczych nut, ale do większych sekcji. W notacji muzycznej nie często używa się słowa "głośność". To co słuchacz odbiera jako siłę dźwięku z punktu widzenia muzyka jest dynamiką granego fragmentu. Większość instrumentów używanych do tworzenia muzyki posiada zdolność wytworzenia zróżnicowanych w sile fal akustycznych. Podstawą skali dynamiki są dwa słowa kluczowe:
+\subsection{Głośność}
+Termin głośności z reguły nie odnosi się do pojedyńczych nut, ale do większych sekcji. W notacji muzycznej nie często używa się słowa ,,głośność''. To co słuchacz odbiera jako siłę dźwięku z punktu widzenia muzyka jest dynamiką granego fragmentu. Większość instrumentów używanych do tworzenia muzyki posiada zdolność wytworzenia zróżnicowanych w sile fal akustycznych. Podstawą skali dynamiki są dwa słowa kluczowe:
 
 \begin{itemize}
   \item \textbf{f} (forte) - głośno
@@ -300,7 +298,7 @@ Z praktycznego punktu widzenia głośność w plikach muzycznych jest zdetermino
   \end{center}
 \end{figure}
 
-\subsubsection{Barwa dźwięku}\label{sec:barwaDzwieku}
+\subsection{Barwa dźwięku}\label{sec:barwaDzwieku}
 Barwa dźwięku (inaczej tembr) jest cechą odwołującą się do harmonicznej domeny sygnału fonicznego. Pozwala ona na odróżnienie od siebie dźwięków o tej samej głośności i wysokości granych na różnych instrumentach. Silne tony harmoniczne danej barwy sprawiają, że dźwięk jest bardziej wyrazisty. W przeciwnym wypadku, gdy siła tonów harmonicznych jest mała, sygnał staje się bardziej rozmyty dla odbiorcy. Barwa dźwięku jest zależna od amplitudy poszczególnych tonów harmonicznych, ich rozkładu w widmie jak i samej struktury tego widma. Jest to dobrze widoczne na rysunku \ref{fig:spektrogram}.
 
 \begin{figure}[t]
@@ -318,12 +316,12 @@ Barwa dźwięku nie jest stała w czasie. Harmoniczne o wysokich częstotliwośc
 Istotnym pojęciem przy omawianiu barwy dźwięku jest \textbf{formant}. Formantem nazywane jest pasmo częstotliwości, w którego obrębie częstotliwości harmoniczne są wzmocnione względem pozostałych częstotliwości danego sygnału. Formanty mogą sprawić, że harmoniczne będą miały większą amplitudę niż częstotliwość fundamentalna. Istnienie tego zjawiska fonicznego uniemożliwia poprawność podejścia, w którym jako częstotliwość fundamentalna wybierana była by ta, o największej amplitudzie w analizowanym oknie \cite[62-63]{BarwaDzwieku:Formant}.
 %%\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Bibliografia - czy może byc "and" pomiędzy autorami? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można?}
 
-\subsection{Modelowanie systemu transkrypcji}
+\section{Modelowanie systemu transkrypcji}
 Muzyka jako ogół cech, jak i pojedyńczy utwór muzyczny posiadają bardzo wiele własności na podstawie których można opierać analizę. W celu zoptymalizowania algorytmu automatycznej transkrypcji należy przefiltrować wszystkie te dane i zdecydować się, które uznać za istotne, a które można uznać za zaniedbywalne. Strukturyzacja algorytmu i dobór reprezentacji danych jest równie istotna przy projektowaniu algorytmu.
 
 Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania muzyki przez ludzki umysł dowodzą, że analiza dźwięku jest dzielona na pod-zadania. Pewne własności muzyki są odseparowywane od reszty bez szerszej perspektywy. Daje to informacje o tym, że modularyzacja podejścia do transkrypcji może być właściwym rozwiązaniem tego problemu. W automatycznej transkrypcji muzyki często używa się innych reprezentacji danych do analizy wysokości dźwięku, w których większy nacisk kładzie się na wierne odwzorowanie częstotliwości, a innych do analizy rytmu, w których najważniejsze jest dokładność w domenie czasu \cite[37-46]{Transcription:Zatorre:AuditoryCortex}\cite[231-246]{Transcription:Tervaniemi:AuditoryCortexFunctions}.
 
-\subsubsection{Reprezentacja danych średniego poziomu}
+\subsection{Reprezentacja danych średniego poziomu}
 Koncepcja pojęcia \textit{Reprezentacja danych średniego poziomu} pozwala na utworzenie pewnego rodzaju pośrednika pomiędzy akustyczną reprezentacją dźwięku, a tą formalnie zapisaną. Sygnał muzyczny w czystej postaci jest mało informatywny, nie możemy z niego wyczytać chociażby poszczególnych nut utworu, tak jak jest to widoczne w zapisie nutowym. W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy sugerują, że celem użycia tego narzędzia jest stworzenie pośredniego stopnia abstrakcji, które będzie działało jak interfejs do analizy audio i do ułatwienia konstrukcji systemów transkrypcji.
 
 Najczęściej używaną reprezentacją danych na średnim poziomie przy analizie sygnału akustycznego jest szybka transformacja Fouriera (dokładniej opisana w sekcji \ref{sec:FFT}) sygnału w kolejnych oknach czasowych. W ogólności wszystkie funkcje pozwalające na przeniesienie sygnału z domeny czasowej na domenę częstotliwości są niezwykle istotne w analizie dźwięku. W tej pracy znajduje się opis algorytmów operujących na tej właśnie reprezentacji danych (analiza tej reprezentacji opisana jest w sekcji \ref{sec:f0:tfr}, algorytmy jak ACLOS opisany w sekcji \ref{sec:f0:aclos} czy cepstrum opisane w \ref{sec:f0:ceps} działają jedynie na widmie sygnału).
@@ -362,7 +360,7 @@ ICFT_x(f) = \int_{-\infty}^{\infty}\textit{F}(t)e^ {j2\pi ft}\mathrm{d}t = x(t)
 Do analizy całego spektrum utworu muzycznego, pojedyńcza transformata Fouriera może nie być wystarczająca ze względu na długość i zróżnicowanie utworu względem czasu. Reprezentacja czasu-częstotliwości pozwala na przedstawienie sygnału w postaci zespolonej w domenie czasu i częstotliwości (ang. time–frequency representation, TFR). W celu uzyskania takiej reprezentacji przy pomocy FT z zastosowaniem okna czasowego, co jest szerzej opisane w sekcji \ref{sec:STFT}. Okna te pełnią rolę prostego TFR, spektrogramu jak i reprezentację czasową czy reprezentację opóźnienia czasowego \cite[21-22]{Transcription:Anssi:SignalProcessingMethods}.
 
 \subsubsection{Dyskretna transformata Fouriera} \label{sec:DFT}
-Jednym z założeń transformacji Fouriera jest aby f(t)\ref{eq:fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym właśnie zbiorze. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania w analizie sygnału akustycznego, ponieważ przetwarzane są tylko skończone długości krzywych, co powoduje, że granice są zawsze skończone. W celach analitycznych na sygnałach, zwłaszcza w kontekście transkrypcji muzycznej, dane brane pod uwagę są brane z ograniczonego przedziału czasowego. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}.
+Jednym z założeń transformacji Fouriera jest aby f(t) z \ref{eq:fourier-base} była funkcją ciągłą na przedziale od minus nieskończoności do nieskończoności, co przekłada się na transformatę w tym właśnie zbiorze. Z praktycznego punktu widzenia nieskończone granice sumy są niemożliwe do zrealizowania w analizie sygnału akustycznego, ponieważ przetwarzane są tylko skończone długości krzywych, co powoduje, że granice są zawsze skończone. W celach analitycznych na sygnałach, zwłaszcza w kontekście transkrypcji muzycznej, dane brane pod uwagę są brane z ograniczonego przedziału czasowego. Potrzebne do tego celu będzie podzielenie analizowanych danych na krótkie próbki \cite{TransformacjaFourieraWroc}\cite{TransformacjaFourieraelektronikab2b}.
 
 \textbf{Dyskretna transformata Fouriera (DFT)} jest narzędziem matematycznym analogicznym do podstawowej transformaty Fouriera, lecz przeznaczonym do analizowania sygnału dyskretnego $x(n)$ o okresie $N$, opisanego następującym wzorem:
 \begin{equation} \label{eq:DFT-periodicy}
@@ -378,7 +376,7 @@ DFT, tak samo jak FT jest odwracalna, co można opisać wzorem:
 \begin{equation} \label{eq:IDFT}
   IDFT_x(n) = \sum_{k = 0}^{N-1} X(k)e^{j2\pi kn} = x(n), n = 0, 1, 2,..., N-1
 \end{equation}
-Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie. Jak opisuje Tomasz Zieliński w \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}, DFT stanowi pewną aproksymację $N$-elementowego wektora próbek analizowanego sygnału za pomocą $N$ ortogonalnych wektorów bazowych $N$-elementowych, z wyjątkiem sytuacji, kiedy w sygnale występuje składowa sinusoidalna, która nie jest częścią zbioru wektorów bazowych, bo w takim wypadku zostanie ona przedstawiona jako suma większej liczby sygnałów "bazowych", co oznacza, że jej widmo ulegnie rozmyciu.
+Wynikiem transformacji będzie N liczb odpowiadających kolejno amplitudzie i fazie sinusoid od $- \frac{1}{2} \Delta $ do $\frac{1}{2} \Delta $, gdzie $\Delta$ jest częstotliwością próbkowania, w rozdzielczości $\frac{1}{N} \Delta$. Częstotliwości są ustalone przez częstotliwość próbkowania oraz liczbę próbek w oknie. Jak opisuje Tomasz Zieliński w \cite[198 - 200, 204-206]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}, DFT stanowi pewną aproksymację $N$-elementowego wektora próbek analizowanego sygnału za pomocą $N$ ortogonalnych wektorów bazowych $N$-elementowych, z wyjątkiem sytuacji, kiedy w sygnale występuje składowa sinusoidalna, która nie jest częścią zbioru wektorów bazowych, bo w takim wypadku zostanie ona przedstawiona jako suma większej liczby sygnałów ,,bazowych'', co oznacza, że jej widmo ulegnie rozmyciu.
 
 \subsubsection{Szybka transformacja Fouriera} \label{sec:FFT}
 DFT omawiana w sekcji \ref{sec:DFT} jest wystarczająca do wykonania wszelkich analitycznych przekształceń. Problem jednak pojawia się w praktyce, i jest nim efektywność algorytmu. W swojej czystej formie transformata Fouriera $F_n$ wymaga zliczenia wszystkich wartości od $h_0$ do $h_{N-1}$ dla każdej z częstotliwości $n$, co oznacza, że złożoność obliczeniowa dla N danych wynosi $O(N^2)$, co jest zbyt dużym obciążeniem nawet dla najlepszych pod względem mocy obliczeniowej współczesnych komputerów do analizy dużego zbioru danych. Istnieje wiele metod optymalizacji numerycznych równań \ref{eq:DFT} i \ref{eq:IDFT} zmniejszających złożoność obliczeniową do co najwyżej $O(N log_2 N)$. Algorytmy te nazywają się \textbf{szybkimi transformacjami Fouriera (FFT, z ang. Fast Fourier Transform)} i to z nich korzysta się powszechnie przy cyfrowej analizie sygnałów \cite{Transcription:Tukey:FFT}.
@@ -403,7 +401,7 @@ Do funkcji okna standardowo używa się funkcji Gaussiana, Hamminga, Hanninga lu
 
 W równaniu \ref{eq:STFT1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dobierany jest zgodnie z zapotrzebowaniem, które sprowadza się do charakterystyki analizowanych danych. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, ponieważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi zsamplowane fragmenty, które poddawane są STFT powinny być jak najmniejsze, aby analiza była wrażliwa na nawet najdrobniejsze zmiany w tonie w celu właściwego wykrycia formantów \cite[804–816]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}\cite[56-57, 256-258]{Transcription:Hess:PitchDetectionOfSpeechSignals}.
 
-Równanie \ref{eq:STFT1} nosi nazwę metody "przesuwającego się okna" MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej lub częstotliwościowej. STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
+Równanie \ref{eq:STFT1} nosi nazwę metody ,,przesuwającego się okna'' MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej lub częstotliwościowej. STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
 \begin{enumerate}
   \item \label{sec:STFT:item1}odwrotnym przekształceniem Fouriera fragmentu widma sygnału poprzez przesunięcie w częstotliwości widmo okna $\Gamma(v -f)$,
   \item przesunięciem w częstotliwości sygnału czasowego otrzymanego z punktu \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.
@@ -482,15 +480,15 @@ Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, 
 
 \clearpage
 
-\subsection{Estymacja składowej fundamentalnej F0}\label{sec:f0}
+\section{Estymacja składowej fundamentalnej F0}\label{sec:f0}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
 
 Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które jest stosowane w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
-\subsubsection{Funkcja Autokorelacji}\label{sec:f0:ac}
-Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności które powtarzały się okresowo co $T$ były analizowane jako kandydaci do bycia F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest obecna w wielu nowoczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji w celu znalezienia wysokości dźwięku.
+\subsection{Funkcja Autokorelacji}\label{sec:f0:ac}
+Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności które powtarzały się okresowo co $T$ były analizowane jako kandydaci do bycia F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest obecna w wielu nowoczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji w celu znalezienia wysokości dźwięku \cite[41-44]{Transcription:Quenneville:Thesis}.
 
-\textbf{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara jest korelacją pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych \cite[32-33]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o tak zwane przesunięcie (ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
+\textit{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara jest korelacją pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych \cite[32-33]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o tak zwane przesunięcie (ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
 
 W pracy naukowej \cite{Transcription:Lawrence:AutocorrelationForPitchDetection} Lawrence używa funkcji autokorelacji do wykrycia częstotliwości fundamentalnych w zadanym sygnale monofonicznym. Zakłada on, że badany sygnał jest quasi-periodyczny, co oznacza, że sygnał posiada cechy pojawiające się w prawie równych odstępach, lecz nie koniecznie dokładnie periodyczny. Sygnał w pełni periodyczny jest przedmiotem analizy czysto teoretycznej, ponieważ sygnał akustyczny musiałby pozostać bez zmian w amplitudzie i częstotliwości przez cały swój okres, podczas gdy sygnał quasi-periodyczny zakłada zmiany w strukturze sygnału względem czasu. Funkcja autokorelacji na takim sygnale byłaby funkcją długości okresu opisującą zgodność przesuniętego o ten okres sygnału z sygnałem bazowym. 
 
@@ -540,7 +538,7 @@ Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacj
 
 Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane faktem, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na wykresie \ref{fig:ACResults:corr}. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
 
-\subsubsection{Analiza TFR} \label{sec:f0:tfr}
+\subsection{Analiza TFR} \label{sec:f0:tfr}
 Analiza sygnału w postaci reprezentacji średniego poziomu TFR, w przeciwieństwie do operowania na nieprzetworzonym sygnale cyfrowym, jak miało to miejsce w sekcji \ref{sec:f0:ac}, skupia się na badaniu relacji w domenie częstotliwości danego sygnału. Najpopularniejszą reprezentacja TRF jest zdefiniowana jako STFT na kolejnych fragmentach (oknach) sygnału. Docelową postacią jest zbór okien tworzących spektrogram, ale w celu jego uzyskania należy SFTF przedstawić jako wektor energii. Jednym ze sposobów w jaki można uzyskać taką postać jest to wykonanie kwadratu modułu z STFT:
 
 \begin{equation} \label{eq:powSpec}
@@ -577,13 +575,13 @@ Podczas analizy spektrogramu, naiwnym podejściem byłoby wybranie za F0 ten pik
 
 Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu sensu w rozmieszczeniu harmonicznych względem siebie. Zgodnie z regułą harmoniczności, harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości, co można zauważyć na rysunku \ref{fig:spectralComponent}. Ta charakterystyka akustycznych fal jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej jako najbardziej niezawodna. Wystarczy zlokalizować pik o najmniejszej częstotliwości wraz z największą ilością pików pasujących jako kolejne harmoniczne. Używanie zasady harmoniczności, lub hybryda tych dwóch podejść poprzez ważenie energii częstotliwością jest znacznie bardziej pewną metodą wyznaczania częstotliwości fundamentalnej niż opieranie się na samym ciśnieniu akustycznym.
 
-\subsubsection{Analiza cepstralna}\label{sec:f0:ceps}
-Z racji tego, że spektrum samo w sobie jest periodyczne, można spróbować użyć metodologi wykrywającej cykliczności już na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Stworzyli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku F0, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego sygnału \cite{Transcription:Childers:CepstruGuide}.
+\subsection{Analiza cepstralna}\label{sec:f0:ceps}
+Z racji tego, że spektrum samo w sobie jest periodyczne, można spróbować użyć metodologi wykrywającej cykliczności już na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Stworzyli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku F0, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego sygnału \cite{Transcription:Childers:CepstruGuide} \cite[46-59]{Transcription:Quenneville:Thesis}.
 
 Cepstrum zostało pierwotnie opisane w pracy \cite{Transcription:Bogert:FirstCepstrum}, a następnie, dwa lata później w roku 1967, zastosowane do wykrywania wysokości dźwięku w ramach \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w pracy naukowej dotyczącej historii cepstrum (\cite[95-99]{Transcription:Oppenheim:HistoryOfCepstrum}) równolegle z tymi pracami, niezależnie powstawała praca doktorancka \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Miała ona mieć szczególne zastosowanie w metodologii cepstrum, pokrywając się wnioskami  i przyspieszając tempo jego rozwoju. Dalsze prace Oppenheima opisujące między innymi charakterystyki splotu harmonicznych, które są reminiscent do spektrum logarytmu spektrum, którym to właśnie jest cepstrum. Odkrycia te przyczyniły się do między innymi stosowania cepstrum na oknach czasowych (tak jak STFT) czy opisanie zespolonego cepstrum, które pozwala na odwrócenie tej transformacji, otwierając drogę do takich metod jak filtrowanie w domenie cepstralnej.
 
 
-Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstCepstrum} została zdefiniowana jako "spektrum mocy z logarytmu spektrum mocy". Nawiązując do wzoru \ref{eq:logPowSpec}, cepstrum mocy okna o indeksie $k$ z oknem $w$ liczy się jako 
+Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstCepstrum} została zdefiniowana jako ,,spektrum mocy z logarytmu spektrum mocy''. Nawiązując do wzoru \ref{eq:logPowSpec}, cepstrum mocy okna o indeksie $k$ z oknem $w$ liczy się jako 
 \begin{equation}\label{eq:ceps1}
   C_k^w(t, f) = |(S_k^w(t,f)|^2.
 \end{equation}
@@ -598,9 +596,13 @@ Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectru
   \textit{gamnitude} & zamiast & \textit{magnitude} (z ang. wielkość)
   \end{tabular}
 \end{table}
-\noindent Wytłumaczeniem tej lingwistyki, w której znajome wyrazy były modyfikowane w celu uzyskania czegoś podobnego, ale mimo wszystko troche innego, było zadeklarowane następująco: "Ogólnie rzecz biorąc, działamy po stronie częstotliwości w sposób powszechnie stosowany po stronie czasu i odwrotnie"\cite{Transcription:Bogert:FirstCepstrum} \cite[1-4]{Transcription:Randall:CepstrumHistory}.
+\noindent Wytłumaczeniem tej lingwistyki, w której znajome wyrazy były modyfikowane w celu uzyskania czegoś podobnego, ale mimo wszystko troche innego, było zadeklarowane następująco: 
+\begin{displayquote}
+,,Ogólnie rzecz biorąc, działamy po stronie częstotliwości w sposób powszechnie stosowany po stronie czasu i odwrotnie'' \cite[95]{Transcription:Oppenheim:FromFqToQf} (tłumaczenie własne)
+\end{displayquote}
 
-Cepstrum przedstawia piki tam, gdzie oryginalny sygnał w przestrzeni czasu\-amplitudy posiada echo. Ta nowa reprezentacja spektralnej domeny nie jest już domeną częstotliwości, ani też nie jest to domena czasu. Przez ten fakt, aby nie mieszać tych pojęć ze znanymi pojęciami Bogert nazwał domenę cepstrum jako domena \textit{quefrency}, która tak naprawdę jest domeną częstotliwości spektralnych pików oryginalnego sygnału.
+
+Cepstrum przedstawia piki tam, gdzie oryginalny sygnał w przestrzeni czasu\-amplitudy posiada echo. Ta nowa reprezentacja spektralnej domeny nie jest już domeną częstotliwości, ani też nie jest to domena czasu. Przez ten fakt, aby nie mieszać tych pojęć ze znanymi pojęciami Bogert nazwał domenę cepstrum jako domena \textit{quefrency}, która tak naprawdę jest domeną częstotliwości spektralnych pików oryginalnego sygnału \cite[1-4]{Transcription:Randall:CepstrumHistory} \cite[210-219]{Transcription:Bogert:FirstCepstrum}.
 
 W przypadku lifterowania, czyli filtrowania w domenie quefrency, przydatnym wzorem jest cepstrum sygnału ciągłego $x(t)$:
 \begin{equation}\label{eq:ceps:continous}
@@ -636,7 +638,7 @@ gdzie  $X(f)$ oznacza TF. Zgodnie ze wzorem \ref{eq:ceps:continous} filtrowanie 
 
 Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do znalezienia częstotliwości fundamentalnej w monofonicznym sygnale. Podejście to operuje na cepstrum mocy, które opisane jest wzorem \ref{eq:ceps1}, dla kolejnych okien czasowych. Tak pozyskane cepstrum badane jest w kontekście kandydatów F0, i wybierany ten, z największym współczynnikiem. Dokładna implementacja opisana jest w sekcji \ref{sec:impl:alg:ceps}. Metoda ta jest podatna na wyznaczanie wielokrotności F0, zamiast faktycznej częstotliwości fundamentalnej, tak jak metoda autokorelacji \ref{sec:f0:ac}. Ten defekt można zaobserwować na ilustracji \ref{fig:cepstrumF0}. To podejście nie radzi sobie też z sygnałami zawierającej dużą ilość szumów, co jest przedstawione w \cite[233-235]{Transcription:Kunieda:Aclos}. Mimo tych wad, metodyka cepstrum jest powszechnie stosowana w analizie sygnałów. Jej ważnym zastosowaniem jest filtrowanie przy pomocy lifteringu, które używane jest między innymi w opisanym algorytmie ACLOS \ref{sec:f0:aclos}.
 
-\subsubsection{ACLOS}\label{sec:f0:aclos}
+\subsection{ACLOS}\label{sec:f0:aclos}
 Badanie cykliczności spektrum, do którego jednym z narzędzi jest cepstrum opisane w \ref{sec:f0:ceps}, można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność na cyfrowej fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
 
 \begin{figure}[H]
@@ -662,7 +664,7 @@ Schemat działania algorytmu ACLOS dla okna Hanninga o długości 512 sampli prz
   R(j)& = \frac{1}{N}\sum_{i=0}^{N-1}f(i)f(i + j)&
   j = 0, 1, ..., M
 \end{align}
-gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza maksymalną harmoniczną, która jest brana pod uwagę, $j$ jest częstotliwością dla której badany jest współczynnik autokorelacji a $M$ oznacza maksymalną częstotliwość, jaką może posiadać F0 w analizowanym sygnale.
+gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza maksymalną harmoniczną, która jest brana pod uwagę, $j$ jest częstotliwością dla której badany jest współczynnik autokorelacji a $M$ oznacza maksymalną częstotliwość, jaką może posiadać F0 w analizowanym sygnale \cite[50-51]{Transcription:Quenneville:Thesis}.
 
 \begin{figure}[ht]
   \begin{subfigure}{.49\textwidth}
@@ -694,12 +696,12 @@ Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyzn
 Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest chwiejna. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
 
 \clearpage
-\subsection{Estymacja wielotonowa}\label{sec:MultiPitch}
+\section{Estymacja wielotonowa}\label{sec:MultiPitch}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym polifonicznym. polifoniczny sygnał to taki, w którym występują co najmniej dwa dźwięki w tym samym czasie. Problem ten jest znacznie bardziej skomplikowany od wyznaczania pojedyńczego F0 opisanego w \ref{sec:f0}. Wiele z własności sygnałów akustycznych, jak periodyczność czy rozróżnialna barwa nie są wystarczające w celach transkrypcji wielotonowej, ponieważ nakładające się na siebie wysokości dźwięków mieszają miedzy sobą również ich cechy.
 
 Współczesna muzyka zachodnia jest w mocnym stopniu ustrukturyzowana zarówno w domenie czasu jak i częstotliwości. Tempo i rytm, w którym dany utwór jest grany, jest informacją zawartą w domenie czasu. Dzięki wzorcom, które są zachowywane w muzyce, można te informacje wydobyć. W domenie częstotliwości natomiast widoczne są zależności pomiędzy poszczególnymi wysokościami dźwięków. Było to już wielokrotnie udowadniane, jak na przykład w \cite[1325-1326]{Transcription:Mcintyre:OnTheOscilation}, że pojedyńczej zagranej nucie towarzyszy, poza częstotliwością fundamentalną, szereg wydźwięków. Wibracje te badane przez fizyków były dostosowywane tak, żeby pasowały do modeli normalnych. Struktura częstotliwości różni się w zależności od użytego instrumentu i sposobu w jaki została zagrana. Częstotliwość i rozmieszczenie harmonicznych jest odgórnie ustalona przez instrument i sposób w jaki zostanie zagrana nuta. Pomimo że harmoniczne zawsze posiadają pewne odchylenie od bycia w perfekcyjnej harmonii (to znaczy nie są dokłądną algebraiczną wielokrotnością częstotliwości F0, a oscylują w jej okolicy) dla konkretnego instrumentu i sposobu zagrania będą odgórnie zdefiniowane przez pewien model matematyczny \cite[1326-1327]{Transcription:Mcintyre:OnTheOscilation}. Jak opisuje Manuel Davy w \cite[203-204]{Transcription:Anssi:SignalProcessingMethods} struktura muzyki tonalnej może zostać wykorzystana do budowy modeli bayesowskich, czyli modeli matematycznych w kontekście probabilistycznym, które prowadzą do najprostszego modelu wyjaśniającego daną fale dźwiękową. Pomimo tego, że modele te wydają się naturalnym rozwiązaniem estymacji wielotonowej, ponieważ rozwiązuje problem dużej ilości parametrów w fali dźwiękowej, których nie można wyestymować beż zakładania pewnych założeń, nie są one często wykorzystywane. Wspomniana wcześniej praca \cite{Transcription:BayesianHarmonicModels} jest przykładem wykorzystania modeli bayesowskich do analizowania sygnałów muzycznych, w tym wykrywania F0.
 
-\subsubsection{Wyniki algorytmów do sygnałów monofonicznych}\label{sec:MultiPitch:monofon}
+\subsection{Wyniki algorytmów do sygnałów monofonicznych}\label{sec:MultiPitch:monofon}
 W rozdziale \ref{sec:f0} struktura częstotliwości rozumiała była jako obraz pojedyńczej częstotliwości fundamentalnej, z którego jednoznacznie wynika, jaka wysokość dźwięku jest grana w danym momencie czasu. Duża większość muzyki jest polifoniczna i tylko momentami skomplikowane kompozycje dopuszczają się brzmienia jedynie pojedynczych nut. W takich utworach metodologie transkrypcji muzyki monofonicznej są nieefektywne.
 
 \begin{figure}[ht]
@@ -792,14 +794,14 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
   \label{fig:multi:aclos}
 \end{figure}
 
-\subsubsection{Metody oparte o modele generatywne}
+\subsection{Metody oparte o modele generatywne}
 W książce \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych ze względu na charakter algorytmu jaki jest użyty i są jednocześnie oparte o generatywny model fali akustycznych. Algorytmy te czerpią z modeli bayesowskich. Rozróżnili oni metody oparte o zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w \cite[744-745]{Transcription:McAulay:SinusoidalRepresentationF0}), oraz grupy modeli off-line i on-line.
 
 Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estymacji. Operują one analizując całą falę dźwiękową. Założeniem tych algorytmów jest segmentacja danych w taki sposób, że każdy z segmentów ma niezmienne wysokości granych dźwięków. Ograniczenie to wymusza na systemie transkrypcji użycia jakiejś formy wykrywania początków dźwięków. Algorytmy te bazują również na pojęciu prawdopodobieństwa, które to opisane jest matematycznym modelem wraz z gęstością. Algorytmy w tej grupie często działają według pewnych założeń co do barwy dźwięków (instrumentów czy głosu) występujących w sygnale.
 
 Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżona jest metoda Yeh'a i Röbel'a dotycząca automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Yeh:JointEvaluationF0} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i \cite{Transcription:Pertus:Inharmonicity}.
 
-\paragraph{Przetwarzanie wstępne} 
+\subsubsection{Przetwarzanie wstępne} 
 W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że polifoniczny, quasi-harmoniczny sygnał można przedstawić za pomocą poniższego wzoru:
 \begin{equation}\label{eq:Yeh:signal}
 y[n] = \{ \sum_{m=1}^{M}\sum_{h_m = 1}^{H_m}a_m,h_m[n]cos((1 + \delta_{m,h_m})h_m\omega_m n + \phi_m [n])\} + v[n],
@@ -822,10 +824,10 @@ gdzie g opisane jest wzorem
 \end{equation}
 Wartości $k_0$ i $k_1$ odpowiadają odpowiednio minimalnej i maksymalnej częstotliwości jaka jest dopuszczalna w algorytmie estymującym F0. Jednym z założeń tego podejścia jest znacznie większa amplituda $H(k)S(k)$ od amplitudy szumu $N(k)$. Drugim założeniem jest to, że większość komponentów spektralnych na odcinku od $k_0$ do $k_1$  ma moc na poziomie szumu, a jedynie kilka komponentów jest faktycznymi pikami. Z tymi założeniami zadaniem mnożenia przez $\frac{1}{g}$ jest skalowanie sygnału wejściowego tak, że szum zostaje na równym poziomie, a piki są wyraźnie widoczne ponad tym poziomie. Wzór \ref{eq:klapuri:warping:g} nakłąda na szum liniową transformację krzywienia magnitudy, podczas gdy piki w widmie przechodzą transformację logarytmiczną. Powszechne jest również eliminowanie szumów $N(k)$ poprzez branie pod uwagę widma tylko ponad pewnym ustalonym progiem tak, aby wszystkie komponenty poniżej tego progu mogły być uznane za szum. Zakłada się też, że charakterystyka otoczenia $H(k)$ ma na widmie na tyle mały efekt, że można ją pominąć \cite{Transcription:Pertus:Inharmonicity}. Założenie to ogranicza jakość nagrań muzycznych branych pod uwagę w kontekście badania F0 do tych, które zostały nagrane profesjonalnie (sprzętem zaniedbywalnie modyfikującym charakterystykę granych instrumentów, w pomieszczeniu o neutralnej w kontekście modulacji fal dźwiękowych akustyce), aby zminimalizować wpływ $H(k)$.
 
-\paragraph{Gładkość spektrum}
+\subsubsection{Modelowanie obwiedni spektrum}
 Według zasady przytoczonej już wcześniej, wysokie częstotliwości w sygnale mają z reguły mniejszą magnitudę. Jest to spowodowane rozłożeniem energii w fali akustycznej - wygnał o dużych częstotliwościach oscyluje w krótkich interwałach, co samo w sobie wymaga energii, podczas gdy sygnał o niższej częstotliwości tą samą energią zyskuje na amplitudzie. W rezultacie, kształt widma sygnału akustycznego ma postać rozkładu prawoskośnego. Ta cecha spektrum jest niezwykle użyteczna w kontekście transkrypcji muzycznej.
 
-Przy założeniu, że częstotliwość fundamentalna F0 ma $n$ harmonicznych w badanym spektrum, oznaczonych kolejno $f_0, f_1, f_2, ..., f_n$, zasada gładkości spektrum mówi, ze magnitudy kolejnych harmonicznych sygnału pozostają w następującej relacji:
+Przy założeniu, że częstotliwość fundamentalna F0 ma $n$ harmonicznych w badanym spektrum, oznaczonych kolejno $f_0, f_1, f_2, ..., f_n$, zasada \textit{gładkości spektrum} mówi, ze magnitudy kolejnych harmonicznych sygnału pozostają w następującej relacji:
 \begin{equation}\label{eq:specSmooth:principle}
   m(f_0) > m(f_1) > m(f_2) > ... > m(f_n)
 \end{equation}
@@ -855,7 +857,35 @@ Klapuri kategoryzuje trudności związane z relacjami wysokości dźwięków na 
 \end{itemize}
 Trudności te mają być zminimalizowane poprzez nałożenia funkcji wygadzającej na badane spektrum. Przykład przedstawiony na rysunku \ref{fig:specSmooth:kapuri} obrazuje funkcję wygładzenia (cieńka linia) nałożoną na spektrum podczas badania pierwszego dźwięku, które obrazuje, że co trzeci pik jest wysoko ponad zakładaną krzywą, i to one zostałyby w widmie po odjęciu wygładzonego widma pierwszego dźwięku ze spektrum sygnału. Ten sam mechanizm może pozwolić na wyeliminowanie nieistniejących dźwięków ,,duchów''.
 
-\subsubsection{Onsets and Frames}
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.38]{images/spectral_smoothnes_kapuri.jpg}
+    \caption{TODO}
+    \label{fig:specUnSmoothness}
+  \end{center}
+\end{figure}
+
+Gładkość spektrum jest założeniem, które działa w większości przypadków, lecz nie jest to cecha, którą posiada wszystkie dźwięki w izolacji. W zależności od źródła wibracji, otoczenia i sposobu w jaki sygnał jest nagrywany charakterystyka widma może odbiegać od tej, która została przedstawiona w tej sekcji. Silniejsze formanty występujące na wyższych częstotliwościach są cechą wielu instrumentów akustycznych. Przykład takiej dystrybucji amplitudy w spektrum można zaobserwować na ilustracji \ref{fig:specUnSmoothness}. W celu zminimalizowania błędów spowodowanych założeniem gładkości spektrum powstała kategoria algorytmów bazujących na wyuczonych modelach dźwięków. Zakładają one istnienie modeli dla każdego ze źródeł dźwięków, które mogą występować w analizowanym sygnale, które to są w wykrywane w widmie. Problemem w takim podejściu jest ilość potrzebnych danych - w muzyce zachodniej wykorzystywanych jest bardzo dużo różnych instrumentów, z bardzo odległymi od siebie charakterystykami widmowymi. Potrzebne dane treningowe, poprawnie oznaczone według wysokości F0 oraz użytego instrumentu na skale ogólnej analizy popularnej muzyki zachodniej są praktycznie niemożliwe do usystematyzowania. Jednym z ułatwień jest wykorzystanie pojedyńczego nagrania F0 na danym instrumencie i przesuwanie go w wymiarze częstotliwości, aby symulować inne wysokości F0, ale nie jest to niezawodne rozwiązanie, ponieważ wiele instrumentów ma różne charakterystyki widmowe podczas grania różnych częstotliwości fundamentalnych\cite[55-68]{Transcription:Quenneville:Thesis}.
+
+\subsubsection{Nieharmoniczność} \label{sec:multif0:inh:model}
+Wiele algorytmów zaprojektowanych do transkrypcji muzycznej nie bierze pod uwagę problemu nieharmoniczności. Jak opisuje Klapuri w pracy \cite[806-808]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}, fizyczne źródła dźwięków wytwarzają harmoniczne, które nie posiadają dokładnych częstotliwości będącymi wielokrotnościami F0, lecz jedynie oscylują w ich okolicy. Dla przykładu, rozbieżność tą dla instrumentów strunowych można opisać jako:
+\begin{equation}\label{eq:inharmonicity:strings}
+  f_h = hF \sqrt{1 + (h^2 - 1) \beta}
+\end{equation}
+gdzie F jest częstotliwością fundamentalną a $\beta$ jest współczynnikiem nieharmoniczności \cite[807]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}.
+
+Davy i Godsill w swojej pracy \cite[1-10]{Transcription:BayesianHarmonicModels} zaproponowali model Bayesowy, który bierze pod uwagę nieharmoniczność (nazywaną w tej pracy jako nie-nastrojenie, z ang. \textit{de-tuning}). Opisany w tej pracy jest model zarówno dla sygnałów monofonicznych, jak i dla polifonicznych. Ten drugi zapisany jest jako dyskretne obserwacje $y$ w domenie czasu $t$ w następujący sposób:
+\begin{equation}\label{eq:inharmonicity:bayesian}
+  y_t = \left\{ \sum_{k=1}^{K}\sum_{m=1}^{M_k}\sum_{i=1}^{I} a_{k,m,i} \phi_{i,t}\cos[(m + \delta_{k,m})\omega_{0,k}t] + b_{k,m,i}\phi_{i,t}\sin[(m + \delta_{k,m})\omega_{0,k}t]\right\} + v_t
+\end{equation}
+dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w momencie $t$, $M$ to ilość występujących harmonicznych dla danego dźwięku, $\omega_{0,k}$ to częstotliwość fundamentalna dźwięku $k$, nieharmoniczność przedstawiona jako $\delta = [\delta_1, ..., \delta_K]$, gdzie $\delta_k = [\delta_{k,1}, ..., \delta_{k, M_{k}}]^T$. $I$ jest stałe, znane, i jego celem jest reprezentacja amplitudy jako gładkiej funkcji bazowej $\theta = [a_{1,1,1}, b_{1,1,1}, ..., a_{K, M_{K},I}, b_{K, M_{K},I}]^T$. Można zauważyć podobieństwo do wzoru  \ref{eq:Yeh:signal} przedstawionego przez Yeh'a i Röbel'a. Autorzy \ref{eq:inharmonicity:bayesian} opisują parametr nieharmoniczności jako:
+\begin{displayquote}
+,,Wektor drobnego de-nastrojenia haronicznych $\delta$. Jego wartość powinna być bliska zeru i bez relacji względem $\delta$ pozostałych harmonicznych, pomimo tego, że instrument w teorii determinuje rozkład kolejnych harmonicznych. W tym przypadku zakładana jest zerowa, niezależna średnia Gaussowska, z wariancją $\sigma_{\delta}^{2}$, ustalony dla małych wartości aby faworyzować małe parametry de-nastrojenia. Rozkład można dodatkowo obciąć tak, aby sąsiednie harmoniczne nie krzyżowały się w domenie częstotliwości'' \cite[9]{Transcription:BayesianHarmonicModels}(tłumaczenie własne).
+\end{displayquote}
+\subsubsection{Metoda Pertusa i Iñesta} no elo 
+
+\subsubsection{Metoda Yeh'a i Röbel'a}
+\subsection{Onsets and Frames}
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
@@ -899,13 +929,11 @@ Trudności te mają być zminimalizowane poprzez nałożenia funkcji wygadzając
 % \newpage
 \section{Implementacja}\label{sec:impl}
 
-\subsection{Algorytmy}\label{sec:impl:alg}
-
-\subsubsection{Autokorelacja}\label{sec:impl:alg:ac}
-\subsubsection{Cepstrum}\label{sec:impl:alg:ceps}
-\subsubsection{ACLOS}\label{sec:impl:alg:aclos}
-\subsubsection{Gaussion Smoothness}\label{sec:impl:alg:specSmoothnes}
-\subsubsection{Onsets And Frames}
+\subsection{Autokorelacja}\label{sec:impl:alg:ac}
+\subsection{Cepstrum}\label{sec:impl:alg:ceps}
+\subsection{ACLOS}\label{sec:impl:alg:aclos}
+\subsection{Gaussion Smoothness}\label{sec:impl:alg:specSmoothnes}
+\subsection{Onsets And Frames}
 \subsection{Interfejs GUI}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 \newpage
