@@ -394,7 +394,7 @@ Do tej pory przeanalizowane zostało działanie i podstawowe odmiany algorytmu t
 \begin{equation} \label{eq:windowing}
   s_{i_0}^w = x(t)w(t_0 - t)
 \end{equation}
-Do funkcji okna standardowo używa się funkcji Gaussiana, Hamminga, Hanninga lub kwadratowej (choć tą ostatnią używa się tylko w wyjątkowych sytuacjach). Dokłądniejszy ich opis znajduje się pod koniec tego rozdziału. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości można zbudować na podstawie równania \ref{eq:windowing} i FFT jako FT kolejnych okien:
+Do funkcji okna standardowo używa się funkcji Gaussa, Hamminga, Hanninga lub kwadratowej (choć tą ostatnią używa się tylko w wyjątkowych sytuacjach). Dokłądniejszy ich opis znajduje się pod koniec tego rozdziału. Podczas analizy i syntezy wykorzystywane jest pojedyńcze okno. Definicja STFT w dziedzinie czasu i częstotliwości można zbudować na podstawie równania \ref{eq:windowing} i FFT jako FT kolejnych okien:
 \begin{equation} \label{eq:STFT1}
   STFT^{W}_{x}(t,f) = CFT_{s \frac{w}{t}}(f) = \int_{-\infty}^{+\infty} x(\tau)w(t - \tau)e^{-j2\pi f\tau}  \,\mathrm{d}\tau.
 \end{equation}
@@ -801,8 +801,8 @@ Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estyma
 
 Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżona jest metoda Yeh'a i Röbel'a dotycząca automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Yeh:JointEvaluationF0} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i \cite{Transcription:Pertus:Inharmonicity}.
 
-\subsubsection{Przetwarzanie wstępne} 
-W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że polifoniczny, quasi-harmoniczny sygnał można przedstawić za pomocą poniższego wzoru:
+\subsubsection{Przetwarzanie wstępne}\label{sec:preProcessing} 
+W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że quasi-harmoniczny, polifoniczny sygnał można przedstawić za pomocą poniższego wzoru:
 \begin{equation}\label{eq:Yeh:signal}
 y[n] = \{ \sum_{m=1}^{M}\sum_{h_m = 1}^{H_m}a_m,h_m[n]cos((1 + \delta_{m,h_m})h_m\omega_m n + \phi_m [n])\} + v[n],
 \end{equation}
@@ -824,7 +824,7 @@ gdzie g opisane jest wzorem
 \end{equation}
 Wartości $k_0$ i $k_1$ odpowiadają odpowiednio minimalnej i maksymalnej częstotliwości jaka jest dopuszczalna w algorytmie estymującym F0. Jednym z założeń tego podejścia jest znacznie większa amplituda $H(k)S(k)$ od amplitudy szumu $N(k)$. Drugim założeniem jest to, że większość komponentów spektralnych na odcinku od $k_0$ do $k_1$  ma moc na poziomie szumu, a jedynie kilka komponentów jest faktycznymi pikami. Z tymi założeniami zadaniem mnożenia przez $\frac{1}{g}$ jest skalowanie sygnału wejściowego tak, że szum zostaje na równym poziomie, a piki są wyraźnie widoczne ponad tym poziomie. Wzór \ref{eq:klapuri:warping:g} nakłąda na szum liniową transformację krzywienia magnitudy, podczas gdy piki w widmie przechodzą transformację logarytmiczną. Powszechne jest również eliminowanie szumów $N(k)$ poprzez branie pod uwagę widma tylko ponad pewnym ustalonym progiem tak, aby wszystkie komponenty poniżej tego progu mogły być uznane za szum. Zakłada się też, że charakterystyka otoczenia $H(k)$ ma na widmie na tyle mały efekt, że można ją pominąć \cite{Transcription:Pertus:Inharmonicity}. Założenie to ogranicza jakość nagrań muzycznych branych pod uwagę w kontekście badania F0 do tych, które zostały nagrane profesjonalnie (sprzętem zaniedbywalnie modyfikującym charakterystykę granych instrumentów, w pomieszczeniu o neutralnej w kontekście modulacji fal dźwiękowych akustyce), aby zminimalizować wpływ $H(k)$.
 
-\subsubsection{Modelowanie obwiedni spektrum}
+\subsubsection{Modelowanie obwiedni spektrum}\label{sec:specSmoothnes}
 Według zasady przytoczonej już wcześniej, wysokie częstotliwości w sygnale mają z reguły mniejszą magnitudę. Jest to spowodowane rozłożeniem energii w fali akustycznej - wygnał o dużych częstotliwościach oscyluje w krótkich interwałach, co samo w sobie wymaga energii, podczas gdy sygnał o niższej częstotliwości tą samą energią zyskuje na amplitudzie. W rezultacie, kształt widma sygnału akustycznego ma postać rozkładu prawoskośnego. Ta cecha spektrum jest niezwykle użyteczna w kontekście transkrypcji muzycznej.
 
 Przy założeniu, że częstotliwość fundamentalna F0 ma $n$ harmonicznych w badanym spektrum, oznaczonych kolejno $f_0, f_1, f_2, ..., f_n$, zasada \textit{gładkości spektrum} mówi, ze magnitudy kolejnych harmonicznych sygnału pozostają w następującej relacji:
@@ -836,7 +836,7 @@ gdzie $m(f_n)$ jest magnitudą $n$-tej harmonicznej.
 W ogólności, wykorzystanie gładkości spektrum w procesie transkrypcji polega na założeniu, ze obwiednia widma sygnału akustycznego jest relatywnie gładka i wraz ze wzrostem częstotliwości obserwowanego komponentu spektralnego zmniejsza się jego moc. W przypadku, gdy w spektrum istnieje skok w magnitudzie pomiędzy sąsiednimi harmonicznymi danego kandydata F0, który zakłóca kształt widma, można podejrzewać, że skok ten jest wynikiem nałożenia się na siebie harmonicznych różnych F0.
 
 
-Sytuacja, w której część harmonicznych dwóch różnych częstotliwości fundamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w  \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
+Sytuacja, w której część harmonicznych dwóch różnych częstotliwości fundamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
 \begin{equation}\label{eq:specSmooth:klapuri:overlap}
   F_R = \frac{m}{n}F_s
 \end{equation}
@@ -880,9 +880,16 @@ Davy i Godsill w swojej pracy \cite[1-10]{Transcription:BayesianHarmonicModels} 
 \end{equation}
 dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w momencie $t$, $M$ to ilość występujących harmonicznych dla danego dźwięku, $\omega_{0,k}$ to częstotliwość fundamentalna dźwięku $k$, nieharmoniczność przedstawiona jako $\delta = [\delta_1, ..., \delta_K]$, gdzie $\delta_k = [\delta_{k,1}, ..., \delta_{k, M_{k}}]^T$. $I$ jest stałe, znane, i jego celem jest reprezentacja amplitudy jako gładkiej funkcji bazowej $\theta = [a_{1,1,1}, b_{1,1,1}, ..., a_{K, M_{K},I}, b_{K, M_{K},I}]^T$. Można zauważyć podobieństwo do wzoru  \ref{eq:Yeh:signal} przedstawionego przez Yeh'a i Röbel'a. Autorzy \ref{eq:inharmonicity:bayesian} opisują parametr nieharmoniczności jako:
 \begin{displayquote}
-,,Wektor drobnego de-nastrojenia haronicznych $\delta$. Jego wartość powinna być bliska zeru i bez relacji względem $\delta$ pozostałych harmonicznych, pomimo tego, że instrument w teorii determinuje rozkład kolejnych harmonicznych. W tym przypadku zakładana jest zerowa, niezależna średnia Gaussowska, z wariancją $\sigma_{\delta}^{2}$, ustalony dla małych wartości aby faworyzować małe parametry de-nastrojenia. Rozkład można dodatkowo obciąć tak, aby sąsiednie harmoniczne nie krzyżowały się w domenie częstotliwości'' \cite[9]{Transcription:BayesianHarmonicModels}(tłumaczenie własne).
+,,Wektor drobnego de-nastrojenia harmonicznych $\delta$. Jego wartość powinna być bliska zeru i bez relacji względem $\delta$ pozostałych harmonicznych, pomimo tego, że instrument w teorii determinuje rozkład kolejnych harmonicznych. W tym przypadku zakładana jest zerowa, niezależna średnia Gaussowska, z wariancją $\sigma_{\delta}^{2}$, ustalony dla małych wartości aby faworyzować małe parametry de-nastrojenia. Rozkład można dodatkowo obciąć tak, aby sąsiednie harmoniczne nie krzyżowały się w domenie częstotliwości'' \cite[9]{Transcription:BayesianHarmonicModels}(tłumaczenie własne).
 \end{displayquote}
-\subsubsection{Metoda Pertusa i Iñesta} no elo 
+\subsubsection{Metoda Pertusa i Iñesta}
+Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku, nosi nazwę ,,Estymacja wielu częstotliwości fundamentalnych z użyciem gładkości Gaussa'' (tłumaczenie własne) \cite{Transcription:Pertus:Inharmonicity}. Jest to metoda łączona, wykorzystująca okno Gaussa do wygładzenia wyniku. Algorytm ten przetwarza dane przed faktyczną analizą, jak zostało to opisane w sekcji \ref{sec:preProcessing}, wykorzystuje zasadę gładkości spektrum opisaną w sekcji \ref{sec:specSmoothnes} i bierze pod uwagę spektralną nieharmonicznych, której problem opisany był w sekcji \ref{sec:multif0:inh:model}.
+
+Algorytm wykonuje estymacje F0 operując na spektrum kolejnych okien czasowych. Analizowane fragmenty sygnału wejściowego przygotowane są tak, aby miały długość 93 ms (4096 sampli przy częstotliwości samplowania równej 44,1 kHZ) z zastosowaniem funkcji Hanninga jako funkcję okna (opisane w \ref{sec:STFT}) oraz marginesu zer równego trzykrotności długości oryginalnego okna (opisane w \ref{sec:przetwarzanieFFT}). Na tak przygotowanym oknie wykonywane jest STFT (\ref{sec:STFT}), którego wynik ma 16384 spektralnych komponentów, więc każdy z nich ma pasmo szerokości 2.7 Hz (szerokość pasma jest liczona wzorem $h = Fs / N$, gdzie Fs jest częstotliwością próbkowania, a N długością okna).
+
+Dla każdego okna wyniku STFT wykonywane jest przetwarzanie wstępne. Polega ono na odrzuceniu wszystkich wyników, których amplituda jest poniżej wyznaczonego progu $\mu$, i tylko pozostałe są pod uwagę. W implementacji tego kroku wprowadzona została modyfikacja, która zakłada że tak odfiltrowane wyniki są tylko pikami. Z tym założeniem, gdy w danym zakresie jest wiele komponentów o amplitudzie wyższej niż $\mu$, zachowywany jest tylko jeden, o najwyższej amplitudzie. Dokłądny opis tego mechanizmu jest w sekcji \ref{sec:impl:alg:specSmoothnes}.
+
+Następnie ze spektralnych pików wybierany jest zbiór częstotliwości nazywany ,,kandydatami F0''. Pik jest uznawany za kandydata jeżeli jego częstotliwość jest w zadanym zakresie $[f_{min}, f_{max}]$, oraz posiada on w danym spektrum co najmniej $\eta$ harmonicznych. Pierwszy z warunków obcina grupę analizowanych F0 do jedynie tych, które realnie mogą występować w kompozycji. Nie ma sensu badać bardzo niskie lub bardzo wysokie dźwięki ponieważ nie są one wykorzystywane w muzyce. Drugie założenie ogranicza grupę kandydatów odrzucając tych, których barwa jest niemożliwa do określenia. W celu znalezienia harmonicznych danego F0 sprawdzane jest istnienie pików o częstotliwości będącej wielokrotnością częstotliwości kandydata F0. W celu dostosowania się do nieharmoniczności, harmoniczne badane są w zasięgu ze stałym marginesem $hf_0 \pm f_r$ dla $h = 2, 3, ...$, gdzie $f_0$ jest kandydatem F0. Wybierany jest pik najbliższy faktycznej wielokrotności $f_0$. W przypadku nie znalezienia żadnego piku w danym zakresie, harmoniczna uznawana jest za brakującą.
 
 \subsubsection{Metoda Yeh'a i Röbel'a}
 \subsection{Onsets and Frames}
@@ -893,8 +900,7 @@ dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w 
   \end{center}
 \end{figure}
 \cite{DBLP:journals/corr/LuongPM15}
-\todo[inline]{Czy mogę użyć książki której nawet nie mogę znależć on-line tylko jako referencja w innej pozycji? Który ISBN powinienem podawać, ISBN-10 czy ISBN-13? Czy istnieje jakiś stylesheet którego powinienem się trzymać? Kiedy boldować wyrazy a kiedy pisac kursywą? Wykres analizy częstotliwościowej z innej książki przyciołem o jeden wykres żeby nie zajmował tyle miejsca, czy tak można? Jak opisać implementacje i jak ma wyglądać sekcja "dodatków"? Czy można cytować Degree of Bachelor (licencjat). Czy tłumaczyć diagramy i wykresy brane z książek po eng?}
-\todo[inline]{Do poprawy wykresy funkcji okna}
+\todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa?}
 
 \newpage
 % \section{Klasyfikacja muzyki}
