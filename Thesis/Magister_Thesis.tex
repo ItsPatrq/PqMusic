@@ -799,7 +799,8 @@ W książce \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} autorzy 
 
 Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estymacji. Operują one analizując całą falę dźwiękową. Założeniem tych algorytmów jest segmentacja danych w taki sposób, że każdy z segmentów ma niezmienne wysokości granych dźwięków. Ograniczenie to wymusza na systemie transkrypcji użycia jakiejś formy wykrywania początków dźwięków. Algorytmy te bazują również na pojęciu prawdopodobieństwa, które to opisane jest matematycznym modelem wraz z gęstością. Algorytmy w tej grupie często działają według pewnych założeń co do barwy dźwięków (instrumentów czy głosu) występujących w sygnale.
 
-Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżona jest metoda Yeh'a i Röbel'a dotycząca automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Yeh:JointEvaluationF0} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i \cite{Transcription:Pertus:Inharmonicity}.
+Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę, jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywające początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej. W tej sekcji przybliżone są metody Pertusa i Iñesta dotyczące automatycznej transkrypcji polifonicznego sygnału fonicznego \cite{Transcription:Pertus:Inharmonicity} i \cite{Transcription:Pertus:Inharmonicity2} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w pracy Anssi Klapuri \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i pracy Chunghsin Yeha i Axel Roebela \cite{Transcription:Yeh:JointEvaluationF0}.
+% która potem została ulepszona w \cite{Transcription:Yeh:JointEvaluationF0:2} nad którą pracował jeszcze Xavier Rodet
 
 \subsubsection{Przetwarzanie wstępne}\label{sec:preProcessing} 
 W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że quasi-harmoniczny, polifoniczny sygnał można przedstawić za pomocą poniższego wzoru:
@@ -882,17 +883,60 @@ dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w 
 \begin{displayquote}
 ,,Wektor drobnego de-nastrojenia harmonicznych $\delta$. Jego wartość powinna być bliska zeru i bez relacji względem $\delta$ pozostałych harmonicznych, pomimo tego, że instrument w teorii determinuje rozkład kolejnych harmonicznych. W tym przypadku zakładana jest zerowa, niezależna średnia Gaussowska, z wariancją $\sigma_{\delta}^{2}$, ustalony dla małych wartości aby faworyzować małe parametry de-nastrojenia. Rozkład można dodatkowo obciąć tak, aby sąsiednie harmoniczne nie krzyżowały się w domenie częstotliwości'' \cite[9]{Transcription:BayesianHarmonicModels}(tłumaczenie własne).
 \end{displayquote}
-\subsubsection{Metoda Pertusa i Iñesta}
+\subsubsection{Metoda Pertusa i Iñesta (2008)}
 Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku, nosi nazwę ,,Estymacja wielu częstotliwości fundamentalnych z użyciem gładkości Gaussa'' (tłumaczenie własne) \cite{Transcription:Pertus:Inharmonicity}. Jest to metoda łączona, wykorzystująca okno Gaussa do wygładzenia wyniku. Algorytm ten przetwarza dane przed faktyczną analizą, jak zostało to opisane w sekcji \ref{sec:preProcessing}, wykorzystuje zasadę gładkości spektrum opisaną w sekcji \ref{sec:specSmoothnes} i bierze pod uwagę spektralną nieharmonicznych, której problem opisany był w sekcji \ref{sec:multif0:inh:model}.
 
 Algorytm wykonuje estymacje F0 operując na spektrum kolejnych okien czasowych. Analizowane fragmenty sygnału wejściowego przygotowane są tak, aby miały długość 93 ms (4096 sampli przy częstotliwości samplowania równej 44,1 kHZ) z zastosowaniem funkcji Hanninga jako funkcję okna (opisane w \ref{sec:STFT}) oraz marginesu zer równego trzykrotności długości oryginalnego okna (opisane w \ref{sec:przetwarzanieFFT}). Na tak przygotowanym oknie wykonywane jest STFT (\ref{sec:STFT}), którego wynik ma 16384 spektralnych komponentów, więc każdy z nich ma pasmo szerokości 2.7 Hz (szerokość pasma jest liczona wzorem $h = Fs / N$, gdzie Fs jest częstotliwością próbkowania, a N długością okna).
 
 Dla każdego okna wyniku STFT wykonywane jest przetwarzanie wstępne. Polega ono na odrzuceniu wszystkich wyników, których amplituda jest poniżej wyznaczonego progu $\mu$, i tylko pozostałe są pod uwagę. W implementacji tego kroku wprowadzona została modyfikacja, która zakłada że tak odfiltrowane wyniki są tylko pikami. Z tym założeniem, gdy w danym zakresie jest wiele komponentów o amplitudzie wyższej niż $\mu$, zachowywany jest tylko jeden, o najwyższej amplitudzie. Dokłądny opis tego mechanizmu jest w sekcji \ref{sec:impl:alg:specSmoothnes}.
 
-Następnie ze spektralnych pików wybierany jest zbiór częstotliwości nazywany ,,kandydatami F0''. Pik jest uznawany za kandydata jeżeli jego częstotliwość jest w zadanym zakresie $[f_{min}, f_{max}]$, oraz posiada on w danym spektrum co najmniej $\eta$ harmonicznych. Pierwszy z warunków obcina grupę analizowanych F0 do jedynie tych, które realnie mogą występować w kompozycji. Nie ma sensu badać bardzo niskie lub bardzo wysokie dźwięki ponieważ nie są one wykorzystywane w muzyce. Drugie założenie ogranicza grupę kandydatów odrzucając tych, których barwa jest niemożliwa do określenia. W celu znalezienia harmonicznych danego F0 sprawdzane jest istnienie pików o częstotliwości będącej wielokrotnością częstotliwości kandydata F0. W celu dostosowania się do nieharmoniczności, harmoniczne badane są w zasięgu ze stałym marginesem $hf_0 \pm f_r$ dla $h = 2, 3, ...$, gdzie $f_0$ jest kandydatem F0. Wybierany jest pik najbliższy faktycznej wielokrotności $f_0$. W przypadku nie znalezienia żadnego piku w danym zakresie, harmoniczna uznawana jest za brakującą.
+Następnie ze spektralnych pików wybierany jest zbiór częstotliwości nazywany ,,kandydatami F0''. Pik jest uznawany za kandydata jeżeli jego częstotliwość jest w zadanym zakresie $[f_{min}, f_{max}]$, oraz posiada on w danym spektrum co najmniej $\eta$ harmonicznych. Pierwszy z warunków obcina grupę analizowanych F0 do jedynie tych, które realnie mogą występować w kompozycji. Nie ma sensu badać bardzo niskie lub bardzo wysokie dźwięki ponieważ nie są one wykorzystywane w muzyce. Drugie założenie ogranicza grupę kandydatów odrzucając tych, których barwa jest niemożliwa do określenia. W celu znalezienia harmonicznych danego F0 sprawdzane jest istnienie pików o częstotliwości będącej wielokrotnością częstotliwości kandydata F0. W celu dostosowania się do nieharmoniczności, harmoniczne badane są w zasięgu ze stałym marginesem $hf_0 \pm f_r$ dla $h = 2, 3, ...$, gdzie $f_0$ jest kandydatem F0. Wybierany jest pik najbliższy faktycznej wielokrotności $f_0$. W przypadku nie znalezienia żadnego piku w danym zakresie, harmoniczna uznawana jest za brakującą. W dalszym kroku lista kandydatów sortowana jest względem sumy amplitud ich harmonicznych. Dodatkowych parametrem jest maksymalna liczba kandydatów $F$, na podstawie której odrzucani są nadmiarowi kandydaci o najmniejszej sumie amplitud, aby zwiększyć wydajność tego systemu transkrypcji.
+
+Na podstawie kandydatów generowane są wszystkie możliwe ich kombinacje, a następnie wyliczane dla nich współczynniki ,,istotności'' (z ang. \textit{salience}) oznaczony później jako $S$. Kombinacja, dla której wartość tego współczynnika jest największa jest wybierana, co oznacza, że w danym oknie czasowym wszyscy kandydaci F0 danej kombinacji są obecni w kompozycji.
+
+Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które są występują w widmach kilku kandydatów. Te drugie będą w dalszej części ,,wygładzane''.
+
+Wyliczanie istotności odbywa się dla każdego kandydata osobno, zaczynając od tych z najniższą częstotliwością. Na podstawie danego wzoru widmowego $p_c$ dla kandydata $c$ wszystkie harmoniczne, które występują w więcej niż jednym widmie, są liniowo interpolowane przy użyciu harmonicznych, które nie są dzielone pomiędzy kandydatów. Po tej operacji istnieją dwa scenariusze
+\begin{enumerate}
+\item interpolowana wartość jest większa lub równa amplitudzie dzielonej harmonicznej. W tym wypadku amplituda uwzględniana przy liczeniu istotności kandydata $c$ dla tej harmonicznej jest brana ze wzoru widmowego $p_c$, natomiast we wszystkich pozostałych wektorach $p$ w których występuje ta harmoniczna, amplituda jej jest zerowana.
+\item interpolowana wartość jest mniejsza amplitudzie dzielonej harmonicznej. W tym wypadku interpolowana wartość przypisywana jest do wzoru widmowego $p_c$, a w pozostałych wektorach, w których występuje ta harmoniczna, amplituda jej jest pomniejszana o interpolowaną wartość.
+\end{enumerate}
+Proces ten ma na celu wygładzenie spektrum dla każdego z kandydatów $c$, zgodnie z zasadą gładkości opisaną w sekcji \ref{sec:specSmoothnes}.
+
+Z tak przygotowanych wzorców widmowych wyliczana jest głośność $l(c)$ dla każdego kandydata $c$ poprzez zsumowanie amplitud w $p_c$.
+\begin{equation}\label{eq:inharmonicity:loudness}
+  l(c) = \sum_{h=1}^H p_{c,h}
+\end{equation}
+
+Wyliczany jest również współczynnik gładkości $\sigma$ dla każdego $c$ przy użyciu gładkości Gaussa. Wektor $p_c$ jest filtrowany dolno-przepustowo przy pomocy obciętego znormalizowanego okna Gaussa z trzema komponentami $N_{\sigma = 1.0} = \left\{0,21, 0,58, 0,21\right\}$, które nakłądane jest na wzorzec spektralny danego kandydata tworząc wygładzony wzorzec $\widetilde{p}$. Mając wygładzony wzorzec, wyliczany jest współczynnik ostrości danego kandydata $s(c)$ jako suma wartości bezwzględnej różnicy wygładzonego i oryginalnego wzorca oraz znormalizować go poprzez wyliczenie ilorazu z ilością harmonicznych w wektorze $p_c$:
+\begin{equation}\label{eq:inharmonicity:sharpness}
+  \overline{s}(c) = \frac{1}{H}\sum_{h=1}^H \left(\left|\widetilde{p}_{c,h} - p_{c,h}\right|\right)
+\end{equation}
+Tak wyliczony współczynnik ostrości wykorzystuje się do obliczenia współczynnika gładkości $\sigma(c)$, który jest przeciwnością $\overline{s}(c)$:
+\begin{equation}\label{eq:inharmonicity:smoothnes}
+  \sigma(c) = 1 - \overline{s}(c) 
+\end{equation}
+
+Istotność wylicza się na podstawie współczynników głośności i gładkości każdego z kandydatów jako
+\begin{equation}\label{eq:inharmonicity:salience}
+  S = \sum_{c=1}^C\left[l(c)*\sigma(c)\right]^2
+\end{equation}
+gdzie C to ilość kandydatów danej kombinacji. W przypadku, gdy najwyższy współczynnik głośności dla pewnego kandydata kombinacji jest znacznie większy niż najniższy w tej kombinacji, kombinacja jest odrzucana. Jest to zabezpieczenie przed wyborem kombinacji, w których istnieje grupa kandydatów o zaniedbywalnej głośności. W takim wypadku powinna zostać wybrana inna kombinacja. Dozwolona różnica pomiędzy współczynnikami głośności wyliczana jest przy pomocy ustalanego parametru $\gamma$.
+
+W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania końcowego, które zminimalizuje ilość błędów w transkrypcji (\cite[106-107]{Transcription:Pertus:Inharmonicity}). Polega ono na dwóch operacjach:
+\begin{enumerate}
+  \item założenie znalezienia konkretnej nuty, jeżeli nie była wykryta w danym oknie czasowym, ale była wykryta w poprzednim i następnym oknie
+  \item usunięcie bardzo krótkich dźwięków. W pracy zasugerowano minimalną długość sześciu okien (przy założeniach wstępnych 55.68 ms)
+\end{enumerate}
+
+\subsubsection{Metoda Pertusa i Iñesta (2012)}
+
 
 \subsubsection{Metoda Yeh'a i Röbel'a}
-\subsection{Onsets and Frames}
+no metoda jak metoda
+\subsection{Metody z wykorzystaniem uczenia maszynowego}
+\subsubsection{Onsets and Frames}
+
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
