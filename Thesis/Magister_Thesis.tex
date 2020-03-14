@@ -85,7 +85,7 @@
    captionpos=b
 }
 
-\hyphenation{FORTRAN Wi-ki-books pow-szech-ną}
+\hyphenation{FORTRAN Wi-ki-books pow-szech-ną któ-re-go pró-by}
 \setlength{\parindent}{4em}
 \setlength {\marginparwidth }{2cm}
 \setlength{\parskip}{0em} %odstęp pomiędzy paragrafami
@@ -168,7 +168,13 @@ Zapis nutowy zawiera też informacje o tempie utworu, czyli szybkość z jaką k
 
 Informacją, którą zapis nutowy nie dostarcza jawnie, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk. Każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest związany nie tylko z transkrypcją muzyki, ale i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
 
-W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy, które są głównym przedmiotem analizy w kierunku transkrypcji muzyki \cite[63]{Homerecording:DlaKazdego}.
+Kompletna transkrypcja muzyczna jest kompleksowym zadaniem, które ze względu na specyfikę fal akustycznych możba podzielić na trzy pod-zadania:
+\begin{itemize}
+  \item rozpoznawanie elementów perkusyjnych razem ze śledzeniem rytmiki na podstawie rytmu i głośności (\ref{sec:rytm}, \ref{sec:loudness}),
+  \item wykrywanie częstotliwości fundamentalnych na podstawie wysokości tonu (\ref{sec:pitch}),
+  \item  kategoryzowanie instrumentów występujących w sygnale na podstawie barwy dźwięku (\ref{sec:barwaDzwieku}).
+\end{itemize}
+W dalszej części tego rozdziału zostaną opisane cztery wymienione wyżej cechy sygnału akustycznego \cite[63]{Homerecording:DlaKazdego}.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.5]{images/pieciolinia_logic.png}
@@ -176,9 +182,10 @@ W dalszej kolejności zostaną pokrótce opisane cztery wymienione wyżej cechy,
   \end{center}
 \end{figure}
 
-\subsection{Rytm}
 
 
+
+\subsection{Rytm} \label{sec:rytm}
 W kontekście muzykologii, rytm jest relacją czasową pomiędzy poszczególnymi dźwiękami, tworzącą strukturę rytmiczną utworu. Nie można niestety zakładać stałości rytmu na przestrzeni całej kompozycji, ponieważ powszechną praktyką kompozytorów jest jego modyfikacja na przestrzeni piosenki w celu uzyskania konkretnych efektów artystycznych. Dla przykładu, minimalne podnoszenie tempa na czas każdego z refrenów jest powszechnie stosowane w muzyce popularnej.
 
 Informacja o rytmie jest zapisana w relacjach pomiędzy poszczególnymi dźwiękami i pomiędzy większymi strukturami wewnątrz utworu. Odstęp pomiędzy początkami dźwięków (\textit{ang. Inter-onset interval, IOI}) pełni bardzo istotną rolę w rytmice utworu, jak i strukturze perkusyjnej. Pojęcie to odnosi się do interwału czasowego pomiędzy dwoma początkami dźwięków (np. moment uderzenia w werbel), która to cecha jest dużo bardziej istotna w rytmice niż długość danych dźwięków. \cite[473-500]{Transcription:Clarke:RhythmAndTiming}
@@ -197,7 +204,7 @@ Zbadanie rytmiki wymaga wyznaczenia metrum i długości poszczególnych jednoste
 
 W skład rytmu wchodzi również \textit{grupowanie}. Termin ten odwołuje się do powiązań pomiędzy pojedyńczymi dźwiękami, które razem tworzą łączną frazy, a te z kolei dalej grupowane tworzą większe i bardziej złożone jednostki w hierarchicznej strukturze \cite[12-35]{Transcription:Lerdahl:GenerativeTheory}. 
 
-\subsection{Wysokość tonu}\label{subsec:pitch}
+\subsection{Wysokość tonu}\label{sec:pitch}
 Wysokość tonu, czy też wysokość dźwięku, jest percepcyjnym atrybutem za pomocą którego porządkowane są dźwięki na skali częstotliwości, od najniższych do najwyższych. Jest to pojęcie tożsame z częstotliwością sygnału sinusoidalnego zgodnego z tym, które jest odebrane przez ludzkie ucho \cite[3491-3502]{Transcription:Hartmann:PitchPeriodicityAuditoryOrganization}. 
 
 \begin{figure}[H]
@@ -243,7 +250,7 @@ Interesującą własnością niemalże wszystkich kultur muzycznych jest podobie
 
 Relacja pomiędzy wysokościami używanych tonów jest ważną informacją przy analizie muzycznej. Mimo dużej ilości możliwych częstotliwości, używane nuty często ograniczane są do podzbiorów według tak zwanych kluczy. Badając rozkład częstotliwości takie informacje mogą znacznie ograniczyć błędy podczas badania sygnału. Należy jednak mieć na uwadze fakt, że nagrany instrument może nie posiadać dokładnie takiej samej częstotliwości jak oczekiwana dla danej wysokości tonu ze względu na charakterystykę instrumentu czy też techniczne parametry nagrania. Dodatkowym utrudnieniem są skale które bazują na innych niż zachodnich systemach dobierania wysokości. W tej pracy badane będą jedynie utwory bazujące na wyżej opisanym systemie, jednak na uwadzę należy mieć fakt, że nie jest to uniwersalne rozwiązanie. Również z artystycznych względów docelowe częstotliwości generowane przez instrumenty odbiegają od tych przewidzianych przez opisany system. Nieharmoniczność najczęściej ustala się na poziomie 5\%, lecz nie istnieje sformalizowany zakres. Próba rozpoznawania jedynie konkretnych częstotliwości tonów mogło by być dużym uproszczeniem w analizie sygnałów fonicznych, lecz jednocześnie znacząco ograniczyłby jej uniwersalność \cite[64-65]{Homerecording:DlaKazdego} \cite[7-11]{Transcription:Anssi:SignalProcessingMethods}.
 
-\subsection{Głośność}
+\subsection{Głośność} \label{sec:loudness}
 Termin głośności z reguły nie odnosi się do pojedyńczych nut, ale do większych sekcji. W notacji muzycznej nie często używa się słowa ,,głośność''. To co słuchacz odbiera jako siłę dźwięku z punktu widzenia muzyka jest dynamiką granego fragmentu. Większość instrumentów używanych do tworzenia muzyki posiada zdolność wytworzenia zróżnicowanych w sile fal akustycznych. Podstawą skali dynamiki są dwa słowa kluczowe:
 
 \begin{itemize}
@@ -294,12 +301,6 @@ Utwór muzyczny posiada bardzo wiele własności na podstawie których można op
 
 Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania muzyki przez ludzki umysł dowodzą, że analiza dźwięku jest dzielona na pod-zadania. Pewne własności muzyki są odseparowywane od reszty bez szerszej perspektywy. Daje to informacje o tym, że modularyzacja podejścia do transkrypcji może być właściwym rozwiązaniem tego problemu. W automatycznej transkrypcji muzyki często używa się innych reprezentacji danych do analizy wysokości dźwięku, w których większy nacisk kładzie się na wierne odwzorowanie częstotliwości, a innych do analizy rytmu, w których najważniejsze jest dokładność w domenie czasu \cite[37-46]{Transcription:Zatorre:AuditoryCortex}\cite[231-246]{Transcription:Tervaniemi:AuditoryCortexFunctions}.
 
-\subsection{Typy algorytmów transkrypcji muzyki}
-\todo[inline]{Ta sekcja jest niedokończona}
-Automatyczna transkrypcja muzyki jest nietrywialnym problemem, którego próby rozwiązania dotykają wielu dziedzin nauk informatycznych. Algorytmika, która została wypracowana do rozwiązania tego problemu jest różnorodna w wykorzystywanych metodologiach. Algorytmy te z biegiem czasu były modyfikowane w oparciu o nowe metody, krzyżowane z innymi oraz łączone w kompleksowe systemy. Przez ilość istniejących rozwiązań naturalnym jest kategoryzowanie ich ze względu na jakieś cechy charakterystyczne. Wielu badaczy w omawianej dziedzinie używa własnej nomenklatury do grupowania algorytmów i systemów transkrypcji muzyki ze względu na pewne zbiory cech. Niektóre z tych podziałów są powszechnie używane i za ich pomocą łatwo przedstawić działanie rdzenia danej metody. 
-
-Samo rozpoznanie wysokości tonu jest kategoryzowane w zależności od specyfiki sygnału wejściowego na transkrypcję utworów monofonicznych (dla sygnału bez równoległych dźwięków) oraz transkrypcję utworów polifonicznych (dla sygnałów z równoległymi dźwiękami). Te drugie są często dalej dzielone na transkrypcję sygnałów, w których występuje tylko jedna barwa dźwięku (np. samo pianino) i na te, które nie mają obostrzenia w limicie barw dźwięków.
-
 \subsection{Reprezentacja danych średniego poziomu}
 Koncepcja pojęcia \textit{Reprezentacja danych średniego poziomu} pozwala na utworzenie pewnego rodzaju pośrednika pomiędzy akustyczną reprezentacją dźwięku, a tą formalnie zapisaną. Sygnał muzyczny w czystej postaci jest mało informatywny, nie możemy z niego wyczytać chociażby poszczególnych nut utworu, tak jak jest to widoczne w zapisie nutowym. W książce \cite{Transcription:Zatorre:AuditoryCortex} autorzy sugerują, że celem użycia tego narzędzia jest stworzenie pośredniego stopnia abstrakcji, które będzie działało jak interfejs do analizy audio i do ułatwienia konstrukcji systemów transkrypcji.
 
@@ -320,7 +321,7 @@ Nie ma jednoznacznej reguły, która decydowałaby o trafności reprezentacji da
 \end{figure}
 
 \subsection{Transformata Fouriera}\label{sec:TF}
-Pliki dźwiękowe zawierają informacje, które reprezentują siłę ciśnienia akustycznego w domenie czasu. Jest to jedna z reprezentacji, która może być analizowana w celu zbadania konkretnych cech sygnału, lecz jest ona bezpośrednim efektem nagrania muzyki i możliwości jej bezpośredniego odtworzenia. Dokładna analiza relacji sygnału muzycznego, jego reprezentacja jak i jego zrozumienie odbywa się po przeniesieniu na płaszczyznę częstotliwości. W muzyce zachodniej, F0 w zapisie nutowym definiuje się jako wysokość dźwięku w rozumieniu częstotliwości, co zostało po omówione w sekcji \ref{subsec:pitch}.
+Pliki dźwiękowe zawierają informacje, które reprezentują siłę ciśnienia akustycznego w domenie czasu. Jest to jedna z reprezentacji, która może być analizowana w celu zbadania konkretnych cech sygnału, lecz jest ona bezpośrednim efektem nagrania muzyki i możliwości jej bezpośredniego odtworzenia. Dokładna analiza relacji sygnału muzycznego, jego reprezentacja jak i jego zrozumienie odbywa się po przeniesieniu na płaszczyznę częstotliwości. W muzyce zachodniej, F0 w zapisie nutowym definiuje się jako wysokość dźwięku w rozumieniu częstotliwości, co zostało po omówione w sekcji \ref{sec:pitch}.
 
 Aby z sygnału akustycznego w domenie czasu uzyskać dane w domenie częstotliwości powszechnie używane jest narzędzie matematyczne o nazwie \textbf{transformata Fouriera}. Funkcja ta jest uniwersalna i powszechnie stosowana w analizie sygnałów, w tej pracy jednak skupię się się na opisaniu sposobów wykorzystywania jej do celów analizy sygnałów akustycznych. Transformata ta opiera się na założeniu, że każdą okresową krzywą można zapisać w postaci sumy składowych sinusoidalnych o różnych częstotliwościach. Funkcja ta przekształca sygnału z dziedziny czasu na dziedzinę częstotliwości, co daje zarys tego jak rozłożona jest częstotliwość poszczególnych częstotliwości w analizowanych danych. Transformata zadana jest wzorem:
 
@@ -457,8 +458,10 @@ Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, 
 
 \clearpage
 
-\section{Estymacja sygnału monofonicznego}\label{sec:f0}
+\section{Estymacja częstotliwości fundamentalnej w sygnale monofonicznym}\label{sec:f0}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy mieć na uwadzę bardzo dużo czynników. 
+
+Samo rozpoznanie wysokości tonu jest kategoryzowane w zależności od specyfiki sygnału wejściowego na transkrypcję utworów monofonicznych (dla sygnału bez równoległych dźwięków) oraz transkrypcję utworów polifonicznych (dla sygnałów z równoległymi dźwiękami). Te drugie są często dalej dzielone na transkrypcję sygnałów, w których występuje tylko jedna barwa dźwięku (np. samo pianino) i na te, które nie mają obostrzenia w limicie barw dźwięków.
 
 Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które jest stosowane w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
@@ -673,7 +676,7 @@ Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyzn
 Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest chwiejna. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
 
 \clearpage
-\section{Estymacja sygnału polifonicznego}\label{sec:MultiPitch}
+\section{Estymacja wielu częstotliwości fundamentalnej w sygnale polifonicznym}\label{sec:MultiPitch}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym polifonicznym. W przeciwieństwie do sygnału monofonicznego,  sygnał polifoniczny to taki, w którym występują co najmniej dwa dźwięki w tym samym czasie. Problem ten jest znacznie bardziej skomplikowany od wyznaczania pojedyńczego F0 opisanego w \ref{sec:f0}. Wiele z własności sygnałów akustycznych, jak periodyczność czy rozróżnialna barwa, nie są niezawodnym źródłem informacji w celach transkrypcji wielotonowej, ponieważ nakładające się na siebie dźwięki modulują te cechy sygnału zniekształcając ich pierwotną formę.
 
 Współczesna muzyka zachodnia jest w dużym stopniu ustrukturyzowana zarówno w domenie czasu jak i częstotliwości. Tempo i rytm, w którym dany utwór jest grany, jest informacją zawartą w domenie czasu. Dzięki wzorcom, które są zachowywane w muzyce, można te informacje wydobyć. W domenie częstotliwości natomiast widoczne są zależności pomiędzy poszczególnymi wysokościami dźwięków. Było to już wielokrotnie udowadniane, jak na przykład w \cite[1325-1326]{Transcription:Mcintyre:OnTheOscilation}, że pojedyńczej zagranej nucie towarzyszy, poza częstotliwością fundamentalną, szereg wydźwięków. Wibracje te badane przez fizyków były dostosowywane tak, żeby pasowały do modeli normalnych. Struktura częstotliwości różni się w zależności od użytego instrumentu i sposobu w jaki został zagrany dźwięk. Częstotliwość i rozmieszczenie harmonicznych jest odgórnie ustalona przez instrument i sposób w jaki zostanie zagrana nuta. Pomimo, że harmoniczne zawsze posiadają pewne odchylenie od bycia w perfekcyjnej harmonii (to znaczy nie są dokłądną algebraiczną wielokrotnością częstotliwości F0, a oscylują w jej okolicy) dla konkretnego instrumentu i sposobu zagrania będą odgórnie zdefiniowane przez pewien model matematyczny \cite[1326-1327]{Transcription:Mcintyre:OnTheOscilation}. Jak opisuje Manuel Davy w \cite[203-204]{Transcription:Anssi:SignalProcessingMethods} struktura muzyki tonalnej może zostać wykorzystana do budowy modeli bayesowskich, czyli modeli matematycznych w kontekście probabilistycznym, które prowadzą do najprostszego modelu wyjaśniającego daną fale dźwiękową. Pomimo tego, że modele te wydają się naturalnym rozwiązaniem estymacji wielotonowej, ponieważ rozwiązuje problem dużej ilości parametrów w fali dźwiękowej, których nie można wyestymować beż zakładania pewnych założeń, nie są one często wykorzystywane. Wspomniana wcześniej praca \cite{Transcription:BayesianHarmonicModels} jest przykładem wykorzystania modeli bayesowskich do analizowania sygnałów muzycznych, w tym wykrywania F0.
