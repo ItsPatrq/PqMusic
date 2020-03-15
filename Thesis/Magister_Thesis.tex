@@ -865,7 +865,7 @@ dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w 
 \begin{displayquote}
 ,,Wektor drobnego de-nastrojenia harmonicznych $\delta$. Jego wartość powinna być bliska zeru i bez relacji względem $\delta$ pozostałych harmonicznych, pomimo tego, że instrument w teorii determinuje rozkład kolejnych harmonicznych. W tym przypadku zakładana jest zerowa, niezależna średnia Gaussowska, z wariancją $\sigma_{\delta}^{2}$, ustalony dla małych wartości aby faworyzować małe parametry de-nastrojenia. Rozkład można dodatkowo obciąć tak, aby sąsiednie harmoniczne nie krzyżowały się w domenie częstotliwości'' \cite[9]{Transcription:BayesianHarmonicModels}(tłumaczenie własne).
 \end{displayquote}
-\subsubsection{Metoda Pertusa i Iñesta (2008)}
+\subsubsection{Metoda Pertusa i Iñesta (2008)} \label{sec:pertus1}
 Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku, nosi nazwę ,,Estymacja wielu częstotliwości fundamentalnych z użyciem gładkości Gaussa'' (tłumaczenie własne) \cite{Transcription:Pertus:Inharmonicity}. Jest to metoda łączona, wykorzystująca okno Gaussa do wygładzenia wyniku. Algorytm ten przetwarza dane przed faktyczną analizą, jak zostało to opisane w sekcji \ref{sec:preProcessing}, wykorzystuje zasadę gładkości spektrum opisaną w sekcji \ref{sec:specSmoothnes} i bierze pod uwagę spektralną nieharmonicznych, której problem opisany był w sekcji \ref{sec:multif0:inh:model}.
 
 Algorytm wykonuje estymacje F0 operując na spektrum kolejnych okien czasowych. Analizowane fragmenty sygnału wejściowego przygotowane są tak, aby miały długość 93 ms (4096 sampli przy częstotliwości samplowania równej 44,1 kHZ) z zastosowaniem funkcji Hanninga jako funkcję okna (opisane w \ref{sec:STFT}) oraz marginesu zer równego trzykrotności długości oryginalnego okna (opisane w \ref{sec:przetwarzanieFFT}). Na tak przygotowanym oknie wykonywane jest STFT (\ref{sec:STFT}), którego wynik ma 16384 spektralnych komponentów, więc każdy z nich ma pasmo szerokości 2.7 Hz (szerokość pasma jest liczona wzorem $h = Fs / N$, gdzie Fs jest częstotliwością próbkowania, a N długością okna).
@@ -876,7 +876,7 @@ Następnie ze spektralnych pików wybierany jest zbiór częstotliwości nazywan
 
 Na podstawie kandydatów generowane są wszystkie możliwe ich kombinacje, a następnie wyliczane dla nich współczynniki ,,istotności'' (z ang. \textit{salience}) oznaczony później jako $S$. Kombinacja, dla której wartość tego współczynnika jest największa jest wybierana, co oznacza, że w danym oknie czasowym wszyscy kandydaci F0 danej kombinacji są obecni w kompozycji.
 
-Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które są występują w widmach kilku kandydatów. Te drugie będą w dalszej części ,,wygładzane''.
+Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. W literaturze wektor ten powszechnie określany jest jako \textit{HPS}, z angielskiego \textit{hypothetical partial sequences} czyli hipotetyczne częściowe sekwencje (tłumaczenie własne) \cite[3]{Transcription:Yeh:JointEvaluationF0:2}. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które są występują w widmach kilku kandydatów. Te drugie będą w dalszej części ,,wygładzane''.
 
 Wyliczanie istotności odbywa się dla każdego kandydata osobno, zaczynając od tych z najniższą częstotliwością. Na podstawie danego wzoru widmowego $p_c$ dla kandydata $c$ wszystkie harmoniczne, które występują w więcej niż jednym widmie, są liniowo interpolowane przy użyciu harmonicznych, które nie są dzielone pomiędzy kandydatów. Po tej operacji istnieją dwa scenariusze
 \begin{enumerate}
@@ -890,7 +890,7 @@ Z tak przygotowanych wzorców widmowych wyliczana jest głośność $l(c)$ dla k
   l(c) = \sum_{h=1}^H p_{c,h}
 \end{equation}
 
-Wyliczany jest również współczynnik gładkości $\sigma$ dla każdego $c$ przy użyciu gładkości Gaussa. Wektor $p_c$ jest filtrowany dolno-przepustowo przy pomocy obciętego znormalizowanego okna Gaussa z trzema komponentami $N_{\sigma = 1.0} = \left\{0,21, 0,58, 0,21\right\}$, które nakłądane jest na wzorzec spektralny danego kandydata tworząc wygładzony wzorzec $\widetilde{p}$. Mając wygładzony wzorzec, wyliczany jest współczynnik ostrości danego kandydata $s(c)$ jako suma wartości bezwzględnej różnicy wygładzonego i oryginalnego wzorca oraz znormalizować go poprzez wyliczenie ilorazu z ilością harmonicznych w wektorze $p_c$:
+Wyliczany jest również współczynnik gładkości $\sigma$ dla każdego $c$ przy użyciu gładkości Gaussa. Wektor $p_c$ jest filtrowany dolno-przepustowo przy pomocy obciętego znormalizowanego okna Gaussa z trzema komponentami $N_{\sigma = 1.0} = \left\{0,21, 0,58, 0,21\right\}$, które nakłądane jest na wzorzec spektralny danego kandydata tworząc wygładzony wzorzec $\widetilde{p}$. Mając wygładzony HPS, wyliczany jest współczynnik ostrości danego kandydata $s(c)$ jako suma wartości bezwzględnej różnicy wygładzonego i oryginalnego wzorca oraz znormalizować go poprzez wyliczenie ilorazu z ilością harmonicznych w wektorze $p_c$:
 \begin{equation}\label{eq:inharmonicity:sharpness}
   \overline{s}(c) = \frac{1}{H}\sum_{h=1}^H \left(\left|\widetilde{p}_{c,h} - p_{c,h}\right|\right)
 \end{equation}
@@ -912,8 +912,40 @@ W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania ko
 \end{enumerate}
 Tak przetworzone dane są zapisywane do pliku MIDI na podstawie informacji o początku dźwięku, jego długości oraz wysokości.
 
-\subsubsection{Metoda Pertusa i Iñesta (2012)}
-\cite{Transcription:Pertus:Inharmonicity2}
+\subsubsection{Metoda Pertusa i Iñesta (2012)}\label{sec:petrus2}
+Opisana w sekcji \ref{sec:pertus1} metoda do równoległej estymacji F0 w każdym z okien czasowych została po czterech latach rozszerzona na podstawie nowych dokonań w dziedzinie transkrypcji muzyki i opisana przez tych samych badaczy w pracy \cite{Transcription:Pertus:Inharmonicity2}. Założenia metody pozostają bez zmian - dla każdego badanego okna wyliczane są współczynniki istotności w oparciu o kombinacje kandydatów F0, i wybierana jest kombinacja o największym współczynniku $S$. Różnicę od pierwotnej metodologi, jakie narzuca znowelizowany algorytm, składają się z uaktualnia sposób wyliczania istotności o normalizację współczynnika gładkości oraz dodania zaawansowanych technik przetwarzania końcowego dla każdego okna w oparciu o okna sąsiednie. Ogólny schemat działania tej metody jest przedstawiony na rysunku \ref{fig:petrusa_2012_methodology}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.31]{images/Pertusa_2012_methodology.png}
+    \caption{Ogólny podgląd metody z podziałem na metodę podstawową opisaną w \cite{Transcription:Pertus:Inharmonicity} i rozszerzoną opisaną w \cite{Transcription:Pertus:Inharmonicity2}. Schemat z \cite[3]{Transcription:Pertus:Inharmonicity2}, tłumaczenie własne.}
+    \label{fig:petrusa_2012_methodology}
+  \end{center}
+\end{figure}
+
+Dla danej kombinacji kandydatów częstotliwości fundamentalnych $c$ wyliczanie parametru wykonywane jest tak samo jak w podstawowej metodzie, tj. zgodnie ze wzorem \ref{eq:inharmonicity:loudness}. Odrzucane są kombinacje, które posiadają kandydata z głośnością poniżej wyznaczanego progu ($l(c) < \eta$), lub takie, w których różnica pomiędzy najcichszym i najgłośniejszym kandydatem jest wystarczająco duża ($l(c) < \gamma L_C$, z $L_C$ będącym głośnością najgłośniejszego kandydata), tak samo jak w metodzie podstawowej.
+
+Istotna zmiana pojawia się podczas liczenia parametru gładkości danego kandydata. Wektor HPS $p_c$ danego kandydata jest poddawany normalizacji poprzez podzielenie jego wartości przez jego maksymalną wartość, skalując go do przedziału $\left<0-1\right>$. Tak znormalizowany HPS jest oznaczany jako $\overline{p}$. Kolejno wzory na wygładzony wektor wzoru widmowego i współczynnik ostrości danej kombinacji są wyliczane z użyciem znormalizowanego HPS:
+\begin{equation}\label{eq:inharmonicity2:hpsSmoothed}
+  \widetilde{p} = N_{0,1}\ast \overline{p}_c 
+\end{equation}
+\begin{equation}\label{eq:inharmonicity2:sharpness}
+  r(c) = \sum_{h=1}^H\left|\widetilde{p}_{c,h} - \overline{p}_{c,h} \right|
+\end{equation}
+Współczynnik $r(c)$ w podstawowej wersji jest normalizowany za pomocą podzielenia go przez ilość harmonicznych danego kandydata F0. Normalizacja ta jest rozszerzona w \cite[5-6]{Transcription:Pertus:Inharmonicity2} tak, aby był niezależny od natężenia:
+\begin{equation}\label{eq:inharmonicity2:roughness}
+  \widetilde{r}(c) = \frac{r(c)}{H(1 - N_{0, 1}(\overline{x}))}
+\end{equation}
+Wzór liczenia współczynnika gładkości na podstawie znormalizowanego współczynnika ostrości pozostaje niezmieniony (\ref{eq:inharmonicity:smoothnes}).
+
+Wzór na istotność pojedyńczego kandydata został rozszerzony o parametr $k$, którego zadaniem jest zbalansowanie wkładu gładkości na ten współczynnik:
+
+\begin{equation}\label{eq:inharmonicity2:salience}
+S(c) = l(c) * \sigma^k(c)
+\end{equation}
+Liczenie istotności danej kombinacji jest niezmieniony (\ref{eq:inharmonicity:salience}). W danym oknie wybierana jest kombinacja kandydatów o największym współczynniku $S$. Po ewaluacji każdego okna analizowanego utworu wykonywane jest przetwarzanie końcowe z wykorzystaniem sąsiednich okien, które skłąda się z dwóch etapów: wygładzania czasowego oraz śledzenia wysokości.
+
+
 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
 \subsubsection{Magenta Onsets and Frames}
@@ -929,8 +961,8 @@ Tak przetworzone dane są zapisywane do pliku MIDI na podstawie informacji o poc
 \end{figure}
 \cite{DBLP:journals/corr/LuongPM15}
 \todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa?
-Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok?}
-
+Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
+\todo[inline]{Rozdziały czy sekcje?}
 \newpage
 % \section{Klasyfikacja muzyki}
 % \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
@@ -1002,6 +1034,7 @@ Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "
   \item \textbf{IOI} - \textit{ang. \textbf{I}nter-\textbf{o}nset \textbf{i}nterval, pol. Odstęp pomiędzy początkami dźwięków}
   \item \textbf{TFR} - \textit{ang. \textbf{T}ime-\textbf{F}requency \textbf{R}epresentation, pol. Reprezentacja Czasu-Częstotliwości}
   \item \textbf{AMT} - \textit{ang. \textbf{A}utomatic \textbf{M}usic \textbf{T}ranscription}
+  \item \textbf{HPS} - \textbf{H}ypothetical \textbf{P}artial \textbf{S}equences - hipotetyczne częściowe sekwencje
 \end{itemize}
 \newpage
 

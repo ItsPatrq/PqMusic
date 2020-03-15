@@ -14,11 +14,11 @@ from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
-#depreciated
+
 def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
-                                            minF0=75, maxF0=6000, peakDistance=8, relevantPowerThreashold=7, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
-											maxHarmonicsPerCandidate=20, maxCandidates=10, maxParallelNotes = 5, gamma=0.05, minNoteMs=90,
-											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 30, useGpu = False):
+                                            minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
+											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
+											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False, newAlgorithmVersion=True, smoothnessImportance=3):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -124,39 +124,42 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 		sortedByPow = sortedByPow[:maxCandidates]
 		return np.sort(sortedByPow)
 
-	def countCombinationSalience(combination, patterns, peaks):
+	def smoothenPattern(currPattern, currPeaks, ownerships):
+		patternHarmonicsToDelete = []
+
+		for harmonic in range(1, len(currPattern)):					
+			currHarmonicFft = currPattern[harmonic][0]
+			if currPeaks[currHarmonicFft] == 0: #it was taken by other harmonic due to shared pattern
+				patternHarmonicsToDelete.append(harmonic)
+			elif len(ownerships[currHarmonicFft]) > 1: #shared harmonic
+				if len(currPattern) == harmonic + 1:
+					if len(currPattern) > 2:
+						interpolatedPitch = currPattern[harmonic - 1][1] - ((currPattern[harmonic - 2][1] - currPattern[harmonic - 1][1]) / 2)
+					else:
+						interpolatedPitch = currPeaks[currPattern[harmonic][0]]
+				else:
+					interpolatedPitch = (currPattern[harmonic - 1][1] + currPeaks[currPattern[harmonic + 1][0]]) / 2
+				if interpolatedPitch > currPeaks[currHarmonicFft]:
+					currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
+					currPeaks[currHarmonicFft] = 0
+				else: 
+					currPattern[harmonic] = (currHarmonicFft, interpolatedPitch)
+					currPeaks[currHarmonicFft] -= interpolatedPitch
+			else: #non-shared harmonic
+				currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
+				currPeaks[currHarmonicFft] = 0
+		for i in range(-1, -(len(patternHarmonicsToDelete) + 1), -1):
+			del currPattern[patternHarmonicsToDelete[i]]
+		return currPattern, currPeaks
+
+	def countCombinationSalience(combination, patterns, peaks, ownerships):
 		currPatterns = deepcopy(patterns)
 		currPeaks = np.array(peaks)
 		combinationSalience = 0
 		highestLoudness = None
 		lowestLoudness = None
 		for fundamental in combination:
-			currPattern = currPatterns[fundamental]
-			patternHarmonicsToDelete = []
-
-			for harmonic in range(1, len(currPattern)):					
-				currHarmonicFft = currPattern[harmonic][0]
-				if currPeaks[currHarmonicFft] == 0: #it was taken by other harmonic due to shared pattern
-					patternHarmonicsToDelete.append(harmonic)
-				elif len(ownerships[currHarmonicFft]) > 1: #shared harmonic
-					if len(currPattern) == harmonic + 1:
-						if len(currPattern) > 2:
-							interpolatedPitch = currPattern[harmonic - 1][1] - ((currPattern[harmonic - 2][1] - currPattern[harmonic - 1][1]) / 2)
-						else:
-							interpolatedPitch = currPeaks[currPattern[harmonic][0]]
-					else:
-						interpolatedPitch = (currPattern[harmonic - 1][1] + currPeaks[currPattern[harmonic + 1][0]]) / 2
-					if interpolatedPitch > currPeaks[currHarmonicFft]:
-						currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
-						currPeaks[currHarmonicFft] = 0
-					else: 
-						currPattern[harmonic] = (currHarmonicFft, interpolatedPitch)
-						currPeaks[currHarmonicFft] -= interpolatedPitch
-				else: #non-shared harmonic
-					currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
-					currPeaks[currHarmonicFft] = 0
-			for i in range(-1, -(len(patternHarmonicsToDelete) + 1), -1):
-				del currPattern[patternHarmonicsToDelete[i]]
+			currPattern, currPeaks = smoothenPattern(currPatterns[fundamental], currPeaks, ownerships)
 				
 			currPatternPowers = np.array(currPattern)
 			currPatternPowers = currPatternPowers.T[1] # pylint: disable=unsubscriptable-object
@@ -173,20 +176,37 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 			combinationSalience = 0.0
 		return combinationSalience 
 
+	def countCombinationSalience2(combination, patterns, peaks, ownerships):
+		currPatterns = deepcopy(patterns)
+		currPeaks = np.array(peaks)
+		combinationSalience = 0
+		highestLoudness = None
+		lowestLoudness = None
+		for fundamental in combination:
+			currPattern, currPeaks = smoothenPattern(currPatterns[fundamental], currPeaks, ownerships)
+			currPatternPowers = np.array(currPattern)
+			currPatternPowers = currPatternPowers.T[1] # pylint: disable=unsubscriptable-object
+			totalPatternLoudness = np.sum(currPatternPowers)
+			highestLoudness, lowestLoudness = updateMinMaxL(totalPatternLoudness, highestLoudness, lowestLoudness)
+			if lowestLoudness < highestLoudness * gamma:
+				return 0.0
+
+			normalizedHpsPowers = np.array(currPatternPowers) / np.max(currPatternPowers)
+			if(len(currPatternPowers) > 2):
+				lowPassedConv = np.convolve(normalizedHpsPowers, gaussianPoints, 'same')
+				currPatternSharpnessMeasure = np.sum(abs(lowPassedConv - normalizedHpsPowers)) / (len(currPatternPowers) - len(currPatternPowers) * gaussianPoints[1])
+			else:
+				currPatternSharpnessMeasure = 0 # only possible if minHarmonicsPerCandidate set to less then 2
+			currPatternSmoothness = 1 - currPatternSharpnessMeasure
+			combinationSalience += (totalPatternLoudness * currPatternSmoothness ** smoothnessImportance) ** 2
+		return combinationSalience 
+
 	def postProcessMidiNotes(resNotes):
 		resultPianoRoll = []
 		for i in range(0, len(resNotes)):
 			pianoRollRow = np.zeros(maxMidiPitch)
 			for notePitch, amplitude in resNotes[i].items():
 				amplitude = min(np.round(amplitude * 1.8), 127)
-				# if i >= 1 and i+1 < len(resNotes):
-				# 	if notePitch+1 in resNotes[i-1] and notePitch+1 in resNotes[i+1]:
-				# 		pianoRollRow[notePitch+1] = amplitude
-				# 	elif notePitch-1 in resNotes[i-1] and notePitch - 1 in resNotes[i+1]:
-				# 		pianoRollRow[notePitch-1] = amplitude
-				# 	else:
-				# 		pianoRollRow[notePitch] = amplitude
-				# else:
 				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
@@ -200,8 +220,11 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					(((i - 1 > 0 and resultPianoRoll[i - 1][note] != 0) or (i - 2 > 0 and resultPianoRoll[i - 2][note] != 0) or (i - 3 > 0 and resultPianoRoll[i - 3][note] != 0) or (i - 4 > 0 and resultPianoRoll[i - 4][note] != 0)) and\
 					((len(resultPianoRoll) > i + 1 and resultPianoRoll[i + 1][note] != 0) or (len(resultPianoRoll) > i + 2 and resultPianoRoll[i + 2][note] != 0) or (len(resultPianoRoll) > i + 3 and resultPianoRoll[i + 3][note] != 0) or (len(resultPianoRoll) > i + 4 and resultPianoRoll[i + 4][note] != 0))):					
 					if resultPianoRoll[i][note] == 0:
-						averageVelocity = currVelocity / max(currDurotian, 1)
-						currVelocity += averageVelocity
+						if currVelocity == 0:
+							currVelocity = 100
+						else:
+							averageVelocity = currVelocity / max(currDurotian, 1)
+							currVelocity += averageVelocity
 						resultPianoRoll[i][note] = averageVelocity
 					else:
 						currVelocity += resultPianoRoll[i][note]
@@ -221,41 +244,56 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 
 		return resultNotes, resultPianoRoll
 
+	def coreMethod():
+		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
+			peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
 
-	for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
-		peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
+			hypotheses, amplitudeSum, patterns, ownerships = getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
+			if(len(hypotheses) == 0):
+				resNotes.append({})
+				continue
 
-		hypotheses, amplitudeSum, patterns, ownerships = getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
-		if(len(hypotheses) == 0):
-			resNotes.append({})
-			continue
+			sortedByFq = getMaxCandidatesByPower(amplitudeSum, hypotheses)
 
-		sortedByFq = getMaxCandidatesByPower(amplitudeSum, hypotheses)
+			possibleCombinations = []
+			for num_pitches in range(1, min(maxParallelNotes, len(sortedByFq)) + 1):
+				for combo in combinations(sortedByFq, num_pitches):
+					possibleCombinations.append(combo)
 
-		possibleCombinations = []
-		for num_pitches in range(1, min(maxParallelNotes, len(sortedByFq)) + 1):
-			for combo in combinations(sortedByFq, num_pitches):
-				possibleCombinations.append(combo)
+			allSaliences = []
+			for combination in possibleCombinations:
+				combinationSalience = countCombinationSalience2(combination, patterns, peaks, ownerships) if newAlgorithmVersion else countCombinationSalience(combination, patterns, peaks, ownerships)
+				allSaliences.append(combinationSalience)
 
-		allSaliences = []
-		for combination in possibleCombinations:
-			combinationSalience = countCombinationSalience(combination, patterns, peaks)
-			allSaliences.append(combinationSalience)
+			bestCombination = possibleCombinations[np.argmax(allSaliences)]
 
-		bestCombination = possibleCombinations[np.argmax(allSaliences)]
+			result = np.zeros(k1)
+			midiNotes = {}
+			for fftFq in bestCombination:
+				fq = fft_to_hz_array[fftFq]
+				midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
+				result[fftFq] = amplitudeSum[fftFq]
+			resF0Weights.append(result)
+			resNotes.append(midiNotes)
+		return resNotes, resF0Weights, peaks
 
-		result = np.zeros(k1)
-		midiNotes = {}
-		for fftFq in bestCombination:
-			fq = fft_to_hz_array[fftFq]
-			midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
-			result[fftFq] = amplitudeSum[fftFq]
-		resF0Weights.append(result)
-		resNotes.append(midiNotes)
+	def pertusAndInesta2008():
+		resNotes, resF0Weights, peaks = coreMethod()
 
-	resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
+		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
 
-	return resMidi, resPianoRoll, resF0Weights, peaks
+		return resMidi, resPianoRoll, resF0Weights, peaks
+
+	def pertusAndInesta2012():
+		resNotes, resF0Weights, peaks = coreMethod()
+
+		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
+
+		return resMidi, resPianoRoll, resF0Weights, peaks
+
+	if newAlgorithmVersion:
+		return pertusAndInesta2012()
+	return pertusAndInesta2008()
 
 
 if __name__ == "__main__":
@@ -268,6 +306,7 @@ if __name__ == "__main__":
 	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 	filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
+	data = data[:(int(len(data)/3))]
 	sampleRate = 44100
 
 	sine_data = create_sine(220, sampleRate, 5)
@@ -275,12 +314,12 @@ if __name__ == "__main__":
 	sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
 	resMidi, resPianoRoll, resF0Weights, peaks = harmonicAndSmoothnessBasedTranscription(
-            data, sampleRate, frameWidth, frameWidth * 3, spacing)
+            data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
 
 	#plot_pitches(best_frequencies, spacing, sampleRate)
 	#plot_spectrogram(all_weights, spacing, sampleRate)
 
-	write_midi(resMidi, "./res2.mid", spacing/sampleRate, 4)
+	write_midi(resMidi, "./res3.mid", spacing/sampleRate, 4)
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)
