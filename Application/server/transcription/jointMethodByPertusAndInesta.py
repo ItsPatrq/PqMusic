@@ -18,12 +18,14 @@ from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
 def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
-											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False, newAlgorithmVersion=True, smoothnessImportance=3):
+											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False,
+											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2):
 
 	#region init values
 	hann = np.hanning(frameWidth)
 	resF0Weights = []
 	resNotes = []
+	allCombinations = []
 	zeropad = np.zeros(sizeOfZeroPadding)
 	gaussianPoints = [0.21, 0.58, 0.21]
 	fftLen = int(np.floor((frameWidth + sizeOfZeroPadding)/2))
@@ -206,7 +208,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 		for i in range(0, len(resNotes)):
 			pianoRollRow = np.zeros(maxMidiPitch)
 			for notePitch, amplitude in resNotes[i].items():
-				amplitude = min(np.round(amplitude * 1.8), 127)
+				amplitude = min(np.round(amplitude * 6), 127)
 				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
@@ -221,7 +223,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					((len(resultPianoRoll) > i + 1 and resultPianoRoll[i + 1][note] != 0) or (len(resultPianoRoll) > i + 2 and resultPianoRoll[i + 2][note] != 0) or (len(resultPianoRoll) > i + 3 and resultPianoRoll[i + 3][note] != 0) or (len(resultPianoRoll) > i + 4 and resultPianoRoll[i + 4][note] != 0))):					
 					if resultPianoRoll[i][note] == 0:
 						if currVelocity == 0:
-							currVelocity = 100
+							currVelocity = 80
 						else:
 							averageVelocity = currVelocity / max(currDurotian, 1)
 							currVelocity += averageVelocity
@@ -261,31 +263,54 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					possibleCombinations.append(combo)
 
 			allSaliences = []
+			allMidiNotes = []
+			allResults = []
 			for combination in possibleCombinations:
 				combinationSalience = countCombinationSalience2(combination, patterns, peaks, ownerships) if newAlgorithmVersion else countCombinationSalience(combination, patterns, peaks, ownerships)
 				allSaliences.append(combinationSalience)
 
-			bestCombination = possibleCombinations[np.argmax(allSaliences)]
+				result = np.zeros(k1)
+				midiNotes = {}
+				for fftFq in combination:
+					fq = fft_to_hz_array[fftFq]
+					midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
+					result[fftFq] = amplitudeSum[fftFq]
+				allMidiNotes.append(midiNotes)
+				allResults.append(result)
 
-			result = np.zeros(k1)
-			midiNotes = {}
-			for fftFq in bestCombination:
-				fq = fft_to_hz_array[fftFq]
-				midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
-				result[fftFq] = amplitudeSum[fftFq]
-			resF0Weights.append(result)
-			resNotes.append(midiNotes)
-		return resNotes, resF0Weights, peaks
+			allCombinations.append((possibleCombinations, allSaliences, allMidiNotes, allResults))
+
+			resF0Weights.append(allResults[np.argmax(allSaliences)])
+			resNotes.append(allMidiNotes[np.argmax(allSaliences)])
+		return resNotes, resF0Weights, peaks, allCombinations
+
+	def flatternCombination(allCombinations):
+		newSaliences = []
+		for frame in range(0, len(allCombinations)):
+			(currCombs, _, currMidiNotes, _) = allCombinations[frame]
+			currNewSaliences = []
+			for comb in range(0, len(currCombs)):
+				newSalience = 0
+				for k in range(-temporalSmoothnessRange, temporalSmoothnessRange + 1):
+					(_, neighbourAllSaliences, neighbourMidiNotes, _) = allCombinations[min(max(frame + k, 0), len(allCombinations) - 1)]
+					if currMidiNotes[comb] in neighbourMidiNotes:
+						newSalience += neighbourAllSaliences[neighbourMidiNotes.index(currMidiNotes[comb])]
+				currNewSaliences.append(newSalience)
+			newSaliences.append(currNewSaliences)
+		return newSaliences
+
+
 
 	def pertusAndInesta2008():
-		resNotes, resF0Weights, peaks = coreMethod()
+		resNotes, resF0Weights, peaks, _ = coreMethod()
 
 		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
 
 		return resMidi, resPianoRoll, resF0Weights, peaks
 
 	def pertusAndInesta2012():
-		resNotes, resF0Weights, peaks = coreMethod()
+		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
+		newSaliences = flatternCombination(allCombinations)
 
 		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
 
