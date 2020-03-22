@@ -2,6 +2,7 @@ from pydub import AudioSegment
 import ntpath
 import numpy as np
 from scipy.io import wavfile
+import heapq
 
 ntpath.basename("a/b/c")
 
@@ -78,3 +79,7 @@ def hz_to_fft(sampleRate, numberOfSamples):
 def create_sine(hz, sample_rate, durotian):
   samples = np.arange(sample_rate * durotian) / sample_rate
   return np.sin(2 * np.pi * hz * samples)
+
+def get_arg_max(array):
+  a = np.array(array)
+  return heapq.nlargest(len(array), range(len(a)), a.take)

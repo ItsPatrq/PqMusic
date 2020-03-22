@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import math
 from .general import hz_to_fourier, fourier_to_hz, hz_to_fft
 import pylab
+import networkx as nx
 
 strings = {
   'pl': {
@@ -334,3 +335,14 @@ def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True, language 
 def plot_spectrogram_with_onsets(spectra, spacing, sampleRate, onsets, title='Spectrogram', show=True, showColorbar=True):
   fig, ax = plot_spectrogram(spectra, spacing, sampleRate, title, False, showColorbar)
   #TODO: https://stackoverflow.com/questions/12864294/adding-an-arbitrary-line-to-a-matplotlib-plot-in-ipython-notebook
+
+def plot_pitch_tracking(path, G):
+  pos = nx.spring_layout(G)
+  nx.draw(G,pos,node_color='gray', node_size=500)
+  print(G.edges())
+  nx.draw_networkx_edge_labels(G,alpha=0.7, pos=pos, font_size=6, font_color='k')
+  nx.draw_networkx_labels(G,pos=pos, font_size=14, font_weight="bold", font_color='k')
+
+  nx.draw_networkx_nodes(G,pos,nodelist=path,node_color='r')
+  plt.axis('equal')
+  plt.show()

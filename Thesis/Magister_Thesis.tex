@@ -958,9 +958,22 @@ gdzie $C_i'(t)$ to skwantyzowana kombinacja $i$ w czasie $t$. W ogólności, we 
 \end{equation}
 Tak wybierane kombinacje są bardziej spójne w domenie czasowej, niwelując gwałtowne zmiany wykrytych częstotliwości.
 
-Śledzenia wysokości zaproponowane w pracy \cite[7-8]{Transcription:Pertus:Inharmonicity2} jest 
+Śledzenia wysokości zaproponowane w pracy \cite[7-8]{Transcription:Pertus:Inharmonicity2} jest drugą metodą, która wymusza wybór kombinacji o gładkim przejściu z jednej na drugą w czasie. Metoda ta polega na skonstruowaniu warstwowego, ważonego, ukierunkowanego grafu acyklicznego (wDAG, z ang. \textit{weighted directed acyclic graph}).
 
+Graf $G = \left(V, v_b, E, w, t\right)$ będący warstwowym wDAG składa się ze zbioru wierzchołków $V$, wierzchołka początkowego $v_b$, zbioru krawędzi $E$, funkcji $w$ będącej wagą krawędzi pomiędzy dwoma wierzchołkami w sąsiednich warstwach grafu $w(v_b, v_j)$ oraz funkcji pozycji $t: V \rightarrow \left\{0, 1, 2, ..., T\right\}$. Wierzchołkami są kombinacje kandydatów F0 w danym oknie czasowym, natomiast $t$ dla każdego wierzchołka przyporządkowuje okno czasowe, w którym rozpatrywana jest dana kombinacja. Warstwą nazywane są wszystkie wierzchołki, dla których funkcja $t$ daje ten sam wynik $t(v) = \tau$. W innych słowach, warstwą w grafie jest zbiór kombinacji w jednym oknie czasowym.
 
+Krawędzie prowadzone są ze wszystkich wierzchołków warstwy dla $t(v_i) = \tau$ do wszystkich krawędzi warstwy następnej $t(v_j) = \tau + 1$. Waga krawędzi liczona jest według wzoru:
+
+\begin{equation}\label{eq:inharmonicity2:dwagWeight}
+w(v_i, v_j) = \frac{D(v_i, v_j)}{\widetilde{S}(v_j) + 1}
+\end{equation}
+gdzie $\widetilde{S}$ oznacza istotnością kombinacji warstwy do której prowadzona jest krawędź, liczona według wzoru \ref{eq:inharmonicity2:smoothedSalience}, a $D(v_i, v_j)$ jest współczynnikiem podobieństwa pomiędzy kombinacjami odpowiadającymi wierzchołkom $v_i$ i $v_j$ liczona jako:
+\begin{equation}\label{eq:inharmonicity2:dwag:similarity}
+D(v_i, v_j) = \sum_{\forall_{C\in v_i, v_j}}\left|\widetilde{l}(v_{i,c}) - \widetilde{l}(v_{j,c}) \right| + \sum_{\forall_{C\in v_i - v_j}}\widetilde{l}(v_{i,c}) + \sum_{\forall_{C\in v_j - v_i}}\widetilde{l}(v_{j,c})
+\end{equation}
+gdzie $\widetilde{l}(v_{i,c})$ oznacza ogólną głośność kandydata $c$ w kombinacji $i$. Zgodnie z powyższym wzorem \ref{eq:inharmonicity2:dwag:similarity} krawędzi pomiędzy wierzchołkami, które mają więcej wspólnych kandydatów będzie mniejsza od tych, które mają więcej rozłącznych kandydatów F0.
+
+W trakcie budowania wDAG w celu zwiększenia wydajności wybieranych jest tylko $M$ najbardziej prawdopodobnych kombinacji dla każdego okna czasowego. Po wygenerowaniu grafu na podstawie wag liczonych wzorem \ref{eq:inharmonicity2:dwagWeight} wyznaczana jest najkrótsza ścieżka przy pomocy algorytmu Dijkstry \cite[269–271]{Transcription:Dijkstra:Graphs} od pierwszego okna ($t(v) = 0$) do ostatniego ($t(v) = T$). Te wierzchołki, które należą do najkrótszej ścieżki odpowiadają kombinacjom, które są ostatecznie wybierane jako wynik algorytmu.
 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
 \subsubsection{Magenta Onsets and Frames}
@@ -1050,6 +1063,7 @@ Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "
   \item \textbf{TFR} - \textit{ang. \textbf{T}ime-\textbf{F}requency \textbf{R}epresentation, pol. Reprezentacja Czasu-Częstotliwości}
   \item \textbf{AMT} - \textit{ang. \textbf{A}utomatic \textbf{M}usic \textbf{T}ranscription}
   \item \textbf{HPS} - \textbf{H}ypothetical \textbf{P}artial \textbf{S}equences - hipotetyczne częściowe sekwencje
+  \item \textbf{wDAG} - weighted \textbf{D}irected \textbf{A}cyclic \textbf{G}raph
 \end{itemize}
 \newpage
 

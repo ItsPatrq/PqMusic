@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from scipy.fftpack import fft
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import sys
 from copy import deepcopy
 from os import path
@@ -11,15 +12,18 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from utils.profile import profile, print_prof_data
-from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks
-from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier
+from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
+from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
+import networkx as nx
+from collections import namedtuple
+import functools 
 
 def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
 											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False,
-											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2):
+											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -37,6 +41,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 	k1 = int(np.round(hz_to_fft_array[maxF0]))
 
 	maxMidiPitch = hz_to_midi(maxF0) + 1
+	CombinationData = namedtuple('CombinationData', "possibleCombinations allSaliences allMidiNotes allResults allPatterns")
 	#endregion init values
 
 	def countMaxInharmonyFrequencies(expectedFft):
@@ -136,7 +141,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 			elif len(ownerships[currHarmonicFft]) > 1: #shared harmonic
 				if len(currPattern) == harmonic + 1:
 					if len(currPattern) > 2:
-						interpolatedPitch = currPattern[harmonic - 1][1] - ((currPattern[harmonic - 2][1] - currPattern[harmonic - 1][1]) / 2)
+						interpolatedPitch = max(currPattern[harmonic - 1][1] - ((currPattern[harmonic - 2][1] - currPattern[harmonic - 1][1]) / 2), 0)
 					else:
 						interpolatedPitch = currPeaks[currPattern[harmonic][0]]
 				else:
@@ -144,9 +149,9 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 				if interpolatedPitch > currPeaks[currHarmonicFft]:
 					currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
 					currPeaks[currHarmonicFft] = 0
-				else: 
+				else:
 					currPattern[harmonic] = (currHarmonicFft, interpolatedPitch)
-					currPeaks[currHarmonicFft] -= interpolatedPitch
+					currPeaks[currHarmonicFft] =  max(currPeaks[currHarmonicFft] - interpolatedPitch, 0)
 			else: #non-shared harmonic
 				currPattern[harmonic] = (currHarmonicFft, currPeaks[currHarmonicFft])
 				currPeaks[currHarmonicFft] = 0
@@ -176,7 +181,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 			combinationSalience += (totalPatternLoudness * currPatternSmoothness) ** 2
 		if lowestLoudness < highestLoudness * gamma:
 			combinationSalience = 0.0
-		return combinationSalience 
+		return combinationSalience
 
 	def countCombinationSalience2(combination, patterns, peaks, ownerships):
 		currPatterns = deepcopy(patterns)
@@ -184,14 +189,17 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 		combinationSalience = 0
 		highestLoudness = None
 		lowestLoudness = None
+		harmonicsPatterns = []
 		for fundamental in combination:
 			currPattern, currPeaks = smoothenPattern(currPatterns[fundamental], currPeaks, ownerships)
+			harmonicsPatterns.append((hz_to_midi(fft_to_hz_array[fundamental]), currPattern))
+					
 			currPatternPowers = np.array(currPattern)
 			currPatternPowers = currPatternPowers.T[1] # pylint: disable=unsubscriptable-object
 			totalPatternLoudness = np.sum(currPatternPowers)
 			highestLoudness, lowestLoudness = updateMinMaxL(totalPatternLoudness, highestLoudness, lowestLoudness)
 			if lowestLoudness < highestLoudness * gamma:
-				return 0.0
+				return 0.0, harmonicsPatterns
 
 			normalizedHpsPowers = np.array(currPatternPowers) / np.max(currPatternPowers)
 			if(len(currPatternPowers) > 2):
@@ -201,7 +209,8 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 				currPatternSharpnessMeasure = 0 # only possible if minHarmonicsPerCandidate set to less then 2
 			currPatternSmoothness = 1 - currPatternSharpnessMeasure
 			combinationSalience += (totalPatternLoudness * currPatternSmoothness ** smoothnessImportance) ** 2
-		return combinationSalience 
+
+		return combinationSalience, harmonicsPatterns
 
 	def postProcessMidiNotes(resNotes):
 		resultPianoRoll = []
@@ -224,9 +233,9 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					if resultPianoRoll[i][note] == 0:
 						if currVelocity == 0:
 							currVelocity = 80
-						else:
-							averageVelocity = currVelocity / max(currDurotian, 1)
-							currVelocity += averageVelocity
+						
+						averageVelocity = currVelocity / max(currDurotian, 1)
+						currVelocity += averageVelocity
 						resultPianoRoll[i][note] = averageVelocity
 					else:
 						currVelocity += resultPianoRoll[i][note]
@@ -265,8 +274,9 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 			allSaliences = []
 			allMidiNotes = []
 			allResults = []
+			allPatterns = []
 			for combination in possibleCombinations:
-				combinationSalience = countCombinationSalience2(combination, patterns, peaks, ownerships) if newAlgorithmVersion else countCombinationSalience(combination, patterns, peaks, ownerships)
+				(combinationSalience, harmonicsPattern) = countCombinationSalience2(combination, patterns, peaks, ownerships) if newAlgorithmVersion else countCombinationSalience(combination, patterns, peaks, ownerships)
 				allSaliences.append(combinationSalience)
 
 				result = np.zeros(k1)
@@ -277,8 +287,9 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					result[fftFq] = amplitudeSum[fftFq]
 				allMidiNotes.append(midiNotes)
 				allResults.append(result)
+				allPatterns.append(harmonicsPattern)
 
-			allCombinations.append((possibleCombinations, allSaliences, allMidiNotes, allResults))
+			allCombinations.append(CombinationData(possibleCombinations, allSaliences, allMidiNotes, allResults, allPatterns))
 
 			resF0Weights.append(allResults[np.argmax(allSaliences)])
 			resNotes.append(allMidiNotes[np.argmax(allSaliences)])
@@ -287,19 +298,59 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 	def flatternCombination(allCombinations):
 		newSaliences = []
 		for frame in range(0, len(allCombinations)):
-			(currCombs, _, currMidiNotes, _) = allCombinations[frame]
+			(currCombs, _, currMidiNotes, _, _) = allCombinations[frame]
 			currNewSaliences = []
 			for comb in range(0, len(currCombs)):
 				newSalience = 0
 				for k in range(-temporalSmoothnessRange, temporalSmoothnessRange + 1):
-					(_, neighbourAllSaliences, neighbourMidiNotes, _) = allCombinations[min(max(frame + k, 0), len(allCombinations) - 1)]
+					(_, neighbourAllSaliences, neighbourMidiNotes, _, _) = allCombinations[min(max(frame + k, 0), len(allCombinations) - 1)]
 					if currMidiNotes[comb] in neighbourMidiNotes:
 						newSalience += neighbourAllSaliences[neighbourMidiNotes.index(currMidiNotes[comb])]
 				currNewSaliences.append(newSalience)
 			newSaliences.append(currNewSaliences)
 		return newSaliences
 
+	def pitchTracking(allCombinations, saliences):
+		graph = nx.DiGraph()
+		first_node = None
+		last_node = None
+		def countWeight(lvi, lvj, salience_j):
+			D = 0
+			fundamentals_i = map(lambda x: x[0], lvi)
+			fundamentals_j = map(lambda x: x[0], lvj)
+			for pattern_i in lvi:
+				if pattern_i[0] in fundamentals_j:
+					
+					D += np.abs(sum(map(lambda a: a[1], pattern_i[1])) + sum(map(lambda a: a[1], [item for item in lvj if item[0] == pattern_i[0]][0][1])))
+				else:
+					D += sum(map(lambda a: a[1], pattern_i[1]))
+			for pattern_j in lvj:
+				if pattern_j[0] not in fundamentals_i:
+					D += sum(map(lambda a: a[1], pattern_j[1]))
+			return D / (salience_j + 1)
 
+		for frame in range(0, len(allCombinations) - 1):
+			(_, _, _, _, currPatterns) = allCombinations[frame]
+			(_, _, _, _, nextPatterns) = allCombinations[frame + 1]
+
+			currFrameSorted = get_arg_max(saliences[frame])
+			nextFrameSorted = get_arg_max(saliences[frame + 1])
+			for currVertex in range(0, min(len(currPatterns), pitch_tracking_combinations)):
+				for nextFrameVertex in range(0, min(len(nextPatterns), pitch_tracking_combinations)):
+					graph.add_edge((frame, currFrameSorted[currVertex]), (frame + 1, nextFrameSorted[nextFrameVertex]),\
+						weight=countWeight(currPatterns[currFrameSorted[currVertex]], nextPatterns[nextFrameSorted[nextFrameVertex]], saliences[frame + 1][nextFrameSorted[nextFrameVertex]]))
+					if first_node == None:
+						first_node = (frame, currVertex)
+					if frame + 1 == len(allCombinations) - 1:
+						last_node = (frame, currVertex)
+		
+		path = nx.dijkstra_path(graph, first_node, last_node, weight='weight')
+
+		resNotes = []
+		for edge in path:
+			resNotes.append(allCombinations[edge[0]][2][edge[1]])
+
+		return path, graph, resNotes
 
 	def pertusAndInesta2008():
 		resNotes, resF0Weights, peaks, _ = coreMethod()
@@ -311,10 +362,10 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 	def pertusAndInesta2012():
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
 		newSaliences = flatternCombination(allCombinations)
-
+		path, graph, resNotes = pitchTracking(allCombinations, newSaliences)
 		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
 
-		return resMidi, resPianoRoll, resF0Weights, peaks
+		return resMidi, resPianoRoll, resF0Weights, peaks, path, graph
 
 	if newAlgorithmVersion:
 		return pertusAndInesta2012()
@@ -331,14 +382,14 @@ if __name__ == "__main__":
 	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 	filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
-	data = data[:(int(len(data)/3))]
+	data = data[:(int(len(data)))]
 	sampleRate = 44100
 
 	sine_data = create_sine(220, sampleRate, 5)
 	sine_data += (create_sine(440, sampleRate, 5) * 0.2)
 	sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
-	resMidi, resPianoRoll, resF0Weights, peaks = harmonicAndSmoothnessBasedTranscription(
+	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonicAndSmoothnessBasedTranscription(
             data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
 
 	#plot_pitches(best_frequencies, spacing, sampleRate)
@@ -348,4 +399,5 @@ if __name__ == "__main__":
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)
+	#plot_pitch_tracking(path, graph)
 	print("ok")
