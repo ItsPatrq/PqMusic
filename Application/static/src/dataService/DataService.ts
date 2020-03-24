@@ -101,7 +101,7 @@ class DataService implements DataService {
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
-            const file = res.xhr.response;
+            const file = res.xhr.response.hann;
             DownloadFile(file, "HannWindow.png", "image/png");
         });
     }

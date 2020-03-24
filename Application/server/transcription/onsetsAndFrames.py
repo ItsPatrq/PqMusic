@@ -13,20 +13,19 @@ from magenta.models.onsets_frames_transcription import data
 from magenta.models.onsets_frames_transcription import infer_util
 from magenta.models.onsets_frames_transcription import train_util
 from magenta.music import midi_io
-from magenta.protobuf import music_pb2
+from magenta.music.protobuf import music_pb2
 from magenta.music import sequences_lib
 import ctypes.util
 
-from utils.general  import *
 
 # Ignore warnings caused by pyfluidsynth
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
-class OnesetsFrames:
+class OnsetsAndFramesImpl:
     orig_ctypes_util_find_library = ctypes.util.find_library
     filePath = os.path.dirname(os.path.abspath(__file__))
-    CHECKPOINT_DIR = os.path.join(filePath, '../../../resources/onsets-frames/train')
+    CHECKPOINT_DIR = os.path.join(filePath, './train')
     modelInitialized = False
     def proxy_find_library(self, lib):
         if lib == 'fluidsynth':
@@ -41,7 +40,7 @@ class OnesetsFrames:
 
         config = configs.CONFIG_MAP['onsets_frames']
         self.hparams = config.hparams
-        self.hparams.use_cudnn = True
+        self.hparams.use_cudnn = False
         self.hparams.batch_size = 1
 
         self.examples = tf.placeholder(tf.string, [None])
@@ -57,7 +56,7 @@ class OnesetsFrames:
         self.estimator = train_util.create_estimator(
             config.model_fn, self.CHECKPOINT_DIR, self.hparams)
 
-        self.iterator = tf.compat.v1.data.make_initializable_iterator(self.dataset)
+        self.iterator = self.dataset.make_initializable_iterator()
         self.next_record = self.iterator.get_next()
 
         self.modelInitialized = True
@@ -67,16 +66,14 @@ class OnesetsFrames:
     def transcribe(self, requestFilePath, responseFilePath):
         self.initializeModel()
 
-        waveFilePath = convertAudioFileToWave(requestFilePath)
-        exampleFile = open(waveFilePath, 'rb')
+        #waveFilePath = convertAudioFileToWave(requestFilePath)
+        exampleFile = open(requestFilePath, 'rb')
         uploaded = {
             str(exampleFile.name): exampleFile.read()
         }
         to_process = []
 
         for fn in uploaded.keys():
-            print('User uploaded file "{name}" with length {length} bytes'.format(
-                name=fn, length=len(uploaded[fn])))
             wav_data = uploaded[fn]
             example_list = list(
                 audio_label_data_utils.process_record(
@@ -91,11 +88,11 @@ class OnesetsFrames:
             
             print('Processing complete for', fn)
         
-        sess = tf.compat.v1.Session()
+        sess = tf.Session()
 
         sess.run([
-            tf.compat.v1.initializers.global_variables(),
-            tf.compat.v1.initializers.local_variables()
+            tf.initializers.global_variables(),
+            tf.initializers.local_variables()
         ])
         sess.run(self.iterator.initializer, {self.examples: to_process})
 
@@ -105,7 +102,7 @@ class OnesetsFrames:
 
         input_fn = infer_util.labels_to_features_wrapper(transcription_data)
 
-        print("FILE HAVE BEEN UPLOADED")
+        ## FILE HAVE BEEN UPLOADED
 
         prediction_list = list(
             self.estimator.predict(
@@ -130,3 +127,13 @@ class OnesetsFrames:
         #                 colab_ephemeral=False)
 
         midi_io.sequence_proto_to_midi_file(sequence_prediction, responseFilePath)
+
+if __name__ == "__main__":
+    from os import path
+    import sys
+    sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+    filePath = path.dirname(path.abspath(__file__))
+    filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
+    onsets = OnsetsAndFramesImpl()
+    onsets.initializeModel()
+    onsets.transcribe(filePath, './onsets.mid')

@@ -41,8 +41,8 @@ def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
 
   return correlogram, bestFq
 
-
-def autocorrelationWrap(filePath, resPath):
+## For client-server usage
+def autocorrelation_wrapped(filePath):
   fqMin = 50
   fqMax = 2000
   frameWidth = 2048

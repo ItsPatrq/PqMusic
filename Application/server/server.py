@@ -4,21 +4,23 @@
 from flask import Flask, send_file, request, json, Response
 import os
 from flask_cors import CORS
-from utils.spectogram import *
+from utils.spectogram import plot_spectrogram_wrapped
 import uuid
 import shutil
 from utils.windowFunctionsPresentation import *
-from transcription.ac import autocorrelationWrap
+from transcription.ac import autocorrelation_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib
+from transcription.onsetsAndFrames import OnsetsAndFramesImpl
 matplotlib.use('Agg')
 
 CORS(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-#region transcription initialization
-
+#region transcription initialization Onsets and Frames
+onsets = OnsetsAndFramesImpl()
+onsets.initializeModel()
 #endregion
 #region generate
 #endregion
@@ -43,6 +45,15 @@ def createRequestResponseFolders():
 
     return requestFolderPath, responseFolderPath, requestUuid, responseUuid
     
+def handleRequestWithFile():
+    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    file = request.files.getlist("file")[0]
+    filename = file.filename
+    requestFilePath = "/".join([requestFolderPath, filename])
+    responseFilePath = "/".join([responseFolderPath])
+    file.save(requestFilePath)
+
+    return requestFilePath, responseFilePath, requestUuid, responseUuid, file.filename
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -50,17 +61,12 @@ def index():
 
 @app.route("/Spectrogram", methods=['POST'])
 def spectrogram():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    requestFilePath, responseFolderPath, _, _, fileName = handleRequestWithFile()
     
-    for file in request.files.getlist("file"):
-        filename = file.filename
-        requestFilePath = "/".join([requestFolderPath, filename])
-        responseFilePath = "/".join([responseFolderPath, filename])
-        responseFilePath = responseFilePath[:-3] + "png"
+    responseFilePath = "/".join([responseFolderPath, fileName])
+    responseFilePath = responseFilePath[:-3] + "png"
 
-        file.save(requestFilePath)
-
-        graph_spectrogram(requestFilePath, responseFilePath)
+    plot_spectrogram_wrapped(requestFilePath, responseFilePath)
 
     #shutil.rmtree(requestFolderPath)
     #shutil.rmtree(responseFolderPath)
@@ -68,63 +74,40 @@ def spectrogram():
 
 @app.route("/HannWindow", methods=['GET', 'POST'])
 def getHannWindow():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    _, responseFolderPath, _, _ = createRequestResponseFolders()
     responseFilePath = "/".join([responseFolderPath, 'HannWindow.png'])
     hannWindow(responseFilePath)
     return send_file(responseFilePath)
 
 @app.route("/HammingWindow", methods=['GET', 'POST'])
 def getHammingWindow():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    _, responseFolderPath, _, _ = createRequestResponseFolders()
     responseFilePath = "/".join([responseFolderPath, 'HammingWindow.png'])
     hammingWindow(responseFilePath)
     return send_file(responseFilePath)
 
 @app.route("/RectangleWindow", methods=['GET', 'POST'])
 def getRectabgkeWubdiw():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    _, responseFolderPath, _, _ = createRequestResponseFolders()
     responseFilePath = "/".join([responseFolderPath, 'RectangleWindow.png'])
     rectangleWindow(responseFilePath)
     return send_file(responseFilePath)
 
 @app.route("/TranscribeByAutoCorrelation", methods=['POST'])
 def transcribeByAutoCorrelation():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
-    
-    
-    for file in request.files.getlist("file"):
-        filename = file.filename
-        requestFilePath = "/".join([requestFolderPath, filename])
-        responseFilePath = "/".join([responseFolderPath])
-        print(responseFilePath)
-        file.save(requestFilePath)
+    requestFilePath, _, _, _, _ = handleRequestWithFile()
         
-        pitches, correlogram = autocorrelationWrap(requestFilePath, responseFilePath)
+    pitches, correlogram = autocorrelation_wrapped(requestFilePath)
 
     pitchesEncoded = base64.b64encode(pitches.getbuffer()).decode("ascii")
     correlogramOpenedEncoded = base64.b64encode(correlogram.getbuffer()).decode("ascii")
     dict_data = {'pitches': pitchesEncoded, 'correlogram': correlogramOpenedEncoded}
     return Response(json.dumps(dict_data), mimetype='text/plain')
 
-@app.route("/GenerateTransformUnconditioned", methods=['GET', 'POST'])
-def GenerateTransformUnconditioned():
-    requestFolderPath, responseFolderPath, _, _ = createRequestResponseFolders()
-
-    for file in request.files.getlist("file"):
-       filename = file.filename
-       requestFilePath = "/".join([requestFolderPath, filename])
-
-       file.save(requestFilePath)
-
-    res = musicTransformer.generateUnconditionalTransform(requestFilePath, responseFolderPath)
-    return send_file(res)
-
-@app.route("/GenerateTransformMelodyConditioned", methods=['GET', 'POST'])
-def generateTransformMelodyConditioned():
+@app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
+def transcribeByOnsetsAndFrames():
     requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
 
-    res = musicTransformer.generateMelodyConditionedTransform(responseFolderPath)
-    return send_file(res)
 
 if __name__ == "__main__":
     app.run(port=5000)

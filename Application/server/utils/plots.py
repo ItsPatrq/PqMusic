@@ -55,6 +55,10 @@ strings = {
 ticksFontSize = 18
 labelsFontSize = 32
 
+defaultSubplotProps = {
+    "figsize": (16,12)
+}
+
 def getStr(language, strName):
   return strings.get(language).get(strName)
 
@@ -294,7 +298,7 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, sh
   return fig, ax
 
 def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   spectra = np.array(spectra)
   fig.suptitle(getStr(language, "spectrogram"), fontsize=labelsFontSize)
   if transpose:

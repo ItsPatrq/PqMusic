@@ -29,7 +29,7 @@ export const Spectrogram: FC = () => {
     const content = (
         <div className="PqM-Utility_spectrogram">
             <Dropzone
-                accept='audio/mp3'
+                accept={['audio/mp3', 'audio/wav']}
                 onDrop={handleChange}
                 multiple={false}
             >
