@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
 from tqdm import tqdm
-import pyaudio
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation

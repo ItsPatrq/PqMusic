@@ -6,7 +6,6 @@ import os
 from flask_cors import CORS
 from utils.spectogram import plot_spectrogram_wrapped
 import uuid
-import shutil
 from utils.windowFunctionsPresentation import *
 from transcription.ac import autocorrelation_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
@@ -68,8 +67,6 @@ def spectrogram():
 
     plot_spectrogram_wrapped(requestFilePath, responseFilePath)
 
-    #shutil.rmtree(requestFolderPath)
-    #shutil.rmtree(responseFolderPath)
     return send_file(responseFilePath)
 
 @app.route("/HannWindow", methods=['GET', 'POST'])

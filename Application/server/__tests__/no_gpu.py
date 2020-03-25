@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
 from tqdm import tqdm
 from utils.profile import profile, print_prof_data
-import pyaudio
 import math
 import utils.plots
 import utils.general
