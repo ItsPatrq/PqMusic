@@ -106,13 +106,16 @@ def transcribeByAutoCorrelation():
 def TranscribeByCepstrum():
     requestFilePath, _, _, _, _ = handleRequestWithFile()
         
-    transcribe_by_cepstrum_wrapped(requestFilePath)
-    return ""
+    pitches, cepstrogram, spectrogram, logSpectrogram = transcribe_by_cepstrum_wrapped(requestFilePath)
 
-    # pitchesEncoded = base64.b64encode(pitches.getbuffer()).decode("ascii")
-    # correlogramOpenedEncoded = base64.b64encode(correlogram.getbuffer()).decode("ascii")
-    # dict_data = {'pitches': pitchesEncoded, 'correlogram': correlogramOpenedEncoded}
-    # return Response(json.dumps(dict_data), mimetype='text/plain')
+    pitchesEncoded = base64.b64encode(pitches.getbuffer()).decode("ascii")
+    cepstrogramEncoded = base64.b64encode(cepstrogram.getbuffer()).decode("ascii")
+    spectrogramEncoded = base64.b64encode(spectrogram.getbuffer()).decode("ascii")
+    logSpectrogramEncoded = base64.b64encode(logSpectrogram.getbuffer()).decode("ascii")
+
+
+    dict_data = {'pitches': pitchesEncoded, 'cepstrogram': cepstrogramEncoded, 'spectrogram': spectrogramEncoded, 'logSpectrogram': logSpectrogramEncoded}
+    return Response(json.dumps(dict_data), mimetype='text/plain')
 
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():

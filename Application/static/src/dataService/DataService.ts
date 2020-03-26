@@ -10,6 +10,13 @@ interface ITranscribeByAutoCorrelationResult {
     correlogram: string
 }
 
+interface ITranscribeByCepstrumResult {
+    pitches: string,
+    cepstrogram: string,
+    spectrogram: string,
+    logSpectrogram: string
+}
+
 class DataService implements DataService {
     constructor() {
         this.Spectrogram = this.Spectrogram.bind(this);
@@ -89,12 +96,12 @@ class DataService implements DataService {
         });
     }
 
-    public TranscribeByCepstrum(file: File, callback: (result: ITranscribeByAutoCorrelationResult) => void) {
+    public TranscribeByCepstrum(file: File, callback: (result: ITranscribeByCepstrumResult) => void) {
         this.GenericRequest(file, "TranscribeByCepstrum", (res:Blob) => {
             const reader = new FileReader();
             reader.onload = () => {
                 const x = JSON.parse(reader.result as string)
-                callback(x as ITranscribeByAutoCorrelationResult)
+                callback(x as ITranscribeByCepstrumResult)
             }
             reader.readAsText(res);
         });

@@ -27,7 +27,8 @@ strings = {
     "spectrogram": "Spektrogram",
     "peaks": "Piki",
     "aclos": "ACLOS",
-    "correlation": "Korelacja"
+    "correlation": "Korelacja",
+    "logPowSpectrogram": "Logarytm spektrogramu mocy"
   },
   'eng': {
     "audioWave": "Audio wave",
@@ -48,7 +49,8 @@ strings = {
     "spectrogram": "Spectrogram",
     "peaks": "Peaks",
     "aclos": "ACLOS",
-    "correlation": "Correlation"
+    "correlation": "Correlation",
+    "logPowSpectrogram": "Log power spectrogram"
   }
 }
 
@@ -297,10 +299,10 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, sh
 
   return fig, ax
 
-def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng"):
+def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng", logPowSpec = False):
   fig, ax = plt.subplots(**defaultSubplotProps)
   spectra = np.array(spectra)
-  fig.suptitle(getStr(language, "spectrogram"), fontsize=labelsFontSize)
+  fig.suptitle(getStr(language, "logPowSpectrogram" if logPowSpec else "spectrogram"), fontsize=labelsFontSize)
   if transpose:
     spectra = spectra.T
   frameWidth = len(spectra)

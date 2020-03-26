@@ -50,8 +50,8 @@ def autocorrelation_wrapped(filePath):
   sampleRate, data = loadNormalizedSoundFIle(filePath)
   correlogram, best_frequencies = autocorrelation(
       data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
-  fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False)
-  fig2, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False)
+  fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False, language="pl")
+  fig2, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False, language="pl")
   pitches, correlogram = BytesIO(), BytesIO()
   fig.savefig(pitches, format="png")
   fig2.savefig(correlogram, format="png")

@@ -10,11 +10,17 @@ export const Cepstrum: FC<{ openDialog(res: ImageResult[]): void }> = ({ openDia
     const handleFileInputChange = (acceptedFiles: File[]) => {
         DataService.TranscribeByCepstrum(acceptedFiles[0], (res) => { 
             const result:ImageResult[] = [{
-                image: res.correlogram,
-                title: "correlogram"
+                image: res.cepstrogram,
+                title: "cepstrogram"
             }, {
                 image: res.pitches,
                 title: "pitches"
+            }, {
+                image: res.spectrogram,
+                title: "spektrogram mocy"
+            }, {
+                image: res.logSpectrogram,
+                title: "logarytm spektrogramu mocy"
             }]
             openDialog(result);
         });

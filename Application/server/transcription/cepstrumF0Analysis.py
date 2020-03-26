@@ -21,6 +21,7 @@ from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
 from utils.profile import profile, print_prof_data, print_normalize_profile_data
 from utils.cepstrumUtilsGpu import Cepstrogram
+from io import BytesIO
 
 #557 strona ksiazki zielinskiego lifter - filter odwrotny. 555 metoda cepstrum
 
@@ -29,6 +30,7 @@ from utils.cepstrumUtilsGpu import Cepstrogram
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
     hanning = np.hanning(frameWidth)
     spectrogram = []
+    logSpectrogram = []
     cepstra = []
     bestFq = []
     zeroPadding = np.zeros(sizeOfZeroPadding)
@@ -37,9 +39,10 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
         frame = data[i*spacing:i*spacing+frameWidth]
         frame = frame*hanning
         frame = np.concatenate((frame, zeroPadding))
-        cepst, powerSp, spectr = real_cepst_from_signal(frame)
+        cepst, logSp, spectr = real_cepst_from_signal(frame)
         fftLen = int(np.floor(len(spectr)/2))
-        spectrogram.append(powerSp[:fftLen])
+        spectrogram.append(np.abs(spectr[:fftLen]))
+        logSpectrogram.append(logSp[:fftLen])
         cepst = cepst[:fftLen//2]
         cepst[0:14] = np.zeros(14)
         cepstra.append(cepst)
@@ -47,7 +50,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
         maxperiod = np.argmax(cepst)
         bestFq.append(sampleRate/maxperiod)
     
-    return cepstra, spectrogram, bestFq
+    return cepstra, spectrogram, bestFq, logSpectrogram
 
 @profile
 def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512, compiledCepstrum=None):
@@ -70,7 +73,24 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
     return cepstra, compiledCepstrum
 
 def transcribe_by_cepstrum_wrapped(filePath):
-    print("TODO")
+    frameWidth = 2048
+    spacing = 512
+    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    cepstra, spectra, bestFq, logSpectrogram  = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+
+    fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
+    fig2, _ = plot_cepstrogram(cepstra, spacing, sampleRate, show=False, language="pl")
+    fig3, _ = plot_spectrogram(spectra, spacing, sampleRate, show=False, language="pl")
+    fig4, _ = plot_spectrogram(logSpectrogram, spacing, sampleRate, show=False, language="pl", logPowSpec=True)
+
+
+    pitches, cepstrogram, spectrogram, logSpectrogram = BytesIO(), BytesIO(), BytesIO(), BytesIO()
+    fig.savefig(pitches, format="png")
+    fig2.savefig(cepstrogram, format="png")
+    fig3.savefig(spectrogram, format="png")
+    fig4.savefig(logSpectrogram, format="png")
+
+    return pitches, cepstrogram, spectrogram, logSpectrogram
 
 
 if __name__ == "__main__":
@@ -89,19 +109,19 @@ if __name__ == "__main__":
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
     
     #for i in range(0, 10):
-    cepstra, spectra, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    cepstra, spectra, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
     #---------------------------
     # filePath1 = path.join(filePath, '../test_sounds/EmPiano/E3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath1)
 
-    # cepstra, spectra1, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # cepstra, spectra1, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
     # filePath2 = path.join(filePath, '../test_sounds/EmPiano/G3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath2)
 
-    # cepstra, spectra2, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # cepstra, spectra2, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
     # filePath3 = path.join(filePath, '../test_sounds/EmPiano/B3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath3)
-    # cepstra, spectra3, bestFq = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # cepstra, spectra3, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
 
     plot_pitches(bestFq, spacing, sampleRate, language='pl')
     # plot_spectrogram(spectra, spacing, sampleRate, language='pl', showColorbar=False)
