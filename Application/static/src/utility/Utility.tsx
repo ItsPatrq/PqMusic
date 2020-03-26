@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { FqMidi } from './FqMidi/FqMidi';
 import Spectrogram from './Spectrogram/Spectrogram';
 import WindowFunctions from './WindowFunctions/WindowFunctions';
+import strings from '../shared/strings';
 export type UtilityState = {
   fqMidiValue: number
 }
@@ -30,7 +31,8 @@ export class Utility extends Component<{}, UtilityState> {
       <div className="PqM-Utility">
 
         <div className="PqM-header">
-            Utility
+          {strings.titleUtilities}
+            
         </div>
 
         <FqMidi 

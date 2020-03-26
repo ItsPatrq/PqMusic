@@ -27,7 +27,6 @@ class DataService implements DataService {
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
             const response = res.xhr.response;
-            debugger;
             callback(response);
         });
     }
@@ -81,6 +80,17 @@ class DataService implements DataService {
 
     public TranscribeByAutoCorrelation(file: File, callback: (result: ITranscribeByAutoCorrelationResult) => void) {
         this.GenericRequest(file, "TranscribeByAutoCorrelation", (res:Blob) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const x = JSON.parse(reader.result as string)
+                callback(x as ITranscribeByAutoCorrelationResult)
+            }
+            reader.readAsText(res);
+        });
+    }
+
+    public TranscribeByCepstrum(file: File, callback: (result: ITranscribeByAutoCorrelationResult) => void) {
+        this.GenericRequest(file, "TranscribeByCepstrum", (res:Blob) => {
             const reader = new FileReader();
             reader.onload = () => {
                 const x = JSON.parse(reader.result as string)

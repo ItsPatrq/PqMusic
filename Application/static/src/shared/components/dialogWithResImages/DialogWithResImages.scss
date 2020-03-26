@@ -1,5 +1,11 @@
 .PqM-dialog {
     &.with-res-images {
-        width: min-content;
+        width: 95vw;
+        height:  calc(95vh - 50px);;
+
+        img {
+            height: calc(85vh - 50px);
+            width: 90vw;
+        }
     }
 }

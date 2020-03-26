@@ -5,6 +5,7 @@ const eng = {
     navBarUtility: "Utility",
     navBarGenerate: "Generate music",
     titleTranscribe: "Transcribe",
+    titleUtilities: "Utility",
     rowLabels: {
         transcription: {
             onesetsAndFrames: "Onesets and Frames (Magenta default transcription model)",
@@ -36,10 +37,12 @@ const pl = {
     navBarUtility: "Narzędzia",
     navBarGenerate: "Generuj muzykę",
     titleTranscribe: "Transkrypcja",
+    titleUtilities: "Dodatki",
     rowLabels: {
         transcription: {
             onesetsAndFrames: "Onesets and Frames (Bazowy modół tranksypcji projektu Magenta)",
-            autoCorrelation: "Metoda Auto-korelacji"
+            autoCorrelation: "Metoda Auto-korelacji",
+            cepstrum: "Metoda oparta o cepstrum"
         },
         utils: {
             windowFunctions: "Pobierz wykres funkcji okna",
@@ -51,6 +54,12 @@ const pl = {
             melodyConditionedTransform: "Select melody to be accompanied by the model (if your MIDI file is polyphonic, the notes with highest pitch will be used as the melody).",
             lstm: "Generate piece by basic LSTM network",
             performanceRnn: "Generate piece by Performance RNN Model",
+        }
+    },
+    modalLabels: {
+        transcription: {
+            autoCorrelationResult: "Wynik metody Auto-korelacji",
+            cepstrumResult: "Wynik metody cepstrum"
         }
     },
     dropZoneDefaultMessage: "Drag or click to upload file(s)",

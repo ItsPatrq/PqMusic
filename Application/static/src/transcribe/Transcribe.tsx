@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import AutoCorrelation from './autoCorrelation/AutoCorrelation';
+import { AutoCorrelation } from './autoCorrelation/AutoCorrelation';
 import strings from '../shared/strings';
 import { DialogWithResImages, ImageResult } from '../shared/components/dialogWithResImages/DialogWithResImages';
+import { Cepstrum } from './cepstrum/Cepstrum';
 
 interface ITranscribe {
   isResultDialogVisible: boolean
@@ -33,7 +34,10 @@ export class Transcribe extends Component<{}, ITranscribe> {
           {strings.titleTranscribe}
         </div>
           <AutoCorrelation 
-            openDialog={(res) => this.openDialog(res, "Auto Correlation")}
+            openDialog={(res) => this.openDialog(res, strings.modalLabels.transcription.autoCorrelationResult)}
+          />
+          <Cepstrum 
+            openDialog={(res) => this.openDialog(res, strings.modalLabels.transcription.cepstrumResult)}
           />
       </div>
     );

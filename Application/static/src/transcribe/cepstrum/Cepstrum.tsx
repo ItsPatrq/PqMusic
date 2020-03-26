@@ -5,10 +5,10 @@ import DataService from '../../dataService/DataService';
 import DropZoneWrapper from '../../shared/components/dropZoneWrapper/DropZoneWrapper';
 import { ImageResult } from '../../shared/components/dialogWithResImages/DialogWithResImages';
 
-export const AutoCorrelation: FC<{ openDialog(res: ImageResult[]): void }> = ({ openDialog }) => {
+export const Cepstrum: FC<{ openDialog(res: ImageResult[]): void }> = ({ openDialog }) => {
 
     const handleFileInputChange = (acceptedFiles: File[]) => {
-        DataService.TranscribeByAutoCorrelation(acceptedFiles[0], (res) => { 
+        DataService.TranscribeByCepstrum(acceptedFiles[0], (res) => { 
             const result:ImageResult[] = [{
                 image: res.correlogram,
                 title: "correlogram"
@@ -29,7 +29,8 @@ export const AutoCorrelation: FC<{ openDialog(res: ImageResult[]): void }> = ({ 
     return (
         <RowFlex
             children={getRowContent()}
-            label={strings.rowLabels.transcription.autoCorrelation}
+            label={strings.rowLabels.transcription.cepstrum}
         />
     );
 }
+

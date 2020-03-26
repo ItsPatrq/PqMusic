@@ -60,9 +60,9 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
         return (
             <Fragment>
                 {homeButton}
-                {uploadMidiButton}
+                {/* {uploadMidiButton} */}
                 {transcribeButton}
-                {generateButton}
+                {/* {generateButton} */}
                 {utilityButton}
             </Fragment>
         );

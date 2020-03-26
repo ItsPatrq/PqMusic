@@ -56,7 +56,7 @@ ticksFontSize = 18
 labelsFontSize = 32
 
 defaultSubplotProps = {
-    "figsize": (16,12)
+    "figsize": (18,12)
 }
 
 def getStr(language, strName):
@@ -87,7 +87,7 @@ def getFqTicks(sampleRate, frameWidth):
 
 
 def plot_spectrum_line_component(data, sampleRate, rawData=[], language = "eng"):
-  fig, (ax1, ax2) = plt.subplots(nrows=2)
+  fig, (ax1, ax2) = plt.subplots(nrows=2, **defaultSubplotProps)
 
   if len(rawData) > 0:
     t = np.arange(0, (1 / sampleRate) * np.size(rawData), 1/sampleRate)
@@ -122,7 +122,7 @@ def plot_spectrum_line_component_only(data, sampleRate, show=True, language = "e
   n = np.size(data)
   fr = (sampleRate / 2) * np.linspace(0, 1, n/2)
   X_m = data[:int(n/2)]
-  fig, ax = plt.subplots(nrows=1)
+  fig, ax = plt.subplots(**defaultSubplotProps)
   ax.plot(fr, X_m)
   ax.set_title(getStr(language, "spectrumLineComponent"), fontsize=labelsFontSize)
   ax.set_xlabel(getStr(language, "fq"), fontsize=labelsFontSize)
@@ -145,7 +145,7 @@ def plot_spectrum_line_components(dataBase, data1, data2, data3, sampleRate, sho
   x1_m = data1[:int(n/2)]
   x2_m = data2[:int(n/2)]
   x3_m = data3[:int(n/2)]
-  fig, ax = plt.subplots(nrows=1)
+  fig, ax = plt.subplots(**defaultSubplotProps)
   ax.plot(fr, X_m, '-', fr, x1_m, '--',fr, x2_m, '--', fr, x3_m, '--')
   ax.set_title(getStr(language, "spectrumLineComponent"), fontsize=labelsFontSize)
   ax.set_xlabel(getStr(language, "fq"), fontsize=labelsFontSize)
@@ -212,7 +212,7 @@ def plot_wave(normalized_data, sample_rate, wave_name, language = "eng", x_axis_
 
 
 def plot_correlogram(data, spacing, sampleRate, show=True, showColorbar=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   fig.suptitle(getStr(language, "correlogram"), fontsize=labelsFontSize)
   H = np.array(data)
   image = ax.imshow(H.T, origin='lower', aspect='auto', interpolation='nearest')
@@ -237,7 +237,7 @@ def plot_correlogram(data, spacing, sampleRate, show=True, showColorbar=True, la
   return fig, ax
 
 def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   fig.suptitle(getStr(language, "cepstrogram"), fontsize=labelsFontSize)
   H = np.array(data)
   if transpose: H = H.T
@@ -261,7 +261,7 @@ def plot_cepstrogram(data, spacing, sampleRate, show=True, showColorbar=True, tr
   return fig, ax
 
 def plot_pitches(pitches, spacing, sampleRate, log=True, show=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   fig.suptitle(getStr(language,"f0Estimation"), fontsize=labelsFontSize)
   ax.plot(np.arange(len(pitches)), pitches, linewidth=2)
   ax.set_ylabel(getStr(language, "fq"), fontsize=labelsFontSize)
@@ -282,7 +282,7 @@ def plot_pitches(pitches, spacing, sampleRate, log=True, show=True, language = "
 
 
 def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, showColorbar=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   fig.suptitle(getStr(language, "pianoRoll"), fontsize=16)
   image = ax.imshow(np.array(notes).T, origin='lower',
              aspect='auto', interpolation='nearest', cmap=pylab.cm.gray_r) # pylint: disable=no-member
@@ -326,7 +326,7 @@ def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True,
   return fig, ax
 
 def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True, language = "eng"):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(**defaultSubplotProps)
   fig.suptitle(getStr(language, "peaks"), fontsize=16)
   ax.bar(peaks.nonzero()[0], peaks[peaks.nonzero()[0]], barwidth, color='black')
   ax.set_xticks(getFqTicks(sampleRate, frameWidth)[0][:-2])

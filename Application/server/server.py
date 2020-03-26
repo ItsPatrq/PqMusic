@@ -8,6 +8,7 @@ from utils.spectogram import plot_spectrogram_wrapped
 import uuid
 from utils.windowFunctionsPresentation import *
 from transcription.ac import autocorrelation_wrapped
+from transcription.cepstrumF0Analysis import transcribe_by_cepstrum_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib
@@ -100,6 +101,18 @@ def transcribeByAutoCorrelation():
     correlogramOpenedEncoded = base64.b64encode(correlogram.getbuffer()).decode("ascii")
     dict_data = {'pitches': pitchesEncoded, 'correlogram': correlogramOpenedEncoded}
     return Response(json.dumps(dict_data), mimetype='text/plain')
+
+@app.route("/TranscribeByCepstrum", methods=['POST'])
+def TranscribeByCepstrum():
+    requestFilePath, _, _, _, _ = handleRequestWithFile()
+        
+    transcribe_by_cepstrum_wrapped(requestFilePath)
+    return ""
+
+    # pitchesEncoded = base64.b64encode(pitches.getbuffer()).decode("ascii")
+    # correlogramOpenedEncoded = base64.b64encode(correlogram.getbuffer()).decode("ascii")
+    # dict_data = {'pitches': pitchesEncoded, 'correlogram': correlogramOpenedEncoded}
+    # return Response(json.dumps(dict_data), mimetype='text/plain')
 
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():

@@ -69,6 +69,10 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
     #         bestFq.append(sampleRate/maxperiod)
     return cepstra, compiledCepstrum
 
+def transcribe_by_cepstrum_wrapped(filePath):
+    print("TODO")
+
+
 if __name__ == "__main__":
     frameWidth = 2048
     spacing = 512

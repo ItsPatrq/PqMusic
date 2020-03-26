@@ -1,4 +1,6 @@
 import React, { FC, ReactElement } from 'react';
+import Carousel, { Dots } from '@brainhubeu/react-carousel';
+import '@brainhubeu/react-carousel/lib/style.css';
 
 import { Button, Classes, Dialog, Tooltip } from "@blueprintjs/core";
 
@@ -31,7 +33,11 @@ export const DialogWithResImages: FC<DialogWithResImagesProps> = ({ onclose, tit
             isOpen={isOpen}
         >
             <div className={Classes.DIALOG_BODY}>
-                {images}
+                <Carousel
+                    arrows dots
+                >
+                    {images}
+                </Carousel>
             </div>
             <div className={Classes.DIALOG_FOOTER}>
                 <div className={Classes.DIALOG_FOOTER_ACTIONS}>
