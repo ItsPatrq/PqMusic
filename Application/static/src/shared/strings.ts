@@ -37,12 +37,15 @@ const pl = {
     navBarUtility: "Narzędzia",
     navBarGenerate: "Generuj muzykę",
     titleTranscribe: "Transkrypcja",
-    titleUtilities: "Dodatki",
+    titleUtilities: "Narzędzia",
     rowLabels: {
         transcription: {
             onesetsAndFrames: "Onesets and Frames (Bazowy modół tranksypcji projektu Magenta)",
             autoCorrelation: "Metoda Auto-korelacji",
-            cepstrum: "Metoda oparta o cepstrum"
+            cepstrum: "Metoda oparta o cepstrum",
+            aclos: "Metoda oparta o ACLOS",
+            jointMethodPertusa2008: "Metoda łączona Pertusa i Iñesta (2008)",
+            jointMethodPertusa2012: "Metoda łączona Pertusa i Iñesta (2012)"
         },
         utils: {
             windowFunctions: "Pobierz wykres funkcji okna",
@@ -59,7 +62,10 @@ const pl = {
     modalLabels: {
         transcription: {
             autoCorrelationResult: "Wynik metody Auto-korelacji",
-            cepstrumResult: "Wynik metody cepstrum"
+            cepstrumResult: "Wynik metody cepstrum",
+            aclosResult: "Wynik metody ACLOS",
+            jointMethodPertusa2008: "Wynik łączonej metody Pertusa i Iñesta (2008)",
+            jointMethodPertusa2012: "Wynik łączonej metody Pertusa i Iñesta (2012)"
         }
     },
     dropZoneDefaultMessage: "Drag or click to upload file(s)",

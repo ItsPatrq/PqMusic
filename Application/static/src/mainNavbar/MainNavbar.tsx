@@ -35,11 +35,11 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
             text: strings.navBarHome,
             viewState: ViewState.home
         });
-        const uploadMidiButton = getViewButton({
-            iconName: "document",
-            text: strings.navBarUploadMidi,
-            viewState: ViewState.uploadMidi
-        });
+        // const uploadMidiButton = getViewButton({
+        //     iconName: "document",
+        //     text: strings.navBarUploadMidi,
+        //     viewState: ViewState.uploadMidi
+        // });
         const transcribeButton = getViewButton({
             iconName: "music",
             text: strings.navBarTranscribe,
@@ -51,11 +51,11 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
             viewState: ViewState.utility
         });
 
-        const generateButton = getViewButton({
-            iconName: "music",
-            text: strings.navBarGenerate,
-            viewState: ViewState.generate
-        });
+        // const generateButton = getViewButton({
+        //     iconName: "music",
+        //     text: strings.navBarGenerate,
+        //     viewState: ViewState.generate
+        // });
 
         return (
             <Fragment>

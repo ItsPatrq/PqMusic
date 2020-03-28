@@ -81,7 +81,7 @@ def transcribe_by_cepstrum_wrapped(filePath):
     fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
     fig2, _ = plot_cepstrogram(cepstra, spacing, sampleRate, show=False, language="pl")
     fig3, _ = plot_spectrogram(spectra, spacing, sampleRate, show=False, language="pl")
-    fig4, _ = plot_spectrogram(logSpectrogram, spacing, sampleRate, show=False, language="pl", logPowSpec=True)
+    fig4, _ = plot_spectrogram(logSpectrogram, spacing, sampleRate, show=False, language="pl", title="logPowSpectrogram")
 
 
     pitches, cepstrogram, spectrogram, logSpectrogram = BytesIO(), BytesIO(), BytesIO(), BytesIO()

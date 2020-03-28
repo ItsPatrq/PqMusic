@@ -4,10 +4,10 @@ import strings from '../../shared/strings';
 import DataService from '../../dataService/DataService';
 import DropZoneWrapper from '../../shared/components/dropZoneWrapper/DropZoneWrapper';
 
-export const OnsetsAndFrames: FC<{}> = () => {
+export const JointMethodPertusa2008: FC<{ }> = () => {
 
     const handleFileInputChange = (acceptedFiles: File[]) => {
-        DataService.TranscribeByOnsetsFrames(acceptedFiles[0]);
+        DataService.TranscribeByJointMethodPertusa2008(acceptedFiles[0]);
     }
     const getRowContent = () => (
         <DropZoneWrapper
@@ -19,7 +19,7 @@ export const OnsetsAndFrames: FC<{}> = () => {
     return (
         <RowFlex
             children={getRowContent()}
-            label={strings.rowLabels.transcription.onesetsAndFrames}
+            label={strings.rowLabels.transcription.jointMethodPertusa2008}
         />
     );
 }

@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from 'react';
-import Carousel, { Dots } from '@brainhubeu/react-carousel';
+import Carousel from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 
 import { Button, Classes, Dialog, Tooltip } from "@blueprintjs/core";
@@ -18,7 +18,7 @@ export interface ImageResult {
 export const DialogWithResImages: FC<DialogWithResImagesProps> = ({ onclose, title, isOpen = false, results = []}) => {
     const images:ReactElement[] = [];
     results.forEach(res => {
-        images.push(<img src={`data:image/png;base64,${res.image}`} key={res.title}/>)
+        images.push(<img src={`data:image/png;base64,${res.image}`} key={res.title} alt={res.title} />)
     });
     return (
         <Dialog

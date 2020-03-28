@@ -58,9 +58,20 @@ class OnsetsAndFramesImpl:
         self.iterator = self.dataset.make_initializable_iterator()
         self.next_record = self.iterator.get_next()
 
-        self.modelInitialized = True
-        print("OnesetsFrames model initialized succesfully")
+        
+        self.sess = tf.Session()
 
+        self.sess.run([
+            tf.initializers.global_variables(),
+            tf.initializers.local_variables()
+        ])
+
+        self.modelInitialized = True
+        print("OnesetsFrames model initialized successfully")
+
+    def transcription_data(self, params):
+        del params
+        return tf.data.Dataset.from_tensors(self.sess.run(self.next_record))
 
     def transcribe(self, requestFilePath, responseFilePath):
         self.initializeModel()
@@ -86,20 +97,11 @@ class OnsetsAndFramesImpl:
             to_process.append(example_list[0].SerializeToString())
             
             print('Processing complete for', fn)
-        
-        sess = tf.Session()
 
-        sess.run([
-            tf.initializers.global_variables(),
-            tf.initializers.local_variables()
-        ])
-        sess.run(self.iterator.initializer, {self.examples: to_process})
 
-        def transcription_data(params):
-            del params
-            return tf.data.Dataset.from_tensors(sess.run(self.next_record))
+        self.sess.run(self.iterator.initializer, {self.examples: to_process})
 
-        input_fn = infer_util.labels_to_features_wrapper(transcription_data)
+        input_fn = infer_util.labels_to_features_wrapper(self.transcription_data)
 
         ## FILE HAVE BEEN UPLOADED
 

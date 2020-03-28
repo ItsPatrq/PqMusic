@@ -14,10 +14,11 @@ from scipy.interpolate import interp1d
 from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
-from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote
+from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes
 import networkx as nx
 from collections import namedtuple
 import functools 
+from io import BytesIO
 
 def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
@@ -276,7 +277,11 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 			allResults = []
 			allPatterns = []
 			for combination in possibleCombinations:
-				(combinationSalience, harmonicsPattern) = countCombinationSalience2(combination, patterns, peaks, ownerships) if newAlgorithmVersion else countCombinationSalience(combination, patterns, peaks, ownerships)
+				if newAlgorithmVersion:
+					(combinationSalience, harmonicsPattern) = countCombinationSalience2(combination, patterns, peaks, ownerships) 
+				else:
+					combinationSalience = countCombinationSalience(combination, patterns, peaks, ownerships)
+					harmonicsPattern = []
 				allSaliences.append(combinationSalience)
 
 				result = np.zeros(k1)
@@ -340,9 +345,9 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 					graph.add_edge((frame, currFrameSorted[currVertex]), (frame + 1, nextFrameSorted[nextFrameVertex]),\
 						weight=countWeight(currPatterns[currFrameSorted[currVertex]], nextPatterns[nextFrameSorted[nextFrameVertex]], saliences[frame + 1][nextFrameSorted[nextFrameVertex]]))
 					if first_node == None:
-						first_node = (frame, currVertex)
+						first_node = (frame, currFrameSorted[currVertex])
 					if frame + 1 == len(allCombinations) - 1:
-						last_node = (frame, currVertex)
+						last_node = (frame, currFrameSorted[currVertex])
 		
 		path = nx.dijkstra_path(graph, first_node, last_node, weight='weight')
 
@@ -357,7 +362,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 
 		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
 
-		return resMidi, resPianoRoll, resF0Weights, peaks
+		return resMidi, resPianoRoll, resF0Weights, peaks, None, None
 
 	def pertusAndInesta2012():
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
@@ -370,6 +375,17 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 	if newAlgorithmVersion:
 		return pertusAndInesta2012()
 	return pertusAndInesta2008()
+
+
+def transcribe_by_joint_pertusa_wrapped(filePath, newV, outPath):
+	frameWidth = 8192
+	spacing = 1024
+	sampleRate, data = loadNormalizedSoundFIle(filePath)
+
+	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonicAndSmoothnessBasedTranscription(
+		data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=newV)
+
+	write_midi(resMidi, outPath, spacing/sampleRate, 4)
 
 
 if __name__ == "__main__":
@@ -391,9 +407,6 @@ if __name__ == "__main__":
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonicAndSmoothnessBasedTranscription(
             data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
-
-	#plot_pitches(best_frequencies, spacing, sampleRate)
-	#plot_spectrogram(all_weights, spacing, sampleRate)
 
 	write_midi(resMidi, "./res3.mid", spacing/sampleRate, 4)
 	plot_midi(resPianoRoll, spacing, sampleRate)

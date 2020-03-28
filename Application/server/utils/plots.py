@@ -28,7 +28,9 @@ strings = {
     "peaks": "Piki",
     "aclos": "ACLOS",
     "correlation": "Korelacja",
-    "logPowSpectrogram": "Logarytm spektrogramu mocy"
+    "logPowSpectrogram": "Logarytm spektrogramu mocy",
+    "f0Weights": "Wagi wyznaczonych F0",
+    "midi_note": "Indeks nuty MIDI"
   },
   'eng': {
     "audioWave": "Audio wave",
@@ -50,7 +52,9 @@ strings = {
     "peaks": "Peaks",
     "aclos": "ACLOS",
     "correlation": "Correlation",
-    "logPowSpectrogram": "Log power spectrogram"
+    "logPowSpectrogram": "Log power spectrogram",
+    "f0Weights": "F0 Weights",
+    "midi_note": "MIDI note index"
   }
 }
 
@@ -285,13 +289,15 @@ def plot_pitches(pitches, spacing, sampleRate, log=True, show=True, language = "
 
 def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, showColorbar=True, language = "eng"):
   fig, ax = plt.subplots(**defaultSubplotProps)
-  fig.suptitle(getStr(language, "pianoRoll"), fontsize=16)
+  fig.suptitle(getStr(language, "pianoRoll"), fontsize=labelsFontSize)
   image = ax.imshow(np.array(notes).T, origin='lower',
              aspect='auto', interpolation='nearest', cmap=pylab.cm.gray_r) # pylint: disable=no-member
-  ax.set_xlabel(getStr(language, "time"))
+  ax.set_xlabel(getStr(language, "time"), fontsize=labelsFontSize)
+  ax.set_ylabel(getStr(language, "midi_note"), fontsize=labelsFontSize)
+
   secLength = len(notes)*spacing/sampleRate
   ax.set_xticks(getTimeTicks(spacing, sampleRate, secLength))
-  ax.set_xticklabels(getTimeTickLabels(secLength))
+  ax.set_xticklabels(getTimeTickLabels(secLength), fontsize=ticksFontSize)
   ax.set_ylim([minNote, maxNote])
   if showColorbar: fig.colorbar(image)
 
@@ -299,10 +305,10 @@ def plot_midi(notes, spacing, sampleRate, minNote=20, maxNote=120, show=True, sh
 
   return fig, ax
 
-def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng", logPowSpec = False):
+def plot_spectrogram(spectra, spacing, sampleRate, show=True, showColorbar=True, transpose=True, language = "eng", title = "spectrogram"):
   fig, ax = plt.subplots(**defaultSubplotProps)
   spectra = np.array(spectra)
-  fig.suptitle(getStr(language, "logPowSpectrogram" if logPowSpec else "spectrogram"), fontsize=labelsFontSize)
+  fig.suptitle(getStr(language, title), fontsize=labelsFontSize)
   if transpose:
     spectra = spectra.T
   frameWidth = len(spectra)

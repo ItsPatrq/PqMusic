@@ -1,9 +1,8 @@
 import superagent from 'superagent';
-import { DownloadFile } from '../shared/utils';
+import { DownloadFile, DownloadFileFromBlob } from '../shared/utils';
 import { DefaultToaster } from '../shared/components/toaster/DefaultToaster';
 
 const env_url = "http://127.0.0.1:5000/"
-type XMLHttpRequestParameters = string | Document | Blob | ArrayBufferView | ArrayBuffer | FormData | URLSearchParams | ReadableStream<Uint8Array> | null | undefined;
 
 interface ITranscribeByAutoCorrelationResult {
     pitches: string,
@@ -15,6 +14,12 @@ interface ITranscribeByCepstrumResult {
     cepstrogram: string,
     spectrogram: string,
     logSpectrogram: string
+}
+
+interface ITranscribeByAclosResult {
+    pitches: string,
+    correlogram: string,
+    spectrogram: string,
 }
 
 class DataService implements DataService {
@@ -38,17 +43,8 @@ class DataService implements DataService {
         });
     }
 
-    private GetRequest(methodName: string, callback?: (this: XMLHttpRequest) => any, responseType: XMLHttpRequestResponseType = "json") {
-        let request = new XMLHttpRequest();
-        const url = env_url + methodName;
-        request.open('POST', url, true);
-        request.onload = callback || null;
-        request.onerror = function (this: XMLHttpRequest) {
-            console.error(`Error occurred during sending request ${url}`);
-        }
-        request.responseType = responseType;
-        request.setRequestHeader('Content-type', 'audio/mp3');
-        return request;
+    public GetThesisPaper() {
+        return env_url + "Thesis"
     }
 
     public Spectrogram(file: File) {
@@ -69,19 +65,8 @@ class DataService implements DataService {
     }
 
     public TranscribeByOnsetsFrames(file: File) {
-        const request = superagent.post(env_url + "TranscribeByOnsetsFrames").responseType("blob");
-        const formData = new FormData();
-        formData.append('file', file);
-        request.send(formData);
-        request.end((err, res) => {
-            if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
-                return;
-            }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
-
-            const file = res.xhr.response;
-            DownloadFile(file, "out.mid", "audio/midi");
+        this.GenericRequest(file, "TranscribeByOnsetsAndFrames", (res:Blob) => {
+            DownloadFileFromBlob(res, "transkrypcjaMetodaOnsetsAndFrames.mid", "audio/midi");
         });
     }
 
@@ -104,6 +89,30 @@ class DataService implements DataService {
                 callback(x as ITranscribeByCepstrumResult)
             }
             reader.readAsText(res);
+        });
+    }
+
+    public TranscribeByAclos(file: File, callback: (result: ITranscribeByAclosResult) => void) {
+        this.GenericRequest(file, "TranscribeByAclos", (res:Blob) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const x = JSON.parse(reader.result as string)
+                callback(x as ITranscribeByAclosResult)
+            }
+            reader.readAsText(res);
+        });
+    }
+
+    public TranscribeByJointMethodPertusa2008(file: File) {
+        this.GenericRequest(file, "TranscribeByPertusa2008", (res:Blob) => {
+            DownloadFileFromBlob(res, "transkrypcjaMetodaPertusaInesta2008.mid", "audio/midi");
+        });
+    }
+
+
+    public TranscribeByJointMethodPertusa2012(file: File) {
+        this.GenericRequest(file, "TranscribeByPertusa2012", (res:Blob) => {
+            DownloadFileFromBlob(res, "transkrypcjaMetodaPertusaInesta2012.mid", "audio/midi");
         });
     }
 

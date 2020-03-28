@@ -12,6 +12,7 @@ from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_cor
 from utils.profile import profile, print_prof_data
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
+from io import BytesIO
 
 # Autocorrelation of Log Spectrum
 # Paper: https://www.researchgate.net/publication/232643468_Robust_method_of_measurement_of_fundamental_frequency_by_ACLOS_autocorrelation_of_log_spectrum
@@ -75,6 +76,26 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
 
 
     return correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra
+
+
+def transcribe_by_aclos_wrapped(filePath):
+    frameWidth = 2048
+    spacing = 512
+    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    correlogram, _, _, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
+
+
+    fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
+    fig2, _ = plot_spectrogram(spectra, spacing, sampleRate, show=False, language="pl")
+    fig3, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False, language="pl")
+
+
+    pitchesFig, correlogramFig, spectrogramFig = BytesIO(), BytesIO(), BytesIO()
+    fig.savefig(pitchesFig, format="png")
+    fig2.savefig(spectrogramFig, format="png")
+    fig3.savefig(correlogramFig, format="png")
+
+    return pitchesFig, correlogramFig, spectrogramFig
 
 if __name__ == "__main__":
     frameWidth = 2048

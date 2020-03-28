@@ -9,6 +9,8 @@ import uuid
 from utils.windowFunctionsPresentation import *
 from transcription.ac import autocorrelation_wrapped
 from transcription.cepstrumF0Analysis import transcribe_by_cepstrum_wrapped
+from transcription.aclos import transcribe_by_aclos_wrapped
+from transcription.jointMethodByPertusAndInesta import transcribe_by_joint_pertusa_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib
@@ -20,7 +22,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 #region transcription initialization Onsets and Frames
 onsets = OnsetsAndFramesImpl()
-onsets.initializeModel()
+# onsets.initializeModel()
 #endregion
 #region generate
 #endregion
@@ -57,7 +59,11 @@ def handleRequestWithFile():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return  send_file("../static/build/index.html")
+    return send_file("../static/build/index.html")
+
+@app.route('/Thesis', methods=['GET', 'POST'])
+def getThesisPaper():
+    return send_file("../../Thesis/Magister_Thesis.pdf")
 
 @app.route("/Spectrogram", methods=['POST'])
 def spectrogram():
@@ -117,9 +123,44 @@ def TranscribeByCepstrum():
     dict_data = {'pitches': pitchesEncoded, 'cepstrogram': cepstrogramEncoded, 'spectrogram': spectrogramEncoded, 'logSpectrogram': logSpectrogramEncoded}
     return Response(json.dumps(dict_data), mimetype='text/plain')
 
+@app.route("/TranscribeByAclos", methods=['POST'])
+def TranscribeByAclos():
+    requestFilePath, _, _, _, _ = handleRequestWithFile()
+        
+    pitchesFig, correlogramFig, spectrogramFig = transcribe_by_aclos_wrapped(requestFilePath)
+
+    pitchesEncoded = base64.b64encode(pitchesFig.getbuffer()).decode("ascii")
+    correlogramEncoded = base64.b64encode(correlogramFig.getbuffer()).decode("ascii")
+    spectrogramEncoded = base64.b64encode(spectrogramFig.getbuffer()).decode("ascii")
+
+
+    dict_data = {'pitches': pitchesEncoded, 'correlogram': correlogramEncoded, 'spectrogram': spectrogramEncoded}
+    return Response(json.dumps(dict_data), mimetype='text/plain')
+
+@app.route("/TranscribeByPertusa2008", methods=['POST'])
+def TranscribeByPertusa2008(): 
+    requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
+    responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
+    transcribe_by_joint_pertusa_wrapped(requestFilePath, False, responseFilePath)
+    return send_file(responseFilePath)
+
+
+@app.route("/TranscribeByPertusa2012", methods=['POST'])
+def TranscribeByPertusa2012():
+    requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
+    responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
+    transcribe_by_joint_pertusa_wrapped(requestFilePath, True, responseFilePath)
+    return send_file(responseFilePath)
+
+   
+
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():
-    requestFolderPath, responseFolderPath, requestUuid, responseUuid = createRequestResponseFolders()
+    requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
+    responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
+    onsets.initializeModel()
+    onsets.transcribe(requestFilePath, responseFilePath)
+    return send_file(responseFilePath)
 
 
 if __name__ == "__main__":
