@@ -303,7 +303,7 @@ Neuropsychologiczne badania, które były prowadzone w kontekście przetwarzania
 
 W pracy naukowej \cite[3-4]{DBLP:journals/spm/BenetosDDE19} autorzy opisują obecny stan nauki w dziedzinie transkrypcji muzyki, i kategoryzują oni algorytmy AMT ze względu na poziom abstrakcji używanych struktur na cztery kategorie:
 \begin{itemize}
-  \item transkrypcje na poziomie okien czasowych, badając każde okno osobno w poszukiwaniu kandydatów F0. Algorytmy na tym poziomie wykorzystują między innymi tradycyjne metodyki przetwarzania sygnału, modelowanie probabilistyczne, podejścia Bayesowskie, nieujemna faktoryzacja macierzy (NMF, z ang. \textit{non-negative matrix factorization}) i sieci neuronowe. Ta praca skupia się na tradycyjnym przetwarzaniu sygnału z elementami podejścia Bayesowskiego (\ref{sec:f0}, \ref{sec:pertus1}) ale opisana jest również sieć neuronowa wykazująca najlepsze do tej pory rezultaty (\ref{sec:multif0:onsetsAndFrames}).
+  \item transkrypcje na poziomie okien czasowych, badając każde okno osobno w poszukiwaniu kandydatów F0. Algorytmy na tym poziomie wykorzystują między innymi tradycyjne metodyki przetwarzania sygnału, modelowanie probabilistyczne, podejścia Bayesowskie, nieujemna faktoryzacja macierzy (NMF, z ang. \textit{non-negative matrix factorization}) i sieci neuronowe (NN, z ang. \textit{Neural Network}). Ta praca skupia się na tradycyjnym przetwarzaniu sygnału z elementami podejścia Bayesowskiego (\ref{sec:f0}, \ref{sec:pertus1}) ale opisana jest również sieć neuronowa wykazująca najlepsze do tej pory rezultaty (\ref{sec:multif0:onsetsAndFrames}).
   \item transkrypcje na poziomie nut, zwane też śledzeniem wysokości. W odróżnieniu od poziomu okien czasowych, w tym podejściu analizowane są sąsiednie wyniki w celu połączenia ich w spójne muzycznie całości. Przykład tego podejścia opisany jest w \ref{sec:petrus2}.
   \item transkrypcje na poziomie strumienia, zwana także strumieniowaniem wielotonowym (MPS, z ang. \textit{Multi-Pitch Streaming}), które grupuje nuty wydobyte z poziomu nut w strumienie, najczęściej odpowiadające charakterystyce źródła fali akustycznej (odpowiadające instrumentowi).
   \item transkrypcje na poziomie notacji muzycznych. Jest to poziom najmniej zbadany na ten moment. Jego celem jest wygenerowanie transkrypcji w postaci czytelnej dla człowieka. Poziom ten zakłada wydobycie informacji  o strukturach muzycznych, które nie są istotą analizy pozostałych algorytmów. Przykład takiej analizy jest opisany w \ref{sec:multif0:petrusNetwork} przy użyciu sieci neuronowych.
@@ -574,7 +574,7 @@ Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstC
 \begin{equation}\label{eq:ceps1}
   C_k^w(t, f) = |(S_k^w(t,f)|^2.
 \end{equation}
-Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analityczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtra splotowego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
+Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analityczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtru konwolucyjnego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
 
 Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectrum} (z ang. spektrum). Bogert, Healy i Tukey w pracy \cite{Transcription:Bogert:FirstCepstrum} opisali szereg terminologii związanej z cepstrum, między innymi takie jak:
 \begin{table}[H]\centering
@@ -985,10 +985,24 @@ gdzie $\widetilde{l}(v_{i,c})$ oznacza ogólną głośność kandydata $c$ w kom
 W trakcie budowania wDAG w celu zwiększenia wydajności wybieranych jest tylko $M$ najbardziej prawdopodobnych kombinacji dla każdego okna czasowego. Po wygenerowaniu grafu na podstawie wag liczonych wzorem \ref{eq:inharmonicity2:dwagWeight} wyznaczana jest najkrótsza ścieżka przy pomocy algorytmu Dijkstry \cite[269–271]{Transcription:Dijkstra:Graphs} od pierwszego okna ($t(v) = 0$) do ostatniego ($t(v) = T$). Te wierzchołki, które należą do najkrótszej ścieżki odpowiadają kombinacjom, które są ostatecznie wybierane jako wynik algorytmu.
 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
-rozpoznawanie wzorców. \cite[6-8]{DBLP:journals/spm/BenetosDDE19}
-\todo[inline]{Artukuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnosze się do 6 strony, powinno to być 6 czy zgodnie z journalem 26?}
+Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych. Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 \cite[8-9]{Transcription:Klapuri:ChallengesAndFuture}. Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN \cite[6-8]{DBLP:journals/spm/BenetosDDE19}.
+
+% to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
+
+W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji \cite[7]{DBLP:journals/spm/BenetosDDE19}. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
+
+%\todo[inline]{Artukuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnosze się do 6 strony, powinno to być 6 czy zgodnie z journalem 26?}
 \subsubsection{Holistyczna metoda z użyciem sieci neuronowych}\label{sec:multif0:petrusNetwork}
-\cite{Transcription:Pertus:NeuralNetwork}
+Praca \cite{Transcription:Pertus:NeuralNetwork} miała na celu zbudowanie architektury zdolnej do transkrypcji A2S (Audio do partytury z ang. \textit{Audio-to-Score}). Jest to rzadkie podejście, wykorzystujące poziom abstrakcji notacji muzycznej. Wiele spośród istniejących algorytmów zakłada transkrypcję do plików MIDI lub podobnych, których struktura opiera się na zapisie rolki pianina, umożliwiając z tego poziomu wygenerować notację muzyczną. Omawiany w tej sekcji algorytm zakłada bezpośredni proces transkrypcji cyfrowego sygnału akustycznego do notacji muzycznej.
+
+Proces określenia partytury ma wiele różnic od tego, którego celem jest wygenerowanie transkrypcji w postaci MIDI. Nawet bezbłędne A2S nie jest w stanie wiernie odzwierciedlić kompozycji muzycznej z sygnału ze względu na ekspresywny charakter wykonania. Kompozycja zapisana w postaci notacji muzycznej może być wykonana na wiele różnych sposobów w zależności od interpretacji. Odwrotna relacja również zachodzi - to samo wykonanie ma różne reprezentacje w postaci partytury. W zależności od przyjętej szczegółowości transkrypcji, różne parametry muzyczne być badane które w dalszej kolejności przekładają się na symbole muzyczne występujące w partyturze, takie jak oznaczenia tempa, metrum (sygnatura czasowa), klucz, w którym została napisana kompozycja, oznaczenia artykulacji itp.
+
+Algorytm opisywany w \cite{Transcription:Pertus:NeuralNetwork} zakłada pewien stały alfabet notacji muzycznych, za pomocą którego można zdefiniować analizowany utwór. Opisywany A2S przedstawiony jest jako funkcja dziedziny domeny plików dźwiękowych $f : \mathcal{X} \rightarrow \Sigma^{\ast}$, gdzie $\mathcal{X}$ jest domeną plików muzycznych a $ \Sigma $ jest skończonym alfabetem muzycznych symboli.
+
+Model przyjmuje jako dane wejściowe spektralną reprezentację sygnału w czasie uzyskaną poprzez STFT z komponentami rozmieszczonymi logarytmicznie i magnitudą w skali logarytmicznej. Wynikiem jest sekwencja symboli mogąca być zaprezentowana jako zapis nutowy. Symbole określają nuty oraz przerwy z odpowiadającym im czasem trwania, kreski taktowe, łuki pomiędzy nutami oraz fermaty.
+
+Omawiana praca opisuje proces przygotowanych danych treningowych jako nietrywialny ze względu na małą ilość rzetelnych kompozycji w postaci cyfrowych notacji muzycznych, oraz niewystarczającej dokładności obecnej algorytmiki systemów optycznego rozpoznawania muzyki na podstawie zapisu nutowego. 
+
 \subsubsection{Magenta Onsets and Frames}\label{sec:multif0:onsetsAndFrames}
 \cite{performance-rnn-2017}
 
@@ -1077,7 +1091,9 @@ Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "
   \item \textbf{HPS} - \textbf{H}ypothetical \textbf{P}artial \textbf{S}equences - hipotetyczne częściowe sekwencje
   \item \textbf{wDAG} - weighted \textbf{D}irected \textbf{A}cyclic \textbf{G}raph
   \item \textbf{MPS} - \textbf{M}ulti- \textbf{P}itch \textbf{S}treaming
-
+  \item \textbf{NN} - Neural Network
+  \item \textbf{MIREX} - The Music Information Retrieval Evaluation eXchange
+  \item \textbf{A2S} - Audio=to-Score
 \end{itemize}
 \newpage
 
