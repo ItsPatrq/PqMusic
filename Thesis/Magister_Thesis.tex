@@ -1001,7 +1001,35 @@ Algorytm opisywany w \cite{Transcription:Pertus:NeuralNetwork} zakłada pewien s
 
 Model przyjmuje jako dane wejściowe spektralną reprezentację sygnału w czasie uzyskaną poprzez STFT z komponentami rozmieszczonymi logarytmicznie i magnitudą w skali logarytmicznej. Wynikiem jest sekwencja symboli mogąca być zaprezentowana jako zapis nutowy. Symbole określają nuty oraz przerwy z odpowiadającym im czasem trwania, kreski taktowe, łuki pomiędzy nutami oraz fermaty.
 
-Omawiana praca opisuje proces przygotowanych danych treningowych jako nietrywialny ze względu na małą ilość rzetelnych kompozycji w postaci cyfrowych notacji muzycznych, oraz niewystarczającej dokładności obecnej algorytmiki systemów optycznego rozpoznawania muzyki na podstawie zapisu nutowego. 
+Omawiana praca opisuje proces przygotowanych danych treningowych jako nietrywialny ze względu na małą ilość rzetelnych kompozycji w postaci cyfrowych notacji muzycznych. Obecna algorytmika systemów optycznego rozpoznawania muzyki na podstawie zapisu nutowego przez autorów uznawana jest jako niewystarczającej dokładności aby użyć jej w celu generowania danych treningowych. Ostatecznie wykorzystana została baza \textit{humdrum-data} dostępna w repozytorium \cite{Transcription:Sapp:Humdrum}. Dane te są w autorskim formacie zaproponowanym w zestawie narzędzi humdrum. Format ten jest przeznaczony do ogólnych celów badań nad muzyką. Syntaks humdrum nakreśla wzór, który zawiera w sobie inne schematy notacji muzycznej wyższego poziomu, takie jak format **kern, na którym oparte są referencyjne dane wykorzystane w opisywanym badaniu. Składnia **kern jest szczególnie odpowiednia do tego modelu, ponieważ zaprojektowana jest ona do kodowania alfabetu muzycznego muzyki zachodniej.
+
+Zadanie A2S zadeklarowane jest jako pozyskanie najprawdopodobniejszej sekwencji symboli muzycznych występującej w kompozycji w pliku audio $x \in \mathcal{X}$:
+
+\begin{equation}
+\widehat{s} = \arg \max_{s \in \Sigma^{\ast}} P (s | x)
+\end{equation}
+
+Podejście holistyczne do rozwiązania zakłada użycie konwolucyjnej rekurencyjnej sieci neuronowej (CRNN, z ang. \textit{Convolutional Recurrent Neural Network}). Architektura CRNN składa się z bloku warstw konwolucyjnych oraz bloku warstw rekurencyjnych. Ten pierwszy odpowiedzialny jest za wydobywanie cech z sygnału wejściowego, drugi zaś odpowiada za wykrywanie cech w kontekście sekwencyjnym. 
+
+Przy $W$ będącym długością sygnału wejściowego (w ilości okien czasowych) długość wektora cech będzie równa $L = \gamma W$, gdzie $\gamma \leqslant 1$, co jest długością aktywacji ostatniej warstwy bloku konwolucyjnego. Wynik ostatniej warstwy konwolucyjnej jest używany jako wejście do bloku warstw rekurencyjnych, którego aktywacja ostatniej warstwy jest estymacją danego okna:
+\begin{equation}
+  P(\sigma | x, j), 1 \leqslant l \leqslant L, \sigma \in \Sigma 
+\end{equation}
+Dekodowanie odbywa się poprzez wybranie najbardziej prawdopodobnego symbolu dla każdego wektora cech danego bloku rekurencyjnego, a następnie wyniki są ze sobą łączone i usuwane są symbole puste \cite[2-5]{Transcription:Pertus:NeuralNetwork}.
+
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.31]{images/holisticNetworkArchitecture.jpg}
+    \caption{Architektura sieci neuronowej zastosowanej w pracy  \cite{Transcription:Pertus:NeuralNetwork}}
+    \label{fig:holisticNetworkArchitecture}%%TODO: Tlumaczenie obrazka
+  \end{center}
+\end{figure}
+
+Architektura zaprezentowana w omawianej pracy przedstawiona jest na schemacie w \ref{fig:holisticNetworkArchitecture}. Pierwsze dwie warstwy konwolucyjne nakładają 16 filtrów o wymiarach 3 x 3 z krokiem równym 2 na osi częstotliwości. Kolejne dwie warstwy są blokiem rekurencyjnym, w którego skład wchodzą dwukierunkowe sieci z długotrwałą pamięcią krótkoterminową (LSTM, z ang. \textit{Long Short-Term Memory}), każda z nich z 1024 ukrytymi jednostkami. W celu uniknięcia nadmiernego dopasowania dodane są sieci normalizacji wsadowej (ang. \textit{Batch Normalization}) pomiędzy każdą warstwą z wyjątkiem pierwszej i ostatniej, oraz warstwy \textit{dropout} po każdej warstwie konwolucyjnej oraz ostatniej warstwie rekurencyjnej, które przepuszczają tylko fragment danych. Szczegółowy opis użytych parametrów w zależności od danych testowych jest zawarty w omawianej pracy.
+
+%%Pytanie czy dodać wyniki, które są opisane w tej pracy, albo jakąś konkluzje jeszcze tutaj
+
 
 \subsubsection{Magenta Onsets and Frames}\label{sec:multif0:onsetsAndFrames}
 \cite{performance-rnn-2017}
@@ -1094,6 +1122,7 @@ Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "
   \item \textbf{NN} - Neural Network
   \item \textbf{MIREX} - The Music Information Retrieval Evaluation eXchange
   \item \textbf{A2S} - Audio=to-Score
+  \item \textbf{LSTM}
 \end{itemize}
 \newpage
 
