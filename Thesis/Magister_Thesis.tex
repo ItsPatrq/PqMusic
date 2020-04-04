@@ -1031,20 +1031,34 @@ Architektura zaprezentowana w omawianej pracy przedstawiona jest na schemacie w 
 %%Pytanie czy dodać wyniki, które są opisane w tej pracy, albo jakąś konkluzje jeszcze tutaj
 
 
-\subsubsection{Magenta Onsets and Frames}\label{sec:multif0:onsetsAndFrames}
-\cite{performance-rnn-2017}
+\subsubsection{Onsets and Frames}\label{sec:multif0:onsetsAndFrames}
+Użycie sieci neuronowych do modelowania systemu transkrypcji występuje w literaturze naukowej już od dłuższego czasu. Wyniki tych architektór nie były wyraźnie wyższe od równolegle wynajdywanych sposobów. W ostatnich latach, w ramach projektu Magenta \cite{Transcription:Magenta} powstał system transkrypcji o nazwie Onsets And Frames (początki dźwięków i okna. tłumaczenie własne), który według ewaluacji przedstawionej w dedykowanej pracy naukowej \cite{Transcription:Hawthorne:OnsetsAndFrames} osiąga rekordowe rezultaty w dokładności wyników.
 
+Projekt Magenta ma na celu wytworzenie algorytmiki i oprogramowania, które ma być narzędziem w rękach artystów. Ma to na celu udowodnienie, że uczenie maszynowe może być pomocne w procesie artystycznie twórczym.  Rozwiązania są open source, ułatwiając tym samym do nich dostęp. Douglas Eck, członek zespołu pracującego nad Magenta zapewnia, że projekt ten ma na celu dać źródło inspiracji artystom, a nie szukać sposobów ich zastąpienia przez komputery. System transkrypcji, który został opracowany w ramach tego projektu, jest nie tylko docelowym produktem tej koncepcji, ale też narzędziem pozwalającym ewaluować i zasilać danymi inne badane przez Magenta architektury.
 
+Głównym założeniem, które odróżnia Onsets and Frames od innych systemów transkrypcji bazujących na sieciach neuronowych, jest rozłożenie zadania na dwa problemy: wykrywanie początku nuty oraz wykrywanie aktywności nut w oknie. Oba pod\-zadania mają osobne dedykowane sieci. Nuta jest uznawana za obecną wtedy, i tylko wtedy, gdy zostanie dla niej wykryty początek oraz aktywność.
+
+Dane wejściowe są w postaci spektrogramów w skali melowej i logarytmie amplitudy, z 229 logarytmicznie rozmieszczonymi w domenie częstotliwości komponentami, oknem długości 2048 sampli i odstępami pomiędzy oknami długości 2048. Dane se równolegle zasilają obie sieci. Wynik detektora początków nut jest dostarczany do sieci aktywacji nuty, dając jej łącznie dwie informacje wejściowe - czy jest początek nuty oraz spektrogram.
+
+Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w \cite[1-3]{Transcription:Kelz:AcousticModel}) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LASTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
+%TODO: Czy opisywać funkcje kosztu? jest dokładnie opisana w referencyjnej pracy naukowej
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
-    \caption{z https://magenta.tensorflow.org/onsets-frames, diagram przedstawiający architekture sieci Onesets and Frames.}
+    \includegraphics[scale=0.6]{images/architekturaSieciOnesetsFrames.png}
+    \caption{Diagram przedstawiający architekturę modelu Onesets and Frames. Diagram z \cite{Transcription:OnsetsAndFrames:Blog}}
+    \label{fig:onsetsAndFramesArch}%%TODO: Tlumaczenie obrazka
   \end{center}
 \end{figure}
-\cite{DBLP:journals/corr/LuongPM15}
-\todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa?
-Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
-\todo[inline]{Rozdziały czy sekcje?}
+
+Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została rozpatrzona przez żaden z istniejących wcześniej modeli. Model zbudowany jest analogicznie, ale nie jest połączony z architekturą opisaną powyżej. Etykiety dynamiki są generowane przez podzielenie wszystkich dynamik przez maksymalną obecną w danym fragmencie. Najmniejsza dynamika jest wyznaczana jako $\frac{v_{min}}{v_{max}}$. Wynik jest przycinany do zakresu $\left[0,1\right]$ a następnie przekształcany do parametru \textit{velocity} w MIDI mapowaniem:
+\begin{equation}
+  v_{midi} = 80 v_{predicted} + 10
+\end{equation}
+
+Opisywana praca doczekała się usprawnień, które zostały opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS} została zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach tej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte nagrania są wystąpieniem pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest robione w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne).%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
+
+
+%%\todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
 \newpage
 % \section{Klasyfikacja muzyki}
 % \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
@@ -1123,6 +1137,7 @@ Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "
   \item \textbf{MIREX} - The Music Information Retrieval Evaluation eXchange
   \item \textbf{A2S} - Audio=to-Score
   \item \textbf{LSTM}
+  \item \textbf{MAESTRO} - “MIDI and Audio Edited for Synchronous TRacks and Organization”
 \end{itemize}
 \newpage
 
