@@ -13,7 +13,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from io import BytesIO
 
 
-# autocorrelation function on the waveform
+# Funkcja autokorelacji operująca na sygnale audio w domenie czasu
 def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
   def ac(data, minLag, maxLag):
     result = list(np.zeros(minLag))
@@ -32,7 +32,7 @@ def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
   minLag = int(floor(sampleRate / fqMax))
   maxLag = int(ceil(sampleRate / fqMin))
 
-  for i in tqdm(range(0, ceil((len(data)-frameWidth)/spacing))):
+  for i in tqdm(range(0, int(ceil((len(data) - frameWidth) / spacing)))):
     frame = data[i*spacing:i*spacing+frameWidth] * hann
     res = ac(frame, minLag, maxLag)
     correlogram.append(res)

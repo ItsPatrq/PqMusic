@@ -7,6 +7,7 @@
 \usepackage{indentfirst}
 \usepackage[left=3cm,right=2cm,top=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{todonotes}
+\usepackage{xcolor}
 \usepackage{listings}
 \usepackage{float}
 \usepackage{hyperref}
@@ -25,6 +26,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{csquotes}
+
 \captionsetup{compatibility=false}
 %% \setlength{\parskip}{13pt plus 2pt minus 3pt} %% Odstęp dla paragrafów
 %% \linespread{1.15} odstęp pomiędzy liniami?
@@ -46,13 +48,21 @@
 % Część odpowiedzialna za styl kodu
 % Taken from Lena Herrmann at 
 % http://lenaherrmann.net/2010/05/20/javascript-syntax-highlighting-in-the-latex-listings-package
-\usepackage{color}
+
 \definecolor{lightgray}{rgb}{.9,.9,.9}
 \definecolor{darkgray}{rgb}{.4,.4,.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
 \definecolor{dodgerblue}{RGB}{28, 134, 238}
 \definecolor{darkgreen}{RGB}{0,153,51}
 \definecolor{darkOrange}{RGB}{120,30,0}
+\definecolor{maroon}{cmyk}{0, 0.87, 0.68, 0.32}
+\definecolor{halfgray}{gray}{0.55}
+\definecolor{ipython_frame}{RGB}{207, 207, 207}
+\definecolor{ipython_bg}{RGB}{247, 247, 247}
+\definecolor{ipython_red}{RGB}{186, 33, 33}
+\definecolor{ipython_green}{RGB}{0, 128, 0}
+\definecolor{ipython_cyan}{RGB}{64, 128, 128}
+\definecolor{ipython_purple}{RGB}{170, 34, 255}
 
 \lstdefinelanguage{JavaScript}{
   keywords={typeof, new, true, false, catch, function, return, null, try, catch, switch, var, let, if, in, while, do, else, case, break},
@@ -69,20 +79,96 @@
   morestring=[b]"
 }
 
+
+\lstdefinelanguage{python}{
+    morekeywords={access,and,break,class,continue,def,del,elif,else,except,exec,finally,for,from,global,if,import,in,is,lambda,not,or,pass,print,raise,return,try,while},
+    morekeywords=[2]{abs,all,any,basestring,bin,bool,bytearray,callable,chr,classmethod,cmp,compile,complex,delattr,dict,dir,divmod,enumerate,eval,execfile,file,filter,float,format,frozenset,getattr,globals,hasattr,hash,help,hex,id,input,int,isinstance,issubclass,iter,len,list,locals,long,map,max,memoryview,min,next,object,oct,open,ord,pow,property,range,raw_input,reduce,reload,repr,reversed,round,set,setattr,slice,sorted,staticmethod,str,sum,super,tuple,type,unichr,unicode,vars,xrange,zip,apply,buffer,coerce,intern},
+    sensitive=true,
+    morecomment=[l]\#,
+    morestring=[b]',
+    morestring=[b]",
+    morestring=[s]{'''}{'''},
+    morestring=[s]{"""}{"""},
+    morestring=[s]{r'}{'},
+    morestring=[s]{r"}{"},
+    morestring=[s]{r'''}{'''},
+    morestring=[s]{r"""}{"""},
+    morestring=[s]{u'}{'},
+    morestring=[s]{u"}{"},
+    morestring=[s]{u'''}{'''},
+    morestring=[s]{u"""}{"""},
+    % {replace}{replacement}{lenght of replace}
+    % *{-}{-}{1} will not replace in comments and so on
+    literate=
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+    {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+    {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+    {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+    {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+    {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+    {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+    {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+    {€}{{\EUR}}1 {£}{{\pounds}}1
+    %
+    {^}{{{\color{ipython_purple}\^{}}}}1
+    {=}{{{\color{ipython_purple}=}}}1
+    %
+    {+}{{{\color{ipython_purple}+}}}1
+    {*}{{{\color{ipython_purple}$^\ast$}}}1
+    {/}{{{\color{ipython_purple}/}}}1
+    %
+    {+=}{{{+=}}}1
+    {-=}{{{-=}}}1
+    {*=}{{{$^\ast$=}}}1
+    {/=}{{{/=}}}1,
+    literate=
+    *{-}{{{\color{ipython_purple}-}}}1
+     {?}{{{\color{ipython_purple}?}}}1,
+    %
+    identifierstyle=\color{black}\ttfamily,
+    commentstyle=\color{ipython_cyan}\ttfamily,
+    stringstyle=\color{ipython_red}\ttfamily,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    rulecolor=\color{ipython_frame},
+    frame=single,
+    frameround={t}{t}{t}{t},
+    framexleftmargin=6mm,
+    numbers=left,
+    numberstyle=\tiny\color{halfgray},
+    backgroundcolor=\color{ipython_bg},
+    % extendedchars=true,
+    basicstyle=\scriptsize,
+    keywordstyle=\color{ipython_green}\ttfamily,
+}
+
 \lstset{
-   language=JavaScript,
-   backgroundcolor=\color{lightgray},
-   extendedchars=true,
-   basicstyle=\footnotesize\ttfamily,
-   showstringspaces=false,
-   showspaces=false,
-   numbers=left,
-   numberstyle=\footnotesize,
-   numbersep=9pt,
-   tabsize=2,
-   breaklines=true,
-   showtabs=false,
-   captionpos=b
+    breaklines=true,
+    extendedchars=true,
+    backgroundcolor=\color{lightgray},
+    basicstyle=\footnotesize\ttfamily,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\footnotesize,
+    numbersep=9pt,
+    tabsize=2,
+    showtabs=false,
+    captionpos=b
+    literate=
+      {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+      {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+      {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+      {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+      {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+      {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+      {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+      {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+      {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+      {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+      {€}{{\EUR}}1 {£}{{\pounds}}1
 }
 
 \hyphenation{FORTRAN Wi-ki-books pow-szech-ną któ-re-go pró-by}
@@ -1055,11 +1141,16 @@ Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została roz
   v_{midi} = 80 v_{predicted} + 10
 \end{equation}
 
-Opisywana praca doczekała się usprawnień, które zostały opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS} została zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach tej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte nagrania są wystąpieniem pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest robione w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne).%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
+Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W poprawionej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wdrożone w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne).%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
 
+Poza zmianą bazy, zmiany do Onsets and Frames zaproponowane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization} zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, choć nie jest bezpośrednio używana w dekodowaniu. Zaproponowana jest również zmiana dwukierunkowych warstw LSTM z 128 do 256 jednostek, zmieniając ilość filtrów w warstwie konwolucyjnej z 32/32/64 na 48/48/96, zwiększając tym samym warstwy sigmoidalne. Zmodyfikowane zostały również przejścia pomiędzy podsieciami. Argumentowane są tym, że dla większych baz efektywność rośnie przy większym i prostszym modelu. 
+
+Zaproponowana została również metoda augmentacji sygnału wejściowego, która polegać ma na modyfikacji każdego z danych wejściowych o pewną modulację audio (np. przesunięcie częstotliwości, dodanie szumu, zastosowanie equalizera). Zmiana ta pozytywnie wpływa na jakość modelu trenowanego bazą MAPS, jednak w przypadku bazy MAESTRO odnotowany został minimalny spadek w dokładności wyniku. 
 
 %%\todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
 \newpage
+
+
 % \section{Klasyfikacja muzyki}
 % \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
 % \todo[inline]{Najprawdopodobniej rozdział do usunięcia, lub do czysto teoretycznego opisu}
@@ -1091,15 +1182,82 @@ Opisywana praca doczekała się usprawnień, które zostały opisane w \cite[3-6
 % \subsection{Generowanie muzyki}
 % \newpage
 \section{Implementacja}\label{sec:impl}
+Ten rozdział poświęcony jest opisaniu implementacji algorytmów transkrypcji z rozdziałów \ref{sec:f0} i \ref{sec:MultiPitch}, które są częścią projektu powstałego w ramach tej pracy magisterskiej. Kod napisany został w skryptowym języku Python w wersji 3.7.4, który wydawał się najodpowiedniejszy do tego typu zadania ze względu na dostępne biblioteki dedykowane do matematycznych problemów (jak \textit{numpy} czy \textit{scipy}). Szczegółowa lista użytych rozwiązań dostępna jest w pliku README.md dostępnym w głównym katalogu projektu.
 
+Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM z 16 lub 32 bitami na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez dodanie każdej z wartości. Dane przed analizą są znormalizowane, poprzez skalowanie danych do zakresu $\left[0-1\right]$. W ten sposób
+
+Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentyzacji na okna czasowe:
+\begin{itemize}
+  \item \textit{data} - znormalizowane dane pobrane z pliku dźwiękowego
+  \item \textit{frameWidth} - długość okna w samplach
+  \item \textit{sampleRate} - częstotliwość próbkowania
+  \item \textit{spacing} - odstęp pomiędzy kolejnymi oknami danych
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption={Przykład pętli po danych wejściowych z uwzględnieniem okna czasowego}, captionpos=b, label={code:iter}]
+  for i in range(0, int(math.ceil((len(data) - frameWidth) / spacing))):
+    frame = data[i*spacing:i*spacing+frameWidth] * hann
+    frame = np.concatenate((frame, zeroPadding))
+    frameComplex = fft(frame)
+\end{lstlisting}
+
+Sposób iterowania pomiędzy kolejnymi oknami jest również identyczny dla każdej z implementacji i jest przedstawiony na listingu \ref{code:iter}. W lini 2 listingu na konkretne okno danych nakładana jest funkcja okna (w tym przypadku okno Hanna). W przypadku algorytmów operujących na spektrum, do okna dodawana jest odpowiednia ilość zer (linia 3) jako margines zer, i dopiero na tak przygotowanych danych wykonywana jest transformata (linia 4).
+
+Zaimplementowany został również prosty mechanizm porównujący pliki MIDI. Jego celem jest porównanie wyników zaimplementowanych algorytmów w celu ich ewaluacji, co zostało opisane w rozdziale \ref{sec:ewal}. Mechanizm ten opisany jest w sekcji \ref{sec:impl:midiCompare}. Algorytmy wykrywające F0 w monofonicznym sygnale oryginalnie nie posiadają metodyki przedstawiania wyniku jako plik MIDI. Na potrzeby tej pracy przedstawienie wyniku w postaci MIDI zostało zaimplementowane, czego opis można znaleźć w sekcji \ref{sec:impl:midiGen}.
+
+Poza algorytmami w ramach tej pracy magisterskiej zaimplementowany został również graficzny interfejs (GUI, z ang. \textit{Grapgical User Interface}) w postaci aplikacji webowej z dedykowanym serwerem lokalnym napisanym w Python, za pomocą którego można łatwo przetestować działanie zaimplementowanych metod. Krótki opis tego rozwiązania znajduje się w tym rozdziale w sekcji \ref{sec:impl:gui}.
 \subsection{Autokorelacja}\label{sec:impl:alg:ac}
+Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi, związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna, jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięcie, które jest istotne w trakcie funkcji autokorelacji, co przedstawione jest na listingu \ref{code:minMaxLag}.
+\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Wyliczanie maksymalnego i minimalnego przesunięcia funkcji autokorelacji}, captionpos=b, label={code:minMaxLag}]
+  minLag = int(floor(sampleRate / fqMax))
+  maxLag = int(ceil(sampleRate / fqMin))
+\end{lstlisting}
+
+\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Funkcja autokorelacji}, captionpos=b, label={code:ac}]
+  result = list(np.zeros(minLag))
+  n = len(data)
+  for lag in range(minLag, maxLag):
+      sumarray = np.zeros(n+lag)
+      sumarray[:n] = data
+      sumarray[:n-lag] *= data[lag:]
+      sum = np.sum(sumarray[:n-lag])
+      result.append(float(sum/(n-lag)))
+  return result
+\end{lstlisting}
+
+Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{transcription/ac.py}.
+
+
 \subsection{Cepstrum}\label{sec:impl:alg:ceps}
+Cepstrum (\ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody cepstralnej do estymacji F0, jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} i przedstawione jest na listingu \ref{code:cepsUtil} 
+
+\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Wyliczanie cepstrum mocy}, captionpos=b, label={code:cepsUtil}]
+  spectrum = fft(data)
+  logSp = np.log(np.abs(spectrum))
+  ceps = np.abs(ifft(logSp)) ** 2
+  return ceps, logSp, spectrum
+\end{lstlisting}
+
+\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Estymacja F0 przy pomocy cepstrum}, captionpos=b, label={code:cepsF0Cpu}]
+  cepst, logSp, spectr = real_cepst_from_signal(frame)
+  fftLen = int(np.floor(len(spectr)/2))
+  spectrogram.append(np.abs(spectr[:fftLen]))
+  logSpectrogram.append(logSp[:fftLen])
+  cepst = cepst[:fftLen//2]
+  cepst[0:14] = np.zeros(14)
+  cepstra.append(cepst)
+  
+  maxperiod = np.argmax(cepst)
+  bestFq.append(sampleRate/maxperiod)
+\end{lstlisting}
+
 + GPU
 \subsection{ACLOS}\label{sec:impl:alg:aclos}
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
-\subsection{Holistyczna metoda z użyciem sieci neuronowych}
-\subsection{Interfejs GUI}
+\subsection{Generowanie MIDI}\label{sec:impl:midiGen}
+\subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
+\subsection{Interfejs GUI}\label{sec:impl:gui}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 
 \section{Ewaluacja} \label{sec:ewal}
@@ -1138,6 +1296,7 @@ Opisywana praca doczekała się usprawnień, które zostały opisane w \cite[3-6
   \item \textbf{A2S} - Audio=to-Score
   \item \textbf{LSTM}
   \item \textbf{MAESTRO} - “MIDI and Audio Edited for Synchronous TRacks and Organization”
+  \item \textbf{GUI}
 \end{itemize}
 \newpage
 

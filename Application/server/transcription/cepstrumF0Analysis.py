@@ -23,8 +23,6 @@ from utils.profile import profile, print_prof_data, print_normalize_profile_data
 from utils.cepstrumUtilsGpu import Cepstrogram
 from io import BytesIO
 
-#557 strona ksiazki zielinskiego lifter - filter odwrotny. 555 metoda cepstrum
-
 
 @profile
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
