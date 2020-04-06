@@ -20,7 +20,7 @@ import pycuda.cumath
 from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
 from utils.profile import profile, print_prof_data, print_normalize_profile_data
-from utils.cepstrumUtilsGpu import Cepstrogram
+from utils.cepsUtilsGpu import CepsUtilsGpu
 from io import BytesIO
 
 
@@ -54,7 +54,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
 def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512, compiledCepstrum=None):
     if compiledCepstrum is None:
         params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
-        compiledCepstrum = Cepstrogram(
+        compiledCepstrum = CepsUtilsGpu(
             data, NFFT=params['NFFT'], noverlap=params['noverlap'], pad_to=params['pad_to']).compile(thr)
 
     data_dev = thr.to_device(data)

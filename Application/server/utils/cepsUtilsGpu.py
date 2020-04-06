@@ -125,7 +125,7 @@ def crop_frequencies_ceps(arr):
             connectors=['input'])
 
 # pylint: disable=no-member
-class Cepstrogram(Computation):
+class CepsUtilsGpu(Computation):
  
     def __init__(self, x, NFFT=256, noverlap=128, pad_to=None, window=hanning_window):
  

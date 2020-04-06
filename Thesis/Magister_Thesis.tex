@@ -1186,7 +1186,7 @@ Ten rozdział poświęcony jest opisaniu implementacji algorytmów transkrypcji 
 
 Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM z 16 lub 32 bitami na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez dodanie każdej z wartości. Dane przed analizą są znormalizowane, poprzez skalowanie danych do zakresu $\left[0-1\right]$. W ten sposób
 
-Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentyzacji na okna czasowe:
+Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentacji na okna czasowe:
 \begin{itemize}
   \item \textit{data} - znormalizowane dane pobrane z pliku dźwiękowego
   \item \textit{frameWidth} - długość okna w samplach
@@ -1207,13 +1207,13 @@ Zaimplementowany został również prosty mechanizm porównujący pliki MIDI. Je
 
 Poza algorytmami w ramach tej pracy magisterskiej zaimplementowany został również graficzny interfejs (GUI, z ang. \textit{Grapgical User Interface}) w postaci aplikacji webowej z dedykowanym serwerem lokalnym napisanym w Python, za pomocą którego można łatwo przetestować działanie zaimplementowanych metod. Krótki opis tego rozwiązania znajduje się w tym rozdziale w sekcji \ref{sec:impl:gui}.
 \subsection{Autokorelacja}\label{sec:impl:alg:ac}
-Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi, związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna, jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięcie, które jest istotne w trakcie funkcji autokorelacji, co przedstawione jest na listingu \ref{code:minMaxLag}.
-\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Wyliczanie maksymalnego i minimalnego przesunięcia funkcji autokorelacji}, captionpos=b, label={code:minMaxLag}]
+Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna (jak widać na listingu \ref{code:minMaxLag}), jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięciem które w dalszej części ograniczają zakres, na którym operuje funkcja autokorelacji, co widać na listingu \ref{code:ac}.
+\begin{lstlisting}[ language=Python, caption={Wyliczanie maksymalnego i minimalnego przesunięcia funkcji autokorelacji}, captionpos=b, label={code:minMaxLag}]
   minLag = int(floor(sampleRate / fqMax))
   maxLag = int(ceil(sampleRate / fqMin))
 \end{lstlisting}
 
-\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Funkcja autokorelacji}, captionpos=b, label={code:ac}]
+\begin{lstlisting}[language=Python, caption={Funkcja autokorelacji}, captionpos=b, label={code:ac}]
   result = list(np.zeros(minLag))
   n = len(data)
   for lag in range(minLag, maxLag):
@@ -1225,33 +1225,41 @@ Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algory
   return result
 \end{lstlisting}
 
-Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{transcription/ac.py}.
+Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{transcription/ac.py}.
 
 
 \subsection{Cepstrum}\label{sec:impl:alg:ceps}
-Cepstrum (\ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody cepstralnej do estymacji F0, jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} i przedstawione jest na listingu \ref{code:cepsUtil} 
+Cepstrum (\ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody do estymacji F0, jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} co przedstawione jest na listingu \ref{code:cepsUtil}.
 
-\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Wyliczanie cepstrum mocy}, captionpos=b, label={code:cepsUtil}]
+\begin{lstlisting}[language=Python, caption={Wyliczanie cepstrum mocy}, captionpos=b, label={code:cepsUtil}]
   spectrum = fft(data)
   logSp = np.log(np.abs(spectrum))
   ceps = np.abs(ifft(logSp)) ** 2
   return ceps, logSp, spectrum
 \end{lstlisting}
 
-\begin{lstlisting}[float,floatplacement=H, language=Python, caption={Estymacja F0 przy pomocy cepstrum}, captionpos=b, label={code:cepsF0Cpu}]
+Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do cepstrum oraz znalezienie komponentu cepstralnego o największej wartości. Podzielenie quefrency wyznaczonego komponentu przez częstotliwość próbkowania daje w wyniku częstotliwość F0. Pod uwagę branych jest jedynie $n / 2$ pierwszych elementów cepstrum, gdzie $n$ jest ilością danych wejściowych łącznie z marginesem zer (ze względu na symetryczny charakter wyniku cepstrum). Pierwsze elementy wyniku cepstrum nie są brane pod uwagę przy szukaniu maksymalnego komponentu ze względu na znaczne zwiększenie błędności wyniku (pierwsze komponenty cepstralne symbolizują podobieństwo sygnału do samego siebie, analogicznie do autokorelacji), co zostało w implementacji zrobione poprzez wyzerowanie wartości pierwszych 14 elementów wektora cepstrum (linia $4$ listingu \ref{code:cepsF0Cpu}). 
+
+\begin{lstlisting}[language=Python, caption={Estymacja F0 przy pomocy cepstrum}, captionpos=b, label={code:cepsF0Cpu}]
   cepst, logSp, spectr = real_cepst_from_signal(frame)
   fftLen = int(np.floor(len(spectr)/2))
-  spectrogram.append(np.abs(spectr[:fftLen]))
-  logSpectrogram.append(logSp[:fftLen])
   cepst = cepst[:fftLen//2]
   cepst[0:14] = np.zeros(14)
   cepstra.append(cepst)
-  
   maxperiod = np.argmax(cepst)
   bestFq.append(sampleRate/maxperiod)
 \end{lstlisting}
 
-+ GPU
+W ramach tej pracy magisterskiej została zaimplementowana wersja transformacja cepstrum przy użyciu karty graficznej GPU (z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
+
+Rozwiązanie znajduje się w pliku \textit{utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces można przedstawić w następujący sposób:
+\begin{enumerate}
+  \item Dane wejściowe przekształcane są na $n$ równych części 
+  \item punkto drugiego
+  \item 
+\end{enumerate}
+
+
 \subsection{ACLOS}\label{sec:impl:alg:aclos}
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
@@ -1297,6 +1305,7 @@ Cepstrum (\ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako tr
   \item \textbf{LSTM}
   \item \textbf{MAESTRO} - “MIDI and Audio Edited for Synchronous TRacks and Organization”
   \item \textbf{GUI}
+  \item \textbf{GPU}
 \end{itemize}
 \newpage
 
