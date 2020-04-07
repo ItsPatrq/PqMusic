@@ -82,7 +82,7 @@
 
 \lstdefinelanguage{python}{
     morekeywords={access,and,break,class,continue,def,del,elif,else,except,exec,finally,for,from,global,if,import,in,is,lambda,not,or,pass,print,raise,return,try,while},
-    morekeywords=[2]{abs,all,any,basestring,bin,bool,bytearray,callable,chr,classmethod,cmp,compile,complex,delattr,dict,dir,divmod,enumerate,eval,execfile,file,filter,float,format,frozenset,getattr,globals,hasattr,hash,help,hex,id,input,int,isinstance,issubclass,iter,len,list,locals,long,map,max,memoryview,min,next,object,oct,open,ord,pow,property,range,raw_input,reduce,reload,repr,reversed,round,set,setattr,slice,sorted,staticmethod,str,sum,super,tuple,type,unichr,unicode,vars,xrange,zip,apply,buffer,coerce,intern},
+    morekeywords=[2]{abs,all,any,basestring,bin,bool,bytearray,callable,chr,classmethod,cmp,compile,complex,delattr,dict,dir,divmod,enumerate,eval,execfile,file,filter,float,format,frozenset,getattr,globals,hasattr,hash,help,hex,id,int,isinstance,issubclass,iter,len,list,locals,long,map,max,memoryview,min,next,object,oct,open,ord,pow,property,range,raw_input,reduce,reload,repr,reversed,round,set,setattr,slice,sorted,staticmethod,str,sum,super,tuple,type,unichr,unicode,vars,xrange,zip,apply,buffer,coerce,intern},
     sensitive=true,
     morecomment=[l]\#,
     morestring=[b]',
@@ -1252,16 +1252,73 @@ Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do ce
 
 W ramach tej pracy magisterskiej została zaimplementowana wersja transformacja cepstrum przy użyciu karty graficznej GPU (z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
 
-Rozwiązanie znajduje się w pliku \textit{utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces można przedstawić w następujący sposób:
+Rozwiązanie znajduje się w pliku \textit{utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces, przedstawiony na listingu \ref{code:cepsF0Gpu}, można opisać w następujący sposób:
 \begin{enumerate}
-  \item Dane wejściowe przekształcane są na $n$ równych części 
-  \item punkto drugiego
-  \item 
+  \item dane sygnału wejściowego (\textit{flat\_input}) przekształcane są do tablicy dwuwymiarowej \textit{unwindowed\_input} transformacją \textit{rolling\_frame} tak, że długości wierszy są równe długości ustalonego okna czasowego z długością marginesu zer. Dane składowane są po kolei z uwzględnieniem marginesu zer i odległości pomiędzy oknami;
+  \item tablica \textit{unwindowed\_input} przekształcana jest do \textit{input\_real} transformacją \textit{hanning\_window}, która nakłada funkcję Hanna do każdego z wierszy danych wejściowych;
+  \item dlatego, że do użytej implementacji FFT wymagane jest podanie danych o typie zespolonym, użyta została transformacja \textit{combine\_complex}, która przyjmuje dwa parametry - dane rzeczywiste, którymi są przygotowana tablica \textit{input\_real} oraz dane urojone, które są wygenerowanie za pomocą funkcji \textit{broadcast\_const} i mają postać tablicy zer takich samych wymiarów jak \textit{input\_real};
+  \item na tak przygotowanych danych wykonywana jest funkcja FFT, po której stosowana jest transformacja \textit{log\_pow} dająca w wyniku \textit{log\_pow} będące tablicą spektrum logarytmów mocy;
+  \item funkcja IFFT (odwrotność FFT) wywoływana jest na wyniku kolejnej transformacji  \textit{combine\_complex}, której danymi wejściowymi rzeczywistymi jest tablica \textit{log\_pow} a urojonymi jest tablica generowana analogicznie do tej, przygotowanej w pkt. 3;
+  \item wynik IFFT przekształcany jest transformacją \textit{crop\_frequencies\_ceps}, która zeruje pierwszych 10 wartości (analogicznie do \ref{code:cepsF0Cpu}) oraz wycina elementy przekraczające częstotliwość Nyquista;
+  \item wynik \textit{crop\_frequencies\_ceps} jest transponowany i zwracany jako cepstrum.
 \end{enumerate}
 
+\begin{lstlisting}[float, language=Python, caption={Proces wyliczania cepstrum przy użyciu GPU}, captionpos=b, label={code:cepsF0Gpu}]
+  fft = FFT(fft_arr, axes=(1,))
+  fft.parameter.input.connect(
+      to_complex_trf, to_complex_trf.output,
+      input_real=to_complex_trf.real, input_imag=to_complex_trf.imag)
+  fft.parameter.input_imag.connect(broadcast_zero_trf, broadcast_zero_trf.output)
+  fft.parameter.input_real.connect(window_trf, window_trf.output,
+  unwindowed_input=window_trf.input)
+  fft.parameter.unwindowed_input.connect(
+      rolling_frame_trf, rolling_frame_trf.output, flat_input=rolling_frame_trf.input)
+  fft.parameter.output.connect(
+      log_pow_trf, log_pow_trf.input, log_pow=log_pow_trf.output)
+  ifft = FFT(Type(complex_dtype, fft.parameter.log_pow.shape), axes=(1,))
+  ifft.parameter.input.connect(
+      to_complex_trf, to_complex_trf.output,
+      input_real=to_complex_trf.real, input_imag=to_complex_trf.imag)
+  ifft.parameter.input_imag.connect(broadcast_zero_trf, broadcast_zero_trf.output)
+  crop_trf = crop_frequencies_ceps(ifft.parameter.output)
+  ifft.parameter.output.connect(
+      crop_trf, crop_trf.input, cropped_amplitude=crop_trf.output)
+\end{lstlisting}
 
 \subsection{ACLOS}\label{sec:impl:alg:aclos}
+Trzonem metody ACLOS (\ref{sec:f0:aclos}) jest funkcja autokorelacji w domenie częstotliwości, której implementacja jest bardzo podobna do tej w domenie czasu (\ref{sec:impl:alg:ac}). Wyróżniającymi się elementami tego algorytmu są użycie lifteringu na sygnale oraz wykorzystanie interpolacji do zwiększenia dokładności wyniku.   
+
+Filtrowanie w domenie quefrency odbywa się dla każdego okna czasowego, po przekształceniu do nałożeniu funkcji okna oraz przekształceniu do postaci spektrum mocy. Widmo przekształcanie jest do cepstrum przy pomocy IFFT, po czym wykonywane na nim jest filtrowanie. Proces ten przedstawiony jest na listingu \ref{code:liftering}. Poza danymi wejściowymi jako argumenty funkcja \textit{lifterOnCeps} przyjmuje typ lifteringu \textit{lifterType} (którym może być funkcja sinusoidalna, trójkątna lub prostokątna) oraz mnożnik \textit{coefficient}.
+
+Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. Na jej podstawie wyznaczana jest częstotliwość z najlepszym wynikiem, co przedstawione jest na listingu \ref{code:bestFqInterpolate}. %%TODO
+
+\begin{lstlisting}[float, language=Python, caption={Filtrowanie w domenie quefrency}, captionpos=b, label={code:liftering}]
+  k = np.arange(len(ceps))
+  h = (coefficient/2.)
+  def f(lifterType):
+      lift = {
+          LifterType.sine: 1 + h * np.sin(np.pi*k/coefficient),
+          LifterType.triangle: 1 + h * (k - 1) / (coefficient - 1),
+          LifterType.rectangle: np.ones(len(ceps))
+      }[lifterType]
+      return lift
+
+  lift = f(lifterType)
+  return ceps * lift
+\end{lstlisting}
+
+\begin{lstlisting}[float, language=Python, caption={Wyznaczanie F0 w ACLOS}, captionpos=b, label={code:bestFqInterpolate}]
+  interp_x = np.linspace(0, dataLen-1, num=dataLen*interpolMultiplier)
+  argmax = np.argmax(interpolatedAutocorrelation(interp_x))
+  correlationArgMax = int(np.round(argmax / interpolMultiplier))
+  delta = argmax - (correlationArgMax * interpolMultiplier)
+  bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultiplier)
+  return bestFq
+\end{lstlisting}
+
+
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
+tu będzie sporo :c 
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}

@@ -46,13 +46,13 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
         interpolated = interp1d(np.arange(0, len(result)), result, kind='cubic')
         return result, interpolated
 
-    def countBestFq(interpolatedAutocorrelation, dataLen, interpolMultipler = 10):
-        interp_x = np.linspace(0, dataLen-1, num=dataLen*interpolMultipler)
+    def countBestFq(interpolatedAutocorrelation, dataLen, interpolMultiplier = 10):
+        interp_x = np.linspace(0, dataLen-1, num=dataLen*interpolMultiplier)
         argmax = np.argmax(interpolatedAutocorrelation(interp_x))
-        correlationArgMax = int(np.round(argmax / interpolMultipler))
-        delta = argmax - (correlationArgMax * interpolMultipler)
-        bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultipler)
-        return bestFq        
+        correlationArgMax = int(np.round(argmax / interpolMultiplier))
+        delta = argmax - (correlationArgMax * interpolMultiplier)
+        bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultiplier)
+        return bestFq
 
     for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
         frame = data[i*spacing:i*spacing+frameWidth] * hann
