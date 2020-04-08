@@ -3,7 +3,7 @@ import numpy as np
 import math
 from io import BytesIO
 
-def write_midi(note_grid, filename, spacing, duration=1):
+def write_midi(note_grid, filename, spacing):
 	midifile = MIDIFile(1)
 	midifile.addTempo(0, 0, 60)
 	for note in note_grid:
@@ -36,3 +36,50 @@ class MidiNote:
 		self.velocity = velocity
 		self.onsetMs = onsetMs
 		self.durotianMs = durotianMs
+
+def res_in_hz_to_midi_notes(resInF0PerFrame, sampleRate, spacing):
+	resultPianoRoll = []
+	for fq in resInF0PerFrame:
+		pianoRollRow = np.zeros(127)
+		pianoRollRow[hz_to_midi(fq)] = 100
+		resultPianoRoll.append(pianoRollRow)
+	return postProcessMidiNotes(resultPianoRoll, sampleRate, spacing, 127, 40, 1)
+
+def postProcessMidiNotes(pianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, neighbourMerging = 1):
+	resultNotes = []
+	noteTail = minNoteMs / 1000
+	for note in range(0, maxMidiPitch):
+		currDurotian = 0
+		currVelocity = 0
+		for i in range(0, len(pianoRoll)):
+			leftExist = False
+			rightExists = False
+			for x in range(1, neighbourMerging + 1):
+				if i - x > 0 and pianoRoll[i - 1][note] != 0:
+					leftExist = True
+				if len(pianoRoll) > i + x and pianoRoll[i + x][note] != 0:
+					rightExists = True
+			if pianoRoll[i][note] != 0 or (leftExist and rightExists):
+				if pianoRoll[i][note] == 0:
+					if currVelocity == 0:
+						currVelocity = 80
+
+					averageVelocity = currVelocity / max(currDurotian, 1)
+					currVelocity += averageVelocity
+					pianoRoll[i][note] = averageVelocity
+				else:
+					currVelocity += pianoRoll[i][note]
+				currDurotian += 1
+			elif (currDurotian * spacing / sampleRate) * 1000 > minNoteMs:
+				onsetIdx = i - currDurotian
+				currVelocity /= currDurotian
+				currDurotianMs = currDurotian * spacing / sampleRate + noteTail
+				if currVelocity > minNoteVelocity:
+					resultNotes.append(
+						MidiNote(note, currVelocity, onsetIdx * spacing / sampleRate, currDurotianMs))
+				currDurotian = 0
+				currVelocity = 0
+			else:
+				currDurotian = 0
+				currVelocity = 0
+	return resultNotes, pianoRoll

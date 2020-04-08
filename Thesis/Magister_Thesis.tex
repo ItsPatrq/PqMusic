@@ -1290,7 +1290,7 @@ Trzonem metody ACLOS (\ref{sec:f0:aclos}) jest funkcja autokorelacji w domenie c
 
 Filtrowanie w domenie quefrency odbywa się dla każdego okna czasowego, po przekształceniu do nałożeniu funkcji okna oraz przekształceniu do postaci spektrum mocy. Widmo przekształcanie jest do cepstrum przy pomocy IFFT, po czym wykonywane na nim jest filtrowanie. Proces ten przedstawiony jest na listingu \ref{code:liftering}. Poza danymi wejściowymi jako argumenty funkcja \textit{lifterOnCeps} przyjmuje typ lifteringu \textit{lifterType} (którym może być funkcja sinusoidalna, trójkątna lub prostokątna) oraz mnożnik \textit{coefficient}.
 
-Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. Na jej podstawie wyznaczana jest częstotliwość z najlepszym wynikiem, co przedstawione jest na listingu \ref{code:bestFqInterpolate}. %%TODO
+Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. Na jej podstawie wyznaczana jest częstotliwość z najlepszym wynikiem, co przedstawione jest na listingu \ref{code:bestFqInterpolate}. Zmienna \textit{fftToFq} jest tablicą z wartościami równymi częstotliwości dla kolejnych indeksów wyniku FFT dla danej rozdzielczości. Maksymalny błąd w domenie częstotliwości wiąże się z rozdzielczością wykonywanego FFT i jest równy $\frac{fs}{NFFT}$, gdzie $fs$ jest częstotliwością próbkowania, a $NFFT$ to ustalona długość okna. 
 
 \begin{lstlisting}[float, language=Python, caption={Filtrowanie w domenie quefrency}, captionpos=b, label={code:liftering}]
   k = np.arange(len(ceps))
@@ -1318,9 +1318,94 @@ Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. N
 
 
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
-tu będzie sporo :c 
+Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} ustawiony jest na wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
+
+W pierwszej kolejności wywoływana jest funkcja \textit{coreMethod}, której zadaniem jest przetworzenie sygnału do postaci nut, na którym następnie wykonywane jest przetwarzanie końcowe. Z każdego spektrum okna czasowego po nałożeniu lifteringu wydobywane są wartości (piki) o amplitudach powyżej zadanego progu i na ich podstawie wyznaczani są kandydaci do F0. Zbiór wyznaczonych częstotliwości pomniejszany jest o te, które nie mają wystarczającej ilości harmonicznych w tablicy pików. Liczba kandydatów następnie jest posortowana względem amplitud i odrzucone zostają wszystkie przekraczające indeks \textit{maxCandidates} zmniejszając tym samym ilość kombinacji w przypadku dużej liczby kandydatów.
+
+Kolejnym krokiem jest wyznaczenie wszystkich możliwych kombinacji i wyliczenie istotności każdej z nich. Funkcja obliczająca istotność tworzy kopie tablicy pików i tablicy wszystkich wzorów spektralnych a następnie iteruje po wszystkich kandydatach danej kombinacji:
+\begin{enumerate}
+  \item kopia pików i wzorów spektralnych zostają wygładzone w oparciu o spektrum danego kandydata funkcją \textit{smoothenPattern} zgodnie z metodą opisaną w \ref{sec:pertus1};
+  \item wyliczane zostają głośność jako suma amplitud oraz gładkość danego wzoru spektralnego kandydata F0.
+\end{enumerate}
+W danym oknie czasowym wybierana jest kombinacja o największej sumie istotności harmonicznych. Lista częstotliwości kandydatów F0 wygranej kombinacji transformowana jest na tablicę, której indeksy oznaczają numery nut MIDI a wartościami jest parametr dynamiki, za którego brana jest średnia amplituda F0 wraz z harmonicznymi.
+
+Przetwarzanie końcowe zaimplementowane w funkcji \textit{postProcessMidiNotes} wylicza dynamikę na podstawie wcześniej nadanej wartości z amplitudy i  generuje bardziej ,,spójną'' rolkę pianina, odrzucając zbyt krótkie nuty i łącząc w całość nuty, które były wykryte w oknie o indeksie $n-1$ oraz $n+1$, ale nie były wykryte w oknie o indeksie $n$. W implementacji w ramach scalania nut branych pod uwagę jest do czterech okien czasowych w obie strony.
+
+\begin{lstlisting}[language=Python, caption={Trzon algorytmu Pertusa i Iñesta (2008)}, captionpos=b, label={code:coreMethodPetrusa1}, numbers=none]
+  peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
+  hypotheses, amplitudeSum, patterns, ownerships =
+    getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
+  if(len(hypotheses) == 0):
+    resNotes.append({})
+    continue
+  sortedByFq = getMaxCandidatesByPower(amplitudeSum, hypotheses)
+  possibleCombinations = []
+  for num_pitches in range(1, min(maxParallelNotes, len(sortedByFq)) + 1):
+    for combo in combinations(sortedByFq, num_pitches):
+      possibleCombinations.append(combo)
+  allSaliences = []
+  allMidiNotes = []
+  for combination in possibleCombinations:
+    combinationSalience = countCombinationSalience(
+        combination, patterns, peaks, ownerships)
+    allSaliences.append(combinationSalience)
+    midiNotes = {}
+    for fftFq in combination:
+      fq = fft_to_hz_array[fftFq]
+      midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
+    allMidiNotes.append(midiNotes)
+  resNotes.append(allMidiNotes[np.argmax(allSaliences)])
+\end{lstlisting}
+
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
+Gdy funkcja \textit{harmonicAndSmoothnessBasedTranscription} zostanie wywołana z argumentem $newAlgorithmVersion = True$ wykonana zostanie metoda z usprawnieniami opisanymi w sekcji \ref{sec:petrus2} i pracy naukowej \cite{Transcription:Pertus:Inharmonicity2}. Implementacja różni się od tej opisanej w \ref{sec:impl:alg:specSmoothnes} sposobem wyliczania istotności kombinacji oraz przetwarzaniem końcowym. Wyliczanie 
+
+Proces wyliczania istotności dla danego kandydata F0 zgodnie z opisem z \cite{Transcription:Pertus:Inharmonicity2} jest przedstawiony na listingu \ref{code:petrusIstotnosc}. Wynikiem trzonu algorytmu, w przeciwieństwie do wersji z 2008 roku, jest lista nut MIDI dla wszystkich kombinacji razem z ich istotnością. Na tej podstawie w funkcji \textit{flatternCombination} wykonywane jest wygładzanie na przestrzeni rolki pianina, jak jest to opisane w algorytmie, natomiast śledzenie wysokości nut zaimplementowane jest w funkcji \textit{pitchTracking}. Funkcja wyliczającą wagi każdego z wierzchołków grafu przedstawiona jest na listingu \ref{code:petrusPitchTracking}, gdzie argumenty $lvi$ i $lvj$ są wzorami spektralnymi harmonicznej z okna $i$ i $j = i + 1$ a argument $saliences$ jest istotnością $j$-ego okna. Wyznaczona tablica nut jest przetwarzana metodą \textit{postProcessMidiNotes} tak samo jak w implementacji \ref{sec:impl:alg:specSmoothnes}.
+
+\begin{lstlisting}[language=Python, caption={Wyliczanie istotności w algorytmie Pertusa i Iñesta (2012)}, captionpos=b, label={code:petrusIstotnosc}, numbers=none]
+  currPattern, currPeaks = smoothenPattern(currPatterns[fundamental],
+    currPeaks, ownerships)
+  harmonicsPatterns.append((hz_to_midi(fft_to_hz_array[fundamental]), currPattern))
+  currPatternPowers = np.array(currPattern)
+  currPatternPowers = currPatternPowers.T[1]
+  totalPatternLoudness = np.sum(currPatternPowers)
+  highestLoudness, lowestLoudness = updateMinMaxL(totalPatternLoudness,
+    highestLoudness, lowestLoudness)
+  if lowestLoudness < highestLoudness * gamma:
+    return 0.0, harmonicsPatterns
+  normalizedHpsPowers = np.array(currPatternPowers) / np.max(currPatternPowers)
+  if(len(currPatternPowers) > 2):
+    lowPassedConv = np.convolve(normalizedHpsPowers, gaussianPoints, 'same')
+    currPatternSharpnessMeasure = np.sum(abs(lowPassedConv - normalizedHpsPowers)) /
+      (len(currPatternPowers) - len(currPatternPowers) * gaussianPoints[1])
+  else:
+    currPatternSharpnessMeasure = 0
+  currPatternSmoothness = 1 - currPatternSharpnessMeasure
+  combinationSalience += (totalPatternLoudness *
+    currPatternSmoothness ** smoothnessImportance) ** 2
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:petrusPitchTracking}, numbers=none]
+def countWeight(lvi, lvj, salience_j):
+  D = 0
+  fundamentals_i = map(lambda x: x[0], lvi)
+  fundamentals_j = map(lambda x: x[0], lvj)
+  for pattern_i in lvi:
+    if pattern_i[0] in fundamentals_j:
+      
+      D += np.abs(sum(map(lambda a: a[1], pattern_i[1])) + sum(map(lambda a: a[1],
+         [item for item in lvj if item[0] == pattern_i[0]][0][1])))
+    else:
+      D += sum(map(lambda a: a[1], pattern_i[1]))
+  for pattern_j in lvj:
+    if pattern_j[0] not in fundamentals_i:
+      D += sum(map(lambda a: a[1], pattern_j[1]))
+  return D / (salience_j + 1)
+\end{lstlisting}
+
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
+Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonej częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica o odpowiedniej długości, w której każdym elementem jest rolka pianina reprezentowana przez 127 wartości,
+
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
 \subsection{Interfejs GUI}\label{sec:impl:gui}
 \cite{reactWDzialaniu}\cite{tsDocumentation}

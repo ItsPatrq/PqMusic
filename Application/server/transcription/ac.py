@@ -11,7 +11,7 @@ from os import path
 from math import ceil, floor
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from io import BytesIO
-
+from utils.midi import res_in_hz_to_midi_notes, write_midi
 
 # Funkcja autokorelacji operująca na sygnale audio w domenie czasu
 def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     spacing = 2048
 
     filePath = path.dirname(path.abspath(__file__))
-    #filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-    filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
+    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
     #filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
 
 
@@ -76,11 +76,13 @@ if __name__ == "__main__":
         data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
 
     plot_pitches(best_frequencies, spacing, sampleRate, language="pl")
-    plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)
-    plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl", x_axis_as_samples=True)
+    #plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)
+    #plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl", x_axis_as_samples=True)
 
-    plot_correlation(correlogram[10], sampleRate, "pl")
-    x = correlogram[10]
-    xarg = np.argmax(x)
-    x[(xarg-8):(xarg+8)] = np.zeros(16)
-    print(np.argmax(x), xarg)
+    #plot_correlation(correlogram[10], sampleRate, "pl")
+    #x = correlogram[10]
+    #xarg = np.argmax(x)
+    #x[(xarg-8):(xarg+8)] = np.zeros(16)
+    #print(np.argmax(x), xarg)
+    resMidi, resPianoRoll = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+    write_midi(resMidi, "./resAC.mid", spacing/sampleRate)

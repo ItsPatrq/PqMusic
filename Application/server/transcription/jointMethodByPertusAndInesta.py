@@ -14,13 +14,13 @@ from scipy.interpolate import interp1d
 from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
-from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes
+from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes, postProcessMidiNotes as utilPostProcessMidiNotes
 import networkx as nx
 from collections import namedtuple
 import functools 
 from io import BytesIO
 
-def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
+def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
 											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False,
@@ -222,39 +222,7 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
-		resultNotes = []
-		noteTail = minNoteMs / 1000
-		for note in range(0, maxMidiPitch):
-			currDurotian = 0
-			currVelocity = 0
-			for i in range(0, len(resultPianoRoll)):
-				if resultPianoRoll[i][note] != 0 or\
-					(((i - 1 > 0 and resultPianoRoll[i - 1][note] != 0) or (i - 2 > 0 and resultPianoRoll[i - 2][note] != 0) or (i - 3 > 0 and resultPianoRoll[i - 3][note] != 0) or (i - 4 > 0 and resultPianoRoll[i - 4][note] != 0)) and\
-					((len(resultPianoRoll) > i + 1 and resultPianoRoll[i + 1][note] != 0) or (len(resultPianoRoll) > i + 2 and resultPianoRoll[i + 2][note] != 0) or (len(resultPianoRoll) > i + 3 and resultPianoRoll[i + 3][note] != 0) or (len(resultPianoRoll) > i + 4 and resultPianoRoll[i + 4][note] != 0))):					
-					if resultPianoRoll[i][note] == 0:
-						if currVelocity == 0:
-							currVelocity = 80
-						
-						averageVelocity = currVelocity / max(currDurotian, 1)
-						currVelocity += averageVelocity
-						resultPianoRoll[i][note] = averageVelocity
-					else:
-						currVelocity += resultPianoRoll[i][note]
-					currDurotian += 1
-				elif (currDurotian * spacing / sampleRate) * 1000 > minNoteMs:
-					onsetIdx = i - currDurotian
-					currVelocity /= currDurotian
-					currDurotianMs = currDurotian * spacing / sampleRate + noteTail
-					if currVelocity > minNoteVelocity:
-						resultNotes.append(MidiNote(note, currVelocity, onsetIdx * spacing / sampleRate, currDurotianMs))
-					currDurotian = 0
-					currVelocity = 0
-				else:
-					currDurotian = 0
-					currVelocity = 0
-
-
-		return resultNotes, resultPianoRoll
+		return utilPostProcessMidiNotes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, 4)
 
 	def coreMethod():
 		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
@@ -377,15 +345,15 @@ def harmonicAndSmoothnessBasedTranscription(data, sampleRate, frameWidth=8192, s
 	return pertusAndInesta2008()
 
 
-def transcribe_by_joint_pertusa_wrapped(filePath, newV, outPath):
+def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	frameWidth = 8192
 	spacing = 1024
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
 
-	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonicAndSmoothnessBasedTranscription(
+	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
 		data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=newV)
 
-	write_midi(resMidi, outPath, spacing/sampleRate, 4)
+	write_midi(resMidi, outPath, spacing/sampleRate)
 
 
 if __name__ == "__main__":
@@ -405,10 +373,10 @@ if __name__ == "__main__":
 	sine_data += (create_sine(440, sampleRate, 5) * 0.2)
 	sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
-	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonicAndSmoothnessBasedTranscription(
+	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
             data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
 
-	write_midi(resMidi, "./res3.mid", spacing/sampleRate, 4)
+	write_midi(resMidi, "./res3.mid", spacing/sampleRate)
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)

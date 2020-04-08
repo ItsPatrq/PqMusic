@@ -10,7 +10,7 @@ from utils.windowFunctionsPresentation import *
 from transcription.ac import autocorrelation_wrapped
 from transcription.cepstrumF0Analysis import transcribe_by_cepstrum_wrapped
 from transcription.aclos import transcribe_by_aclos_wrapped
-from transcription.jointMethodByPertusAndInesta import transcribe_by_joint_pertusa_wrapped
+from transcription.jointMethodByPertusAndInesta import transcribe_by_joint_method_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib
@@ -141,7 +141,7 @@ def TranscribeByAclos():
 def TranscribeByPertusa2008(): 
     requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
     responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
-    transcribe_by_joint_pertusa_wrapped(requestFilePath, False, responseFilePath)
+    transcribe_by_joint_method_wrapped(requestFilePath, False, responseFilePath)
     return send_file(responseFilePath)
 
 
@@ -149,7 +149,7 @@ def TranscribeByPertusa2008():
 def TranscribeByPertusa2012():
     requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
     responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
-    transcribe_by_joint_pertusa_wrapped(requestFilePath, True, responseFilePath)
+    transcribe_by_joint_method_wrapped(requestFilePath, True, responseFilePath)
     return send_file(responseFilePath)
 
    
