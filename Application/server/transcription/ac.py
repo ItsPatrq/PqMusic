@@ -11,7 +11,7 @@ from os import path
 from math import ceil, floor
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from io import BytesIO
-from utils.midi import res_in_hz_to_midi_notes, write_midi
+from utils.midi import res_in_hz_to_midi_notes, write_midi, load_midi_file
 
 # Funkcja autokorelacji operująca na sygnale audio w domenie czasu
 def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
@@ -85,4 +85,14 @@ if __name__ == "__main__":
     #x[(xarg-8):(xarg+8)] = np.zeros(16)
     #print(np.argmax(x), xarg)
     resMidi, resPianoRoll = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
-    write_midi(resMidi, "./resAC.mid", spacing/sampleRate)
+    write_midi(resMidi, "./resAC.mid")
+
+    filePath = path.dirname(path.abspath(__file__))
+    filePath = path.join(filePath, '../resAC.mid')
+    res = load_midi_file(filePath)
+
+    for i in range(0, len(res)):
+      res[i].print_self()
+      resMidi[i].print_self()
+      print(".......................")
+    assert len(res) == len(resMidi)

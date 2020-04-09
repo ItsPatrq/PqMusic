@@ -1184,7 +1184,7 @@ Zaproponowana została również metoda augmentacji sygnału wejściowego, któr
 \section{Implementacja}\label{sec:impl}
 Ten rozdział poświęcony jest opisaniu implementacji algorytmów transkrypcji z rozdziałów \ref{sec:f0} i \ref{sec:MultiPitch}, które są częścią projektu powstałego w ramach tej pracy magisterskiej. Kod napisany został w skryptowym języku Python w wersji 3.7.4, który wydawał się najodpowiedniejszy do tego typu zadania ze względu na dostępne biblioteki dedykowane do matematycznych problemów (jak \textit{numpy} czy \textit{scipy}). Szczegółowa lista użytych rozwiązań dostępna jest w pliku README.md dostępnym w głównym katalogu projektu.
 
-Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM z 16 lub 32 bitami na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez dodanie każdej z wartości. Dane przed analizą są znormalizowane, poprzez skalowanie danych do zakresu $\left[0-1\right]$. W ten sposób
+Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM z 16 lub 32 bitami na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez dodanie każdej z wartości. Dane przed analizą są znormalizowane, poprzez skalowanie danych do zakresu $\left[0, 1\right]$. W ten sposób
 
 Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentacji na okna czasowe:
 \begin{itemize}
@@ -1404,9 +1404,32 @@ def countWeight(lvi, lvj, salience_j):
 \end{lstlisting}
 
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
-Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonej częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica o odpowiedniej długości, w której każdym elementem jest rolka pianina reprezentowana przez 127 wartości,
+Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa o wymiarach $n x 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami w zakresie $\left[0, 127\right]$ oznaczające dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}
+
+\begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:hzToMidi}, numbers=none]
+	resultPianoRoll = []
+	for fq in resInF0PerFrame:
+		pianoRollRow = np.zeros(127)
+		pianoRollRow[hz_to_midi(fq)] = 100
+		resultPianoRoll.append(pianoRollRow)
+	return post_process_midi_notes(resultPianoRoll, sampleRate, spacing, 127, 40, 0)
+\end{lstlisting}
+
+Tak przygotowana tablica rolek pianina przetwarzana jest w funkcji \textit{post\_process\_midi\_notes}, która na celu ma utworzenie listy wydarzeń MIDI na podstawie sąsiednich nut. Funkcja ta używana jest również przez algorytmy \ref{sec:impl:alg:specSmoothnes} i \ref{sec:impl:alg:specSmoothnes:improved} jako przetwarzanie końcowe, które sterowane jest przy pomocy argumentów odpowiadających za minimalną długość nuty (\textit{minNoteMs}), minimalną dynamikę nuty (\textit{minNoteVelocity}) oraz maksymalną dozwoloną ,,lukę'' w ciągłości wykrywania danej nuty (\textit{neighbourMerging}).
+
+Wydarzenia MIDI składają się z czterech parametrów:
+\begin{itemize}
+  \item wysokości nuty (\textit{pitch}),
+  \item dynamiki (\textit{velocity}),
+  \item czasu początku nuty w ms. (\textit{onsetS}),
+  \item czasu trwania nuty w ms. (\textit{durationS}).
+\end{itemize}
+Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
+
+
+
 \subsection{Interfejs GUI}\label{sec:impl:gui}
 \cite{reactWDzialaniu}\cite{tsDocumentation}
 

@@ -14,7 +14,7 @@ from scipy.interpolate import interp1d
 from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
-from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes, postProcessMidiNotes as utilPostProcessMidiNotes
+from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes, post_process_midi_notes as utilpost_process_midi_notes
 import networkx as nx
 from collections import namedtuple
 import functools 
@@ -213,7 +213,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 
 		return combinationSalience, harmonicsPatterns
 
-	def postProcessMidiNotes(resNotes):
+	def post_process_midi_notes(resNotes):
 		resultPianoRoll = []
 		for i in range(0, len(resNotes)):
 			pianoRollRow = np.zeros(maxMidiPitch)
@@ -222,7 +222,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
-		return utilPostProcessMidiNotes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, 4)
+		return utilpost_process_midi_notes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, 4)
 
 	def coreMethod():
 		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
@@ -328,7 +328,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 	def pertusAndInesta2008():
 		resNotes, resF0Weights, peaks, _ = coreMethod()
 
-		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
+		resMidi, resPianoRoll = post_process_midi_notes(resNotes)
 
 		return resMidi, resPianoRoll, resF0Weights, peaks, None, None
 
@@ -336,7 +336,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
 		newSaliences = flatternCombination(allCombinations)
 		path, graph, resNotes = pitchTracking(allCombinations, newSaliences)
-		resMidi, resPianoRoll = postProcessMidiNotes(resNotes)
+		resMidi, resPianoRoll = post_process_midi_notes(resNotes)
 
 		return resMidi, resPianoRoll, resF0Weights, peaks, path, graph
 
@@ -353,7 +353,7 @@ def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
 		data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=newV)
 
-	write_midi(resMidi, outPath, spacing/sampleRate)
+	write_midi(resMidi, outPath)
 
 
 if __name__ == "__main__":
@@ -376,7 +376,7 @@ if __name__ == "__main__":
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
             data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
 
-	write_midi(resMidi, "./res3.mid", spacing/sampleRate)
+	write_midi(resMidi, "./res3.mid")
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)

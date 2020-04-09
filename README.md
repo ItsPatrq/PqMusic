@@ -30,6 +30,7 @@ W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, c
     * matplotlib 3.1.1
     * networkx 2.3
     * midiutil 1.2.1
+    * mido 1.2.9
     * tensorflow 1.15.2
     * tqdm 4.36.1
     * aubio 0.4.9
