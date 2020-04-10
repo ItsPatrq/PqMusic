@@ -1427,8 +1427,16 @@ Wydarzenia MIDI składają się z czterech parametrów:
 Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
+Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanej w pracy \cite[3]{Transcription:Pertus:Inharmonicity}, gdzie wykorzystana była miara F1. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te metody znajdują się w pliku \textit{utils/midi.py}.
 
+Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
 
+Funkcja porównująca przyjmuje jako argumenty dwie listy nut MIDI, \textit{transcriptionMidiNotes} będącą wynikiem ewaluowanego algorytmu oraz \textit{groundTruthMidiNotes} będącą oryginalną kompozycją. Algorytm porównania można podzielić na trzy etapy:
+\begin{enumerate}
+  \item policzenie wszystkich FP poprzez sprawdzenie, czy dana nuta z tablicy \textit{transcriptionMidiNotes} posiada odpowiednik w tablicy \textit{groundTruthMidiNotes}. Dla każdej pozycji bez pary zwiększany jest licznik FP,
+  \item policzenie wszystkich TP i FN poprzez sprawdzenie, czy dana nuta z tablicy \textit{groundTruthMidiNotes} posiada odpowiednik w tablicy \textit{transcriptionMidiNotes}. Gdy para zostanie znaleziona zwiększany jest licznik TP, w przeciwnym wypadku zwiększany jest licznik FN,
+  \item policzenie F1
+\end{enumerate}
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
 \cite{reactWDzialaniu}\cite{tsDocumentation}

@@ -95,51 +95,90 @@ def load_midi_file(filePath):
 	set_tempo = "set_tempo"
 	mid = MidiFile(filePath, clip=True)
 
-	if mid.type != 1:
-		raise NotImplementedError("Only type 1 MIDI files can be loaded (synchronous)")
-	if len(mid.tracks) > 2:
-		print("Only notes from first channel will be loaded")
-	if len(mid.tracks) < 2:
-		raise OSError("There should be two tracks in MIDI, found less")
-	bpm = 0
-	for meta in mid.tracks[0]:
-		if meta.is_meta and meta.type == set_tempo:
-			microPerBeat = meta.tempo 
-			bpm = 60 / (meta.tempo * 0.000001) ## meta.tempo jest w microsekundach, czyli 0.000001 części sekundy
-	resultNotes = []
-	for note in range(0, 127):
-		start_tick = 0
-		curr_ticks = 0
-		for midiNoteEvent in mid.tracks[1]: ## note_on zawsze będą przed note_off danej nuty
-			if midiNoteEvent.type in [note_on, note_off]:
-				curr_ticks += midiNoteEvent.time
-				if note == midiNoteEvent.note and midiNoteEvent.type == note_on:
-					start_tick = curr_ticks
-				elif  note == midiNoteEvent.note and midiNoteEvent.type == note_off:
-					resultNotes.append(
-						MidiNote(note, midiNoteEvent.velocity, tick2second(start_tick, mid.ticks_per_beat, microPerBeat), tick2second(curr_ticks - start_tick, mid.ticks_per_beat, microPerBeat)))
-	return resultNotes
+	def get_midi_notes(midiTrack, microPerBeat):
+		resultNotes = []
+		for note in range(0, 127):
+			start_tick = 0
+			curr_ticks = 0
+			for midiNoteEvent in midiTrack: ## note_on zawsze będą przed note_off danej nuty
+				if midiNoteEvent.type in [note_on, note_off]:
+					curr_ticks += midiNoteEvent.time
+					if note == midiNoteEvent.note and midiNoteEvent.type == note_on:
+						start_tick = curr_ticks
+					elif  note == midiNoteEvent.note and midiNoteEvent.type == note_off:
+						resultNotes.append(
+							MidiNote(note, midiNoteEvent.velocity, tick2second(start_tick, mid.ticks_per_beat, microPerBeat), tick2second(curr_ticks - start_tick, mid.ticks_per_beat, microPerBeat)))
+		return resultNotes
 
-def compare_midi_to_ground_truth(transcriptionMidiNotes, groundTruthMidiNotes):
-	fp = 0
-	fn = 0
-	tp = 0
-	transcription_checked = []
-	ground_checked = []
-	for i in range(0, len(transcriptionMidiNotes)):
-		currOnset, currrDurr = transcriptionMidiNotes[i].onsetS, transcriptionMidiNotes[i].durationS
-		for i in range(0, len(groundTruthMidiNotes)):
-			print("TODO")
+	def get_tempo_info(midiTrack):
+		for meta in midiTrack:
+			if meta.is_meta and meta.type == set_tempo:
+				return meta.tempo 
+
+
+	if mid.type == 2:
+		raise NotImplementedError("Only type 0 and 1 MIDI files can be loaded (single-track / multiple tracks, synchronous). Got " + str(mid.type))
+	if len(mid.tracks) > 2:
+		print("Only notes from 1st track will be loaded")
+	if len(mid.tracks) < 1:
+		raise OSError("There should be at least one tracks in MIDI, found less")
+
+	return get_midi_notes(mid.tracks[0] if mid.type == 0 else mid.tracks[1], get_tempo_info(mid.tracks[0]))
+
 	
+
+def compare_midi_to_ground_truth(transcriptionMidiNotes, groundTruthMidiNotes, maxError = 0.003):
+	FN = 0 #false negative
+	FP = 0 #false positive
+	TP = 0 #true positive
+
+	def areNotesAlike(noteChecked, noteGt):
+		onsetChecked, durChecked = noteChecked.onsetS, noteChecked.durationS
+		onsetGt, durGt = noteGt.onsetS, noteGt.durationS
+		if onsetChecked <= onsetGt + maxError and onsetChecked >= onsetGt - maxError and \
+			durChecked <= durGt + maxError and durChecked >= durGt - maxError: 
+			return True
+		return False
+
+	# w tej petli sprawdzane tylko FP
+	for i in range(0, len(transcriptionMidiNotes)):
+		found = False
+		for j in range(0, len(groundTruthMidiNotes)):
+			if areNotesAlike(transcriptionMidiNotes[i], groundTruthMidiNotes[j]):
+				found = True
+				break
+		if not found:
+			FP += 1
+	
+	for i in range(0, len(groundTruthMidiNotes)):
+		found = False
+		for j in range(0, len(transcriptionMidiNotes)):
+			if areNotesAlike(transcriptionMidiNotes[j], groundTruthMidiNotes[i]):
+				found = True
+				break
+		if found:
+			TP += 1
+		else:
+			FN += 1
+	percision = TP / (TP + FP)
+	recall = TP / (TP + FN)
+	F1 = 2 * (percision * recall / (percision + recall))
+	print("FN: ", FN, "FP: ", FP, "TP: ", TP, "F1: ", F1)
+	return FN, FP, TP, F1, percision, recall, F1
+
+
 if __name__ == "__main__":
 	from os import path
 	import sys
 	sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-	filePath = path.dirname(path.abspath(__file__))
+	filePathAbs = path.dirname(path.abspath(__file__))
 	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 	#filePath = '../test_sounds/Sine_sequence.wav'
 	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-	filePath = path.join(filePath, '../resAC.mid')
-	res = load_midi_file(filePath)
-	print(res)
-	write_midi(res, './x.mid')
+	filePath = path.join(filePathAbs, '../Untitled.mid')
+	filePath2 = path.join(filePathAbs, '../resAC.mid')
+
+	res1 = load_midi_file(filePath)
+	res2 = load_midi_file(filePath2)
+
+	compare_midi_to_ground_truth(res1, res2)
