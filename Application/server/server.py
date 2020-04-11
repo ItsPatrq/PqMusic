@@ -159,7 +159,11 @@ def transcribeByOnsetsAndFrames():
     requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
     responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
     onsets.initializeModel()
-    onsets.transcribe(requestFilePath, responseFilePath)
+    exampleFile = open(requestFilePath, 'rb')
+    uploaded = {
+        str(exampleFile.name): exampleFile.read()
+    }
+    onsets.transcribe(uploaded, responseFilePath)
     return send_file(responseFilePath)
 
 

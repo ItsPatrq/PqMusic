@@ -73,14 +73,9 @@ class OnsetsAndFramesImpl:
         del params
         return tf.data.Dataset.from_tensors(self.sess.run(self.next_record))
 
-    def transcribe(self, requestFilePath, responseFilePath):
+    def transcribe(self, uploaded, responseFilePath):
         self.initializeModel()
 
-        #waveFilePath = convertAudioFileToWave(requestFilePath)
-        exampleFile = open(requestFilePath, 'rb')
-        uploaded = {
-            str(exampleFile.name): exampleFile.read()
-        }
         to_process = []
 
         for fn in uploaded.keys():
@@ -137,4 +132,8 @@ if __name__ == "__main__":
     filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
     onsets = OnsetsAndFramesImpl()
     onsets.initializeModel()
-    onsets.transcribe(filePath, './onsets.mid')
+    exampleFile = open(filePath, 'rb')
+    uploaded = {
+        str(exampleFile.name): exampleFile.read()
+    }
+    onsets.transcribe(uploaded, './onsets.mid')

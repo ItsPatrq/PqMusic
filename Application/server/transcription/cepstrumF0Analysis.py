@@ -9,7 +9,6 @@ from tqdm import tqdm
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
-from utils.profile import profile, print_prof_data
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
 from pycuda import cumath
@@ -19,13 +18,12 @@ import pycuda.gpuarray as gpuarray
 import pycuda.cumath
 from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
-from utils.profile import profile, print_prof_data, print_normalize_profile_data
+from utils.custom_profile import profile, print_prof_data, print_normalize_profile_data
 from utils.cepsUtilsGpu import CepsUtilsGpu
 from io import BytesIO
 
 
-@profile
-def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512):
+def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     hanning = np.hanning(frameWidth)
     spectrogram = []
     logSpectrogram = []
@@ -48,10 +46,9 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPad
         maxperiod = np.argmax(cepst)
         bestFq.append(sampleRate/maxperiod)
     
-    return cepstra, spectrogram, bestFq, logSpectrogram
+    return bestFq, cepstra, spectrogram, logSpectrogram
 
-@profile
-def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, sizeOfZeroPadding = 512, spacing = 512, compiledCepstrum=None):
+def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512, compiledCepstrum=None):
     if compiledCepstrum is None:
         params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
         compiledCepstrum = CepsUtilsGpu(
@@ -74,7 +71,7 @@ def transcribe_by_cepstrum_wrapped(filePath):
     frameWidth = 2048
     spacing = 512
     sampleRate, data = loadNormalizedSoundFIle(filePath)
-    cepstra, spectra, bestFq, logSpectrogram  = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    bestFq, cepstra, spectra, logSpectrogram  = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
 
     fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
     fig2, _ = plot_cepstrogram(cepstra, spacing, sampleRate, show=False, language="pl")
@@ -107,19 +104,19 @@ if __name__ == "__main__":
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
     
     #for i in range(0, 10):
-    cepstra, spectra, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    bestFq, cepstra, spectra, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
     #---------------------------
     # filePath1 = path.join(filePath, '../test_sounds/EmPiano/E3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath1)
 
-    # cepstra, spectra1, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # bestFq, cepstra, spectra1, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
     # filePath2 = path.join(filePath, '../test_sounds/EmPiano/G3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath2)
 
-    # cepstra, spectra2, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # bestFq, cepstra, spectra2, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
     # filePath3 = path.join(filePath, '../test_sounds/EmPiano/B3.wav')
     # sampleRate, data = loadNormalizedSoundFIle(filePath3)
-    # cepstra, spectra3, bestFq, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, frameWidth, spacing)
+    # bestFq, cepstra, spectra3, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
 
     plot_pitches(bestFq, spacing, sampleRate, language='pl')
     # plot_spectrogram(spectra, spacing, sampleRate, language='pl', showColorbar=False)
@@ -137,7 +134,7 @@ if __name__ == "__main__":
     thr = api.Thread.create()
     compiledCepstrum = None
     # for i in range(0, 10000):
-    cepstra, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, frameWidth, spacing, compiledCepstrum)
+    cepstra, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, spacing, frameWidth, compiledCepstrum)
 
     # # plot_pitches(bestFq, spacing, sampleRate)
     plot_cepstrogram(cepstra, spacing, sampleRate, transpose=False, showColorbar=False)

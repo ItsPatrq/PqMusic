@@ -9,7 +9,7 @@ from tqdm import tqdm
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz
 from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_correlation, plot_pitches, plot_correlogram, plot_interpolated_correlation
-from utils.profile import profile, print_prof_data
+from utils.custom_profile import profile, print_prof_data
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from io import BytesIO
@@ -19,7 +19,7 @@ from io import BytesIO
 # wartości domyślne są zeby było tak samo jak w pracy naukowej
 # https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
 # https://books.google.pl/books?id=zfVeDwAAQBAJ&pg=PA240&lpg=PA240&dq=fft+log+abs&source=bl&ots=WeVYfedbB6&sig=ACfU3U0WD7QNHPVm08eaFC-0B8vr8mHKVA&hl=pl&sa=X&ved=2ahUKEwjWi_3m7NTmAhUQuaQKHcTCAM0Q6AEwA3oECAcQAQ#v=onepage&q=fft%20log%20abs&f=false
-def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
+def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     correlogram = []
     interpolatedAutocorrelogram = []
     spectra = []
@@ -27,7 +27,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
     bestFq = []
     lifteredSpectra = []
     hann = np.hanning(frameWidth)
-    zeroPadding = np.zeros(frameWidth)
+    zeroPadding = np.zeros(sizeOfZeroPadding)
     fftToFq = fft_to_hz(sampleRate, frameWidth)
     fqMaxError = sampleRate // frameWidth
 
@@ -75,14 +75,14 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512):
         bestFq.append(countBestFq(interpolatedAutocorrelation, len(autocorrelation)))
 
 
-    return correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra
+    return bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra
 
 
 def transcribe_by_aclos_wrapped(filePath):
     frameWidth = 2048
     spacing = 512
     sampleRate, data = loadNormalizedSoundFIle(filePath)
-    correlogram, _, _, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
+    bestFq, correlogram, _, _, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
 
 
     fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     sine_data += (create_sine(1320, sampleRate, 5) * 0.2)
 
 
-    correlogram, interpolatedAutocorrelogram, bestLag, bestFq, spectra = aclos(data, sampleRate, frameWidth, spacing)
+    bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
     plot_spectrogram(spectra, spacing, sampleRate, showColorbar=False, language="pl")
     
     plot_correlogram(correlogram, spacing, sampleRate, language='pl', showColorbar=False)

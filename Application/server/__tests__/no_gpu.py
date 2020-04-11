@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
 from tqdm import tqdm
-from utils.profile import profile, print_prof_data
+from utils.custom_profile import profile, print_prof_data
 import math
 import utils.plots
 import utils.general

@@ -14,7 +14,7 @@ from io import BytesIO
 from utils.midi import res_in_hz_to_midi_notes, write_midi, load_midi_file
 
 # Funkcja autokorelacji operująca na sygnale audio w domenie czasu
-def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
+def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax):
   def ac(data, minLag, maxLag):
     result = list(np.zeros(minLag))
     n = len(data)
@@ -39,7 +39,7 @@ def autocorrelation(data, frameWidth, sampleRate, spacing, fqMin, fqMax):
     bestLag = np.argmax(res)
     bestFq.append(0 if bestLag < minLag else sampleRate/bestLag)
 
-  return correlogram, bestFq
+  return bestFq, correlogram
 
 ## For client-server usage
 def autocorrelation_wrapped(filePath):
@@ -48,8 +48,8 @@ def autocorrelation_wrapped(filePath):
   frameWidth = 2048
   spacing = 2048
   sampleRate, data = loadNormalizedSoundFIle(filePath)
-  correlogram, best_frequencies = autocorrelation(
-      data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
+  best_frequencies, correlogram = autocorrelation(
+      data, sampleRate, frameWidth, frameWidth, fqMin, fqMax)
   fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False, language="pl")
   fig2, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False, language="pl")
   pitches, correlogram = BytesIO(), BytesIO()
@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
     sampleRate, data = loadNormalizedSoundFIle(filePath)
 
-    correlogram, best_frequencies = autocorrelation(
-        data, frameWidth, sampleRate, frameWidth, fqMin, fqMax)
+    best_frequencies, correlogram = autocorrelation(
+        data, sampleRate, frameWidth, frameWidth, fqMin, fqMax)
 
     plot_pitches(best_frequencies, spacing, sampleRate, language="pl")
     #plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)

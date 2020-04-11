@@ -11,7 +11,6 @@ from itertools import combinations
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
-from utils.profile import profile, print_prof_data
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
 from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes, post_process_midi_notes as utilpost_process_midi_notes
@@ -20,10 +19,10 @@ from collections import namedtuple
 import functools 
 from io import BytesIO
 
-def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=8192, sizeOfZeroPadding=24576, spacing=1024,
+def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=8192, spacing=1024, sizeOfZeroPadding=24576,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
-											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, useGpu = False,
+											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10,
 											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3):
 
 	#region init values
@@ -41,7 +40,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 	k0 = int(np.round(hz_to_fft_array[minF0]))
 	k1 = int(np.round(hz_to_fft_array[maxF0]))
 
-	maxMidiPitch = hz_to_midi(maxF0) + 1
+	maxMidiPitch = 127
 	CombinationData = namedtuple('CombinationData', "possibleCombinations allSaliences allMidiNotes allResults allPatterns")
 	#endregion init values
 
@@ -351,7 +350,7 @@ def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
-		data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=newV)
+		data, sampleRate, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=newV)
 
 	write_midi(resMidi, outPath)
 
@@ -374,7 +373,7 @@ if __name__ == "__main__":
 	sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
-            data, sampleRate, frameWidth, frameWidth * 3, spacing, newAlgorithmVersion=True)
+            data, sampleRate, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=True)
 
 	write_midi(resMidi, "./res3.mid")
 	plot_midi(resPianoRoll, spacing, sampleRate)
