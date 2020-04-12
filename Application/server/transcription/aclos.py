@@ -19,7 +19,7 @@ from io import BytesIO
 # wartości domyślne są zeby było tak samo jak w pracy naukowej
 # https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
 # https://books.google.pl/books?id=zfVeDwAAQBAJ&pg=PA240&lpg=PA240&dq=fft+log+abs&source=bl&ots=WeVYfedbB6&sig=ACfU3U0WD7QNHPVm08eaFC-0B8vr8mHKVA&hl=pl&sa=X&ved=2ahUKEwjWi_3m7NTmAhUQuaQKHcTCAM0Q6AEwA3oECAcQAQ#v=onepage&q=fft%20log%20abs&f=false
-def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
+def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512, disableTqdm = True):
     correlogram = []
     interpolatedAutocorrelogram = []
     spectra = []
@@ -54,7 +54,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPa
         bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultiplier)
         return bestFq
 
-    for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
+    for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
         frame = data[i*spacing:i*spacing+frameWidth] * hann
         frame = np.concatenate((frame, zeroPadding))
         frameComplex = fft(frame)

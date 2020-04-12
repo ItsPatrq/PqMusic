@@ -1,0 +1,14 @@
+[
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_12_R1_2006_01-08_ORIG_MID--AUDIO_12_R1_2006_03_Track03_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_12_R1_2006_01-08_ORIG_MID--AUDIO_12_R1_2006_03_Track03_wav.wav",
+        "canonical_title": "Unprocessed_12_R1_2006_01"
+    },
+    {
+        "split": "validation",
+        "midi_filename": "2020\/MIDI-Unprocessed_12_R1_2006_01-08_ORIG_MID--AUDIO_12_R1_2006_03_Track03_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_12_R1_2006_01-08_ORIG_MID--AUDIO_12_R1_2006_03_Track03_wav.wav",
+        "canonical_title": "Unprocessed_12_R1_2006_01"
+    }
+]

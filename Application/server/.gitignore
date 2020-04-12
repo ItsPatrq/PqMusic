@@ -1,3 +1,6 @@
 tmpFiles/
 transcription/train/
 *.pyc
+*.mid
+*.midi
+*.wav

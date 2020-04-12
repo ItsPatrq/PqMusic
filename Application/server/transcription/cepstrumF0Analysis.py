@@ -5,7 +5,6 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
-from tqdm import tqdm
 import math
 from utils.general import loadNormalizedSoundFIle, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
@@ -48,7 +47,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512
     
     return bestFq, cepstra, spectrogram, logSpectrogram
 
-def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512, compiledCepstrum=None):
+def ceostrumF0AnalysisGpu (api, thr, compiledCepstrum, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     if compiledCepstrum is None:
         params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
         compiledCepstrum = CepsUtilsGpu(
@@ -58,14 +57,14 @@ def ceostrumF0AnalysisGpu (api, thr, data, sampleRate = 1024, frameWidth = 512, 
     ceps_dev = thr.empty_like(compiledCepstrum.parameter.output)
     compiledCepstrum(ceps_dev, data_dev)
     cepstra = ceps_dev.get()
-    # bestFq = []
-    # for cepst in cepstra:
-    #     maxperiod = np.argmax(cepst)
-    #     if maxperiod == 0:
-    #         bestFq.append(0)
-    #     else:
-    #         bestFq.append(sampleRate/maxperiod)
-    return cepstra, compiledCepstrum
+    bestFq = []
+    for cepst in cepstra:
+        maxperiod = np.argmax(cepst)
+        if maxperiod == 0:
+            bestFq.append(0)
+        else:
+            bestFq.append(sampleRate/maxperiod)
+    return cepstra, bestFq, compiledCepstrum
 
 def transcribe_by_cepstrum_wrapped(filePath):
     frameWidth = 2048
@@ -134,7 +133,7 @@ if __name__ == "__main__":
     thr = api.Thread.create()
     compiledCepstrum = None
     # for i in range(0, 10000):
-    cepstra, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, np.array(data), sampleRate, frameWidth, spacing, frameWidth, compiledCepstrum)
+    cepstra, bestFq, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, compiledCepstrum, np.array(data), sampleRate, frameWidth, spacing, frameWidth)
 
     # # plot_pitches(bestFq, spacing, sampleRate)
     plot_cepstrogram(cepstra, spacing, sampleRate, transpose=False, showColorbar=False)

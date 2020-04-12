@@ -23,7 +23,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
 											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10,
-											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3):
+											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, disableTqdm=True):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -70,7 +70,10 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 					break
 				maxLeftInh, maxRightInh = countMaxInharmonyFrequencies(currExpHarFft)
 				maxCurrHarmonic = min(len(peaks) - 1, int(currExpHarFft + maxRightInh))
-				bestFq = np.argmax(peaks[(currExpHarFft - maxLeftInh):maxCurrHarmonic]) + currExpHarFft - maxLeftInh
+				rangeOfBestFq = peaks[(currExpHarFft - maxLeftInh):maxCurrHarmonic]
+				if len(rangeOfBestFq) == 0:
+					break
+				bestFq = np.argmax(rangeOfBestFq) + currExpHarFft - maxLeftInh
 				bestPow = peaks[bestFq]
 				if bestPow > 0:
 					harmonicsFound += 1
@@ -224,7 +227,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 		return utilpost_process_midi_notes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, 4)
 
 	def coreMethod():
-		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing)))):
+		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
 			peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
 
 			hypotheses, amplitudeSum, patterns, ownerships = getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
@@ -320,6 +323,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 
 		resNotes = []
 		for edge in path:
+			#TypeError: 'NoneType' object is not subscriptable TODO:
 			resNotes.append(allCombinations[edge[0]][2][edge[1]])
 
 		return path, graph, resNotes

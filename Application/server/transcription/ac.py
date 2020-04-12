@@ -14,7 +14,7 @@ from io import BytesIO
 from utils.midi import res_in_hz_to_midi_notes, write_midi, load_midi_file
 
 # Funkcja autokorelacji operująca na sygnale audio w domenie czasu
-def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax):
+def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax, disableTqdm = True):
   def ac(data, minLag, maxLag):
     result = list(np.zeros(minLag))
     n = len(data)
@@ -32,7 +32,7 @@ def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax):
   minLag = int(floor(sampleRate / fqMax))
   maxLag = int(ceil(sampleRate / fqMin))
 
-  for i in tqdm(range(0, int(ceil((len(data) - frameWidth) / spacing)))):
+  for i in tqdm(range(0, int(ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
     frame = data[i*spacing:i*spacing+frameWidth] * hann
     res = ac(frame, minLag, maxLag)
     correlogram.append(res)

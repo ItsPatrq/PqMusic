@@ -131,6 +131,7 @@ def load_midi_file(filePath):
 		for meta in midiTrack:
 			if meta.is_meta and meta.type == set_tempo:
 				return meta.tempo
+		raise Exception("Given MIDI has no tempo information")
 
 	if mid.type == 2:
 		raise NotImplementedError(

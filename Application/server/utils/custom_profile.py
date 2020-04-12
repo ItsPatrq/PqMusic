@@ -22,15 +22,30 @@ def profile(fn):
 
     return with_profiling
 
+def print_normalize_profile_data_for_func(n, fc_name):
+    for fname, data in PROF_DATA.items():
+        if fname == fc_name:
+            sortedByPow = np.sort(data[1])
+            sortedByPow = sortedByPow[n:]
+            sortedByPow = sortedByPow[:n]
+            max_time = max(sortedByPow)
+            avg_time = sum(sortedByPow) / len(sortedByPow)
+            fCalled = "Function %s called %d times. " % (fname, data[0])
+            fData = "Execution time max: %.3f, average: %.3f" % (max_time, avg_time)
+            return fCalled + "\n" + fData
+
 def print_normalize_profile_data(n):
+    res = ""
     for fname, data in PROF_DATA.items():
         sortedByPow = np.sort(data[1])
         sortedByPow = sortedByPow[n:]
         sortedByPow = sortedByPow[:n]
         max_time = max(sortedByPow)
         avg_time = sum(sortedByPow) / len(sortedByPow)
-        print("Function %s called %d times. " % (fname, data[0]),)
-        print('Execution time max: %.3f, average: %.3f' % (max_time, avg_time))
+        fCalled = "Function %s called %d times. " % (fname, data[0])
+        fData = "Execution time max: %.3f, average: %.3f" % (max_time, avg_time)
+        res += fCalled + "\n" + fData + "\n"
+    return res
         
 def print_prof_data():
     for fname, data in PROF_DATA.items():
