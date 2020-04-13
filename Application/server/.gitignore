@@ -1,5 +1,7 @@
 tmpFiles/
 transcription/train/
+__tests__/
+
 *.pyc
 *.mid
 *.midi

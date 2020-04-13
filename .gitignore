@@ -279,8 +279,12 @@ train/model.ckpt-100154.index
 train/model.ckpt-100154.meta
 
 Application/resources/
+/Thesis/images/
 __pycache__/
 *.wav
 *.mp3
-
+*.jpg
+*.midi
+*.mid
 __pycache__
+*.xcf

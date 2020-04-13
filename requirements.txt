@@ -5,17 +5,7 @@ matplotlib==3.1.1
 networkx==2.3
 MIDIUtil==1.2.1
 mido==1.2.9
-tensor2tensor==1.15.4
-tensorboard==1.15.0
 tensorflow==1.15.2
-tensorflow-datasets==2.1.0
-tensorflow-estimator==1.15.1
-tensorflow-gan==2.0.0
-tensorflow-hub==0.7.0
-tensorflow-metadata==0.21.1
-tensorflow-probability==0.7.0
-mesh-tensorflow==0.1.12
-tqdm==4.36.1
 aubio==0.4.9
 magenta==1.2.2
 librosa==0.7.2
