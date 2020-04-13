@@ -92,16 +92,17 @@ argsJointMethodByPertusaAndInesta2012 = {
     'useLiftering': [False, True],
     'lifteringCoefficient': [6, 8],
     'minNoteVelocity': [15],
-    'newAlgorithmVersion': [True],
-    'smoothnessImportance': [3, 6], #TODO: Czy to było dobrze opisane w Thesis?
-    'temporalSmoothnessRange': [2, 3],
-    'pitch_tracking_combinations': [2, 3]
+    'newAlgorithmVersion': [False],
+    'smoothnessImportance': [None], #TODO: Czy to było dobrze opisane w Thesis?
+    'temporalSmoothnessRange': [None],
+    'pitch_tracking_combinations': [None]
 }
 
 best_arg_ac = (8192, 512, 50, 5500)
 best_arg_aclos =  (8192, 512, 8192)
 best_arg_ceps = (8192, 512, 8192)
 best_arg_Joint2008 = (8192, 512, 8192, 50, 5500, 8, 8, 0.16, 3, 8, 7, 5, 0.1, 70, True, 8, 15, False, None, None, None)
+best_arg_Joint2012 = (8192, 512, 8192, 50, 5500, 8, 8, 0.16, 3, 8, 7, 5, 0.1, 70, True, 8, 15, True, 3, 2, 2)
 
 class SplitEnum(enum.Enum):
     test = "test"
@@ -122,7 +123,7 @@ class F1Results:
             "\nAvarage FN: " + str(sum(self.FN) / len(self.FN)) + "\nAvarage FP: " + str(sum(self.FP) / len(self.FP)) +\
             "\nAvarage TP: " + str(sum(self.TP) / len(self.TP)) + "\nAvarage F1: " + str(sum(self.F1) / len(self.F1)) +\
             "\nAvarage percision: " + str(sum(self.percision) / len(self.percision)) + "\nAvarage recall: " + str(sum(self.recall) / len(self.recall)) +\
-            "\nTime estimation: " + print_normalize_profile_data(2)
+            "\nTime estimation: " + print_normalize_profile_data(0, self.algorithm)
 
 
 class EvalObject:
@@ -255,14 +256,14 @@ def test_method_onsets(onsets, evalObjects, saveRes):
         F1.append(currF1)
         percision.append(currPercision)
         recall.append(currRecall)
-    return F1Results(FN, FP, TP, F1, percision, recall, "onsets and frames")
+    return F1Results(FN, FP, TP, F1, percision, recall, "run_onsets_and_frames")
 
 def test_method_gpu(func, arg, evalObjects, saveRes, api, thr):
     FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
     print("Testing function " + str(func.__name__))
     
     def run_fun(normalizedData, sampleRate):
-        resMidi, compiled = func(api, thr, None, normalizedData, sampleRate, *arg)
+        resMidi = func(api, thr, normalizedData, sampleRate, *arg)
         return resMidi
 
     for evObj in evalObjects:
@@ -295,10 +296,10 @@ def run_ceps(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
     return resMidi
 
 @profile
-def run_ceps_gpu(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
-    cepstra, best_frequencies, compiledCepstrum = ceostrumF0AnalysisGpu(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+def run_ceps_gpu(api, thr, normalizedData, sampleRate, frameWidth, spacing, *restArgs):
+    cepstra, best_frequencies, _ = ceostrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
     resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
-    return resMidi, compiledCepstrum
+    return resMidi
 
 @profile
 def run_joint_method_2008(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
@@ -316,7 +317,7 @@ def run_onsets_and_frames(onsets, uploaded, responseFilePath):
     return 
 
 
-def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args):
+def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations = 10, onlyPoli = False):
     #region initializacja
     onsets = OnsetsAndFramesImpl()
     ## initializacja karty graficznej
@@ -328,13 +329,17 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
     #endregion initializacja
 
     #region testowanie algorytmów
-    acResults = test_method(run_ac, bestAcArgs, tests, resFolderTest)
-    aclosResults = test_method(run_aclos, bestAclosArgs, tests, resFolderTest)
-    cepsResults = test_method(run_ceps, bestCepstrumArgs, tests, resFolderTest)
-    cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr)
-    joint2008Results = test_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
-    joint2012Results = test_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
-    onsetsResults = test_method_onsets(onsets, tests, resFolderTest)
+    for _ in range(0, iterations):
+        if not onlyPoli:
+            acResults = test_method(run_ac, bestAcArgs, tests, resFolderTest)
+            aclosResults = test_method(run_aclos, bestAclosArgs, tests, resFolderTest)
+            cepsResults = test_method(run_ceps, bestCepstrumArgs, tests, resFolderTest)
+            cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr)
+            ctx.pop()
+            pycuda.tools.clear_context_caches()
+        joint2008Results = test_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
+        joint2012Results = test_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
+        onsetsResults = test_method_onsets(onsets, tests, resFolderTest)
     #endregion testowanie algorytmów
 
     for res in [acResults, aclosResults, cepsResults, cepsGpuResults, joint2008Results, joint2012Results, onsetsResults]:
@@ -345,28 +350,39 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
         text_file.close()
 
 
-def run_eval_and_test_on_dataset(dataSet):
+def run_eval_and_test_on_dataset(dataSet, iterations = 10, onlyPoli = False):
     #region initializacja
     tests, validators = load_metadata(dataSet)
     resFolder, resFolderTest, resFolderValidation = create_results_folder(
         dataSet)
+    bestAcArgs, bestAclosArgs, bestCepstrumArgs = (), (), ()
     #endregion initializacja
 
     #region wyznaczenie najlepszych argumentów przez walidacje
-    bestAcArgs = validate_arguments(
-        autocorrelation, argsAc, validators, resFolderValidation)
-    bestAclosArgs = validate_arguments(
-        aclos, argsAclos, validators, resFolderValidation)
-    bestCepstrumArgs = validate_arguments(
-        cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
+    if not onlyPoli:
+        bestAcArgs = validate_arguments(
+            autocorrelation, argsAc, validators, resFolderValidation)
+        bestAclosArgs = validate_arguments(
+            aclos, argsAclos, validators, resFolderValidation)
+        bestCepstrumArgs = validate_arguments(
+            cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
     bestJointMethodByPertusaAndInesta2008Args = validate_arguments(
         harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, True)
     bestJointMethodByPertusaAndInesta2012Args = validate_arguments(
         harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, True)
     #endregion wyznaczenie najlepszych argumentów przez walidacje
     
-    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args)
+    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
 
+
+def run_test_with_predefined_args_on_dataset(dataSet):
     #region initializacja
+    tests, _ = load_metadata(dataSet)
+    resFolder, resFolderTest, _ = create_results_folder(
+        dataSet)
+    #endregion initializacja
+    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best_arg_ac, best_arg_aclos, best_arg_ceps, best_arg_Joint2008, best_arg_Joint2012)
+
 if __name__ == "__main__":
-    run_eval_and_test_on_dataset("monoSound")
+    #run_eval_and_test_on_dataset("monoSound")
+    run_test_with_predefined_args_on_dataset("monoSound")

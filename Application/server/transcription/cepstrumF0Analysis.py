@@ -58,7 +58,7 @@ def ceostrumF0AnalysisGpu (api, thr, compiledCepstrum, data, sampleRate = 1024, 
     compiledCepstrum(ceps_dev, data_dev)
     cepstra = ceps_dev.get()
     bestFq = []
-    for cepst in cepstra:
+    for cepst in cepstra.T:
         maxperiod = np.argmax(cepst)
         if maxperiod == 0:
             bestFq.append(0)
