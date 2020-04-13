@@ -34,6 +34,7 @@ W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, c
     * tensorflow 1.15.2
     * tqdm 4.36.1
     * aubio 0.4.9
+    * pydub 0.23.1
     * magenta 1.2.2 + librosa 0.7.2 (dla algorytmu Onsets and Frames)
     * reikna 0.7.4 + pycuda 2019.1.2 (dla algorytmów wykonywanych na GPU)
     * flask 1.1.1 + flask_cors 3.0.8 (dla GUI)
