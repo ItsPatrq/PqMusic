@@ -14,14 +14,14 @@ from transcription.jointMethodByPertusAndInesta import transcribe_by_joint_metho
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib
-from transcription.onsetsAndFrames import OnsetsAndFramesImpl
+#from transcription.onsetsAndFrames import OnsetsAndFramesImpl
 matplotlib.use('Agg')
 
 CORS(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 #region transcription initialization Onsets and Frames
-onsets = OnsetsAndFramesImpl()
+#onsets = OnsetsAndFramesImpl()
 # onsets.initializeModel()
 #endregion
 #region generate
@@ -156,15 +156,16 @@ def TranscribeByPertusa2012():
 
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():
-    requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
-    responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
-    onsets.initializeModel()
-    exampleFile = open(requestFilePath, 'rb')
-    uploaded = {
-        str(exampleFile.name): exampleFile.read()
-    }
-    onsets.transcribe(uploaded, responseFilePath)
-    return send_file(responseFilePath)
+    # requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
+    # responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
+    # onsets.initializeModel()
+    # exampleFile = open(requestFilePath, 'rb')
+    # uploaded = {
+    #     str(exampleFile.name): exampleFile.read()
+    # }
+    # onsets.transcribe(uploaded, responseFilePath)
+    # return send_file(responseFilePath)
+    return ""
 
 
 if __name__ == "__main__":
