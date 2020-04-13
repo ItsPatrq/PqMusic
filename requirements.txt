@@ -19,7 +19,5 @@ tqdm==4.36.1
 aubio==0.4.9
 magenta==1.2.2
 librosa==0.7.2
-reikna==0.7.4
-pycuda==2019.1.2
 Flask==1.1.1
 Flask-Cors==3.0.8
