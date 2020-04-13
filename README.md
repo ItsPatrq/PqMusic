@@ -20,7 +20,7 @@ Wszystkie algorytmy dostępne są w folderze Application/transcription/*.py. Ka�
 
 Sposób uruchomienia GUI:
 
-W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, co zbuduje paczkę ze stroną i skryptami. Następnie należy uruchomić skrypt z pliku Application/server/server.py. Spowoduje to uruchomienie servera HTTP hostującego GUI pod lokalnym adresem http://127.0.0.1:5000/.
+W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, co spowoduje zbudowanie paczki ze stroną i skryptami. Następnie należy uruchomić skrypt z pliku Application/server/server.py. Spowoduje to uruchomienie servera HTTP hostującego GUI pod lokalnym adresem http://127.0.0.1:5000/.
 ***
 
 ## Wymagania:
