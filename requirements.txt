@@ -5,9 +5,6 @@ matplotlib==3.1.1
 networkx==2.3
 MIDIUtil==1.2.1
 mido==1.2.9
-tensorflow==1.15.2
 aubio==0.4.9
 magenta==1.2.2
-librosa==0.7.2
 Flask==1.1.1
-Flask-Cors==3.0.8
