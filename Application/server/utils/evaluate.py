@@ -8,7 +8,8 @@ from midi import load_midi_file, compare_midi_to_ground_truth, res_in_hz_to_midi
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from transcription.ac import autocorrelation
 from transcription.aclos import aclos
-from transcription.cepstrumF0Analysis import cepstrumF0Analysis, ceostrumF0AnalysisGpu
+from transcription.cepstrumF0Analysis import cepstrumF0Analysis
+from transcription.cepstrumF0AnalysisGpu import cepstrumF0AnalysisGpu
 from transcription.jointMethodByPertusAndInesta import harmonic_and_smoothness_based_transcription
 from transcription.onsetsAndFrames import OnsetsAndFramesImpl
 import json
@@ -297,7 +298,7 @@ def run_ceps(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
 
 @profile
 def run_ceps_gpu(api, thr, normalizedData, sampleRate, frameWidth, spacing, *restArgs):
-    cepstra, best_frequencies, _ = ceostrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+    cepstra, best_frequencies, _ = cepstrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
     resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
     return resMidi
 

@@ -10,15 +10,7 @@ from utils.general import loadNormalizedSoundFIle, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
-from pycuda import cumath
-import pycuda.driver
-import pycuda.tools
-import pycuda.gpuarray as gpuarray
-import pycuda.cumath
-from reikna.fft import FFT as gpu_fft
-from reikna.cluda import dtypes, cuda_api
 from utils.custom_profile import profile, print_prof_data, print_normalize_profile_data
-from utils.cepsUtilsGpu import CepsUtilsGpu
 from io import BytesIO
 
 
@@ -46,25 +38,6 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512
         bestFq.append(sampleRate/maxperiod)
     
     return bestFq, cepstra, spectrogram, logSpectrogram
-
-def ceostrumF0AnalysisGpu (api, thr, compiledCepstrum, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
-    if compiledCepstrum is None:
-        params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
-        compiledCepstrum = CepsUtilsGpu(
-            data, NFFT=params['NFFT'], noverlap=params['noverlap'], pad_to=params['pad_to']).compile(thr)
-
-    data_dev = thr.to_device(data)
-    ceps_dev = thr.empty_like(compiledCepstrum.parameter.output)
-    compiledCepstrum(ceps_dev, data_dev)
-    cepstra = ceps_dev.get()
-    bestFq = []
-    for cepst in cepstra.T:
-        maxperiod = np.argmax(cepst)
-        if maxperiod == 0:
-            bestFq.append(0)
-        else:
-            bestFq.append(sampleRate/maxperiod)
-    return cepstra, bestFq, compiledCepstrum
 
 def transcribe_by_cepstrum_wrapped(filePath):
     frameWidth = 2048
@@ -123,24 +96,3 @@ if __name__ == "__main__":
     # plot_spectrum_line_components(spectra[5],spectra1[5],spectra2[5],spectra3[5], sampleRate, language="pl")
     # plt.show()
     plot_cepstrogram(cepstra, spacing, sampleRate, language='pl', showColorbar=False)
-
-    #GPU
-    pycuda.driver.init() # pylint: disable=no-member
-    # replace 0 with your device number. In this case, 0 is appropriate
-    dev = pycuda.driver.Device(0) # pylint: disable=no-member
-    ctx = dev.make_context()
-    api = cuda_api()
-    thr = api.Thread.create()
-    compiledCepstrum = None
-    # for i in range(0, 10000):
-    cepstra, bestFq, compiledCepstrum = ceostrumF0AnalysisGpu(api, thr, compiledCepstrum, np.array(data), sampleRate, frameWidth, spacing, frameWidth)
-
-    # # plot_pitches(bestFq, spacing, sampleRate)
-    plot_cepstrogram(cepstra, spacing, sampleRate, transpose=False, showColorbar=False)
-    # plot_pitches(bestFq, spacing, sampleRate)
-
-    ctx.pop()
-    pycuda.tools.clear_context_caches()
-    # print_prof_data()
-    # print_normalize_profile_data(10)
-
