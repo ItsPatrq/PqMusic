@@ -2,7 +2,7 @@ import superagent from 'superagent';
 import { DownloadFile, DownloadFileFromBlob } from '../shared/utils';
 import { DefaultToaster } from '../shared/components/toaster/DefaultToaster';
 
-const env_url = window.location.href;
+const env_url = "http://127.0.0.1:5000/"
 
 interface ITranscribeByAutoCorrelationResult {
     pitches: string,

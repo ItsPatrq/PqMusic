@@ -3,6 +3,6 @@
     "version": "0.1.0",
     "description": "Front-end to PqMusic",
     "scripts": {
-        "postinstall": "cd Application/static && npm install && npm run build:heroku && rm -r ./node_modules && rm -r ./src && rm -r ./public && echo '!!! *** removed *** !!!'"
+        "postinstall": "cd Application/static && npm install && npm run build && rm -r ./node_modules && rm -r ./src && rm -r ./public && echo '!!! *** removed *** !!!'"
     }
 }
