@@ -22,7 +22,7 @@ def profile(fn):
 
     return with_profiling
 
-def print_normalize_profile_data(n, fc_name = ""):
+def print_normalize_profile_data(n = 0, fc_name = ""):
     res = ""
     for fname, data in PROF_DATA.items():
         if fc_name == "" or fname == fc_name:

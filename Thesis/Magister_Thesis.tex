@@ -1225,7 +1225,7 @@ Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algory
   return result
 \end{lstlisting}
 
-Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{transcription/ac.py}.
+Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/ac.py}.
 
 
 \subsection{Cepstrum}\label{sec:impl:alg:ceps}
@@ -1252,7 +1252,7 @@ Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do ce
 
 W ramach tej pracy magisterskiej została zaimplementowana wersja transformacja cepstrum przy użyciu karty graficznej GPU (z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
 
-Rozwiązanie znajduje się w pliku \textit{utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces, przedstawiony na listingu \ref{code:cepsF0Gpu}, można opisać w następujący sposób:
+Rozwiązanie znajduje się w pliku \textit{server/utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces, przedstawiony na listingu \ref{code:cepsF0Gpu}, można opisać w następujący sposób:
 \begin{enumerate}
   \item dane sygnału wejściowego (\textit{flat\_input}) przekształcane są do tablicy dwuwymiarowej \textit{unwindowed\_input} transformacją \textit{rolling\_frame} tak, że długości wierszy są równe długości ustalonego okna czasowego z długością marginesu zer. Dane składowane są po kolei z uwzględnieniem marginesu zer i odległości pomiędzy oknami;
   \item tablica \textit{unwindowed\_input} przekształcana jest do \textit{input\_real} transformacją \textit{hanning\_window}, która nakłada funkcję Hanna do każdego z wierszy danych wejściowych;
@@ -1318,7 +1318,7 @@ Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. N
 
 
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
-Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} ustawiony jest na wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
+Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{server/transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} ustawiony jest na wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
 
 W pierwszej kolejności wywoływana jest funkcja \textit{coreMethod}, której zadaniem jest przetworzenie sygnału do postaci nut, na którym następnie wykonywane jest przetwarzanie końcowe. Z każdego spektrum okna czasowego po nałożeniu lifteringu wydobywane są wartości (piki) o amplitudach powyżej zadanego progu i na ich podstawie wyznaczani są kandydaci do F0. Zbiór wyznaczonych częstotliwości pomniejszany jest o te, które nie mają wystarczającej ilości harmonicznych w tablicy pików. Liczba kandydatów następnie jest posortowana względem amplitud i odrzucone zostają wszystkie przekraczające indeks \textit{maxCandidates} zmniejszając tym samym ilość kombinacji w przypadku dużej liczby kandydatów.
 
@@ -1404,7 +1404,7 @@ def countWeight(lvi, lvj, salience_j):
 \end{lstlisting}
 
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
-Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa o wymiarach $n x 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami w zakresie $\left[0, 127\right]$ oznaczające dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}
+Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa $n \times 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami w zakresie $\left[0, 127\right]$ oznaczające dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza, że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}
 
 \begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:hzToMidi}, numbers=none]
 	resultPianoRoll = []
@@ -1412,7 +1412,6 @@ Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicz
 		pianoRollRow = np.zeros(127)
 		pianoRollRow[hz_to_midi(fq)] = 100
 		resultPianoRoll.append(pianoRollRow)
-	return post_process_midi_notes(resultPianoRoll, sampleRate, spacing, 127, 40, 0)
 \end{lstlisting}
 
 Tak przygotowana tablica rolek pianina przetwarzana jest w funkcji \textit{post\_process\_midi\_notes}, która na celu ma utworzenie listy wydarzeń MIDI na podstawie sąsiednich nut. Funkcja ta używana jest również przez algorytmy \ref{sec:impl:alg:specSmoothnes} i \ref{sec:impl:alg:specSmoothnes:improved} jako przetwarzanie końcowe, które sterowane jest przy pomocy argumentów odpowiadających za minimalną długość nuty (\textit{minNoteMs}), minimalną dynamikę nuty (\textit{minNoteVelocity}) oraz maksymalną dozwoloną ,,lukę'' w ciągłości wykrywania danej nuty (\textit{neighbourMerging}).
@@ -1427,9 +1426,9 @@ Wydarzenia MIDI składają się z czterech parametrów:
 Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
-Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanej w pracy \cite[3]{Transcription:Pertus:Inharmonicity}, gdzie wykorzystana była miara F1. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{utils/midi.py}.
+Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanej w pracy \cite[3]{Transcription:Pertus:Inharmonicity}, gdzie wykorzystana była miara F1. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
 
-Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
+Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy typy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
 
 Funkcja porównująca przyjmuje jako argumenty maksymalny dozwolony błąd \textit{maxError} będący liczbą sekund dozwolonego offsetu pomiędzy porównywanymi zdarzeniami oraz dwie listy nut MIDI: \textit{transcriptionMidiNotes} będącą wynikiem ewaluowanego algorytmu i \textit{groundTruthMidiNotes} będącą oryginalną kompozycją. Działanie algorytmu można podzielić na trzy etapy:
 \begin{enumerate}
@@ -1437,14 +1436,28 @@ Funkcja porównująca przyjmuje jako argumenty maksymalny dozwolony błąd \text
   \item policzenie wszystkich TP i FN poprzez sprawdzenie, czy dana nuta z tablicy \textit{groundTruthMidiNotes} posiada odpowiednik w tablicy \textit{transcriptionMidiNotes}. Gdy para zostanie znaleziona zwiększany jest licznik TP, w przeciwnym wypadku zwiększany jest licznik FN,
   \item policzenie miar statystycznych
 \end{enumerate}
-Szczegółowy opis użytych miar statystycznych znajduje się w rozdziale \ref{sec:ewal}.
+Szczegółowy opis wyliczanych miar statystycznych znajduje się w rozdziale \ref{sec:ewal}.
 
-W celach porównawczych zostało również przeprowadzone sprawdzenie czasu wykonywania poszczególnych algorytmów transkrypcji. Zagadnienie to jest szczególnie ciekawe w kontekście porównania czasu wykonania algorytmów w wersji wykorzystujących GPU do tej wykonywanej w całości na CPU.
+W celach porównawczych zostało również przeprowadzone sprawdzenie czasu wykonywania poszczególnych algorytmów transkrypcji. Zagadnienie to jest szczególnie ciekawe w kontekście porównania czasu wykonania algorytmów w wersji wykorzystujących GPU do tej wykonywanej w całości na CPU. Zaimplementowany dekorator \textit{profile} znajdujący się w pliku \textit{server/utils/custom\_profile.py} każdorazowo mierzy czas wywołania funkcji i go zapisuje do tablicy. Wynik przedstawiany jest w postaci średniej ($\frac{\textrm{suma czasów}}{\textrm{ilość wywołań}}$) z wyłączeniem $n$ najwolniejszych i najszybszych wywołań w celu wykluczenia anomalii.
 
+Podczas porównywania wyników algorytmów ważnym jest, aby dla każdego z nich dobrać parametry tak, aby wynikowe F1 było jak największe. Podczas gdy pojedyńczy parametr, jak np. długość okna, ma swoje odwzorowanie w manipulacji dokładności w dziedzinie czasu i częstotliwości, tak oszacowanie wektora optymalnych parametrów, z czego każdy może wpływać na pozostałe, nie jest tak trywialne. W celu znalezienia najlepszych argumentów zaimplementowanych algorytmów został napisany mechanizm , który iteruje po zbiorze kombinacji proponowanych argumentów i wylicza dla nich miarę F1 na podstawie zbioru walidacyjnego. 
+
+W celu poprawnej interpretacji ewaluacji metidy zostały podzielone na dwie grupy:
+\begin{enumerate}
+  \item przeznaczone jedynie dla sygnału monofonicznego
+  \item przeznaczone zarówno dla sygnału monofonicznego jak i polifonicznego.
+\end{enumerate}
+Mechanizm porównujący wyniki algorytmów, którego implementacja znajduje się w pliku \textit{server/utils/evaluate.py}, wykonuje operacje opisane w tej sekcji dla wszystkich algorytmów według schematu poniżej:
+\begin{enumerate}
+  \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments}),
+  \item dla każdego algorytmu badanej grupy wykonywana jest ewaluacja F1 i czasu wykonywania z wykorzystaniem zbioru testowego (funkcja \textit{run\_test\_on\_dataset\_with\_args}).
+\end{enumerate}
 
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
-\cite{reactWDzialaniu}\cite{tsDocumentation}
+W celu uproszczenia dostępu do zaimplementowanych algorytmów został zaimplementowany interfejs graficzny w postaci aplikacji webowej. W pliku \textit{server/server.py} znajduje się implementacja prostego serwera HTTP pozwalającego na wywoływanie opisanych algorytmów z wcześniej wyliczonymi najoptymalniejszymi parametrami. 
+
+Implementacja GUI znajduje się w folderze \textit{static} i została napisana przy użyciu technologii \textit{React} i języka \textit{TypeScript}. Zawarty skrypt pozwala na zbudowania paczki statycznych plików, które wysyłane są przez serwer.
 
 \section{Ewaluacja} \label{sec:ewal}
 \newpage
