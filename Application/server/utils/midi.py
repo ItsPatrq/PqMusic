@@ -53,7 +53,8 @@ def res_in_hz_to_midi_notes(resInF0PerFrame, sampleRate, spacing):
 	resultPianoRoll = []
 	for fq in resInF0PerFrame:
 		pianoRollRow = np.zeros(127)
-		pianoRollRow[hz_to_midi(fq)] = 100
+		if fq > 0:	
+			pianoRollRow[hz_to_midi(fq)] = 100
 		resultPianoRoll.append(pianoRollRow)
 	return post_process_midi_notes(resultPianoRoll, sampleRate, spacing, 127, 1, 0, 1)
 

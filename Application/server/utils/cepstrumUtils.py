@@ -1,8 +1,6 @@
 import numpy as np
 from scipy.fftpack import fft, ifft
 import enum
-from reikna import fft as cu_fft
-from reikna.cluda import dtypes, cuda_api
 
 class LifterType(enum.Enum):
     sine = 1
