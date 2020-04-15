@@ -2,7 +2,10 @@ import superagent from 'superagent';
 import { DownloadFile, DownloadFileFromBlob } from '../shared/utils';
 import { DefaultToaster } from '../shared/components/toaster/DefaultToaster';
 
-const env_url = window.location.href;
+let env_url = window.location.href;
+if(process.env.REACT_APP_ENV === "local") {
+    env_url = "http://localhost:5000/";
+}
 
 interface ITranscribeByAutoCorrelationResult {
     pitches: string,
@@ -22,24 +25,32 @@ interface ITranscribeByAclosResult {
     spectrogram: string,
 }
 
-class DataService implements DataService {
+class DataService {
     constructor() {
         this.Spectrogram = this.Spectrogram.bind(this);
     }
+    private key = 0;
+    private GetNewKey() {
+        this.key += 1;
+        return this.key.toString();
+    }
     private GenericRequest(file: File, methodName: string, callback:(res:any) => any){
+        const currKey = this.GetNewKey();
+        DefaultToaster.show({ message: "Przetwarzanie...", className: "bp3-intent-primary", timeout: 0 }, currKey);
         const request = superagent.post(env_url + methodName).responseType("blob");
         const formData = new FormData();
         formData.append('file', file);
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
             const response = res.xhr.response;
             callback(response);
+            DefaultToaster.dismiss(currKey);
         });
     }
 
@@ -54,7 +65,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
@@ -66,7 +77,15 @@ class DataService implements DataService {
 
     public TranscribeByOnsetsFrames(file: File) {
         this.GenericRequest(file, "TranscribeByOnsetsAndFrames", (res:Blob) => {
-            DownloadFileFromBlob(res, "transkrypcjaMetodaOnsetsAndFrames.mid", "audio/midi");
+            if(res.type === "text/html") {
+                const reader = new FileReader();
+                reader.readAsText(res);
+                reader.onload = function() {
+                    DefaultToaster.show({ message: reader.result, className: "bp3-intent-danger"});
+                };
+            } else {
+                DownloadFileFromBlob(res, "transkrypcjaMetodaOnsetsAndFrames.mid", "audio/midi");
+            }
         });
     }
 
@@ -122,7 +141,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
@@ -138,7 +157,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
@@ -154,7 +173,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
@@ -171,7 +190,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
@@ -187,7 +206,7 @@ class DataService implements DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
-                DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });

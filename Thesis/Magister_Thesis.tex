@@ -560,7 +560,7 @@ Samo rozpoznanie wysokości tonu jest kategoryzowane w zależności od specyfiki
 
 Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które jest stosowane w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
-\subsection{Funkcja Autokorelacji}\label{sec:f0:ac}
+\subsection{Funkcja autokorelacji}\label{sec:f0:ac}
 Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności które powtarzały się okresowo co $T$ były analizowane jako kandydaci do bycia F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest obecna w wielu nowoczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji w celu znalezienia wysokości dźwięku \cite[41-44]{Transcription:Quenneville:Thesis}.
 
 \textit{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara jest korelacją pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych \cite[32-33]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o tak zwane przesunięcie (ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
@@ -1455,9 +1455,16 @@ Mechanizm porównujący wyniki algorytmów, którego implementacja znajduje się
 
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
-W celu uproszczenia dostępu do zaimplementowanych algorytmów został zaimplementowany interfejs graficzny w postaci aplikacji webowej. W pliku \textit{server/server.py} znajduje się implementacja prostego serwera HTTP pozwalającego na wywoływanie opisanych algorytmów z wcześniej wyliczonymi najoptymalniejszymi parametrami. 
+W ramach projektu został zaimplementowany interfejs graficzny, na który składa się serwer HTTP napisany w języku python oraz strona napisana w języku \textit{TypeScript} i technologii \textit{React}. Daje ona możliwość wywołania każdeej z wyżej opisanych implementacji algorytmów transkrypcji muzyki z wcześniej wyliczonymi optymalnymi parametrami.
 
-Implementacja GUI znajduje się w folderze \textit{static} i została napisana przy użyciu technologii \textit{React} i języka \textit{TypeScript}. Zawarty skrypt pozwala na zbudowania paczki statycznych plików, które wysyłane są przez serwer.
+Działanie serwera sprowadza się do implementacji przechwytywania zapytań od klienta i odsyłania wyniku porządanego algorytmu w jednym z dwóch postaci:
+\begin{enumerate}
+  \item dla algorytmów przeznaczonych do analizy sygnałów monofonicznych - obiekt JSON, którego kluczami są nazwy poszczególnych wykresów (np. spektrogram, cepstrogram) a wartościami odpowiednie grafiki zakodowane do formatu Base64,
+  \item dla algorytmy przeznaczonych do analizy sygnałów monofonicznych i polifonicznych - plik MIDI transkrypcji.
+\end{enumerate} 
+Implementacja serwera znajduje się w pliku \textit{server/server.py}.
+
+Skrypty źródłowe graficznego interfejsu znajdują się w katologu \textit{static/src} i służą do wygenerowania statycznej strony, która jest wysyłana przez serwer do przeglądarki klienta. Zbudowana paczka jest zminifikowana i składa się ze standardowych plików rozpoznawanych przez przeglądarki internetowe - \textit{css}, \textit{js} oraz \textit{html}. Opis uruchomienia pełnego GUI na lokalnej maszynie znajduje się w pliku \textit{README.md} w katalogu głównym projektu.
 
 \section{Ewaluacja} \label{sec:ewal}
 \newpage

@@ -38,7 +38,7 @@ export class Transcribe extends Component<{}, ITranscribe> {
         <div className="PqM-header">
           {strings.titleTranscribe}
         </div>
-        <h3>Algorytmy monofoniczne</h3>
+        <h3>{strings.subTitleMonophonic}</h3>
           <AutoCorrelation 
             openDialog={(res) => this.openDialog(res, strings.modalLabels.transcription.autoCorrelationResult)}
           />
@@ -48,7 +48,7 @@ export class Transcribe extends Component<{}, ITranscribe> {
           <Aclos 
             openDialog={(res) => this.openDialog(res, strings.modalLabels.transcription.aclosResult)}
           />
-        <h3>Algorytmy polifoniczne</h3>
+        <h3>{strings.subTitlePolyphonic}</h3>
           <JointMethodPertusa2008  />
           <JointMethodPertusa2012 />
           <OnsetsAndFrames />

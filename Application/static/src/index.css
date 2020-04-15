@@ -71,6 +71,7 @@ body {
     margin: 20px 0 0;
     width: 100%; }
     .PqM-row-wrapper .PqM-row_label {
+      margin-top: 8px;
       float: left;
       margin-left: -190px;
       text-align: right;

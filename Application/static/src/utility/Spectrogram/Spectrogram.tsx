@@ -21,7 +21,7 @@ export const Spectrogram: FC = () => {
             DataService.Spectrogram(acceptedFiles[0])
         }
         if (rejectedFiles.length > 0) {
-            DefaultToaster.show({ message: "Internal server error", className: "bp3-intent-danger"});
+            DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
 
             console.log(rejectedFiles, event)
         }

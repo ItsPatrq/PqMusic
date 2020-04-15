@@ -15,12 +15,6 @@ const eng = {
             windowFunctions: "Download window function in plot",
             fqMIDI: "MIDI Frequency measurment",
             spectrogram: "Spectrogram",
-        },
-        generate: {
-            unconditionedTransform: "Select premier for a unconditional transform model",
-            melodyConditionedTransform: "Select melody to be accompanied by the model (if your MIDI file is polyphonic, the notes with highest pitch will be used as the melody).",
-            lstm: "Generate piece by basic LSTM network",
-            performanceRnn: "Generate piece by Performance RNN Model",
         }
     },
     dropZoneDefaultMessage: "Drag or click to upload file(s)",
@@ -32,46 +26,41 @@ const eng = {
 const pl = {
     ...eng,
     navBarHome: "Strona główna",
-    navBarUploadMidi: "Prześlij MIDI",
     navBarTranscribe: "Wykonaj transkrypcję",
     navBarUtility: "Narzędzia",
-    navBarGenerate: "Generuj muzykę",
-    titleTranscribe: "Transkrypcja",
+    titleTranscribe: "Transkrypcja muzyki",
     titleUtilities: "Narzędzia",
+    subTitleMonophonic: "Algorytmy przeznaczone dla sygnałów monofonicznych",
+    subTitlePolyphonic: "Algorytmy przeznaczone dla sygnałów monofonicznych i polifonicznych (wynik w MIDI)",
     rowLabels: {
         transcription: {
-            onesetsAndFrames: "Onesets and Frames (Bazowy modół tranksypcji projektu Magenta)",
-            autoCorrelation: "Metoda Auto-korelacji",
-            cepstrum: "Metoda oparta o cepstrum",
-            aclos: "Metoda oparta o ACLOS",
-            jointMethodPertusa2008: "Metoda łączona Pertusa i Iñesta (2008)",
-            jointMethodPertusa2012: "Metoda łączona Pertusa i Iñesta (2012)"
+            onesetsAndFrames: "Onesets and Frames",
+            autoCorrelation: "Funkcja autokorelacji",
+            cepstrum: "Analiza cepstralna",
+            aclos: "ACLOS",
+            jointMethodPertusa2008: "Metoda Pertusa i Iñesta (2008)",
+            jointMethodPertusa2012: "Metoda Pertusa i Iñesta (2012)"
         },
         utils: {
             windowFunctions: "Pobierz wykres funkcji okna",
             fqMIDI: "Pomiar częstotliwości MIDI",
             spectrogram: "Spectrogram",
-        },
-        generate: {
-            unconditionedTransform: "Select premier for a unconditional transform model",
-            melodyConditionedTransform: "Select melody to be accompanied by the model (if your MIDI file is polyphonic, the notes with highest pitch will be used as the melody).",
-            lstm: "Generate piece by basic LSTM network",
-            performanceRnn: "Generate piece by Performance RNN Model",
         }
     },
     modalLabels: {
         transcription: {
-            autoCorrelationResult: "Wynik metody Auto-korelacji",
-            cepstrumResult: "Wynik metody cepstrum",
+            autoCorrelationResult: "Wynik metody autokorelacji",
+            cepstrumResult: "Wynik analizy cepstrum",
             aclosResult: "Wynik metody ACLOS",
-            jointMethodPertusa2008: "Wynik łączonej metody Pertusa i Iñesta (2008)",
-            jointMethodPertusa2012: "Wynik łączonej metody Pertusa i Iñesta (2012)"
+            jointMethodPertusa2008: "Wynik metody Pertusa i Iñesta (2008)",
+            jointMethodPertusa2012: "Wynik metody Pertusa i Iñesta (2012)"
         }
     },
-    dropZoneDefaultMessage: "Drag or click to upload file(s)",
-    buttonLabelDownloadHannWindow: "Hann Window",
-    buttonLabelDownloadHammingWindow: "Hamming Window",
-    buttonLabelDownloadRectangleWindow: "Rectangle Window"
+    dropZoneDefaultMessage: "Przeciągnij i upuść lub kliknij aby wybrać plik do transkrypcji (wav lub mp3)",
+    buttonLabelDownloadHannWindow: "Funkcja okna Hanna",
+    buttonLabelDownloadHammingWindow: "Funkcja Hamminga",
+    buttonLabelDownloadRectangleWindow: "Funkcja prostokątna",
+    pdfObjectFallback: "Użyta przeglądarka nie wspiera wyświetlania PDF"
 }
 
 const getStrings = () => pl;

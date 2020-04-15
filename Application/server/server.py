@@ -163,7 +163,7 @@ def TranscribeByPertusa2012():
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():
     if onsets == None:
-        return ""
+        return "Nie znaleziono bibliotek potrzebnych do wykonania transkrypcji przy użyciu metody Onsets and Frames"
     requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
     responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
     onsets.initializeModel()
