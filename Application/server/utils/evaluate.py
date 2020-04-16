@@ -311,13 +311,13 @@ def run_ceps_gpu(api, thr, normalizedData, sampleRate, neighbourMerging, frameWi
     return resMidi
 
 @profile
-def run_joint_method_2008(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
-    resMidi, *_ = harmonic_and_smoothness_based_transcription(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+def run_joint_method_2008(normalizedData, sampleRate, *restArgs):
+    resMidi, *_ = harmonic_and_smoothness_based_transcription(normalizedData, sampleRate, *restArgs)
     return resMidi
 
 @profile
-def run_joint_method_2012(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
-    resMidi, *_ = harmonic_and_smoothness_based_transcription(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+def run_joint_method_2012(normalizedData, sampleRate, *restArgs):
+    resMidi, *_ = harmonic_and_smoothness_based_transcription(normalizedData, sampleRate,*restArgs)
     return resMidi
 
 @profile
@@ -346,7 +346,6 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
             cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr)
             ctx.pop()
             pycuda.tools.clear_context_caches()
-        print("!!!", bestJointMethodByPertusaAndInesta2008Args)
         joint2008Results = test_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
         joint2012Results = test_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
         onsetsResults = test_method_onsets(onsets, tests, resFolderTest)

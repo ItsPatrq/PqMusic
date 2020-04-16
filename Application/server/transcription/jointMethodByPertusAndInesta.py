@@ -19,11 +19,11 @@ from collections import namedtuple
 import functools 
 from io import BytesIO
 
-def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=8192, spacing=1024, sizeOfZeroPadding=24576,
+def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMerging=4, frameWidth=8192, spacing=1024, sizeOfZeroPadding=24576,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
 											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, newAlgorithmVersion=True,
-											smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, neighbourMerging=4, disableTqdm=True):
+											smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, disableTqdm=True):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -354,7 +354,7 @@ def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	sampleRate, data = loadNormalizedSoundFIle(filePath)
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
-		data, sampleRate, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=newV)
+		data, sampleRate, 4, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=newV)
 
 	write_midi(resMidi, outPath)
 
@@ -377,7 +377,7 @@ if __name__ == "__main__":
 	sine_data += (create_sine(110, sampleRate, 5) * 0.3)
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
-            data, sampleRate, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=True)
+            data, sampleRate, 4, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=True)
 
 	write_midi(resMidi, "./res3.mid")
 	plot_midi(resPianoRoll, spacing, sampleRate)
