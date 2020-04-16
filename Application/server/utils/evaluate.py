@@ -4,6 +4,7 @@ from datetime import datetime
 from os import path
 from general import loadNormalizedSoundFIle
 from midi import load_midi_file, compare_midi_to_ground_truth, res_in_hz_to_midi_notes, write_midi
+from random import uniform
 
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from transcription.ac import autocorrelation
@@ -19,20 +20,21 @@ from pycuda import cumath
 import pycuda.driver
 from itertools import product
 from reikna.cluda import cuda_api
-
 audio_file = "audio_filename"
 midi_file = "midi_filename"
 split = "split"
 canonical_title = "canonical_title"
 
-maxErr = 0.08
+maxErr = 0.085
 stdFrameWidth = [1024, 2048, 4096, 8192]
 stdSpacing = [1024, 512]
-stdZeroPadding = [2048, 4096, 8192]
-stdMinF0 = [85, 50]
-stdMaxF0 = [2000, 5500]
+stdZeroPadding = [2048, 8192]
+stdMinF0 = [50]
+stdMaxF0 = [5500]
+stdNeighbourMerging = [1, 4]
 
 argsAc = {
+    "neighbourMerging": stdNeighbourMerging,
     'frameWidth': stdFrameWidth,
     'spacing': stdSpacing,
     'fqMin': stdMinF0,
@@ -40,12 +42,14 @@ argsAc = {
 }
 
 argsAclos = {
+    "neighbourMerging": stdNeighbourMerging,
     'frameWidth': stdFrameWidth,
     'spacing': stdSpacing,
     'sizeOfZeroPadding': stdZeroPadding
 }
 
 argsCepstrumF0Analysis = {
+    "neighbourMerging": stdNeighbourMerging,
     'frameWidth': stdFrameWidth,
     'spacing': stdSpacing,
     'sizeOfZeroPadding': stdZeroPadding
@@ -72,7 +76,8 @@ argsJointMethodByPertusaAndInesta2008 = {
     'newAlgorithmVersion': [False],
     'smoothnessImportance': [None], #TODO: Czy to było dobrze opisane w Thesis?
     'temporalSmoothnessRange': [None],
-    'pitch_tracking_combinations': [None]
+    'pitch_tracking_combinations': [None],
+    "neighbourMerging": stdNeighbourMerging
 }
 
 argsJointMethodByPertusaAndInesta2012 = {
@@ -85,7 +90,7 @@ argsJointMethodByPertusaAndInesta2012 = {
     'relevantPowerThreashold': [4, 8],
     'maxInharmonyDegree': [0.08, 0.16],
     'minHarmonicsPerCandidate': [2, 3],
-    'maxHarmonicsPerCandidate': [8],
+    'maxHarmonicsPerCandidate': [7],
     'maxCandidates': [7],
     'maxParallelNotes': [5],
     'gamma': [0.1],
@@ -93,10 +98,11 @@ argsJointMethodByPertusaAndInesta2012 = {
     'useLiftering': [False, True],
     'lifteringCoefficient': [6, 8],
     'minNoteVelocity': [15],
-    'newAlgorithmVersion': [False],
-    'smoothnessImportance': [None], #TODO: Czy to było dobrze opisane w Thesis?
-    'temporalSmoothnessRange': [None],
-    'pitch_tracking_combinations': [None]
+    'newAlgorithmVersion': [True],
+    'smoothnessImportance': [3, 2], #TODO: Czy to było dobrze opisane w Thesis?
+    'temporalSmoothnessRange': [2, 3],
+    'pitch_tracking_combinations': [3, 4],
+    "neighbourMerging": stdNeighbourMerging
 }
 
 best_arg_ac = (8192, 512, 50, 5500)
@@ -188,12 +194,12 @@ def create_results_folder(dataSet):
     return resFolder, resFolderTest, resFolderValidation
 
 
-def run_transcription(func, isResMidi, normalizedData, sampleRate, frameWidth, spacing, *restArgs):
+def run_transcription(func, isResMidi, normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
     if isResMidi:
         resMidi, *_ = func(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
     else:
         best_frequencies, *_ = func(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
-        resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+        resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
 
     return resMidi
 
@@ -223,7 +229,9 @@ def validate_arguments(func, args, evalObjects, saveRes, isResMidi = False):
 def test_method(func, arg, evalObjects, saveRes):
     FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
     print("Testing function " + str(func.__name__))
-
+    if arg is None:
+        print("Testing function " + str(func.__name__) + " failed - arg is None")
+        return F1Results(0, 0, 0, 0, 0, 0, func.__name__)
     for evObj in evalObjects:
         currFN, currFP, currTP, currF1, currPercision, currRecall = evObj.test_method(lambda normalizedData, sampleRate: func(
             normalizedData, sampleRate, *arg), maxErr=maxErr, save_dist=(saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(arg) + ".mid").replace(", ", "_").replace("(", "").replace(")", ""))
@@ -279,27 +287,27 @@ def test_method_gpu(func, arg, evalObjects, saveRes, api, thr):
     return F1Results(FN, FP, TP, F1, percision, recall, func.__name__)
 
 @profile
-def run_ac(normalizedData, sampleRate, frameWidth, spacing, fqMin, fqMax):
+def run_ac(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, fqMin, fqMax):
     best_frequencies, *_ = autocorrelation(normalizedData, sampleRate, frameWidth, spacing, fqMin, fqMax)
-    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
     return resMidi
 
 @profile
-def run_aclos(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
+def run_aclos(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
     best_frequencies, *_ = aclos(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
-    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
     return resMidi
 
 @profile
-def run_ceps(normalizedData, sampleRate, frameWidth, spacing, *restArgs):
+def run_ceps(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
     best_frequencies, *_ = cepstrumF0Analysis(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
-    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
     return resMidi
 
 @profile
-def run_ceps_gpu(api, thr, normalizedData, sampleRate, frameWidth, spacing, *restArgs):
+def run_ceps_gpu(api, thr, normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
     cepstra, best_frequencies, _ = cepstrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
-    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
+    resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
     return resMidi
 
 @profile
@@ -338,6 +346,7 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
             cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr)
             ctx.pop()
             pycuda.tools.clear_context_caches()
+        print("!!!", bestJointMethodByPertusaAndInesta2008Args)
         joint2008Results = test_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
         joint2012Results = test_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
         onsetsResults = test_method_onsets(onsets, tests, resFolderTest)
@@ -350,6 +359,24 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
         text_file.writelines(resText)
         text_file.close()
 
+def run_evals(validators, resFolderValidation, onlyPoli):
+
+    bestAcArgs, bestAclosArgs, bestCepstrumArgs = (), (), ()
+    #region wyznaczenie najlepszych argumentów przez walidacje
+    if not onlyPoli:
+        bestAcArgs, _ = validate_arguments(
+            autocorrelation, argsAc, validators, resFolderValidation)
+        bestAclosArgs, _ = validate_arguments(
+            aclos, argsAclos, validators, resFolderValidation)
+        bestCepstrumArgs, _ = validate_arguments(
+            cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
+    bestJointMethodByPertusaAndInesta2008Args, _ = validate_arguments(
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, True)
+    bestJointMethodByPertusaAndInesta2012Args, _ = validate_arguments(
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, True)
+    #endregion wyznaczenie najlepszych argumentów przez walidacje
+    return bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args
+
 
 def run_eval_and_test_on_dataset(dataSet, iterations = 10, onlyPoli = False):
     #region initializacja
@@ -360,18 +387,7 @@ def run_eval_and_test_on_dataset(dataSet, iterations = 10, onlyPoli = False):
     #endregion initializacja
 
     #region wyznaczenie najlepszych argumentów przez walidacje
-    if not onlyPoli:
-        bestAcArgs = validate_arguments(
-            autocorrelation, argsAc, validators, resFolderValidation)
-        bestAclosArgs = validate_arguments(
-            aclos, argsAclos, validators, resFolderValidation)
-        bestCepstrumArgs = validate_arguments(
-            cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
-    bestJointMethodByPertusaAndInesta2008Args = validate_arguments(
-        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, True)
-    bestJointMethodByPertusaAndInesta2012Args = validate_arguments(
-        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, True)
-    #endregion wyznaczenie najlepszych argumentów przez walidacje
+    bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args = run_evals(validators, resFolderValidation, onlyPoli)
     
     run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
 
@@ -384,6 +400,46 @@ def run_test_with_predefined_args_on_dataset(dataSet):
     #endregion initializacja
     run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best_arg_ac, best_arg_aclos, best_arg_ceps, best_arg_Joint2008, best_arg_Joint2012)
 
+def get_part_of_test_dataset(dataset, quantityOfDataToTake):
+    tests, _ = load_metadata(dataset)
+    res = []
+    if quantityOfDataToTake > len(tests):
+        raise Exception("Dataset smaller then quantityOfDataToTake (" + str(quantityOfDataToTake) + "/" + str(len(tests)) + ").")
+    while True:
+        for test in tests:
+            if uniform(0, 1) > 0.5 and test not in res:
+                res.append(test)
+            if len(res) == quantityOfDataToTake:
+                return res
+
+def get_part_of_eval_dataset(dataSet, quantityOfDataToTake):
+    _, evals = load_metadata(dataSet)
+    res = []
+    if quantityOfDataToTake > len(evals):
+        raise Exception("Dataset smaller then quantityOfDataToTake (" + str(quantityOfDataToTake) + "/" + str(len(evals)) + ").")
+    while True:
+        for currEval in evals:
+            if uniform(0, 1) > 0.5 and currEval not in res:
+                res.append(currEval)
+            if len(res) == quantityOfDataToTake:
+                return res
+
+def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTests = 10, iterations = 10, onlyPoli = False):
+    #region initializacja
+    validators = get_part_of_eval_dataset(dataSet, quantityEvals)
+    tests = get_part_of_test_dataset(dataSet, quantityTests)
+    resFolder, resFolderTest, resFolderValidation = create_results_folder(
+        dataSet)
+    bestAcArgs, bestAclosArgs, bestCepstrumArgs = (), (), ()
+    #endregion initializacja
+
+    #region wyznaczenie najlepszych argumentów przez walidacje
+    bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args = run_evals(validators, resFolderValidation, onlyPoli)
+    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
+
+
+
 if __name__ == "__main__":
-    #run_eval_and_test_on_dataset("monoSound")
-    run_test_with_predefined_args_on_dataset("monoSound")
+    run_eval_and_test_on_dataset("monoSound")
+
+    #run_test_with_predefined_args_on_dataset("monoSound")

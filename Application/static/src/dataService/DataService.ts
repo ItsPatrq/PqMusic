@@ -43,6 +43,7 @@ class DataService {
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
+                DefaultToaster.dismiss(currKey);
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
@@ -180,39 +181,6 @@ class DataService {
 
             const file = res.xhr.response;
             DownloadFile(file, "RectangleWindow.png", "image/png");
-        });
-    }
-
-    public GenerateUnconditionedTransform(file: File) {
-        const request = superagent.post(env_url + "GenerateTransformUnconditioned").responseType("blob");
-        const formData = new FormData();
-        formData.append('file', file);
-        request.send(formData);
-        request.end((err, res) => {
-            if(err || !res.ok) {
-                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
-                return;
-            }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
-
-            const file = res.xhr.response;
-            DownloadFile(file, "out.midi", "audio/midi");
-        });
-    }
-
-    public GenerateConditionedTransform(file: File) {
-        const request = superagent.post(env_url + "GenerateTransformMelodyConditioned").responseType("blob");
-        const formData = new FormData();
-        request.send(formData);
-        request.end((err, res) => {
-            if(err || !res.ok) {
-                DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
-                return;
-            }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
-
-            const file = res.xhr.response;
-            DownloadFile(file, "out.midi", "audio/midi");
         });
     }
 }

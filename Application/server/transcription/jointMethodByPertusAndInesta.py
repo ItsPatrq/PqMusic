@@ -22,8 +22,8 @@ from io import BytesIO
 def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=8192, spacing=1024, sizeOfZeroPadding=24576,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
-											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10,
-											newAlgorithmVersion=True, smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, disableTqdm=True):
+											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, newAlgorithmVersion=True,
+											smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, neighbourMerging=4, disableTqdm=True):
 
 	#region init values
 	hann = np.hanning(frameWidth)
@@ -224,7 +224,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 				pianoRollRow[notePitch] = amplitude
 			resultPianoRoll.append(pianoRollRow)
 
-		return utilpost_process_midi_notes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, 4)
+		return utilpost_process_midi_notes(resultPianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, neighbourMerging)
 
 	def coreMethod():
 		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
@@ -323,8 +323,8 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, frameWidth=819
 
 		resNotes = []
 		for edge in path:
-			#TypeError: 'NoneType' object is not subscriptable TODO:
-			resNotes.append(allCombinations[edge[0]][2][edge[1]])
+			if edge is not None:
+				resNotes.append(allCombinations[edge[0]][2][edge[1]])
 
 		return path, graph, resNotes
 

@@ -16,7 +16,6 @@ from magenta.music.protobuf import music_pb2
 from magenta.music import sequences_lib
 import ctypes.util
 
-
 # Ignore warnings caused by pyfluidsynth
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
@@ -30,7 +29,7 @@ class OnsetsAndFramesImpl:
         if lib == 'fluidsynth':
             return 'libfluidsynth.so.1'
         else:
-            return orig_ctypes_util_find_library(lib)
+            return orig_ctypes_util_find_library(lib)# pylint: disable=undefined-variable
 
     def initializeModel(self):
         if(self.modelInitialized):

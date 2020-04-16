@@ -3,6 +3,7 @@
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
     "cSpell.words": [
+        "Evals",
         "Inesta",
         "Korelogram",
         "aclos",

@@ -49,14 +49,14 @@ class MidiNote:
 		print(self.pitch, self.velocity, self.onsetS, self.durationS)
 
 
-def res_in_hz_to_midi_notes(resInF0PerFrame, sampleRate, spacing):
+def res_in_hz_to_midi_notes(resInF0PerFrame, sampleRate, spacing, neighbourMerging=1):
 	resultPianoRoll = []
 	for fq in resInF0PerFrame:
 		pianoRollRow = np.zeros(127)
 		if fq > 0:	
 			pianoRollRow[hz_to_midi(fq)] = 100
 		resultPianoRoll.append(pianoRollRow)
-	return post_process_midi_notes(resultPianoRoll, sampleRate, spacing, 127, 1, 0, 1)
+	return post_process_midi_notes(resultPianoRoll, sampleRate, spacing, 127, 1, 0, neighbourMerging)
 
 
 def post_process_midi_notes(pianoRoll, sampleRate, spacing, maxMidiPitch, minNoteMs, minNoteVelocity, neighbourMerging=1):

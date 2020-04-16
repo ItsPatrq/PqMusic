@@ -12,9 +12,9 @@
         "canonical_title": "Unprocessed_Recital1"
     },
     {
-        "split": "test",
+        "split": "validation",
         "midi_filename": "2020\/MIDI-Unprocessed_Recital8_MID--AUDIO_08_R1_2018_wav--3.mid",
-        "audio_filename": "2020\/MIDI-Unprocessed_Recital8_MID--AUDIO_08_R1_2018_wav--3.wav.wav",
+        "audio_filename": "2020\/MIDI-Unprocessed_Recital8_MID--AUDIO_08_R1_2018_wav--3.wav",
         "canonical_title": "Unprocessed_Recital8_MID"
     },
     {
@@ -27,12 +27,6 @@
         "split": "test",
         "midi_filename": "2020\/MIDI-Unprocessed_01_R1_2011_MID--AUDIO_R1-D1_03_Track03_wav.mid",
         "audio_filename": "2020\/MIDI-Unprocessed_01_R1_2011_MID--AUDIO_R1-D1_03_Track03_wav.wav",
-        "canonical_title": "Unprocessed_01_R1_2011_MID"
-    },
-    {
-        "split": "test",
-        "midi_filename": "2020\/MIDI-Unprocessed_01_R1_2011_MID--AUDIO_R1-D1_02_Track02_wav.mid",
-        "audio_filename": "2020\/MIDI-Unprocessed_01_R1_2011_MID--AUDIO_R1-D1_02_Track02_wav.wav",
         "canonical_title": "Unprocessed_01_R1_2011_MID"
     },
     {

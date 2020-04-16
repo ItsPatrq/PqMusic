@@ -1141,7 +1141,7 @@ Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została roz
   v_{midi} = 80 v_{predicted} + 10
 \end{equation}
 
-Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W poprawionej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wdrożone w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne).%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
+Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W poprawionej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wdrożone w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
 
 Poza zmianą bazy, zmiany do Onsets and Frames zaproponowane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization} zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, choć nie jest bezpośrednio używana w dekodowaniu. Zaproponowana jest również zmiana dwukierunkowych warstw LSTM z 128 do 256 jednostek, zmieniając ilość filtrów w warstwie konwolucyjnej z 32/32/64 na 48/48/96, zwiększając tym samym warstwy sigmoidalne. Zmodyfikowane zostały również przejścia pomiędzy podsieciami. Argumentowane są tym, że dla większych baz efektywność rośnie przy większym i prostszym modelu. 
 
@@ -1452,7 +1452,18 @@ Mechanizm porównujący wyniki algorytmów, którego implementacja znajduje się
   \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments}),
   \item dla każdego algorytmu badanej grupy wykonywana jest ewaluacja F1 i czasu wykonywania z wykorzystaniem zbioru testowego (funkcja \textit{run\_test\_on\_dataset\_with\_args}).
 \end{enumerate}
-
+Dane, na których wykonywana jest ewaluacja deklarowane są jako zbiory danych opisane plikiem JSON. Każdy zbiór danych jest osobnym katalogiem w folderze \textit{server/test\_sounds/data\_sets} zawierającym:
+\begin{itemize}
+  \item plik o nazwie \textit{metadata.json}, w którym opisany jest zbiór danych. Każdy element musi zawierać cztery parametry:
+  \begin{itemize}
+    \item \textit{split} - deklaracja do jakiej grupy podziału należy dana pozycja. Wykorzystywane wartości to \textit{validation} (używane do wyznaczania najlepszych parametrów) i \textit{test} (używane do ewaluacji),
+    \item \textit{midi\_filename} - relatywna względem katalogu zbioru danych ścieżka do pliku MIDI,
+    \item \textit{audio\_filename} - relatywna względem katalogu zbioru danych ścieżka do pliku audio,
+    \item \textit{canonical\_title} - nazwa kompozycji
+  \end{itemize}
+  \item plików audio i MIDI zgodnych z opisem w \textit{metadata.json}
+\end{itemize}
+Metody ewaluacyjne przyjmują nazwę zbioru danych, z którego mają być brane dane.
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
 W ramach projektu został zaimplementowany interfejs graficzny, na który składa się serwer HTTP napisany w języku python oraz strona napisana w języku \textit{TypeScript} i technologii \textit{React}. Daje ona możliwość wywołania każdeej z wyżej opisanych implementacji algorytmów transkrypcji muzyki z wcześniej wyliczonymi optymalnymi parametrami.
@@ -1466,7 +1477,74 @@ Implementacja serwera znajduje się w pliku \textit{server/server.py}.
 
 Skrypty źródłowe graficznego interfejsu znajdują się w katologu \textit{static/src} i służą do wygenerowania statycznej strony, która jest wysyłana przez serwer do przeglądarki klienta. Zbudowana paczka jest zminifikowana i składa się ze standardowych plików rozpoznawanych przez przeglądarki internetowe - \textit{css}, \textit{js} oraz \textit{html}. Opis uruchomienia pełnego GUI na lokalnej maszynie znajduje się w pliku \textit{README.md} w katalogu głównym projektu.
 
+\newpage
 \section{Ewaluacja} \label{sec:ewal}
+Ewaluacja zaimplementowanych algorytmów została wykonana metodologią opisaną w \ref{sec:impl:midiCompare} na wzór \cite[3]{Transcription:Pertus:Inharmonicity}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. 
+
+Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona część danych bazy MAESTRO a następnie zmodyfikowane zostały pliki MIDI tak, aby w danym momęcie w czasie obecna była tylko jedna nuta. Na podstawie tych plików zostały wygenerowane sygnały audio z wykorzystaniem sampli pianina Steinway. Dane przydzielone są losowo do grupy używanej w celu wyznaczenia najlepszych argumentów oraz do grupy, na której wykonywana jest ewaluacja. 
+
+Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych. Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do ewaluacji wyników.
+
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ |c|c|c|c|c|c| } 
+    \hline
+    metoda & dł. okna / odstępy & marg. zer & min/max F0 & ods. pików & nieharm. \\
+    \hline
+    AC & 8192 / 512 & - & 85/5500 & -& -\\
+    ACLOS & 8192 / 512 & 8192 & 85/5500 & -& -\\
+    CEPS & 8192 / 512 & 8192 & 85/5500 & -& -\\
+    P\&I 08 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
+    P\&I 12 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Tu będą najlepsze argumenty mono}
+  \label{tab:bestArgMono}
+\end{table}
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    p & f & Literalna nazwa wysokości dźwięku\\
+    \hline
+    33 & 55 & A1\\
+    45 & 110 & A2\\
+    57 & 220 & A3\\
+    69 & 440 & A4\\
+    81 & 880 & A5\\
+    93 & 1760 & A6\\
+    105 & 3520 & A7\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Tu będą najlepsze argumenty poli}
+  \label{tab:bestArgPoli}
+\end{table}
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    p & f & Literalna nazwa wysokości dźwięku\\
+    \hline
+    33 & 55 & A1\\
+    45 & 110 & A2\\
+    57 & 220 & A3\\
+    69 & 440 & A4\\
+    81 & 880 & A5\\
+    93 & 1760 & A6\\
+    105 & 3520 & A7\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Tu będą wyniki ewaluacji soon}
+  \label{tab:ewaluation}
+\end{table}
+
+
 \newpage
 \section{Zakończenie} \label{sec:end}
 \newpage

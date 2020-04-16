@@ -6,7 +6,7 @@ import os
 from flask_cors import CORS
 from utils.spectogram import plot_spectrogram_wrapped
 import uuid
-from utils.windowFunctionsPresentation import *
+from utils.windowFunctionsPresentation import hannWindow, hammingWindow, rectangleWindow
 from transcription.ac import autocorrelation_wrapped
 from transcription.cepstrumF0Analysis import transcribe_by_cepstrum_wrapped
 from transcription.aclos import transcribe_by_aclos_wrapped
@@ -21,17 +21,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 #region transcription initialization Onsets and Frames
 onsets = None
-# onsets.initializeModel()
 #endregion
-#region generate
-#endregion
-
-def import_if_installed(package):
-    try:
-        __import__(package)
-        return True
-    except ImportError:
-        return False
 
 def createRequestResponseFolders():
     requestUuid = str(uuid.uuid1())
@@ -97,7 +87,7 @@ def getHammingWindow():
     return send_file(responseFilePath)
 
 @app.route("/RectangleWindow", methods=['GET', 'POST'])
-def getRectabgkeWubdiw():
+def getRectangleWindow():
     _, responseFolderPath, _, _ = createRequestResponseFolders()
     responseFilePath = "/".join([responseFolderPath, 'RectangleWindow.png'])
     rectangleWindow(responseFilePath)
@@ -162,21 +152,25 @@ def TranscribeByPertusa2012():
 
 @app.route("/TranscribeByOnsetsAndFrames", methods=['POST'])
 def transcribeByOnsetsAndFrames():
-    if onsets == None:
-        return "Nie znaleziono bibliotek potrzebnych do wykonania transkrypcji przy użyciu metody Onsets and Frames"
+    print("Wut?", onsets == None)
     requestFilePath, responseFolderPath, _, _, _ = handleRequestWithFile()
     responseFilePath = "/".join([responseFolderPath, 'transkrypcja.mid'])
-    onsets.initializeModel()
     exampleFile = open(requestFilePath, 'rb')
+
+    if onsets == None:
+        return "Nie znaleziono bibliotek potrzebnych do wykonania transkrypcji przy użyciu metody Onsets and Frames"
     uploaded = {
         str(exampleFile.name): exampleFile.read()
     }
+    onsets.initializeModel()
     onsets.transcribe(uploaded, responseFilePath)
     return send_file(responseFilePath)
 
-
 if __name__ == "__main__":
-    if import_if_installed('tensorflow'):
+    try:
         from transcription.onsetsAndFrames import OnsetsAndFramesImpl
         onsets = OnsetsAndFramesImpl()
+        onsets.initializeModel()
+    except ImportError:
+        print("Uruchomiona instancja serwera nie wspiera metody Onsets and Frames")
     app.run(port=5000)
