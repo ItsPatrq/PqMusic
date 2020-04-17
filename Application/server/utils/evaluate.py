@@ -56,6 +56,7 @@ argsCepstrumF0Analysis = {
 }
 
 argsJointMethodByPertusaAndInesta2008 = {
+    "neighbourMerging": stdNeighbourMerging,
     'frameWidth': stdFrameWidth,
     'spacing': stdSpacing,
     'sizeOfZeroPadding': stdZeroPadding,
@@ -70,17 +71,16 @@ argsJointMethodByPertusaAndInesta2008 = {
     'maxParallelNotes': [5],
     'gamma': [0.1],
     'minNoteMs': [70],
-    'useLiftering': [False, True],
-    'lifteringCoefficient': [6, 8],
+    'lifteringCoefficient': [0, 6, 8],
     'minNoteVelocity': [15],
     'newAlgorithmVersion': [False],
     'smoothnessImportance': [None], #TODO: Czy to było dobrze opisane w Thesis?
     'temporalSmoothnessRange': [None],
-    'pitch_tracking_combinations': [None],
-    "neighbourMerging": stdNeighbourMerging
+    'pitch_tracking_combinations': [None]
 }
 
 argsJointMethodByPertusaAndInesta2012 = {
+    "neighbourMerging": stdNeighbourMerging,
     'frameWidth': stdFrameWidth,
     'spacing': stdSpacing,
     'sizeOfZeroPadding': stdZeroPadding,
@@ -92,17 +92,15 @@ argsJointMethodByPertusaAndInesta2012 = {
     'minHarmonicsPerCandidate': [2, 3],
     'maxHarmonicsPerCandidate': [7],
     'maxCandidates': [7],
-    'maxParallelNotes': [5],
+    'maxParallelNotes': [6],
     'gamma': [0.1],
     'minNoteMs': [70],
-    'useLiftering': [False, True],
-    'lifteringCoefficient': [6, 8],
+    'lifteringCoefficient': [0, 6, 8],
     'minNoteVelocity': [15],
     'newAlgorithmVersion': [True],
     'smoothnessImportance': [3, 2], #TODO: Czy to było dobrze opisane w Thesis?
     'temporalSmoothnessRange': [2, 3],
-    'pitch_tracking_combinations': [3, 4],
-    "neighbourMerging": stdNeighbourMerging
+    'pitch_tracking_combinations': [3, 4]
 }
 
 best_arg_ac = (8192, 512, 50, 5500)
@@ -388,7 +386,7 @@ def run_eval_and_test_on_dataset(dataSet, iterations = 10, onlyPoli = False):
     #region wyznaczenie najlepszych argumentów przez walidacje
     bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args = run_evals(validators, resFolderValidation, onlyPoli)
     
-    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
+    #run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
 
 
 def run_test_with_predefined_args_on_dataset(dataSet):
@@ -423,7 +421,7 @@ def get_part_of_eval_dataset(dataSet, quantityOfDataToTake):
             if len(res) == quantityOfDataToTake:
                 return res
 
-def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTests = 10, iterations = 10, onlyPoli = False):
+def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTests = 100, iterations = 1, onlyPoli = False):
     #region initializacja
     validators = get_part_of_eval_dataset(dataSet, quantityEvals)
     tests = get_part_of_test_dataset(dataSet, quantityTests)
@@ -439,6 +437,8 @@ def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTes
 
 
 if __name__ == "__main__":
-    run_eval_and_test_on_dataset("monoSound")
+    run_eval_and_test_on_dataset("monoSound", onlyPoli=True)
+    print("POLI")
+    run_eval_and_test_on_part_of_dataset("maestro", onlyPoli=True)
 
     #run_test_with_predefined_args_on_dataset("monoSound")

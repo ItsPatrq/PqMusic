@@ -22,7 +22,7 @@ from io import BytesIO
 def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMerging=4, frameWidth=8192, spacing=1024, sizeOfZeroPadding=24576,
                                             minF0=85, maxF0=5500, peakDistance=8, relevantPowerThreashold=4, maxInharmonyDegree=0.08, minHarmonicsPerCandidate=2,
 											maxHarmonicsPerCandidate=10, maxCandidates=8, maxParallelNotes = 5, gamma=0.05, minNoteMs=70,
-											useLiftering = True, lifteringCoefficient = 8, minNoteVelocity = 10, newAlgorithmVersion=True,
+											lifteringCoefficient = 8, minNoteVelocity = 10, newAlgorithmVersion=True,
 											smoothnessImportance=3, temporalSmoothnessRange=2, pitch_tracking_combinations=3, disableTqdm=True):
 
 	#region init values
@@ -102,7 +102,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 		frame = np.concatenate((frame, zeropad))
 		frameComplex = fft(frame)
 		powerSpWindow = abs(frameComplex)
-		if useLiftering:
+		if lifteringCoefficient is not None and lifteringCoefficient > 0:
 			return lifterOnPowerSpec(powerSpWindow, LifterType.sine, lifteringCoefficient)[:fftLen]
 		else:
 			return powerSpWindow[:fftLen]

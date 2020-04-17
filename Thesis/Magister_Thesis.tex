@@ -1479,12 +1479,45 @@ Skrypty źródłowe graficznego interfejsu znajdują się w katologu \textit{sta
 
 \newpage
 \section{Ewaluacja} \label{sec:ewal}
-Ewaluacja zaimplementowanych algorytmów została wykonana metodologią opisaną w \ref{sec:impl:midiCompare} na wzór \cite[3]{Transcription:Pertus:Inharmonicity}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. 
+Ewaluacja zaimplementowanych algorytmów została wykonana na wzór tej, opisanej w \cite[3]{Transcription:Pertus:Inharmonicity} przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1.
 
-Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona część danych bazy MAESTRO a następnie zmodyfikowane zostały pliki MIDI tak, aby w danym momęcie w czasie obecna była tylko jedna nuta. Na podstawie tych plików zostały wygenerowane sygnały audio z wykorzystaniem sampli pianina Steinway. Dane przydzielone są losowo do grupy używanej w celu wyznaczenia najlepszych argumentów oraz do grupy, na której wykonywana jest ewaluacja. 
+Każdą z wynikowych nut transkrypcji algorytm ewaluacyjny klasyfikuje do jednej z dwóch grup:
+\begin{itemize}
+  \item prawdziwie dodatnie (TP, ang. \textit{True positive}) gdy w utworze referencyjnym istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu),
+  \item fałszywie dodatnie (FP, ang. \textit{False positive}) gdy w utworze referencyjnym nie istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu).
+\end{itemize} 
+Zliczane są również wystąpienia  fałszy ujemnych (FN, ang. \textit{False negative}) sprawdzając ilość nut w utworze referencyjnym, których nie ma w wyniku transkrypcji. Przykład tej klasyfikacji pokazany jest na rysunku \ref{fig:f1}.
 
-Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych. Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do ewaluacji wyników.
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.21]{images/TranscriptionStatisticF1Measure.jpg}
+    \caption{Przykład rolki pianina dwóch plików MIDI. Utwór referencyjny (lewa rolka) przedstawia oryginalne rozłożenie nut. Na wyniku transkrypcji (prawa rolka) oznaczone są klasyfikacje statystyczne.}
+    \label{fig:f1}
+  \end{center}
+\end{figure}
 
+Na podstawie mocy tak sklasyfikowanych zbiorów mierzone są trzy miary statystyczne:
+\begin{itemize}
+  \item precyzja (ang. \textit{precision}) pokazująca jaka część klasyfikacji dotatniej jest prawdziwie dotatnia (\ref{eq:percision}),
+  \item czułość (ang. \textit{recall}) pokazująca jaka część spośród wszystkich dodatnich wyników została wykryta przez transkrypcję (\ref{eq:recall}),
+  \item miara jakości F1 jako harmoniczna średnia precyzji i czułości (\ref{eq:f1}).
+\end{itemize}
+
+\begin{equation} \label{eq:percision}
+  \textrm{precision} = \frac{TP}{TP + FP}
+\end{equation}
+\begin{equation} \label{eq:recall}
+  \textrm{recall} = \frac{TP}{TP + FN}
+\end{equation}
+\begin{equation}  \label{eq:f1}
+  F1 = 2 \cdot  \frac{\textrm{precision} \cdot  \textrm{recall}}{\textrm{precision} + \textrm{recall}}
+\end{equation}
+
+Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona część danych bazy MAESTRO, a następnie zmodyfikowane zostały pliki MIDI tak, aby w danym momęcie w czasie obecna była tylko jedna nuta. Na podstawie tych plików zostały wygenerowane sygnały audio z wykorzystaniem sampli pianina Steinway. Dane przydzielone są losowo do grupy używanej w celu wyznaczenia najlepszych argumentów oraz do grupy, na której wykonywane są testy. 
+
+Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych (grupy testowe i ewaluacyjne). Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do wyliczenia wyników.
+
+W tabelach \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych funkcji użyte podczas procesu ewaluacji
 
 \begin{table}[ht]
   \begin{center}
@@ -1499,9 +1532,37 @@ Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na c
     P\&I 12 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
     \hline
     \end{tabular}
+  \begin{tabular}{ |c|c|c|c|c|c| } 
+    \hline
+    metoda & dł. okna / odstępy & marg. zer & min/max F0 & ods. pików & nieharm. \\
+    \hline
+    P\&I 08 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
+    P\&I 12 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
+    \hline
+    \end{tabular}
+  \caption{Tu będą najlepsze argumenty mono 2}\label{tab:bestArgMono}
   \end{center}
-  \caption{Tu będą najlepsze argumenty mono}
-  \label{tab:bestArgMono}
+\end{table}
+
+
+\begin{table}[ht]
+  \begin{center}
+    \begin{tabular}{ |c|c|c| } 
+    \hline
+    p & f & Literalna nazwa wysokości dźwięku\\
+    \hline
+    33 & 55 & A1\\
+    45 & 110 & A2\\
+    57 & 220 & A3\\
+    69 & 440 & A4\\
+    81 & 880 & A5\\
+    93 & 1760 & A6\\
+    105 & 3520 & A7\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{Tu będą wyniki ewaluacji MONO soon}
+  \label{tab:eval:mono}
 \end{table}
 
 \begin{table}[ht]
@@ -1540,8 +1601,8 @@ Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na c
     \hline
     \end{tabular}
   \end{center}
-  \caption{Tu będą wyniki ewaluacji soon}
-  \label{tab:ewaluation}
+  \caption{Tu będą wyniki eval poli}
+  \label{tab:eval:poli}
 \end{table}
 
 
