@@ -5,7 +5,7 @@ from os import path
 from general import loadNormalizedSoundFIle
 from midi import load_midi_file, compare_midi_to_ground_truth, res_in_hz_to_midi_notes, write_midi
 from random import uniform
-
+import concurrent.futures
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from transcription.ac import autocorrelation
 from transcription.aclos import aclos
@@ -31,7 +31,7 @@ stdSpacing = [1024, 512]
 stdZeroPadding = [2048, 8192]
 stdMinF0 = [50]
 stdMaxF0 = [5500]
-stdNeighbourMerging = [1, 4]
+stdNeighbourMerging = [3, 4]
 
 argsAc = {
     "neighbourMerging": stdNeighbourMerging,
@@ -65,11 +65,11 @@ argsJointMethodByPertusaAndInesta2008 = {
     'peakDistance': [6, 8],
     'relevantPowerThreashold': [4, 8],
     'maxInharmonyDegree': [0.08, 0.16],
-    'minHarmonicsPerCandidate': [2, 3],
+    'minHarmonicsPerCandidate': [1, 2, 3],
     'maxHarmonicsPerCandidate': [8],
     'maxCandidates': [7],
     'maxParallelNotes': [5],
-    'gamma': [0.1],
+    'gamma': [0.1, 0.05],
     'minNoteMs': [70],
     'lifteringCoefficient': [0, 6, 8],
     'minNoteVelocity': [15],
@@ -89,11 +89,11 @@ argsJointMethodByPertusaAndInesta2012 = {
     'peakDistance': [6, 8],
     'relevantPowerThreashold': [4, 8],
     'maxInharmonyDegree': [0.08, 0.16],
-    'minHarmonicsPerCandidate': [2, 3],
-    'maxHarmonicsPerCandidate': [7],
+    'minHarmonicsPerCandidate': [1, 2, 3],
+    'maxHarmonicsPerCandidate': [8],
     'maxCandidates': [7],
-    'maxParallelNotes': [6],
-    'gamma': [0.1],
+    'maxParallelNotes': [5],
+    'gamma': [0.1, 0.05],
     'minNoteMs': [70],
     'lifteringCoefficient': [0, 6, 8],
     'minNoteVelocity': [15],
@@ -194,35 +194,48 @@ def create_results_folder(dataSet):
 
 def run_transcription(func, isResMidi, normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
     if isResMidi:
-        resMidi, *_ = func(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+        resMidi, *_ = func(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs)
     else:
         best_frequencies, *_ = func(normalizedData, sampleRate, frameWidth, spacing, *restArgs)
         resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
 
     return resMidi
 
-def validate_arguments(func, args, evalObjects, saveRes, isResMidi = False):
-    possibleCombinations = list(product(*list(args.values())))
-    bestF1 = 0
-    bestArgs = None
-    print("Validating " + str(len(possibleCombinations)) +" possible arguments for function " + str(func.__name__))
-    indexToDebug = 0
-    for currArgs in possibleCombinations:
-        currF1 = 0
-        indexToDebug += 1
-        print(str(indexToDebug) + "/" + str(len(possibleCombinations)), currArgs)
-        for evObj in evalObjects:
-            _, _, _, F1, _, _ = evObj.test_method(lambda normalizedData, sampleRate: run_transcription(
-                func, isResMidi, normalizedData, sampleRate, *currArgs), maxErr=maxErr, save_dist=(saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(currArgs) + ".mid").replace(", ", "_").replace("(", "").replace(")", ""))
-            currF1 += F1
-        currF1 /= len(evalObjects)
-        if currF1 > bestF1:
-            bestF1 = currF1
-            bestArgs = currArgs
-    text_file = open(saveRes + "Results_" + func.__name__  + ".txt" , "w")
-    text_file.writelines(func.__name__  + "\nbest arguments: " + str(currArgs) + "\nbest F1: " + str(bestF1) + "\n")
-    text_file.close()
-    return bestArgs, bestF1
+def validate_all_arguments(func, args, evalObjects, saveRes, isResMidi = False):
+    possibleArgsCombinations = list(product(*list(args.values())))
+    print("Validating " + str(len(possibleArgsCombinations)) +" possible arguments for function " + str(func.__name__))
+
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        procesess = []
+        bestF1 = 0
+        bestArgs = None
+        idx = 1
+        for arg in possibleArgsCombinations:
+            procesess.append(executor.submit(validate_arguments, func, arg, evalObjects, saveRes, isResMidi, False, str(idx) + "/" + str(len(possibleArgsCombinations))))
+            idx += 1
+        for res in procesess:
+            currArg, currF1 = res.result()
+            if currF1 > bestF1:
+                bestF1 = currF1
+                bestArgs = currArg
+        text_file = open(saveRes + "Results_" + func.__name__  + ".txt" , "w")
+        print(func.__name__  + "\nbest arguments: " + str(bestArgs) + "\nbest F1: " + str(bestF1))
+        text_file.writelines(func.__name__  + "\nbest arguments: " + str(bestArgs) + "\nbest F1: " + str(bestF1) + "\n")
+        text_file.close()
+    return currArg, bestF1
+
+def validate_arguments(func, currArgs, evalObjects, saveRes, isResMidi = False, shouldSave = False, debugMessage = ""):
+    currF1 = 0
+
+    for evObj in evalObjects:
+        saveDist = (saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(currArgs) + ".mid").replace(", ", "_").replace("(", "").replace(")", "")
+        _, _, _, F1, _, _ = evObj.test_method(lambda normalizedData, sampleRate: run_transcription(
+            func, isResMidi, normalizedData, sampleRate, *currArgs), maxErr=maxErr, save_dist=saveDist if shouldSave else None)
+        currF1 += F1
+    currF1 /= len(evalObjects)
+    print(debugMessage + " " + str(currArgs) + " F1: " + str(currF1))
+
+    return currArgs, currF1
     
 def test_method(func, arg, evalObjects, saveRes):
     FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
@@ -367,10 +380,10 @@ def run_evals(validators, resFolderValidation, onlyPoli):
             aclos, argsAclos, validators, resFolderValidation)
         bestCepstrumArgs, _ = validate_arguments(
             cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
-    bestJointMethodByPertusaAndInesta2008Args, _ = validate_arguments(
-        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, True)
+    bestJointMethodByPertusaAndInesta2008Args, _ = validate_all_arguments(
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, isResMidi=True)
     bestJointMethodByPertusaAndInesta2012Args, _ = validate_arguments(
-        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, True)
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, isResMidi=True)
     #endregion wyznaczenie najlepszych argumentów przez walidacje
     return bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args
 

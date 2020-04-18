@@ -223,7 +223,7 @@
 %% z PWN : transkrypcja [łac. transcriptio ‘przepisywanie’], muz. opracowanie utworu muz. na inny niż w oryginale zespół wykonawczy (orkiestracja) lub inny instrument; Pytanie czy rozszerzenie tego znaczenia w języku polskim jest poprawne? także zapisanie utworu inną notacją muz.; transkrybować — zapisywać znakami współcz. notacji muz. utwory zapisane dawnymi systemami notacyjnymi, np. notacją modalną, menzuralną. Po ENG transkrypcja jest zgodna z rozdziałem
 \textit{Transkrypcja muzyki} to proces polegający na zapisaniu danego utworu muzycznego w sposób formalny (jak np. zapis nutowy) z istniejącego zapisu dźwiękowego. Operacja ta wykorzystywana jest do lepszego zrozumienia muzyki, możliwości jej wiernego odtworzenia przez muzyków i jako parametr wejściowy algorytmów przetwarzających dane muzyczne (jak np. dane treningowe generatorów nowych kompozycji). Zautomatyzowanie rozwiązania tego problemu nosi nazwę AMT (z ang. \textit{Automatic Music Transcription}) i polega na wygenerowaniu transkrypcji (np. w postaci pliku MIDI) ze źródłowego pliku dźwiękowego.
 
-\textit{Kompletna transkrypcja}, czyli wykrycie wszystkich dźwięków wraz z ich pochodzeniem i czasem występowania w sygnale muzycznym wymaga rozpoznania wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Kompleksowość tego zadania jest bardzo wysoka, a w przypadku niektórych danych wejściowych uznawana za niemożliwą, przez co celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem \textit{częściowej transkrypcji} nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja wraz z rytmem \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
+\textit{Kompletna transkrypcja}, czyli wykrycie wszystkich dźwięków wraz z ich pochodzeniem i czasem występowania w sygnale muzycznym wymaga rozpoznania wysokości dźwięków, czasów ich występowania i rodzaju instrumentu, przy pomocy którego dane dźwięki zostały wygenerowane. Złożoność tego zadania jest bardzo wysoka, a w przypadku niektórych danych wejściowych uznawana za niemożliwą, przez co celem tak zwanej kompletnej transkrypcji jest wykrycie jak największej ilości składowych jak jest to możliwe. Terminem \textit{częściowej transkrypcji} nazywa się znajdowanie dobrze zdefiniowanych części muzycznego sygnału, jak główna melodia i perkusja wraz z rytmem \cite[3-7]{Transcription:Anssi:SignalProcessingMethods}.
 
 Pierwsze próby zautomatyzowania procesu transkrypcji muzyki monofonicznej datowane są na lata 60. XX wieku. Bernard Gold w roku 1962 opublikował wypracowanie pod tytułem ,,Program komputerowy do wydobywania wysokości dźwięku'' (tłumaczenie własne) \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Pierwsze próby transkrypcji muzyki polifonicznej odbyły się w latach siedemdziesiątych, kiedy Moorer zaproponował system transkrypcji dwóch głosów \cite{Transcription:Moorer:SegmentationAndAnalysis}\cite{Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer}. We wszystkich wczesnych pracach naukowych nad tą tematyką liczba równoległych dźwięków była zawsze ograniczana do maksymalnie dwóch jednocześnie, jak i relacja pomiędzy wysokościami miała duże obostrzenia. Prace te były zorientowane na analizę tonu wokalnego w kontekście analizy mowy. Dla przykładu, praca \cite{Transcription:Gold:ComputerProgramForPitchExtraction} była napisana z myślą o urządzeniu zdolnym syntezować dźwięk mowy (tzw. vocoder). Metodologie używane do transkrypcji muzyki swoje fundamenty biorą właśnie z algorytmów analizujących mowę, które to były rozwijane w znacznie większym tempie w porównaniu do tych badających muzykę. W pracy Goto i Muraoka z roku 1994 \cite{Transcription::FirstRythm} po raz pierwszy pojawia się metoda do śledzenia rytmu w utworze muzycznym. Pierwsze próby transkrypcji instrumentów perkusyjnych odbyły się w latach 80 i 90 XX wieku w pracach naukowych \cite[99-104]{Transcription:Schloss:AutomaticTranscriptionOfPercussiveMusic} i \cite[77-84]{Transcription:Bilmes:TimingIsOfTHeEssence} \cite[6]{Transcription:Anssi:SignalProcessingMethods}.
 
@@ -233,7 +233,7 @@ Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzyki są jednak na
 
 W tej pracy przeanalizowany jest problem automatycznej transkrypcji muzyki, nakreślając obecny stan nauki w tym rejonie. Omówione są najważniejsze rejony w oparciu o przykłady już istniejących rozwiązań jak i próba optymalizacji części z nich poprzez zrównoleglenie obliczeń z wykorzystaniem karty graficznej. Celem tych rozważań jest przybliżenie ogólnej koncepcji transkrypcji muzyki wraz z teorią na jakiej się opiera.
 
-W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Programistyczne szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w rozdziale \ref{sec:end}. 
+W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Programistyczne szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu \ref{sec:end}. 
 
 \newpage
 \setcounter{secnumdepth}{4}
@@ -254,7 +254,7 @@ Zapis nutowy zawiera też informacje o tempie utworu, czyli szybkość z jaką k
 
 Informacją, którą zapis nutowy nie dostarcza jawnie, jest barwa dźwięku. Parametr ten jest ściśle związany z instrumentem, którego dotyczy dany dźwięk. Każde ze źródeł dźwięku cechuje się odrębną barwą, nawet gdy uwzględnić taką samą wysokość i głośność sygnału fonicznego. Problem rozróżniania tej cechy jest związany nie tylko z transkrypcją muzyki, ale i algorytmami identyfikującymi instrumenty poprzez analizę barwy dźwięku.
 
-Kompletna transkrypcja muzyczna jest kompleksowym zadaniem, które ze względu na specyfikę fal akustycznych możba podzielić na trzy pod-zadania:
+Kompletna transkrypcja muzyczna jest złożonym zadaniem, które ze względu na specyfikę fal akustycznych możba podzielić na trzy pod-zadania:
 \begin{itemize}
   \item rozpoznawanie elementów perkusyjnych razem ze śledzeniem rytmiki na podstawie rytmu i głośności (\ref{sec:rytm}, \ref{sec:loudness}),
   \item wykrywanie częstotliwości fundamentalnych na podstawie wysokości tonu (\ref{sec:pitch}),
@@ -938,7 +938,7 @@ Trudności te mają być zminimalizowane poprzez nałożenia funkcji wygadzając
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.38]{images/spectral_smoothnes_kapuri.jpg}
-    \caption{TODO}
+    \caption{TODO:}
     \label{fig:specUnSmoothness}
   \end{center}
 \end{figure}
@@ -1073,11 +1073,11 @@ W trakcie budowania wDAG w celu zwiększenia wydajności wybieranych jest tylko 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
 Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych. Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 \cite[8-9]{Transcription:Klapuri:ChallengesAndFuture}. Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN \cite[6-8]{DBLP:journals/spm/BenetosDDE19}.
 
-% to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
+%TODO: to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
 
 W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji \cite[7]{DBLP:journals/spm/BenetosDDE19}. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
 
-%\todo[inline]{Artukuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnosze się do 6 strony, powinno to być 6 czy zgodnie z journalem 26?}
+%\TODO: Artykuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnosze się do 6 strony, powinno to być 6 czy zgodnie z journalem 26?
 \subsubsection{Holistyczna metoda z użyciem sieci neuronowych}\label{sec:multif0:petrusNetwork}
 Praca \cite{Transcription:Pertus:NeuralNetwork} miała na celu zbudowanie architektury zdolnej do transkrypcji A2S (Audio do partytury z ang. \textit{Audio-to-Score}). Jest to rzadkie podejście, wykorzystujące poziom abstrakcji notacji muzycznej. Wiele spośród istniejących algorytmów zakłada transkrypcję do plików MIDI lub podobnych, których struktura opiera się na zapisie rolki pianina, umożliwiając z tego poziomu wygenerować notację muzyczną. Omawiany w tej sekcji algorytm zakłada bezpośredni proces transkrypcji cyfrowego sygnału akustycznego do notacji muzycznej.
 
@@ -1106,9 +1106,9 @@ Dekodowanie odbywa się poprzez wybranie najbardziej prawdopodobnego symbolu dla
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.31]{images/holisticNetworkArchitecture.jpg}
-    \caption{Architektura sieci neuronowej zastosowanej w pracy  \cite{Transcription:Pertus:NeuralNetwork}}
-    \label{fig:holisticNetworkArchitecture}%%TODO: Tlumaczenie obrazka
+    \includegraphics[scale=0.5]{images/holisticNetworkArchitecture.jpg}
+    \caption{Architektura sieci neuronowej zastosowanej w pracy  \cite{Transcription:Pertus:NeuralNetwork}. Diagram z \cite[5]{Transcription:Pertus:NeuralNetwork}, tłumaczenie własne.}
+    \label{fig:holisticNetworkArchitecture}
   \end{center}
 \end{figure}
 
@@ -1126,13 +1126,13 @@ Głównym założeniem, które odróżnia Onsets and Frames od innych systemów 
 
 Dane wejściowe są w postaci spektrogramów w skali melowej i logarytmie amplitudy, z 229 logarytmicznie rozmieszczonymi w domenie częstotliwości komponentami, oknem długości 2048 sampli i odstępami pomiędzy oknami długości 2048. Dane se równolegle zasilają obie sieci. Wynik detektora początków nut jest dostarczany do sieci aktywacji nuty, dając jej łącznie dwie informacje wejściowe - czy jest początek nuty oraz spektrogram.
 
-Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w \cite[1-3]{Transcription:Kelz:AcousticModel}) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LASTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
+Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w \cite[1-3]{Transcription:Kelz:AcousticModel}) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
 %TODO: Czy opisywać funkcje kosztu? jest dokładnie opisana w referencyjnej pracy naukowej
 \begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=0.6]{images/architekturaSieciOnesetsFrames.png}
-    \caption{Diagram przedstawiający architekturę modelu Onesets and Frames. Diagram z \cite{Transcription:OnsetsAndFrames:Blog}}
-    \label{fig:onsetsAndFramesArch}%%TODO: Tlumaczenie obrazka
+    \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
+    \caption{Diagram przedstawiający architekturę modelu Onesets and Frames. Diagram z \cite{Transcription:OnsetsAndFrames:Blog}, tłumaczenie własne.}
+    \label{fig:onsetsAndFramesArch}
   \end{center}
 \end{figure}
 
@@ -1141,46 +1141,15 @@ Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została roz
   v_{midi} = 80 v_{predicted} + 10
 \end{equation}
 
-Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W poprawionej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wdrożone w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.%TODO "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
+Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W poprawionej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wdrożone w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu overfittingu (nadmiernego dopasowania, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.%TODO: "nadmiernego dopasowania, tłumaczenie własne" brzmi dziwnie.
 
 Poza zmianą bazy, zmiany do Onsets and Frames zaproponowane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization} zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, choć nie jest bezpośrednio używana w dekodowaniu. Zaproponowana jest również zmiana dwukierunkowych warstw LSTM z 128 do 256 jednostek, zmieniając ilość filtrów w warstwie konwolucyjnej z 32/32/64 na 48/48/96, zwiększając tym samym warstwy sigmoidalne. Zmodyfikowane zostały również przejścia pomiędzy podsieciami. Argumentowane są tym, że dla większych baz efektywność rośnie przy większym i prostszym modelu. 
 
 Zaproponowana została również metoda augmentacji sygnału wejściowego, która polegać ma na modyfikacji każdego z danych wejściowych o pewną modulację audio (np. przesunięcie częstotliwości, dodanie szumu, zastosowanie equalizera). Zmiana ta pozytywnie wpływa na jakość modelu trenowanego bazą MAPS, jednak w przypadku bazy MAESTRO odnotowany został minimalny spadek w dokładności wyniku. 
 
-%%\todo[inline]{Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
+%%\TODO: Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
 \newpage
 
-
-% \section{Klasyfikacja muzyki}
-% \cite{DBLP:journals/corr/abs-1708-03535}\cite{DBLP:journals/corr/XiongDHSSSYZ16a}
-% \todo[inline]{Najprawdopodobniej rozdział do usunięcia, lub do czysto teoretycznego opisu}
-
-% \section{Generowanie muzyki}
-% \begin{figure}[H]
-%   \begin{center}
-%     \includegraphics[scale=0.25]{images/pianoTransformerDiagram.png}
-%     \caption{z https://magenta.tensorflow.org/piano-transformer, diagram przedstawiający działanie modelu Music Transformer. Do wyszukania odpowiednich klipów z YouTube został wykorzystany model AudioSet \cite{audioSet} do wyodrębnienia audio jedynie z pianinem.}
-%   \end{center}
-% \end{figure}
-% \todo[inline]{Czy można tak używać grafiki z innych stron? Czy odniesienie do strony w bibliografi jest prawidłowe?}
-
-% \cite{DBLP:journals/corr/abs-1809-04281}\cite{DBLP:journals/corr/VaswaniSPUJGKP17}
-% \cite{DBLP:journals/corr/HuangW16}
-% \cite{DBLP:journals/corr/abs-1810-12247}
-% \newpage
-
-% \section{Implementacja}
-% \label{sec:implementacja}
-% ~\ref{eq:midi_freq}
-% \subsection{Funkcje pomocnicze}
-% \newpage
-% \subsection{Transpilacja}
-
-% \subsection{Składowanie danych}
-% \newpage
-
-% \subsection{Generowanie muzyki}
-% \newpage
 \section{Implementacja}\label{sec:impl}
 Ten rozdział poświęcony jest opisaniu implementacji algorytmów transkrypcji z rozdziałów \ref{sec:f0} i \ref{sec:MultiPitch}, które są częścią projektu powstałego w ramach tej pracy magisterskiej. Kod napisany został w skryptowym języku Python w wersji 3.7.4, który wydawał się najodpowiedniejszy do tego typu zadania ze względu na dostępne biblioteki dedykowane do matematycznych problemów (jak \textit{numpy} czy \textit{scipy}). Szczegółowa lista użytych rozwiązań dostępna jest w pliku README.md dostępnym w głównym katalogu projektu.
 
@@ -1426,7 +1395,7 @@ Wydarzenia MIDI składają się z czterech parametrów:
 Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
-Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanej w pracy \cite[3]{Transcription:Pertus:Inharmonicity}, gdzie wykorzystana była miara F1. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
+Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanych w pracach \cite[3]{Transcription:Pertus:Inharmonicity} i \cite[8]{Transcription:Pertus:Inharmonicity2}, gdzie wykorzystane były miary jakości F1 i dokładności. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
 
 Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy typy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
 
@@ -1449,10 +1418,10 @@ W celu poprawnej interpretacji ewaluacji metidy zostały podzielone na dwie grup
 \end{enumerate}
 Mechanizm porównujący wyniki algorytmów, którego implementacja znajduje się w pliku \textit{server/utils/evaluate.py}, wykonuje operacje opisane w tej sekcji dla wszystkich algorytmów według schematu poniżej:
 \begin{enumerate}
-  \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments}),
+  \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments}) i wszystkich kombinacji argumentów dla zadeklarowanych przyjmowanych wartości,
   \item dla każdego algorytmu badanej grupy wykonywana jest ewaluacja F1 i czasu wykonywania z wykorzystaniem zbioru testowego (funkcja \textit{run\_test\_on\_dataset\_with\_args}).
 \end{enumerate}
-Dane, na których wykonywana jest ewaluacja deklarowane są jako zbiory danych opisane plikiem JSON. Każdy zbiór danych jest osobnym katalogiem w folderze \textit{server/test\_sounds/data\_sets} zawierającym:
+Dane wejściowe, na których wykonywana jest ewaluacja deklarowane są jako zbiory danych opisane plikiem JSON. Każdy zbiór danych jest osobnym katalogiem w folderze \textit{server/test\_sounds/data\_sets} zawierającym:
 \begin{itemize}
   \item plik o nazwie \textit{metadata.json}, w którym opisany jest zbiór danych. Każdy element musi zawierać cztery parametry:
   \begin{itemize}
@@ -1463,7 +1432,26 @@ Dane, na których wykonywana jest ewaluacja deklarowane są jako zbiory danych o
   \end{itemize}
   \item plików audio i MIDI zgodnych z opisem w \textit{metadata.json}
 \end{itemize}
-Metody ewaluacyjne przyjmują nazwę zbioru danych, z którego mają być brane dane.
+Metody ewaluacyjne przyjmują nazwę zbioru danych, z którego mają być brane dane oraz gemerują kombinacje argumentów wejściowych na podstawie zadeklarowanych słowników \textit{argsAc}, \textit{argsAclos} itd. Ze względu na to, że złożoność obliczeniowa rośnie wykładniczo wraz ze wzrostem możliwych wartości argumentów, algorytmy te wykorzystują multiprocesowość w celu polepszenia czasu wykonywania (co widać na listingu \ref{code:eval:multiproces}). 
+
+\begin{lstlisting}[language=Python, caption={Algorytm szukający najlepszej kombinacji argumentów dla zadanej funkcji func.}, captionpos=b, label={code:eval:multiproces}, numbers=none]
+with concurrent.futures.ProcessPoolExecutor() as executor:
+  procesess = []
+  bestF1 = 0
+  bestArgs = None
+  idx = 1
+  for arg in possibleArgsCombinations:
+      procesess.append(executor.submit(validate_arguments, func, arg, evalObjects,
+      saveRes, isResMidi, False, str(idx) + "/" + str(len(possibleArgsCombinations))))
+      idx += 1
+  for res in procesess:
+      currArg, currF1 = res.result()
+      if currF1 > bestF1:
+          bestF1 = currF1
+          bestArgs = currArg
+
+return currArg, bestF1
+\end{lstlisting}
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
 W ramach projektu został zaimplementowany interfejs graficzny, na który składa się serwer HTTP napisany w języku python oraz strona napisana w języku \textit{TypeScript} i technologii \textit{React}. Daje ona możliwość wywołania każdeej z wyżej opisanych implementacji algorytmów transkrypcji muzyki z wcześniej wyliczonymi optymalnymi parametrami.
@@ -1479,7 +1467,7 @@ Skrypty źródłowe graficznego interfejsu znajdują się w katologu \textit{sta
 
 \newpage
 \section{Ewaluacja} \label{sec:ewal}
-Ewaluacja zaimplementowanych algorytmów została wykonana na wzór tej, opisanej w \cite[3]{Transcription:Pertus:Inharmonicity} przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1.
+Ewaluacja zaimplementowanych algorytmów została wykonana na wzór tych, opisanych w \cite[3]{Transcription:Pertus:Inharmonicity} i \cite[8]{Transcription:Pertus:Inharmonicity2} przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1.
 
 Każdą z wynikowych nut transkrypcji algorytm ewaluacyjny klasyfikuje do jednej z dwóch grup:
 \begin{itemize}
@@ -1496,13 +1484,17 @@ Zliczane są również wystąpienia  fałszy ujemnych (FN, ang. \textit{False ne
   \end{center}
 \end{figure}
 
-Na podstawie mocy tak sklasyfikowanych zbiorów mierzone są trzy miary statystyczne:
+Na podstawie mocy tak sklasyfikowanych zbiorów mierzone są cztery miary statystyczne:
 \begin{itemize}
+  \item dokładność (ang. \textit{accuracy}) pokazująca skale poprawnie wykrytych obserwacji na tle wszystkich sklasyfikowanych obserwacji (\ref{eq:acc}),
   \item precyzja (ang. \textit{precision}) pokazująca jaka część klasyfikacji dotatniej jest prawdziwie dotatnia (\ref{eq:percision}),
   \item czułość (ang. \textit{recall}) pokazująca jaka część spośród wszystkich dodatnich wyników została wykryta przez transkrypcję (\ref{eq:recall}),
   \item miara jakości F1 jako harmoniczna średnia precyzji i czułości (\ref{eq:f1}).
 \end{itemize}
 
+\begin{equation} \label{eq:acc}
+  \textrm{accuracy} = \frac{TP}{TP + FP + FN}
+\end{equation}
 \begin{equation} \label{eq:percision}
   \textrm{precision} = \frac{TP}{TP + FP}
 \end{equation}
@@ -1517,47 +1509,46 @@ Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona
 
 Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych (grupy testowe i ewaluacyjne). Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do wyliczenia wyników.
 
-W tabelach \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych funkcji użyte podczas procesu ewaluacji
+W tablicy \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych funkcji użyte podczas procesu ewaluacji dla sygnałów monofonicznych, którego wyniki w postaci wyżej opisanych miar statystycznych przedstawione są w tablicy \ref{tab:eval:mono}. Analogicznie, informacje o użytych alrgumentach i wynikach algorytmów dla sygnałów polifonicznych znajdują się w tablicach \ref{tab:bestArgPoli} i \ref{tab:eval:poli}. 
 
-\begin{table}[ht]
+\begin{table}[H]
   \begin{center}
-    \begin{tabular}{ |c|c|c|c|c|c| } 
+    \begin{tabular}{ |c|c|c|c|c|c|c| } 
     \hline
-    metoda & dł. okna / odstępy & marg. zer & min/max F0 & ods. pików & nieharm. \\
+    algorytm & $NFFT$ & odstępy & marg. zer & $W$ & min/max F0 & $P$ \\
     \hline
-    AC & 8192 / 512 & - & 85/5500 & -& -\\
-    ACLOS & 8192 / 512 & 8192 & 85/5500 & -& -\\
-    CEPS & 8192 / 512 & 8192 & 85/5500 & -& -\\
-    P\&I 08 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
-    P\&I 12 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
+    AC & 8192 & 512 & 8192 & 1 &  85/5500 & - \\
+    ACLOS & 8192 & 512 & 8192 & 1 & - & - \\
+    CEPS & 8192 & 512 & 8192 & 1 &- & -\\
+    P\&I 08 & 8192 & 512 & 8192 & 1 & 85/5500 & 6\\
+    P\&I 12 & 8192 & 512 & 8192 & 1 & 85/5500 & 6\\
+    \hline
+  \end{tabular}
+  \\
+  \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c| } 
+    \hline
+    algorytm & $\mu$ & $\eta $ & $h_{min/max}$ & $\gamma$ & $f_r$ & H & lifter & $k$ & K & M\\
+    \hline
+    P\&I 08 & 0.1 & 8192 &  85/5500 & 6& 0.16 & 10  & 6 & - & - & -\\
+    P\&I 12 & 0.1 & 8192 &  85/5500 & 6& 0.16 & 10  & 6 & 3 & 1 & 2\\
     \hline
     \end{tabular}
-  \begin{tabular}{ |c|c|c|c|c|c| } 
-    \hline
-    metoda & dł. okna / odstępy & marg. zer & min/max F0 & ods. pików & nieharm. \\
-    \hline
-    P\&I 08 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
-    P\&I 12 & 8192 / 512 & 8192 &  85/5500 & 6& 0.16\\
-    \hline
-    \end{tabular}
-  \caption{Tu będą najlepsze argumenty mono 2}\label{tab:bestArgMono}
+  \caption{$W$ - scalanie nut, $P$ - odstęp pików $k$ - ważność gładkości, K - zakres temporal smoothing, M - pitch tracking combinations}\label{tab:bestArgMono}
   \end{center}
 \end{table}
 
 
-\begin{table}[ht]
+\begin{table}[H]
   \begin{center}
-    \begin{tabular}{ |c|c|c| } 
+    \begin{tabular}{ |c|c|c|c|c| } 
     \hline
-    p & f & Literalna nazwa wysokości dźwięku\\
+    algorytm & dokładność & precyzja & czułość & F1\\
     \hline
-    33 & 55 & A1\\
-    45 & 110 & A2\\
-    57 & 220 & A3\\
-    69 & 440 & A4\\
-    81 & 880 & A5\\
-    93 & 1760 & A6\\
-    105 & 3520 & A7\\
+    AC & 8192 & 512 & 8192 & 1  \\
+    ACLOS & 8192 & 512 & 8192 & 1 \\
+    CEPS & 8192 & 512 & 8192 & 1 \\
+    P\&I 08 & 8192 & 512 & 8192 & 1 \\
+    P\&I 12 & 8192 & 512 & 8192 & 1\\
     \hline
     \end{tabular}
   \end{center}
@@ -1565,41 +1556,39 @@ W tabelach \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych 
   \label{tab:eval:mono}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[H]
   \begin{center}
-    \begin{tabular}{ |c|c|c| } 
-    \hline
-    p & f & Literalna nazwa wysokości dźwięku\\
-    \hline
-    33 & 55 & A1\\
-    45 & 110 & A2\\
-    57 & 220 & A3\\
-    69 & 440 & A4\\
-    81 & 880 & A5\\
-    93 & 1760 & A6\\
-    105 & 3520 & A7\\
-    \hline
-    \end{tabular}
+    \begin{tabular}{ |c|c|c|c|c|c|c| } 
+      \hline
+      algorytm & $NFFT$ & odstępy & marg. zer & $W$ & min/max F0 & $P$ \\
+      \hline
+      P\&I 08 & 8192 & 512 & 8192 & 1 & 85/5500 & 6\\
+      P\&I 12 & 8192 & 512 & 8192 & 1 & 85/5500 & 6\\
+      \hline
+      \end{tabular}
+    \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c| } 
+      \hline
+      algorytm & $\mu$ & $\eta $ & $h_{min/max}$ & $\gamma$ & $f_r$ & H & lifter & $k$ & K & M\\
+      \hline
+      P\&I 08 & 0.1 & 8192 &  85/5500 & 6& 0.16 & 10  & 6 & - & - & -\\
+      P\&I 12 & 0.1 & 8192 &  85/5500 & 6& 0.16 & 10  & 6 & 3 & 1 & 2\\
+      \hline
+      \end{tabular}
   \end{center}
   \caption{Tu będą najlepsze argumenty poli}
   \label{tab:bestArgPoli}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[H]
   \begin{center}
-    \begin{tabular}{ |c|c|c| } 
-    \hline
-    p & f & Literalna nazwa wysokości dźwięku\\
-    \hline
-    33 & 55 & A1\\
-    45 & 110 & A2\\
-    57 & 220 & A3\\
-    69 & 440 & A4\\
-    81 & 880 & A5\\
-    93 & 1760 & A6\\
-    105 & 3520 & A7\\
-    \hline
-    \end{tabular}
+      \begin{tabular}{ |c|c|c|c|c| } 
+      \hline
+      algorytm & dokładność & precyzja & czułość & F1\\
+      \hline
+      P\&I 08 & 8192 & 512 & 8192 & 1 \\
+      P\&I 12 & 8192 & 512 & 8192 & 1\\
+      \hline
+      \end{tabular}
   \end{center}
   \caption{Tu będą wyniki eval poli}
   \label{tab:eval:poli}
@@ -1607,7 +1596,16 @@ W tabelach \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych 
 
 
 \newpage
+\setcounter{secnumdepth}{0}
 \section{Zakończenie} \label{sec:end}
+W tej pracy magisterskiej przedstawiony został problem automatycznej transkrypcji muzyki wraz z metodologiami jego rozwiązania. W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane zostały pojęcia teorii muzyki oraz jej cechy, jak i ich istoność w kontekście opisywanego tematu. Rozdział \ref{sec:modelowanieSystemu} przedstawił ogólne założenia transkrypcji muzyki wraz z szczegółowym opisem używanego w nich potężnego nażędzia matematycznego jakim jest transformata Fouriera. Rozdziały \ref{sec:f0} i \ref{sec:MultiPitch} opisują wybrane algorytmy do wykrywania wysokości F0 w odpowiednio sygnale monofonicznym i sygnale polifonicznym. Kod, który powstał w ramach tej pracy implementuje przedstawione metody i jest opisany w rozdziale \ref{sec:impl}. Zaimplementowane zostały również funkcję ewaluacyjne, które porównują omawiane algorytmy pod względem jakości wyniku miarą F1 oraz mierzą ich czas wykonania. Opis ewaluacji zaimplementowanych metod transkrypcji muzyki opisany jest w rozdziale \ref{sec:ewal}.
+
+Znacząca część pracy skupia się jedynie na problemie częściowym transkrypcji muzyki jakim jest wykrycie wysokości obecnych w sygnale dźwięków. Pozostałe problemy, jak analiza rytmiki czy barwy dźwięku została jedynie przedstawiona, bez dogłębnej analizy. Przedstawione metodologie pokazują, że zadanie transkrypcji muzyki jest złożonym tematem przetwarzania sygnałów, który nie ma jednego optymalnego rozwiązania. Opisane algorytmy zakładają kompozycje przestrzegającą zasad muzyki zachodniej, co jest istotnym ograniczeniem możliwych danych wejściowych. 
+
+Polifoniczność w sygnale jest czynnikiem, który najmocniej wpływa na złożoność problemu transkrypcji muzyki. Rozróżnienie poszczególnych równoległych dźwięków wykonywane jest przy pomocy różnych metod, które często łączone są w złożone algorytmy, jak w metodach Metoda Pertusa i Iñesta \ref{sec:pertus1} \ref{sec:petrus2}. Inną próbą transkrypcji polifoni jest wykrywanie wzorców w sygnale, co ma miejsce w algorytmach bazujących na uczeniu maszynowym. Przykładami takich rozwiązań są \textit{Onsets and Frames} i holistyczna metoda Pertusa, opisane w odpowiednio \ref{sec:multif0:onsetsAndFrames} i \ref{sec:multif0:petrusNetwork}.
+
+W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersalnych danych wejściowych. Co więcej, nie istnieje bezbłędne system transkrypcji nawet dla kompozycji z ograniczeniem do standardów muzyki zachodniej i użycia pojedyńczego instrumentu, jakim jest pianino. Analiza wyników algorytmów pokazuje jednak, że wraz z nowymi rozwiazaniami na przestrzeni lat osiągane są nowe rekordy pod względem jakości wyników algorytmów transkrypcji muzyki. 
+
 \newpage
 
 \section{Słownik skrótów}
