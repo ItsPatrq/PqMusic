@@ -182,13 +182,15 @@ def compare_midi_to_ground_truth(transcriptionMidiNotes, groundTruthMidiNotes, m
 		percision = 0
 	else:
 		percision = TP / (TP + FP)
+
+	accuracy = TP / (TP + FP + FN)
 	recall = TP / (TP + FN)
 	if percision == 0 and recall == 0:
 		F1 = 0
 	else:
 		F1 = 2 * (percision * recall / (percision + recall))
 
-	return FN, FP, TP, F1, percision, recall
+	return FN, FP, TP, F1, percision, recall, accuracy
 
 
 if __name__ == "__main__":

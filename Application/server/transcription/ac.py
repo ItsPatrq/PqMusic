@@ -41,7 +41,7 @@ def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax, disable
 
   return bestFq, correlogram
 
-## For client-server usage
+## Funkcja do użytku serwera
 def autocorrelation_wrapped(filePath):
   fqMin = 50
   fqMax = 2000

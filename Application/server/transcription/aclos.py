@@ -14,7 +14,7 @@ from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from io import BytesIO
 
-# Autocorrelation of Log Spectrum
+# autokorelacja logarytmu spektrum mocy
 # Paper: https://www.researchgate.net/publication/232643468_Robust_method_of_measurement_of_fundamental_frequency_by_ACLOS_autocorrelation_of_log_spectrum
 # wartości domyślne są zeby było tak samo jak w pracy naukowej
 # https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
@@ -77,7 +77,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPa
 
     return bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra
 
-
+## Funkcja do użytku serwera
 def transcribe_by_aclos_wrapped(filePath):
     frameWidth = 2048
     spacing = 512

@@ -270,7 +270,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 			resNotes.append(allMidiNotes[np.argmax(allSaliences)])
 		return resNotes, resF0Weights, peaks, allCombinations
 
-	def flatternCombination(allCombinations):
+	def flattenCombination(allCombinations):
 		newSaliences = []
 		for frame in range(0, len(allCombinations)):
 			(currCombs, _, currMidiNotes, _, _) = allCombinations[frame]
@@ -337,7 +337,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 
 	def pertusAndInesta2012():
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
-		newSaliences = flatternCombination(allCombinations)
+		newSaliences = flattenCombination(allCombinations)
 		path, graph, resNotes = pitchTracking(allCombinations, newSaliences)
 		resMidi, resPianoRoll = post_process_midi_notes(resNotes)
 
@@ -347,7 +347,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 		return pertusAndInesta2012()
 	return pertusAndInesta2008()
 
-
+## Funkcja do użytku serwera
 def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	frameWidth = 8192
 	spacing = 1024

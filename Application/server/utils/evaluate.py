@@ -26,12 +26,13 @@ split = "split"
 canonical_title = "canonical_title"
 
 maxErr = 0.085
-stdFrameWidth = [1024, 2048, 4096, 8192]
-stdSpacing = [1024, 512]
-stdZeroPadding = [2048, 8192]
+
+stdFrameWidth = [2048, 4096]
+stdSpacing = [512]
+stdZeroPadding = [8192, 12288]
 stdMinF0 = [50]
 stdMaxF0 = [5500]
-stdNeighbourMerging = [3, 4]
+stdNeighbourMerging = [3]
 
 argsAc = {
     "neighbourMerging": stdNeighbourMerging,
@@ -62,17 +63,17 @@ argsJointMethodByPertusaAndInesta2008 = {
     'sizeOfZeroPadding': stdZeroPadding,
     'minF0': stdMinF0,
     'maxF0': stdMaxF0,
-    'peakDistance': [6, 8],
-    'relevantPowerThreashold': [4, 8],
-    'maxInharmonyDegree': [0.08, 0.16],
-    'minHarmonicsPerCandidate': [1, 2, 3],
+    'peakDistance': [8],
+    'relevantPowerThreashold': [4, 2],
+    'maxInharmonyDegree': [0.22],
+    'minHarmonicsPerCandidate': [1],
     'maxHarmonicsPerCandidate': [8],
-    'maxCandidates': [7],
-    'maxParallelNotes': [5],
-    'gamma': [0.1, 0.05],
+    'maxCandidates': [6],
+    'maxParallelNotes': [2],
+    'gamma': [0.1],
     'minNoteMs': [70],
-    'lifteringCoefficient': [0, 6, 8],
-    'minNoteVelocity': [15],
+    'lifteringCoefficient': [0, 6],
+    'minNoteVelocity': [16],
     'newAlgorithmVersion': [False],
     'smoothnessImportance': [None], #TODO: Czy to było dobrze opisane w Thesis?
     'temporalSmoothnessRange': [None],
@@ -88,12 +89,12 @@ argsJointMethodByPertusaAndInesta2012 = {
     'maxF0': stdMaxF0,
     'peakDistance': [6, 8],
     'relevantPowerThreashold': [4, 8],
-    'maxInharmonyDegree': [0.08, 0.16],
-    'minHarmonicsPerCandidate': [1, 2, 3],
+    'maxInharmonyDegree': [0.22],
+    'minHarmonicsPerCandidate': [1, 2], #if 2 -> try 3
     'maxHarmonicsPerCandidate': [8],
     'maxCandidates': [7],
     'maxParallelNotes': [5],
-    'gamma': [0.1, 0.05],
+    'gamma': [0.1, 0.06],
     'minNoteMs': [70],
     'lifteringCoefficient': [0, 6, 8],
     'minNoteVelocity': [15],
@@ -103,10 +104,10 @@ argsJointMethodByPertusaAndInesta2012 = {
     'pitch_tracking_combinations': [3, 4]
 }
 
-best_arg_ac = (8192, 512, 50, 5500)
-best_arg_aclos =  (8192, 512, 8192)
-best_arg_ceps = (8192, 512, 8192)
-best_arg_Joint2008 = (8192, 512, 8192, 50, 5500, 8, 8, 0.16, 3, 8, 7, 5, 0.1, 70, True, 8, 15, False, None, None, None)
+best_arg_ac = (1, 1024, 1024, 50, 5500)
+best_arg_aclos =  (3, 4096, 1024, 2048)
+best_arg_ceps = (3, 4096, 1024, 8192)
+best_arg_Joint2008 = (3, 2048, 512, 8192, 50, 5500, 8, 2, 0.32, 1, 8, 6, 1, 0.1, 70, 0, 16, False, None, None, None)
 best_arg_Joint2012 = (8192, 512, 8192, 50, 5500, 8, 8, 0.16, 3, 8, 7, 5, 0.1, 70, True, 8, 15, True, 3, 2, 2)
 
 class SplitEnum(enum.Enum):
@@ -115,19 +116,21 @@ class SplitEnum(enum.Enum):
     validation = "validation"
 
 class F1Results:
-    def __init__(self, FN, FP, TP, F1, percision, recall, algorithm):
+    def __init__(self, FN, FP, TP, F1, percision, recall, accuracy, algorithm):
         self.FN = FN
         self.FP = FP
         self.TP = TP
         self.F1 = F1
         self.percision = percision
         self.recall = recall
+        self.accuracy = accuracy
         self.algorithm = algorithm
     def print_results(self):
         return "Function name: " + self.algorithm + "\nNumber of tests: " + str(len(self.FN)) +\
             "\nAvarage FN: " + str(sum(self.FN) / len(self.FN)) + "\nAvarage FP: " + str(sum(self.FP) / len(self.FP)) +\
             "\nAvarage TP: " + str(sum(self.TP) / len(self.TP)) + "\nAvarage F1: " + str(sum(self.F1) / len(self.F1)) +\
             "\nAvarage percision: " + str(sum(self.percision) / len(self.percision)) + "\nAvarage recall: " + str(sum(self.recall) / len(self.recall)) +\
+            "\nAvarage accuracy: " + str(sum(self.accuracy) / len(self.accuracy)) +\
             "\nTime estimation: " + print_normalize_profile_data(0, self.algorithm)
 
 
@@ -206,14 +209,14 @@ def validate_all_arguments(func, args, evalObjects, saveRes, isResMidi = False):
     print("Validating " + str(len(possibleArgsCombinations)) +" possible arguments for function " + str(func.__name__))
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        procesess = []
+        processes = []
         bestF1 = 0
         bestArgs = None
         idx = 1
         for arg in possibleArgsCombinations:
-            procesess.append(executor.submit(validate_arguments, func, arg, evalObjects, saveRes, isResMidi, False, str(idx) + "/" + str(len(possibleArgsCombinations))))
+            processes.append(executor.submit(validate_arguments, func, arg, evalObjects, saveRes, isResMidi, False, str(idx) + "/" + str(len(possibleArgsCombinations))))
             idx += 1
-        for res in procesess:
+        for res in processes:
             currArg, currF1 = res.result()
             if currF1 > bestF1:
                 bestF1 = currF1
@@ -229,57 +232,64 @@ def validate_arguments(func, currArgs, evalObjects, saveRes, isResMidi = False, 
 
     for evObj in evalObjects:
         saveDist = (saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(currArgs) + ".mid").replace(", ", "_").replace("(", "").replace(")", "")
-        _, _, _, F1, _, _ = evObj.test_method(lambda normalizedData, sampleRate: run_transcription(
+        _, _, _, F1, _, _, _ = evObj.test_method(lambda normalizedData, sampleRate: run_transcription(
             func, isResMidi, normalizedData, sampleRate, *currArgs), maxErr=maxErr, save_dist=saveDist if shouldSave else None)
         currF1 += F1
     currF1 /= len(evalObjects)
     print(debugMessage + " " + str(currArgs) + " F1: " + str(currF1))
 
     return currArgs, currF1
-    
-def test_method(func, arg, evalObjects, saveRes):
-    FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
+
+def run_all_tests_on_method(func, arg, evalObjects, saveRes):
+    FN, FP, TP, F1, percision, recall, accuracy, processes = [], [], [], [], [], [], [], []
     print("Testing function " + str(func.__name__))
     if arg is None:
         print("Testing function " + str(func.__name__) + " failed - arg is None")
-        return F1Results(0, 0, 0, 0, 0, 0, func.__name__)
-    for evObj in evalObjects:
-        currFN, currFP, currTP, currF1, currPercision, currRecall = evObj.test_method(lambda normalizedData, sampleRate: func(
-            normalizedData, sampleRate, *arg), maxErr=maxErr, save_dist=(saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(arg) + ".mid").replace(", ", "_").replace("(", "").replace(")", ""))
-        FN.append(currFN)
-        FP.append(currFP)
-        TP.append(currTP)
-        F1.append(currF1)
-        percision.append(currPercision)
-        recall.append(currRecall)
-    return F1Results(FN, FP, TP, F1, percision, recall, func.__name__)
+        return F1Results(0, 0, 0, 0, 0, 0, 0, func.__name__)
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for evalObj in evalObjects:
+            processes.append(executor.submit(run_test_on_method, func, arg, evalObj, saveRes))
+        for res in processes:
+            currFN, currFP, currTP, currF1, currPercision, currRecall, currAccuracy = res.result()
+            FN.append(currFN)
+            FP.append(currFP)
+            TP.append(currTP)
+            F1.append(currF1)
+            percision.append(currPercision)
+            recall.append(currRecall)
+            accuracy.append(currAccuracy)
+    return F1Results(FN, FP, TP, F1, percision, recall, accuracy, func.__name__)
+
+def run_test_on_method(func, arg, evalObj, saveRes):
+    return evalObj.test_method(lambda normalizedData, sampleRate: func(normalizedData, sampleRate, *arg),
+        maxErr=maxErr, save_dist=(saveRes + evalObj.audioName + "_" + func.__name__ + "_" + str(arg) + ".mid").replace(", ", "_").replace("(", "").replace(")", ""))
 
 def test_method_onsets(onsets, evalObjects, saveRes):
-    FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
+    FN, FP, TP, F1, percision, recall, accuracy, processes = [], [], [], [], [], [], [], []
     print("Testing function Onsets and Frames")
 
-    for evObj in evalObjects:
-        currFile = open(evObj.get_audio_path(), 'rb')
-        uploaded = {
-            str(currFile.name): currFile.read()
-        }
-        respFilePath = saveRes + (evObj.audioName + "_" + run_onsets_and_frames.__name__ + "_" + "Maestro2.0Args" + ".mid").replace(", ", "_").replace("(", "").replace(")", "")
-        run_onsets_and_frames(onsets, uploaded, respFilePath)
-        evalNotes = load_midi_file(respFilePath)
-        gtNotes = load_midi_file(evObj.get_midi_path())
-        
-        
-        currFN, currFP, currTP, currF1, currPercision, currRecall = compare_midi_to_ground_truth(evalNotes, gtNotes, maxErr)
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for evalObj in evalObjects:
+            currFile = open(evalObj.get_audio_path(), 'rb')
+            uploaded = {
+                str(currFile.name): currFile.read()
+            }
+            respFilePath = saveRes + (evalObj.audioName + "_" + run_onsets_and_frames.__name__ + "_" + "Maestro2.0Args" + ".mid").replace(", ", "_").replace("(", "").replace(")", "")
+            processes.append(executor.submit(run_onsets_and_frames, onsets, uploaded, respFilePath, load_midi_file(evalObj.get_midi_path())))
+    
+    for res in processes:
+        currFN, currFP, currTP, currF1, currPercision, currRecall, currAccuracy = res.result()
         FN.append(currFN)
         FP.append(currFP)
         TP.append(currTP)
         F1.append(currF1)
         percision.append(currPercision)
         recall.append(currRecall)
-    return F1Results(FN, FP, TP, F1, percision, recall, "run_onsets_and_frames")
+        accuracy.append(currAccuracy)
+    return F1Results(FN, FP, TP, F1, percision, recall, accuracy, "run_onsets_and_frames")
 
 def test_method_gpu(func, arg, evalObjects, saveRes, api, thr):
-    FN, FP, TP, F1, percision, recall = [], [], [], [], [], []
+    FN, FP, TP, F1, percision, recall, accuracy = [], [], [], [], [], [], []
     print("Testing function " + str(func.__name__))
     
     def run_fun(normalizedData, sampleRate):
@@ -287,7 +297,7 @@ def test_method_gpu(func, arg, evalObjects, saveRes, api, thr):
         return resMidi
 
     for evObj in evalObjects:
-        currFN, currFP, currTP, currF1, currPercision, currRecall = evObj.test_method(lambda normalizedData, sampleRate: run_fun(
+        currFN, currFP, currTP, currF1, currPercision, currRecall, currAccuracy = evObj.test_method(lambda normalizedData, sampleRate: run_fun(
             normalizedData, sampleRate), maxErr=maxErr, save_dist=(saveRes + evObj.audioName + "_" + func.__name__ + "_" + str(arg) + ".mid").replace(", ", "_").replace("(", "").replace(")", ""))
         FN.append(currFN)
         FP.append(currFP)
@@ -295,7 +305,9 @@ def test_method_gpu(func, arg, evalObjects, saveRes, api, thr):
         F1.append(currF1)
         percision.append(currPercision)
         recall.append(currRecall)
-    return F1Results(FN, FP, TP, F1, percision, recall, func.__name__)
+        accuracy.append(currAccuracy)
+
+    return F1Results(FN, FP, TP, F1, percision, recall, accuracy, func.__name__)
 
 @profile
 def run_ac(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, fqMin, fqMax):
@@ -317,7 +329,7 @@ def run_ceps(normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, 
 
 @profile
 def run_ceps_gpu(api, thr, normalizedData, sampleRate, neighbourMerging, frameWidth, spacing, *restArgs):
-    cepstra, best_frequencies, _ = cepstrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
+    _, best_frequencies, _ = cepstrumF0AnalysisGpu(api, thr, None, normalizedData, sampleRate, frameWidth, spacing, *restArgs)
     resMidi, _ = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing, neighbourMerging)
     return resMidi
 
@@ -332,9 +344,10 @@ def run_joint_method_2012(normalizedData, sampleRate, *restArgs):
     return resMidi
 
 @profile
-def run_onsets_and_frames(onsets, uploaded, responseFilePath):
+def run_onsets_and_frames(onsets, uploaded, responseFilePath, gtNotes):
     onsets.transcribe(uploaded, responseFilePath)
-    return 
+    evalNotes = load_midi_file(responseFilePath)
+    return compare_midi_to_ground_truth(evalNotes, gtNotes, maxErr)
 
 
 def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations = 10, onlyPoli = False):
@@ -351,14 +364,14 @@ def run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, best
     #region testowanie algorytmów
     for _ in range(0, iterations):
         if not onlyPoli:
-            acResults = test_method(run_ac, bestAcArgs, tests, resFolderTest)
-            aclosResults = test_method(run_aclos, bestAclosArgs, tests, resFolderTest)
-            cepsResults = test_method(run_ceps, bestCepstrumArgs, tests, resFolderTest)
-            cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr)
+            acResults = run_all_tests_on_method(run_ac, bestAcArgs, tests, resFolderTest)
+            aclosResults = run_all_tests_on_method(run_aclos, bestAclosArgs, tests, resFolderTest)
+            cepsResults = run_all_tests_on_method(run_ceps, bestCepstrumArgs, tests, resFolderTest) 
+            cepsGpuResults = test_method_gpu(run_ceps_gpu, bestCepstrumArgs, tests, resFolderTest, api, thr) # Jedyna metoda która nie wykonuje się w podprocesach żeby nie zakłócać GPU
             ctx.pop()
             pycuda.tools.clear_context_caches()
-        joint2008Results = test_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
-        joint2012Results = test_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
+        joint2008Results = run_all_tests_on_method(run_joint_method_2008, bestJointMethodByPertusaAndInesta2008Args, tests, resFolderTest)
+        joint2012Results = run_all_tests_on_method(run_joint_method_2012, bestJointMethodByPertusaAndInesta2012Args, tests, resFolderTest)
         onsetsResults = test_method_onsets(onsets, tests, resFolderTest)
     #endregion testowanie algorytmów
 
@@ -374,15 +387,15 @@ def run_evals(validators, resFolderValidation, onlyPoli):
     bestAcArgs, bestAclosArgs, bestCepstrumArgs = (), (), ()
     #region wyznaczenie najlepszych argumentów przez walidacje
     if not onlyPoli:
-        bestAcArgs, _ = validate_arguments(
+        bestAcArgs, _ = validate_all_arguments(
             autocorrelation, argsAc, validators, resFolderValidation)
-        bestAclosArgs, _ = validate_arguments(
+        bestAclosArgs, _ = validate_all_arguments(
             aclos, argsAclos, validators, resFolderValidation)
-        bestCepstrumArgs, _ = validate_arguments(
+        bestCepstrumArgs, _ = validate_all_arguments(
             cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
     bestJointMethodByPertusaAndInesta2008Args, _ = validate_all_arguments(
         harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, isResMidi=True)
-    bestJointMethodByPertusaAndInesta2012Args, _ = validate_arguments(
+    bestJointMethodByPertusaAndInesta2012Args, _ = validate_all_arguments(
         harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, isResMidi=True)
     #endregion wyznaczenie najlepszych argumentów przez walidacje
     return bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args
@@ -399,7 +412,7 @@ def run_eval_and_test_on_dataset(dataSet, iterations = 10, onlyPoli = False):
     #region wyznaczenie najlepszych argumentów przez walidacje
     bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args = run_evals(validators, resFolderValidation, onlyPoli)
     
-    #run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
+    run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
 
 
 def run_test_with_predefined_args_on_dataset(dataSet):
@@ -434,7 +447,7 @@ def get_part_of_eval_dataset(dataSet, quantityOfDataToTake):
             if len(res) == quantityOfDataToTake:
                 return res
 
-def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTests = 100, iterations = 1, onlyPoli = False):
+def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 1, quantityTests = 100, iterations = 1, onlyPoli = False):
     #region initializacja
     validators = get_part_of_eval_dataset(dataSet, quantityEvals)
     tests = get_part_of_test_dataset(dataSet, quantityTests)
@@ -448,10 +461,15 @@ def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 3, quantityTes
     run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
 
 
-
-if __name__ == "__main__":
-    run_eval_and_test_on_dataset("monoSound", onlyPoli=True)
+def temporary():
+    tests, validators = load_metadata("monoSound")
+    resFolder, resFolderTest, resFolderValidation = create_results_folder("monoSound")
+    
+    bestJointMethodByPertusaAndInesta2012Args, _ = validate_all_arguments(
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, isResMidi=True)
     print("POLI")
     run_eval_and_test_on_part_of_dataset("maestro", onlyPoli=True)
 
-    #run_test_with_predefined_args_on_dataset("monoSound")
+
+if __name__ == "__main__":
+    temporary()

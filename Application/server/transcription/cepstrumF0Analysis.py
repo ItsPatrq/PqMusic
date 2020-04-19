@@ -38,7 +38,7 @@ def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512
         bestFq.append(sampleRate/maxperiod)
     
     return bestFq, cepstra, spectrogram, logSpectrogram
-
+## Funkcja do użytku serwera
 def transcribe_by_cepstrum_wrapped(filePath):
     frameWidth = 2048
     spacing = 512
