@@ -15,16 +15,16 @@ from utils.midi import res_in_hz_to_midi_notes, write_midi, load_midi_file
 
 # Funkcja autokorelacji operująca na sygnale audio w domenie czasu
 def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax, disableTqdm = True):
-  def ac(data, minLag, maxLag):
-    result = list(np.zeros(minLag))
-    n = len(data)
+  def ac(currFrame, minLag, maxLag):
+    res = list(np.zeros(minLag))
+    n = len(currFrame)
     for lag in range(minLag, maxLag):
-        sumarray = np.zeros(n+lag)
-        sumarray[:n] = data
-        sumarray[:n-lag] *= data[lag:]
-        sum = np.sum(sumarray[:n-lag])
-        result.append(float(sum/(n-lag)))
-    return result
+        acRes = np.zeros(n+lag)
+        acRes[:n] = currFrame
+        acRes[:n-lag] *= currFrame[lag:]
+        acSum = np.sum(acRes[:n-lag])
+        res.append(acSum/(n-lag))
+    return res
 
   bestFq = []
   correlogram = []
