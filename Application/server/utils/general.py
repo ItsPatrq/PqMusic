@@ -57,7 +57,7 @@ def normalizeData(sample_rate, data):
   return np.array(mono) / float(dataNormalization)
 
 
-def loadNormalizedSoundFIle(file_path):
+def loadNormalizedSoundFile(file_path):
   file_path = convertAudioFileToWave(file_path)
   if file_path.endswith(".wav") == False:
     raise Exception("Only .wav files allowed")

@@ -3,7 +3,7 @@ from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 from utils.plots import plot_pitches, plot_correlogram, plot_wave, plot_correlation
-from utils.general import loadNormalizedSoundFIle
+from utils.general import loadNormalizedSoundFile
 import numpy as np
 from tqdm import tqdm
 import sys
@@ -47,7 +47,7 @@ def autocorrelation_wrapped(filePath):
   fqMax = 2000
   frameWidth = 2048
   spacing = 2048
-  sampleRate, data = loadNormalizedSoundFIle(filePath)
+  sampleRate, data = loadNormalizedSoundFile(filePath)
   best_frequencies, correlogram = autocorrelation(
       data, sampleRate, frameWidth, frameWidth, fqMin, fqMax)
   fig, _ = plot_pitches(best_frequencies, spacing, sampleRate, show=False, language="pl")
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     #filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
 
 
-    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    sampleRate, data = loadNormalizedSoundFile(filePath)
 
     best_frequencies, correlogram = autocorrelation(
         data, sampleRate, frameWidth, frameWidth, fqMin, fqMax)

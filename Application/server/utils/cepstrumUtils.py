@@ -101,12 +101,12 @@ if __name__ == "__main__":
     from os import path
     import sys
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    from utils.general import loadNormalizedSoundFIle
+    from utils.general import loadNormalizedSoundFile
     
     def test1():
         filePath = path.dirname(path.abspath(__file__))
         filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
-        fs, signal = loadNormalizedSoundFIle(filePath)
+        fs, signal = loadNormalizedSoundFile(filePath)
         samples = len(signal)
         t = np.arange(samples) / fs
         ceps, ndelay, spectrum, logSp = complex_cepst_from_signal(signal)
@@ -117,7 +117,6 @@ if __name__ == "__main__":
         ax1.set_xlim(0.005, 0.015)
         ax1.set_ylim(-5., +10.)
         ceps[(abs(ceps) < 0.01)] = 0
-        print(ceps[1])
         y = inverse_complex_cepstrum(ceps, ndelay)
         ax0 = fig.add_subplot(511)
         ax0.plot(t, signal,'-')
@@ -145,7 +144,7 @@ if __name__ == "__main__":
     def test2():
         filePath = path.dirname(path.abspath(__file__))
         filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
-        fs, signal = loadNormalizedSoundFIle(filePath)
+        fs, signal = loadNormalizedSoundFile(filePath)
         signal = signal * 40
         samples = len(signal)
         t = np.arange(samples) / fs
@@ -169,7 +168,7 @@ if __name__ == "__main__":
     def test3():
         filePath = path.dirname(path.abspath(__file__))
         filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-        fs, signal = loadNormalizedSoundFIle(filePath)
+        fs, signal = loadNormalizedSoundFile(filePath)
         samples = 2048 * 2
         t = np.arange(samples) / fs
         spec =  np.abs(fft(signal[(samples * 2):(samples*3)]))

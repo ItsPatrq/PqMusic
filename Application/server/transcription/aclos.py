@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft, ifft
 from tqdm import tqdm
 import math
-from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz
+from utils.general import loadNormalizedSoundFile, create_sine, fft_to_hz
 from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_correlation, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from utils.custom_profile import profile, print_prof_data
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
@@ -81,7 +81,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPa
 def transcribe_by_aclos_wrapped(filePath):
     frameWidth = 2048
     spacing = 512
-    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    sampleRate, data = loadNormalizedSoundFile(filePath)
     bestFq, correlogram, _, _, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
 
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
     #file_path = '../test_sounds/Sine_sequence.wav'
     #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 
-    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    sampleRate, data = loadNormalizedSoundFile(filePath)
     sine_data = create_sine(440, sampleRate, 5)
     sine_data += (create_sine(880, sampleRate, 5) * 0.4)
     sine_data += (create_sine(1320, sampleRate, 5) * 0.2)

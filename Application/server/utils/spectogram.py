@@ -1,6 +1,6 @@
 import os
 import wave
-from  .general import convertAudioFileToWave, path_leaf, loadNormalizedSoundFIle
+from  .general import convertAudioFileToWave, path_leaf, loadNormalizedSoundFile
 import pylab
 from .plots import plot_spectrogram
 import math
@@ -32,7 +32,7 @@ if __name__ == '__main__':
 def plot_spectrogram_wrapped(filePath, result_path):
     frameWidth = 2048
     spacing = 2048
-    sampleRate, data = loadNormalizedSoundFIle(filePath)
+    sampleRate, data = loadNormalizedSoundFile(filePath)
     spectra = []
     hann = np.hanning(frameWidth)
     zeroPadding = np.zeros(frameWidth)

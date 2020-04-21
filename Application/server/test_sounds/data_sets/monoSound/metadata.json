@@ -34,5 +34,53 @@
         "midi_filename": "2020\/MIDI-Unprocessed_Recital5-7_MID--AUDIO_07_R1_2018_wav--4.mid",
         "audio_filename": "2020\/MIDI-Unprocessed_Recital5-7_MID--AUDIO_07_R1_2018_wav--4.wav",
         "canonical_title": "Unprocessed_Recital5"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_SMF_13_01_2004_01-05_ORIG_MID--AUDIO_13_R1_2004_10_Track10_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_SMF_13_01_2004_01-05_ORIG_MID--AUDIO_13_R1_2004_10_Track10_wav.wav",
+        "canonical_title": "Unprocessed_SMF_13_01_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_SMF_02_R1_2004_01-05_ORIG_MID--AUDIO_02_R1_2004_06_Track06_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_SMF_02_R1_2004_01-05_ORIG_MID--AUDIO_02_R1_2004_06_Track06_wav.wav",
+        "canonical_title": "Unprocessed_SMF_02_R1_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_SMF_22_R1_2004_01-04_ORIG_MID--AUDIO_22_R1_2004_05_Track05_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_SMF_22_R1_2004_01-04_ORIG_MID--AUDIO_22_R1_2004_05_Track05_wav.wav",
+        "canonical_title": "Unprocessed_SMF_22_R1_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_XP_09_R1_2004_01-02_ORIG_MID--AUDIO_09_R1_2004_01_Track01_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_XP_09_R1_2004_01-02_ORIG_MID--AUDIO_09_R1_2004_01_Track01_wav.wav",
+        "canonical_title": "Unprocessed_XP_09_R1_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_XP_10_R1_2004_01-02_ORIG_MID--AUDIO_10_R1_2004_01_Track01_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_XP_10_R1_2004_01-02_ORIG_MID--AUDIO_10_R1_2004_01_Track01_wav.wav",
+        "canonical_title": "Unprocessed_XP_10_R1_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_XP_04_R1_2004_03-05_ORIG_MID--AUDIO_04_R1_2004_04_Track04_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_XP_04_R1_2004_03-05_ORIG_MID--AUDIO_04_R1_2004_04_Track04_wav.wav",
+        "canonical_title": "Unprocessed_XP_04_R1_2004_03"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_SMF_16_R1_2004_01-08_ORIG_MID--AUDIO_16_R1_2004_03_Track03_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_SMF_16_R1_2004_01-08_ORIG_MID--AUDIO_16_R1_2004_03_Track03_wav.wav",
+        "canonical_title": "Unprocessed_SMF_16_R1_2004_01"
+    },
+    {
+        "split": "test",
+        "midi_filename": "2020\/MIDI-Unprocessed_XP_09_R1_2004_05_ORIG_MID--AUDIO_09_R1_2004_07_Track07_wav.mid",
+        "audio_filename": "2020\/MIDI-Unprocessed_XP_09_R1_2004_05_ORIG_MID--AUDIO_09_R1_2004_07_Track07_wav.wav",
+        "canonical_title": "Unprocessed_XP_09_R1_2004_05_ORIG_MID"
     }
 ]

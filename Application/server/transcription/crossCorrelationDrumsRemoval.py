@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 from scipy.fftpack import fft, ifft
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, to_wave
+from utils.general import loadNormalizedSoundFile, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, to_wave
 
 # right now using aubio library, might implement own later
 def detect_onsets(filePath, method="default", windowSize=1024):
@@ -91,7 +91,7 @@ def drums_removal_example():
 	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
 	#filePath = '../test_sounds/Sine_sequence.wav'
 	trackPath = path.join(filePath, '../test_sounds/example/track.wav')
-	sampleRate, data = loadNormalizedSoundFIle(trackPath)
+	sampleRate, data = loadNormalizedSoundFile(trackPath)
 	sounds = []
 	paths = [
 		path.join(filePath, '../test_sounds/example/track_kick.wav'),
@@ -101,7 +101,7 @@ def drums_removal_example():
 	]
 
 	for currPath in paths:
-		_, soundData = loadNormalizedSoundFIle(currPath)
+		_, soundData = loadNormalizedSoundFile(currPath)
 		sounds.append(soundData)
 	sampleRate = 44100
 	onsets = detect_onsets(trackPath)

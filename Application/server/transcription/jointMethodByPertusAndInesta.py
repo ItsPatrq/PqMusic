@@ -12,7 +12,7 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from utils.plots import plot_spectrogram, plot_pitches, plot_midi, plot_peaks, plot_pitch_tracking
-from utils.general import loadNormalizedSoundFIle, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
+from utils.general import loadNormalizedSoundFile, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, get_arg_max
 from utils.midi import write_midi, hz_to_midi, midi_to_hz, MidiNote, get_midi_bytes, post_process_midi_notes as utilpost_process_midi_notes
 import networkx as nx
 from collections import namedtuple
@@ -229,7 +229,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 	def coreMethod():
 		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
 			peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
-
+		
 			hypotheses, amplitudeSum, patterns, ownerships = getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
 			if(len(hypotheses) == 0):
 				resNotes.append({})
@@ -336,9 +336,16 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 		return resMidi, resPianoRoll, resF0Weights, peaks, None, None
 
 	def pertusAndInesta2012():
+		#print("before core method")
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
+		#print("before flattenCombination")
+
 		newSaliences = flattenCombination(allCombinations)
+		#print("before pitchTracking")
+
 		path, graph, resNotes = pitchTracking(allCombinations, newSaliences)
+		#print("before post_process_midi_notes")
+
 		resMidi, resPianoRoll = post_process_midi_notes(resNotes)
 
 		return resMidi, resPianoRoll, resF0Weights, peaks, path, graph
@@ -351,7 +358,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 def transcribe_by_joint_method_wrapped(filePath, newV, outPath):
 	frameWidth = 8192
 	spacing = 1024
-	sampleRate, data = loadNormalizedSoundFIle(filePath)
+	sampleRate, data = loadNormalizedSoundFile(filePath)
 
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
 		data, sampleRate, 4, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=newV)
@@ -368,7 +375,7 @@ if __name__ == "__main__":
 	#filePath = '../test_sounds/Sine_sequence.wav'
 	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 	filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
-	sampleRate, data = loadNormalizedSoundFIle(filePath)
+	sampleRate, data = loadNormalizedSoundFile(filePath)
 	data = data[:(int(len(data)))]
 	sampleRate = 44100
 
