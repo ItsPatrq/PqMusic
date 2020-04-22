@@ -10,7 +10,7 @@ from utils.general import loadNormalizedSoundFile, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
-from utils.custom_profile import profile, print_prof_data, print_normalize_profile_data
+from utils.custom_profile import profile_old, print_prof_data, print_normalize_profile_data_old
 from utils.cepsUtilsGpu import CepsUtilsGpu
 import pycuda.driver
 import pycuda.tools
@@ -20,6 +20,7 @@ from reikna.cluda import dtypes, cuda_api
 from io import BytesIO
 
 
+@profile_old
 def cepstrumF0AnalysisGpu (api, thr, compiledCepstrum, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     if compiledCepstrum is None:
         params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)
@@ -63,8 +64,8 @@ if __name__ == "__main__":
     api = cuda_api()
     thr = api.Thread.create()
     compiledCepstrum = None
-    # for i in range(0, 10000):
-    cepstra, bestFq, compiledCepstrum = cepstrumF0AnalysisGpu(api, thr, compiledCepstrum, np.array(data), sampleRate, frameWidth, spacing, frameWidth)
+    for i in range(0, 1000):
+        cepstra, bestFq, compiledCepstrum = cepstrumF0AnalysisGpu(api, thr, compiledCepstrum, np.array(data), sampleRate, 4096, 1024, 8192)
 
     # # plot_pitches(bestFq, spacing, sampleRate)
     plot_cepstrogram(cepstra, spacing, sampleRate, transpose=False, showColorbar=False)
@@ -72,6 +73,6 @@ if __name__ == "__main__":
 
     ctx.pop()
     pycuda.tools.clear_context_caches()
-    # print_prof_data()
-    # print_normalize_profile_data(10)
+    print(print_prof_data())
+    print(print_normalize_profile_data_old(10))
 

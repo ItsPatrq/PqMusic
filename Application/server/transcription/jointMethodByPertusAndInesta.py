@@ -228,6 +228,8 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 
 	def coreMethod():
 		for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
+			if i % 1000 == 0:
+				print(i, "/", int(math.ceil((len(data) - frameWidth) / spacing)))
 			peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
 		
 			hypotheses, amplitudeSum, patterns, ownerships = getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
@@ -336,15 +338,15 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 		return resMidi, resPianoRoll, resF0Weights, peaks, None, None
 
 	def pertusAndInesta2012():
-		#print("before core method")
+		print("before core method")
 		resNotes, resF0Weights, peaks, allCombinations = coreMethod()
-		#print("before flattenCombination")
+		print("before flattenCombination")
 
 		newSaliences = flattenCombination(allCombinations)
-		#print("before pitchTracking")
+		print("before pitchTracking")
 
 		path, graph, resNotes = pitchTracking(allCombinations, newSaliences)
-		#print("before post_process_midi_notes")
+		print("before post_process_midi_notes")
 
 		resMidi, resPianoRoll = post_process_midi_notes(resNotes)
 

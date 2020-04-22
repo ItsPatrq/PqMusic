@@ -120,7 +120,7 @@ if __name__ == "__main__":
     plot_pitches(bestFq, spacing, sampleRate, language='pl')
     # fig = plot_spectrum_line_component(spectra[5], sampleRate, data[:frameWidth])
     # plt.show()
-    # plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10], language='pl')
+    plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10], language='pl')
 
 
     print("ok")

@@ -10,10 +10,10 @@ from utils.general import loadNormalizedSoundFile, create_sine
 from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_components, plot_spectrogram, plot_cepstrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
-from utils.custom_profile import profile, print_prof_data, print_normalize_profile_data
 from io import BytesIO
+from utils.custom_profile import profile_old, print_prof_data, print_normalize_profile_data_old
 
-
+@profile_old
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     hanning = np.hanning(frameWidth)
     spectrogram = []
@@ -75,8 +75,8 @@ if __name__ == "__main__":
     sine_data += (create_sine(440, sampleRate, 5) * 0.2)
     sine_data += (create_sine(110, sampleRate, 5) * 0.3)
     
-    #for i in range(0, 10):
-    bestFq, cepstra, spectra, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
+    for i in range(0, 1000):
+        bestFq, cepstra, spectra, logSpectrogram = cepstrumF0Analysis(data, sampleRate, 4096, 1024, 8192)
     #---------------------------
     # filePath1 = path.join(filePath, '../test_sounds/EmPiano/E3.wav')
     # sampleRate, data = loadNormalizedSoundFile(filePath1)
@@ -90,9 +90,12 @@ if __name__ == "__main__":
     # sampleRate, data = loadNormalizedSoundFile(filePath3)
     # bestFq, cepstra, spectra3, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
 
-    plot_pitches(bestFq, spacing, sampleRate, language='pl')
+    #plot_pitches(bestFq, spacing, sampleRate, language='pl')
     # plot_spectrogram(spectra, spacing, sampleRate, language='pl', showColorbar=False)
     # plot_spectrum_line_component_only(spectra[5], sampleRate, language="pl")
     # plot_spectrum_line_components(spectra[5],spectra1[5],spectra2[5],spectra3[5], sampleRate, language="pl")
     # plt.show()
     plot_cepstrogram(cepstra, spacing, sampleRate, language='pl', showColorbar=False)
+    print(print_prof_data())
+    print(print_normalize_profile_data_old(10))
+

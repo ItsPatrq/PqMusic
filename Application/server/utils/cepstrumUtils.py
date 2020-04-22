@@ -186,6 +186,9 @@ if __name__ == "__main__":
         ax1.plot(t[:(len(t)//2)], liftered[:(len(t)//2)], '-')
         #ax1.plot(t[:(len(t)//2)], triangular[:(len(t)//2)], '-')
         ax1.legend(['spektrum mocy', 'przefiltrowane spektrum mocy'], loc='best')
+        ax1.set_xlabel("Częstotliwość (w Hz)", fontsize=32)
+        ax1.set_ylabel("Magnituda", fontsize=32)
+        ax1.set_xticklabels(np.arange(0, len(spec[:(len(t)//2)]), 200))
 
         plt.show()
 
