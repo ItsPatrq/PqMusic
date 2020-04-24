@@ -1,0 +1,12 @@
+Function name: run_onsets_and_frames
+Number of tests: 2
+Avarage FN: 2062.5
+Avarage FP: 1847.5
+Avarage TP: 153.0
+Avarage F1: 0.055061033952854534
+Avarage percision: 0.05792934420508265
+Avarage recall: 0.05247246168582376
+Avarage accuracy: 0.028513382717942327
+Time estimation: Function run_onsets_and_frames called 2 times. 
+Execution time max: 56.332, average: 40.675
+Transcribed data had 620.992 seconds, avg. 310.496 seconds

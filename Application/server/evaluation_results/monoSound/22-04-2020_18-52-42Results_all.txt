@@ -1,0 +1,96 @@
+Function name: run_ac
+Number of tests: 11
+Avarage FN: 9.636363636363637
+Avarage FP: 20.818181818181817
+Avarage TP: 14.818181818181818
+Avarage F1: 0.4258926159995679
+Avarage percision: 0.3809785551881509
+Avarage recall: 0.5158942422670184
+Avarage accuracy: 0.32666266589796256
+Time estimation: Function run_ac called 26855466 times. 
+Execution time max: 11.794, average: 3.957
+Transcribed data had 178832909.500 seconds, avg. 6.659 seconds
+
+
+Function name: run_aclos
+Number of tests: 11
+Avarage FN: 9.454545454545455
+Avarage FP: 32.45454545454545
+Avarage TP: 15.0
+Avarage F1: 0.3603260627273809
+Avarage percision: 0.29750042440985425
+Avarage recall: 0.48586650229993
+Avarage accuracy: 0.26650231318723533
+Time estimation: Function run_aclos called 26855466 times. 
+Execution time max: 47.249, average: 11.819
+Transcribed data had 178832909.500 seconds, avg. 6.659 seconds
+
+
+Function name: run_ceps
+Number of tests: 11
+Avarage FN: 7.545454545454546
+Avarage FP: 44.27272727272727
+Avarage TP: 16.90909090909091
+Avarage F1: 0.4004930836408278
+Avarage percision: 0.3091564677791094
+Avarage recall: 0.6479559746135682
+Avarage accuracy: 0.27914827884409843
+Time estimation: Function run_ceps called 26855466 times. 
+Execution time max: 1.275, average: 0.417
+Transcribed data had 178832909.500 seconds, avg. 6.659 seconds
+
+
+Function name: run_ceps_gpu
+Number of tests: 11
+Avarage FN: 8.181818181818182
+Avarage FP: 48.27272727272727
+Avarage TP: 16.272727272727273
+Avarage F1: 0.3757822004243312
+Avarage percision: 0.2903443762885826
+Avarage recall: 0.6129225433467029
+Avarage accuracy: 0.2618946695349135
+Time estimation: Function run_ceps_gpu called 110 times. 
+Execution time max: 5.058, average: 1.968
+Transcribed data had 678.750 seconds, avg. 6.787 seconds
+
+
+Function name: run_joint_method_2008
+Number of tests: 11
+Avarage FN: 10.181818181818182
+Avarage FP: 18.0
+Avarage TP: 14.272727272727273
+Avarage F1: 0.44398150138845
+Avarage percision: 0.4301276238035131
+Avarage recall: 0.4847483847145112
+Avarage accuracy: 0.33749906448770084
+Time estimation: Function run_joint_method_2008 called 26855466 times. 
+Execution time max: 11.705, average: 4.308
+Transcribed data had 178832909.500 seconds, avg. 6.659 seconds
+
+
+Function name: run_joint_method_2012
+Number of tests: 11
+Avarage FN: 12.909090909090908
+Avarage FP: 25.818181818181817
+Avarage TP: 11.545454545454545
+Avarage F1: 0.32062554570609075
+Avarage percision: 0.30801166760566095
+Avarage recall: 0.36764469178703235
+Avarage accuracy: 0.22523137177156813
+Time estimation: Function run_joint_method_2012 called 26855466 times. 
+Execution time max: 17.407, average: 5.536
+Transcribed data had 178832945.750 seconds, avg. 6.659 seconds
+
+
+Function name: run_onsets_and_frames
+Number of tests: 11
+Avarage FN: 11.090909090909092
+Avarage FP: 14.363636363636363
+Avarage TP: 13.363636363636363
+Avarage F1: 0.37918273109120837
+Avarage percision: 0.35962619896443426
+Avarage recall: 0.4014783192819174
+Avarage accuracy: 0.29926869913837556
+Time estimation: Function run_onsets_and_frames called 26855466 times. 
+Execution time max: 20.844, average: 9.452
+Transcribed data had 178832937.000 seconds, avg. 6.659 seconds
