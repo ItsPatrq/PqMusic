@@ -59,7 +59,7 @@ def index():
 
 @app.route('/Thesis', methods=['GET', 'POST'])
 def getThesisPaper():
-    return send_file("../../Thesis/Magister_Thesis.pdf")
+    return send_file("../static/build/Magister_Thesis.pdf")
 
 @app.route("/Spectrogram", methods=['POST'])
 def spectrogram():
