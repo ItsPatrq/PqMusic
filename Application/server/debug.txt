@@ -1,0 +1,173 @@
+POLI
+Selected validators: 
+3 Etudes, Op. 65
+Selected tests: 
+Sonata No. 9
+Sonata No. 9
+Estampes (Complete)
+Etude No. 7 "Study in Chromatic Steps"
+Pour le piano (Complete)
+SuiteBergamasque
+Sonata K. 525
+Sonata K. 54
+Sonata in C Major, K. 132
+Sonata in D Minor, K. 9 L. 413
+Sonata in F Minor, K. 466
+Sonata, K239
+Two Sonatas
+Fantasy in F-sharp Minor, Op. 28 (Complete)
+Piano Trio No. 1 in D Major, Op. 49
+Au bord d'une source
+Concert Etude "Gnomenreigen"
+Concert Etude "Waldesrauschen"
+Concert Etude No. 2 "Gnomenreigen"
+Hungarian Rhapsody No. 9
+Rem. of Don Juan
+Réminiscences de Don Juan, S.418
+Transcendental Etude No. 10 in F Minor
+Transcendental Etude No. 11 "Harmonies du Soir"
+Transcendental Etude No. 3 "Paysage"
+Transcendental Etude No. 8 "Wilde Jagd"
+Transcendental Etude No. 8, "Wilde Jagd", S. 139/8
+Études d'exécution transcendante, No. 10 in F Minor, S.139/10
+"Erlkoenig"
+Fantasia in C Major, "Wanderer", D. 760
+Impromptu Op. 142 No. 4, in F Minor, D935
+Impromptu Op. 90 No. 4 in A-flat Major
+Impromptu Op. 90 No. 4 in A-flat Major
+Impromptu Op. 90 No. 4 in A-flat Major
+Moment Musical Op. 94 No. 4, in C-sharp Minor, D780
+Sonata in A Major, D. 664 (Complete)
+Sonata in A Major, Op. 120, I. Allegro moderato
+Sonata in A Minor, D784
+Sonata in C Major, D841
+Sonata in C Major, D843
+Sonata in C major, D. 840 (Complete)
+Wanderer Fantasy
+Gretchen am Spinnrade
+Song Transcriptions: Aufenthalt, Gretchen am Spinnrade, Standchen von Shakespeare, Der Erlkonig
+Etude Op. 10 No. 12 in C Minor
+Nocturne Op. 15 No. 1 in F Major
+Nocturne in C-sharp Minor, Op. 27 No. 1
+Polonaise Op. 53 in A-flat Major
+Polonaise-Fantasie
+Polonaise-Fantasie, Op. 61
+Rondo in C Minor, Op. 1
+Sonata No. 2 in B-flat Minor, Op. 35
+Overture in the French Style in B Minor, BWV 831
+Prelude and Fugue in A-flat Major, WTC I
+Prelude and Fugue in A-flat Major, WTC I, BWV 862
+Prelude and Fugue in B-flat Minor, WTC II
+Prelude and Fugue in C-sharp Minor, WTC II
+Prelude and Fugue in D Major, WTC I, BWV 850
+Prelude and Fugue in D major, WTC I
+Prelude and Fugue in F-sharp Major, WTC I, BWV 858
+Prelude and Fugue in G-sharp Minor, WTC I, BWV 863
+Sonata E-Flat Major, Hob. XVI:49, First Movement
+Sonata in C Minor, First Movement
+Sonata in C Minor, Hob. XVI:20, 1st mov.
+Sonata in E flat Major, Hob. XVI: 49, I. Allegro
+Sonata in G Major, Hob. XVI:6, First Movement
+Rondo a capriccioso "Rage over a Lost Penny", Op. 129
+Rondo, Op. 129
+Sonata No. 12 in A-flat Major, Op. 26, First Movement
+Sonata No. 15 in D Major, Op. 28, I. Allegro
+Sonata No. 16 Op. 31 No. 1 in G Major, I. Allegro vivace
+Sonata No. 16 in G Major, Op. 31 No. 1, First Movement
+Sonata No. 16 in G Major, Op. 31 No. 1, I. and II. 
+Sonata No. 18 in E-flat Major, Op. 31 No. 3, First Movement
+Sonata No. 18, Op. 31 No. 3 in E-flat Major, I. Allegro
+Sonata No. 3 in C Major, Op. 2 No. 3, I. Allegro con brio
+Sonata No. 3 in C Major, Op. 2 No. 3, I. and II. 
+Sonata No. 5 in C Minor, Op. 10 No. 1, First Movement
+Sonata No. 5 in C Minor, Op. 10 No. 1, I. Allegro molto e con brio
+Sonata in C Major, Op. 2 No. 3, 1st mov.
+Sonata in E Major, Op. 14, No. 1
+IsoldasLiebestod
+Intermezzi, Opus 4
+Romances Op. 28, Nos. 2 and 3
+Toccata Op. 7
+Toccata in C Major, Op. 7
+Toccata in C, Op. 7
+Etude-Tableaux Op. 39 No. 5 in E-flat Minor
+Etudes-Tableaux
+Prelude Op. 23 No. 6 in E-flat Major
+Prelude Op. 32 No. 8 in A Minor
+Prelude in G-Sharp Minor,Op. 32 No. 12
+Rondo in A Minor,  K. 511
+Sonata in B-flat Major, K 333, First Movement
+Sonata in B-flat Major, K. 333, 1st mov.
+Sonata in B-flat Major, K. 333, I. Allegro
+Sonata in F Major, K. 280, 1st mov.
+Sonata in F Major, K280
+Sonata No. 9, Op. 68
+Etude "Pour les accords"
+Validating 64 possible arguments for function harmonic_and_smoothness_based_transcription
+4/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2899606064223469
+11/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.07844329583460018
+13/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.05984251968503937
+15/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.05977975878342946
+16/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2947994793280853
+21/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.10108196235363866
+23/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.10119840213049268
+24/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.28728149487643156
+29/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.12872533930320412
+31/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.12941012411100264
+32/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2956457655223239
+39/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.047538200339558565
+40/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.28886153846153845
+47/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.059269712471335334
+48/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.29223458797048896
+53/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.10236339003462291
+55/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.10244855039807722
+56/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2889969604863222
+62/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.29596469911108264
+2/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.298150431565968
+10/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.3037653184329164
+17/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.1379482693989754
+20/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.290935063389084
+26/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.3057260360645365
+33/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.08775542531284651
+36/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.28947211095833086
+42/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2986649713922441
+49/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.13936399341188396
+51/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.13817537643932684
+54/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2960339047378076
+59/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.14403692008744232
+61/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.12434201166595532
+63/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.12411246804884976
+64/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.28962624892068584
+3/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.08579927978706749
+6/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.29635688667967025
+9/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.0786225811366753
+12/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2975450686027195
+19/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.136630448357687
+22/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.29584321557857945
+27/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.14466762314681972
+30/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.3025263425161864
+35/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.08751974723538704
+37/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.04759206798866856
+38/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2969980157460155
+43/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 1, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.08082964770474302
+45/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.05936395759717315
+46/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2989443688880254
+52/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2923433874709977
+58/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2996899322913371
+1/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.08600125549278091
+5/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 2, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.04742345033607169
+7/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 2, 8, 6, 7, 0.08, 55.68, 0, 16, False, None, None, None) F1: 0.047379220294721136
+8/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.22, 2, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.28781346772724514
+14/64 (3, 2048, 512, 12288, 50, 5500, 6, 4, 0.32, 2, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.30158730158730157
+18/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2994093034703421
+25/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.14552417424605074
+28/64 (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.2978801617448842
+34/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.29633300297324083
+41/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.08107694661159552
+44/64 (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.32, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.29168973365319556
+50/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.22, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None) F1: 0.2998766954377312
+57/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 1, 8, 6, 7, 0.1, 55.68, 0, 16, False, None, None, None) F1: 0.14440257688100158
+60/64 (3, 2048, 512, 12288, 50, 5500, 8, 2, 0.32, 1, 8, 6, 7, 0.08, 55.68, 6, 16, False, None, None, None) F1: 0.29289777940906586
+harmonic_and_smoothness_based_transcription
+best arguments: (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.32, 1, 8, 6, 7, 0.1, 55.68, 6, 16, False, None, None, None)
+best F1: 0.3057260360645365
+Validating 128 possible arguments for function harmonic_and_smoothness_based_transcription

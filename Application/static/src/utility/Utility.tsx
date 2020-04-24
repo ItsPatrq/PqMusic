@@ -40,7 +40,7 @@ export class Utility extends Component<{}, UtilityState> {
           handleFqMidiValueChange={this.handleFqMidiValueChange}
         />
         <Spectrogram />
-        <WindowFunctions />
+        {process.env.REACT_APP_ENV === "local" &&  < WindowFunctions /> }
         
         
       </div>

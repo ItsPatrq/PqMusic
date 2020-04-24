@@ -1,0 +1,3 @@
+harmonic_and_smoothness_based_transcription
+best arguments: (3, 2048, 512, 8192, 50, 5500, 8, 4, 0.22, 1, 8, 6, 2, 0.1, 70, 6, 16, False, None, None, None)
+best F1: 0.299722479185939
