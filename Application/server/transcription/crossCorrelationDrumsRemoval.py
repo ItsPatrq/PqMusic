@@ -88,8 +88,6 @@ def drums_removal_example():
 	frameWidth = 2048
 	spacing = 512
 	filePath = path.dirname(path.abspath(__file__))
-	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-	#filePath = '../test_sounds/Sine_sequence.wav'
 	trackPath = path.join(filePath, '../test_sounds/example/track.wav')
 	sampleRate, data = loadNormalizedSoundFile(trackPath)
 	sounds = []

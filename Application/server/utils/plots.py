@@ -344,10 +344,6 @@ def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True, language 
   if show: plt.show()
   return fig, ax
 
-def plot_spectrogram_with_onsets(spectra, spacing, sampleRate, onsets, title='Spectrogram', show=True, showColorbar=True):
-  fig, ax = plot_spectrogram(spectra, spacing, sampleRate, title, False, showColorbar)
-  #TODO: https://stackoverflow.com/questions/12864294/adding-an-arbitrary-line-to-a-matplotlib-plot-in-ipython-notebook
-
 def plot_pitch_tracking(path, G):
   pos = nx.spring_layout(G)
   nx.draw(G,pos,node_color='gray', node_size=500)

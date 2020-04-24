@@ -11,9 +11,7 @@ from utils.plots import plot_spectrum_line_component_only, plot_spectrum_line_co
 from scipy.interpolate import interp1d
 from utils.cepstrumUtils import real_cepst_from_signal
 from io import BytesIO
-from utils.custom_profile import profile_old, print_prof_data, print_normalize_profile_data_old
 
-@profile_old
 def cepstrumF0Analysis (data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     hanning = np.hanning(frameWidth)
     spectrogram = []
@@ -64,38 +62,13 @@ if __name__ == "__main__":
     frameWidth = 2048
     spacing = 512
     filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-    #file_path = '../test_sounds/Sine_sequence.wav'
-    #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
-    #filePathMain = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
+    filePath = path.join(filePath, '../test_sounds/piano-c3-d3-c3-b2.wav')
 
     sampleRate, data = loadNormalizedSoundFile(filePath)
-    sine_data = create_sine(220, sampleRate, 5)
-    sine_data += (create_sine(440, sampleRate, 5) * 0.2)
-    sine_data += (create_sine(110, sampleRate, 5) * 0.3)
     
     for i in range(0, 1000):
         bestFq, cepstra, spectra, logSpectrogram = cepstrumF0Analysis(data, sampleRate, 4096, 1024, 8192)
-    #---------------------------
-    # filePath1 = path.join(filePath, '../test_sounds/EmPiano/E3.wav')
-    # sampleRate, data = loadNormalizedSoundFile(filePath1)
+    #---------------------------#
+    plot_spectrum_line_component_only(spectra[5], sampleRate, language="pl")
 
-    # bestFq, cepstra, spectra1, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
-    # filePath2 = path.join(filePath, '../test_sounds/EmPiano/G3.wav')
-    # sampleRate, data = loadNormalizedSoundFile(filePath2)
-
-    # bestFq, cepstra, spectra2, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
-    # filePath3 = path.join(filePath, '../test_sounds/EmPiano/B3.wav')
-    # sampleRate, data = loadNormalizedSoundFile(filePath3)
-    # bestFq, cepstra, spectra3, logSpectrogram = cepstrumF0Analysis(data, sampleRate, frameWidth, spacing, frameWidth)
-
-    #plot_pitches(bestFq, spacing, sampleRate, language='pl')
-    # plot_spectrogram(spectra, spacing, sampleRate, language='pl', showColorbar=False)
-    # plot_spectrum_line_component_only(spectra[5], sampleRate, language="pl")
-    # plot_spectrum_line_components(spectra[5],spectra1[5],spectra2[5],spectra3[5], sampleRate, language="pl")
-    # plt.show()
-    plot_cepstrogram(cepstra, spacing, sampleRate, language='pl', showColorbar=False)
-    print(print_prof_data())
-    print(print_normalize_profile_data_old(10))
 

@@ -66,8 +66,6 @@ if __name__ == "__main__":
 
     filePath = path.dirname(path.abspath(__file__))
     filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
-    #filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
 
 
     sampleRate, data = loadNormalizedSoundFile(filePath)
@@ -76,23 +74,4 @@ if __name__ == "__main__":
         data, sampleRate, frameWidth, frameWidth, fqMin, fqMax)
 
     plot_pitches(best_frequencies, spacing, sampleRate, language="pl")
-    #plot_correlogram(correlogram, spacing, sampleRate, language="pl", showColorbar=False)
-    #plot_wave(data, sampleRate, "Ode to joy (9th_symphony)", language="pl", x_axis_as_samples=True)
 
-    #plot_correlation(correlogram[10], sampleRate, "pl")
-    #x = correlogram[10]
-    #xarg = np.argmax(x)
-    #x[(xarg-8):(xarg+8)] = np.zeros(16)
-    #print(np.argmax(x), xarg)
-    resMidi, resPianoRoll = res_in_hz_to_midi_notes(best_frequencies, sampleRate, spacing)
-    write_midi(resMidi, "./resAC.mid")
-
-    filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../resAC.mid')
-    res = load_midi_file(filePath)
-
-    for i in range(0, len(res)):
-      res[i].print_self()
-      resMidi[i].print_self()
-      print(".......................")
-    assert len(res) == len(resMidi)

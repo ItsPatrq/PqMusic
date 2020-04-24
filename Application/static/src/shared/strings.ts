@@ -58,8 +58,8 @@ const pl = {
     },
     dropZoneDefaultMessage: "Przeciągnij i upuść lub kliknij aby wybrać plik do transkrypcji (wav lub mp3)",
     buttonLabelDownloadHannWindow: "Funkcja okna Hanna",
-    buttonLabelDownloadHammingWindow: "Funkcja Hamminga",
-    buttonLabelDownloadRectangleWindow: "Funkcja prostokątna",
+    buttonLabelDownloadHammingWindow: "Funkcja okna Hamminga",
+    buttonLabelDownloadRectangleWindow: "Funkcja okna prostokątnego",
     pdfObjectFallback: "Użyta przeglądarka nie wspiera wyświetlania PDF"
 }
 

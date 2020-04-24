@@ -373,9 +373,6 @@ if __name__ == "__main__":
 	frameWidth = 8192
 	spacing = 1024
 	filePath = path.dirname(path.abspath(__file__))
-	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-	#filePath = '../test_sounds/Sine_sequence.wav'
-	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 	filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
 	sampleRate, data = loadNormalizedSoundFile(filePath)
 	data = data[:(int(len(data)))]
@@ -388,9 +385,7 @@ if __name__ == "__main__":
 	resMidi, resPianoRoll, resF0Weights, peaks, path, graph = harmonic_and_smoothness_based_transcription(
             data, sampleRate, 4, frameWidth, spacing, frameWidth * 3, newAlgorithmVersion=True)
 
-	write_midi(resMidi, "./res3.mid")
+	write_midi(resMidi, "./rejointMethodTest.mid")
 	plot_midi(resPianoRoll, spacing, sampleRate)
 	plot_peaks(peaks, frameWidth, sampleRate)
 	plot_spectrogram(resF0Weights, spacing, sampleRate)
-	#plot_pitch_tracking(path, graph)
-	print("ok")

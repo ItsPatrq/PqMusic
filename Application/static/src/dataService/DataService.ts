@@ -147,7 +147,7 @@ class DataService {
             }
             DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
 
-            const file = res.xhr.response.hann;
+            const file = res.xhr.response;
             DownloadFile(file, "HannWindow.png", "image/png");
         });
     }

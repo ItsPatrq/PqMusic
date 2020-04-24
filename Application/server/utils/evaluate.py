@@ -28,12 +28,12 @@ canonical_title = "canonical_title"
 
 maxErr = 0.085
 
-stdFrameWidth = [2048]
-stdSpacing = [512]
-stdZeroPadding = [12288]
-stdMinF0 = [50]
-stdMaxF0 = [5500]
-stdNeighbourMerging = [3]
+stdFrameWidth = [1024, 2048, 4096, 12288]
+stdSpacing = [512, 1024]
+stdZeroPadding = [12288, 12288]
+stdMinF0 = [50, 75]
+stdMaxF0 = [4000, 5500]
+stdNeighbourMerging = [1, 3, 4]
 
 argsAc = {
     "neighbourMerging": stdNeighbourMerging,
@@ -66,11 +66,11 @@ argsJointMethodByPertusaAndInesta2008 = {
     'maxF0': stdMaxF0,
     'peakDistance': [6,8],
     'relevantPowerThreashold': [4, 2],
-    'maxInharmonyDegree': [0.22, 0.32],
-    'minHarmonicsPerCandidate': [1, 2],
-    'maxHarmonicsPerCandidate': [8],
-    'maxCandidates': [6],
-    'maxParallelNotes': [6],
+    'maxInharmonyDegree': [0.11, 0.22, 0.32],
+    'minHarmonicsPerCandidate': [1, 2, 3],
+    'maxHarmonicsPerCandidate': [6, 8],
+    'maxCandidates': [6, 8],
+    'maxParallelNotes': [6, 8],
     'gamma': [0.1, 0.08],
     'minNoteMs': [55.68],
     'lifteringCoefficient': [0, 6],
@@ -88,16 +88,16 @@ argsJointMethodByPertusaAndInesta2012 = {
     'sizeOfZeroPadding': stdZeroPadding,
     'minF0': stdMinF0,
     'maxF0': stdMaxF0,
-    'peakDistance': [6],
-    'relevantPowerThreashold': [2],
-    'maxInharmonyDegree': [0.22],
-    'minHarmonicsPerCandidate': [1],
-    'maxHarmonicsPerCandidate': [6],
-    'maxCandidates': [6],
-    'maxParallelNotes': [5],
-    'gamma': [0.1],
-    'minNoteMs': [55],
-    'lifteringCoefficient': [6],
+    'peakDistance': [6,8],
+    'relevantPowerThreashold': [4, 2],
+    'maxInharmonyDegree': [0.11, 0.22, 0.32],
+    'minHarmonicsPerCandidate': [1, 2, 3],
+    'maxHarmonicsPerCandidate': [6, 8],
+    'maxCandidates': [6, 8],
+    'maxParallelNotes': [6, 8],
+    'gamma': [0.1, 0.08],
+    'minNoteMs': [55.68],
+    'lifteringCoefficient': [0, 6],
     'minNoteVelocity': [16],
     'newAlgorithmVersion': [True],
     'smoothnessImportance': [3, 2], #TODO: Czy to było dobrze opisane w Thesis?
@@ -111,6 +111,7 @@ best_arg_ceps = (3, 4096, 1024, 8192)
 best_arg_joint2008 = (3, 2048, 512, 8192, 50, 5500, 8, 2, 0.32, 1, 8, 6, 1, 0.1, 55, 0, 16, False, None, None, None)
 best_arg_joint2012 = (3, 2048, 512, 12288, 50, 5500, 8, 4, 0.22, 1, 8, 7, 5, 0.1, 55, 8, 16, True, 3, 2, 4)
 best_arg_joint2008_poli = (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 8, 7, 7, 0.1, 55, 6, 16, False, None, None, None)
+best_arg_joint2012_poli = (3, 2048, 512, 12288, 50, 5500, 6, 2, 0.22, 1, 6, 6, 5, 0.1, 55, 6, 16, True, 3, 2, 4)
 
 class SplitEnum(enum.Enum):
     test = "test"
@@ -413,9 +414,8 @@ def run_evals(validators, resFolderValidation, onlyPoli):
             aclos, argsAclos, validators, resFolderValidation)
         bestCepstrumArgs, _ = validate_all_arguments(
             cepstrumF0Analysis, argsCepstrumF0Analysis, validators, resFolderValidation)
-    bestJointMethodByPertusaAndInesta2008Args = best_arg_joint2008_poli
-    # bestJointMethodByPertusaAndInesta2008Args, _ = validate_all_arguments(
-    #     harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, isResMidi=True)
+    bestJointMethodByPertusaAndInesta2008Args, _ = validate_all_arguments(
+        harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2008, validators, resFolderValidation, isResMidi=True)
     bestJointMethodByPertusaAndInesta2012Args, _ = validate_all_arguments(
         harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, isResMidi=True)
     #endregion wyznaczenie najlepszych argumentów przez walidacje
@@ -490,18 +490,5 @@ def run_eval_and_test_on_part_of_dataset(dataSet, quantityEvals = 1, quantityTes
     run_test_on_dataset_with_args(dataSet, tests, resFolder, resFolderTest, bestAcArgs, bestAclosArgs, bestCepstrumArgs, bestJointMethodByPertusaAndInesta2008Args, bestJointMethodByPertusaAndInesta2012Args, iterations=iterations, onlyPoli=onlyPoli)
     #endregion wyznaczenie najlepszych argumentów przez walidacje
 
-
-def temporary():
-    # tests, validators = load_metadata("monoSound")
-    # resFolder, resFolderTest, resFolderValidation = create_results_folder("monoSound")
-    
-    #bestJointMethodByPertusaAndInesta2012Args, _ = validate_all_arguments(
-    #    harmonic_and_smoothness_based_transcription, argsJointMethodByPertusaAndInesta2012, validators, resFolderValidation, isResMidi=True)
-    #print("POLI")
-    #run_eval_and_test_on_part_of_dataset("maestro", onlyPoli=True)
-    #run_test_with_predefined_args_on_dataset("monoSound")
-    run_eval_and_test_on_part_of_dataset("maestro", onlyPoli=True)
-
-
 if __name__ == "__main__":
-    temporary()
+    run_eval_and_test_on_part_of_dataset("maestro")

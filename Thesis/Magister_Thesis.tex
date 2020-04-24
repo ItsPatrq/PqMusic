@@ -38,6 +38,20 @@
 \newcommand{\file}[1]{\textbf{\textit{\textcolor{darkgreen}{#1}}}}
 \newcommand{\folder}[1]{\textbf{\textit{\textcolor{dodgerblue}{#1}}}}
 
+\newcommand*{\BeginNoToc}{%
+  \addtocontents{toc}{%
+    \edef\protect\SavedTocDepth{\protect\the\protect\value{tocdepth}}%
+  }%
+  \addtocontents{toc}{%
+    \protect\setcounter{tocdepth}{-10}%
+  }%
+}
+\newcommand*{\EndNoToc}{%
+  \addtocontents{toc}{%
+    \protect\setcounter{tocdepth}{\protect\SavedTocDepth}%
+  }%
+}
+
 \pagestyle{fancy}
 
 \renewcommand{\sectionmark}[1]{\markright{#1}}
@@ -224,7 +238,8 @@
 \mbox{}
 
 \pagenumbering{arabic}
-\tableofcontents 
+\tableofcontents
+
 \clearpage
 
 \setcounter{secnumdepth}{0}
@@ -242,7 +257,7 @@ Najnowsze dokonania w dziedzinie automatycznej transkrypcji muzyki są jednak na
 
 W tej pracy przeanalizowany jest problem automatycznej transkrypcji muzyki, nakreślając obecny stan nauki w tym rejonie. Omówione są najważniejsze rejony w oparciu o przykłady już istniejących rozwiązań jak i próba optymalizacji części z nich poprzez zrównoleglenie obliczeń z wykorzystaniem karty graficznej. Celem tych rozważań jest przybliżenie ogólnej koncepcji transkrypcji muzyki wraz z teorią na jakiej się opiera.
 
-W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Programistyczne szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu \ref{sec:end}. 
+W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Programistyczne szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu. 
 
 \newpage
 \setcounter{secnumdepth}{4}
@@ -492,13 +507,23 @@ Równanie \ref{eq:STFT1} nosi nazwę metody ,,przesuwającego się okna'' MWM (\
 
 Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż częstotliwościowej. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwając je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu (np. długość okna równa 2048 sampli, a przesunięcie równe 1024 sample spowoduje nakładanie się na siebie okien przy jednoczesnym podwojeniu ilości koniecznych obliczeń). Dokładniejszy opis tego zjawiska wraz z szczegółowym opisem istotnych cech, jakie wpływają na trafność wyboru długości i algorytmu okna można znaleźć w \cite{WindowChoiceStrategiesSTFT}.
 
-
 \begin{figure}[t]
-  \begin{center}
-    \includegraphics[scale=1.4]{images/WindowFunctions.png}
-    \caption{Przykład funkcji okna czasowego dla okna audio zawierającej 2048 sampli}
-    \label{fig:WindowFunctions}
-  \end{center}
+  \begin{subfigure}{1.\textwidth}
+    \centering
+    \includegraphics[width=.49\linewidth]{images/windowFunctions/HannWindow.png}
+    \caption{Okno Hanna}
+  \end{subfigure}
+  \newline
+  \begin{subfigure}{0.5\textwidth}
+    \includegraphics[width=1.\linewidth]{images/windowFunctions/HammingWindow.png}
+    \caption{Okno Hamminga}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=1.\linewidth]{images/windowFunctions/RectangleWindow.png}
+    \caption{Okno prostokątne}
+  \end{subfigure}
+  \caption{Przykład funkcji okna czasowego dla okna audio długości 2048 sampli.}
+  \label{fig:WindowFunctions}
 \end{figure}
 
 
@@ -649,8 +674,8 @@ Podczas analizy spektrogramu, naiwnym podejściem byłoby wybranie za F0 ten pik
 
 \begin{figure}[t]
   \begin{center}
-    \includegraphics[scale=0.46]{images/Spectrogram/spectrum_4096_cropped.png}
-    \caption{Przykład pojedyńczego komponentu spektralnego ze spektrogramu \ref{fig:windowSize} o długości okna 4096. W domenie częstotliwości piki pojawiają się periodycznie.} %%TODO:
+    \includegraphics[scale=0.26]{images/Spectrogram/spectrum_4096_cropped.jpg}
+    \caption{Przykład pojedyńczego komponentu spektralnego ze spektrogramu \ref{fig:windowSize} o długości okna 4096.}
     \label{fig:spectralComponent}
   \end{center}
 \end{figure}
@@ -733,8 +758,8 @@ Nazwa algorytmu ACLOS jest skrótem \textit{AutoCorrelation of LOg Spectrum}, co
 
 \begin{figure}[h]
   \begin{center}
-    \includegraphics[scale=0.33]{images/ACLOS/data_lifter_cropped.jpg}
-    \caption{Wykres przedstawiający spektrum na pojedyńczym oknie przed i po procesie lifterowania ze współczynnikiem równym 10} %TODO: dodanie skali
+    \includegraphics[scale=0.33]{images/ACLOS/data_lifter_cropped.jpg} 
+    \caption{Wykres przedstawiający spektrum na pojedyńczym oknie przed i po nałożeniu lifterowania ze współczynnikiem równym 10} 
     \label{fig:aclos:lifter}
   \end{center}
 \end{figure}
@@ -926,7 +951,7 @@ gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.38]{images/spectral_smoothnes_kapuri.jpg}
-    \caption{Zobrazowanie zasady gładkości spektrum. Logarytmiczne spektrum mocy zawierające dwa dźwięki. Widmo zostało przefiltrowane przez liftering wysoko przepustowy. Wykres z \cite[3383]{Transcription:Klapuri:MultipitchEstimationAndSeparation}.}% TODO: ten sam problem z numerami stron - sama w sobie ma tylko kilka, journal tysiące
+    \caption{Zobrazowanie zasady gładkości spektrum. Logarytmiczne spektrum mocy zawierające dwa dźwięki. Widmo zostało przefiltrowane przez liftering wysoko przepustowy. Wykres z \cite[3383]{Transcription:Klapuri:MultipitchEstimationAndSeparation}.}
     \label{fig:specSmooth:kapuri}
   \end{center}
 \end{figure}
@@ -960,7 +985,7 @@ Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku,
 
 Algorytm wykonuje estymacje F0 operując na spektrum kolejnych okien czasowych. Analizowane fragmenty sygnału wejściowego przygotowane są tak, aby miały długość 93 ms (4096 sampli przy częstotliwości samplowania równej 44,1 kHZ) z zastosowaniem funkcji Hanninga jako funkcję okna (opisane w \ref{sec:STFT}) oraz marginesu zer równego trzykrotności długości oryginalnego okna (opisane w \ref{sec:przetwarzanieFFT}). Na tak przygotowanym oknie wykonywane jest STFT (\ref{sec:STFT}), którego wynik ma 16384 spektralnych komponentów, więc każdy z nich ma pasmo szerokości 2.7 Hz (szerokość pasma jest liczona wzorem $h = Fs / N$, gdzie Fs jest częstotliwością próbkowania, a N długością okna).
 
-Dla każdego okna wyniku STFT wykonywane jest przetwarzanie wstępne. Polega ono na odrzuceniu wszystkich wyników, których amplituda jest poniżej wyznaczonego progu $\mu$, i tylko pozostałe brane są pod uwagę. W implementacji tego kroku wprowadzona została modyfikacja, która zakłada że tak odfiltrowane wyniki są tylko pikami. Z tym założeniem, gdy w danym zakresie jest wiele komponentów o amplitudzie wyższej niż $\mu$, zachowywany jest tylko jeden, o najwyższej amplitudzie. Dokłądny opis tego mechanizmu jest w sekcji \ref{sec:impl:alg:specSmoothnes}. %%TODO: IS IT??
+Dla każdego okna wyniku STFT wykonywane jest przetwarzanie wstępne. Polega ono na odrzuceniu wszystkich wyników, których amplituda jest poniżej wyznaczonego progu $\mu$, i tylko pozostałe brane są pod uwagę. W implementacji tego kroku wprowadzona została modyfikacja, która zakłada że tak odfiltrowane wyniki są tylko pikami. Z tym założeniem, gdy w danym zakresie jest wiele komponentów o amplitudzie wyższej niż $\mu$, zachowywany jest tylko jeden, o najwyższej amplitudzie.
 
 W kolejnym kroku ze spektralnych pików wybierany jest zbiór częstotliwości nazywany ,,kandydatami F0''. Pik jest uznawany za kandydata jeżeli jego częstotliwość jest w zadanym zakresie $[f_{min}, f_{max}]$, oraz posiada on w danym spektrum co najmniej $\eta$ harmonicznych. Pierwszy z warunków obcina grupę analizowanych F0 do jedynie tych, które realnie mogą występować w kompozycji. Badanie skrajnie niskich lub skrajnie wysokich w tonie dźwięków jest niepotrzebne, ponieważ nie są one wykorzystywane w muzyce. Drugie założenie ogranicza grupę kandydatów odrzucając tych, których barwa jest niemożliwa do określenia. Aby wykryć harmoniczne danego F0 sprawdzane jest istnienie pików o częstotliwości będącej wielokrotnością częstotliwości kandydata F0. W celu dostosowania się do nieharmoniczności, badane częstotliwości są w zasięgu ze stałym marginesem $hf_0 \pm f_r$ dla $h = 2, 3, ...$, gdzie $f_0$ jest kandydatem F0. Wybierany jest pik najbliższy faktycznej wielokrotności $f_0$. W przypadku nie znalezienia żadnego piku w danym zakresie, harmoniczna uznawana jest za brakującą. W następnym kroku lista kandydatów sortowana jest względem sumy amplitud ich harmonicznych. Dodatkowych parametrem jest maksymalna liczba kandydatów $F$, na podstawie której odrzucani są nadmiarowi kandydaci o najmniejszej sumie amplitud, aby zwiększyć wydajność tego systemu transkrypcji.
 
@@ -1068,11 +1093,11 @@ W trakcie budowania wDAG w celu zwiększenia wydajność wybieranych jest tylko 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
 Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych (NN, z ang. \textit{Neural Network}). Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 \cite[8-9]{Transcription:Klapuri:ChallengesAndFuture}. Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN \cite[6-8]{DBLP:journals/spm/BenetosDDE19}.
 
-%TODO: to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
+%to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
 
 W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji \cite[7]{DBLP:journals/spm/BenetosDDE19}. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
 
-%\TODO: Artykuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnoszę się do 6 strony, powinno to być 6 czy zgodnie z journalem 26?
+
 \subsubsection{Holistyczna metoda z użyciem sieci neuronowych}\label{sec:multif0:petrusNetwork}
 Praca \cite{Transcription:Pertus:NeuralNetwork} miała na celu zbudowanie architektury zdolnej do transkrypcji A2S (Audio do partytury z ang. \textit{Audio-to-Score}). Jest to rzadkie podejście, wykorzystujące poziom abstrakcji notacji muzycznej. Wiele spośród istniejących algorytmów zakłada transkrypcję do plików MIDI lub podobnych, których struktura opiera się na zapisie rolki pianina, umożliwiając z tego poziomu wygenerować notację muzyczną. Omawiany w tej sekcji algorytm zakłada bezpośredni proces transkrypcji cyfrowego sygnału akustycznego do notacji muzycznej.
 
@@ -1122,7 +1147,6 @@ Głównym założeniem, które odróżnia Onsets and Frames od innych systemów 
 Dane wejściowe są w postaci spektrogramów w skali melowej i logarytmie amplitudy, z 229 logarytmicznie rozmieszczonymi w domenie częstotliwości komponentami, oknem długości 2048 sampli i odstępami pomiędzy oknami długości 2048. Dane równolegle zasilają obie sieci. Wynik detektora początków nut jest dostarczany do sieci aktywacji nuty, dając jej łącznie dwie informacje wejściowe - czy  początek nuty został wykryty oraz spektrogram sygnału.
 
 Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w \cite[1-3]{Transcription:Kelz:AcousticModel}) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
-%TODO: Czy opisywać funkcje kosztu? jest dokładnie opisana w referencyjnej pracy naukowej
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
@@ -1142,7 +1166,6 @@ Poza użyciem innej bazy, zmiany do Onsets and Frames zaproponowane w \cite[3-6]
 
 Dodatkowo zaproponowana została metoda augmentacji sygnału wejściowego, która polegać ma na modyfikacji każdego z danych wejściowych o pewną modulację audio (np. przesunięcie częstotliwości, dodanie szumu, zastosowanie equalizera). Zmiana ta pozytywnie wpływa na jakość modelu trenowanego bazą MAPS, jednak w przypadku bazy MAESTRO odnotowany został minimalny spadek w dokładności wyniku. 
 
-%%\TODO: Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
 \newpage
 
 \section{Implementacja}\label{sec:impl}
@@ -1542,7 +1565,10 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
     P\&I 12 & 2048 & 512 & 12288 & 3 & 50/5500 \\
     \hline
   \end{tabular}
-  \\
+\end{center}
+
+
+\begin{center}
   \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c| } 
     \hline
     algorytm & $P$ & \textit{$\mu$} & $\eta$  & $\gamma$ & $f_r$ & C & lifter & $k$ & K & M\\
@@ -1565,7 +1591,10 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
       P\&I 12 & 2048 & 512 & 12288 & 3 & 50/5500 \\
       \hline
     \end{tabular}
-    \\
+  \end{center}
+
+
+  \begin{center}
     \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c| } 
       \hline
       algorytm & $P$ & \textit{$\mu$} & $\eta$  & $\gamma$ & $f_r$ & C & lifter & $k$ & K & M\\
@@ -1579,24 +1608,25 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
   \label{tab:bestArgPoli}
 \end{table}
 
-Wyniki ewaluacji algorytmów dla sygnałów monofonicznych znajdują się w tabeli \ref{tab:eval:mono}. Testy wykonane zostały na 11 kompozycjach z łącznie 269 zdarzeniami MIDI i łącznym czasem odtwarzania 72s. Miary statystyczne są średnią miar dla wszystkich przypadków testowych. Kolumna T reprezentuje średni czas wykonania algorytmu. W celu uzyskania bardziej rzetelnego rezultatów czasu wykonania, wszystkie testy były wykonane dziesięciokrotnie i odrzuconych zostało 5 najszybszych i najwolniejszych wyników.
+Wyniki ewaluacji algorytmów dla sygnałów monofonicznych znajdują się w tabeli \ref{tab:eval:mono}. Testy wykonane zostały na 11 kompozycjach z łącznie 269 zdarzeniami MIDI i łącznym czasem odtwarzania 72s. Miary statystyczne są średnią miar wszystkich przypadków testowych. Kolumna T reprezentuje średni czas wykonania algorytmu. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń. W celu uzyskania bardziej rzetelnego rezultatów czasu wykonania, wszystkie testy były wykonane dziesięciokrotnie i odrzuconych zostało 5 najszybszych i najwolniejszych wyników.
 
 Cepstrum liczone na GPU jest wolniejsze od tego liczonego na CPU dlatego, że plan dla innych danych wejściowych musi być wyliczany w każdej iteracji. Dla przedstawienia realnego przyspieszenia, jakie daje użycie karty graficznej przy wyliczaniu cepstrum z sygnału, zostały wykonane dodatkowe testy w postaci 1000 powtórzeń analizy F0 algorytmem cepstrum z użyciem GPU i użyciem jedynie CPU dla pojedyńczego pliku dźwiękowego o czasie odtwarzania 38s. W tym teście, z odrzuceniem 10 skrajnych wyników, średni czas wykonywania algorytmu na samym CPU wyniosła  0.828s. podczas gdy algorytm wykonany z użyciem GPU osiągnął średni czas wykonywania równy 0.670s.
 
-Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabeli \ref{tab:eval:poli}. Testy wykonane zostały na 10 kompozycjach z łącznie XXXX zdarzeniami MIDI i łącznym czasem odtwarzania XXXs. Miary statystyczne są średnią miar dla wszystkich przypadków testowych, natomiast kolumna T reprezentuje średni czas wykonania algorytmu.
+Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabeli \ref{tab:eval:poli}. Testy wykonane zostały na 2 kompozycjach z łącznie 4431 zdarzeniami MIDI i łącznym czasem odtwarzania 310s. Miary statystyczne są średnią miar wszystkich przypadków testowych, natomiast kolumna T reprezentuje średni czas wykonania algorytmu. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń.
 
 \begin{table}[H]
   \begin{center}
-    \begin{tabular}{ |c|c|c|c|c|c| } 
+    \begin{tabular}{ |c|c|c|c|c|c|c|c|c| } 
     \hline
-    algorytm & dokładność & precyzja & czułość & F1 & T\\
+    algorytm & FN & FP & TP & dokładność & precyzja & czułość & F1 & T\\
     \hline
-    AC & 0.326 & 0.380 & 0.515 & 0.425 & 3.957 \\
-    ACLOS & 0.266 & 0.297 & 0.485 & 0.360 & 11.819\\
-    CEPS & 0.279 & 0.309 & 0.647 & 0.400 & 0.417\\
-    CEPS GPU & - & - & - & - & 1.968\\
-    P\&I 08 & 0.337 & 0.430 & 0.484 & 0.443 & 4.308\\
-    P\&I 12 & 0.225 & 0.308 & 0.367 & 0.320 & 5.536\\
+    AC & 106 & 229 & 163 & 0.326 & 0.380 & 0.515 & 0.425 & 3.96 \\
+    ACLOS & 104 & 357 & 165 & 0.266 & 0.297 & 0.485 & 0.360 & 11.82\\
+    CEPS & 83 & 487 & 186 & 0.279 & 0.309 & 0.647 & 0.400 & 0.42\\
+    CEPS GPU & - & - & - & - & - & - & - & 1.97\\
+    P\&I 08  & 112 & 198 & 157 & 0.337 & 0.430 & 0.484 & 0.443 & 4.31\\
+    P\&I 12 & 142 & 284 & 127 & 0.225 & 0.308 & 0.367 & 0.320 & 5.54\\
+    Onsets\&Frames & 122 & 158 & 147 & 0.299 & 0.360 & 0.401 & 0.379 & 9.452\\
     \hline
     \end{tabular}
   \end{center}
@@ -1606,13 +1636,13 @@ Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabe
 
 \begin{table}[H]
   \begin{center}
-      \begin{tabular}{ |c|c|c|c|c|c| } 
+      \begin{tabular}{ |c|c|c|c|c|c|c|c|c| } 
       \hline
-      algorytm & dokładność & precyzja & czułość & F1 & T\\
+      algorytm & FN & FP & TP & dokładność & precyzja & czułość & F1 & T\\
       \hline
-      P\&I 08 & 8192 & 512 & 8192 & 1 & 1\\
-      P\&I 12 & 8192 & 512 & 8192 & 1& 1\\
-      Onsets and Frames & 8192 & 512 & 8192 & 1& 1 \\
+      P\&I 08 & 1452& 16023& 2979& 0.157 & 0.142 & 0.663 & 0.233 & 5250.99\\
+      P\&I 12 & 1748& 9198& 2683& 0.181 & 0.206 & 0.602 & 0.305 & 2675.14\\
+      Onsets\&Frames & 4125& 3695& 306& 0.029 & 0.058 & 0.052 & 0.055& 40.50 \\
       \hline
       \end{tabular}
   \end{center}
@@ -1632,7 +1662,14 @@ Polifoniczność w sygnale jest czynnikiem, który najmocniej wpływa na złożo
 
 W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersalnych danych wejściowych. Co więcej, nie istnieje bezbłędne system transkrypcji nawet dla kompozycji z ograniczeniem do standardów muzyki zachodniej i użycia pojedyńczego instrumentu, jakim jest pianino. Analiza wyników algorytmów pokazuje jednak, że wraz z nowymi rozwiązaniami na przestrzeni lat osiągane są nowe rekordy pod względem jakości wyników algorytmów transkrypcji muzyki. 
 
-% TODO: Czy słownik skrótów potrzebny?
+% TODO: Czy słownik skrótów potrzebny? Cheng-Zhi A. Huang -> C.A.Huang ?  Same Hirsch, Hans-Günter, Biing-Hwang
+
+%%\TODO: Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
+%TODO: Czy opisywać funkcje kosztu w rozdziale Onsets and Frames? jest dokładnie opisana w referencyjnej pracy naukowej
+%\TODO: [Holistyczna metoda z użyciem sieci neuronowych] Artykuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnoszę się do 6 strony, powinno to być 6 czy zgodnie z journalem 26? ten sam problem w fig:specSmooth:kapuri
+% \ref{sec:end} - dlatego że zakończenie nie jest numerowane, \ref na nim powoduje wstawienia się referencji do rozdziału wcześniej.
+% Nie dodawałem żadnego opisu implementacji Onsets and Frames ponieważ duża część tego jest wzięta z ich jupiter notebooka. Czy to ok?
+
 % \section{Słownik skrótów}
 % \begin{itemize}
 %   \item \textbf{FT} - \textit{ang. \textbf{F}ourier \textbf{T}ransform}, pol. Transformata Fouriera
@@ -1667,10 +1704,24 @@ W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersal
 %   \item \textbf{GUI}
 %   \item \textbf{GPU}
 % \end{itemize}
+
+\clearpage
+\BeginNoToc
 \listoffigures
-\listoftables
+\EndNoToc
+\addcontentsline{toc}{section}{Spis rysunków}
+
 \newpage
+
+\BeginNoToc
+\listoftables
+\EndNoToc
+\addcontentsline{toc}{section}{Spis tablic}
+\newpage
+\cleardoublepage
 \lstlistoflistings
+\addcontentsline{toc}{section}{Spis listingów}
+
 \newpage
 \printbibliography
 

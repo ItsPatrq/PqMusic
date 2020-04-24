@@ -101,25 +101,12 @@ if __name__ == "__main__":
     frameWidth = 2048
     spacing = 512
     filePath = path.dirname(path.abspath(__file__))
-    #filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-    #filePath = path.join(filePath, '../test_sounds/Chopin_prelude28no.4inEm/chopin_prelude_28_4.wav')
-    filePath = path.join(filePath, '../test_sounds/EmPiano/Em.wav')
-    #file_path = '../test_sounds/Sine_sequence.wav'
-    #filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
+    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 
     sampleRate, data = loadNormalizedSoundFile(filePath)
-    sine_data = create_sine(440, sampleRate, 5)
-    sine_data += (create_sine(880, sampleRate, 5) * 0.4)
-    sine_data += (create_sine(1320, sampleRate, 5) * 0.2)
 
 
     bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
-    plot_spectrogram(spectra, spacing, sampleRate, showColorbar=False, language="pl")
-    
-    plot_correlogram(correlogram, spacing, sampleRate, language='pl', showColorbar=False)
-    plot_pitches(bestFq, spacing, sampleRate, language='pl')
-    # fig = plot_spectrum_line_component(spectra[5], sampleRate, data[:frameWidth])
-    # plt.show()
     plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10], language='pl')
 
 
