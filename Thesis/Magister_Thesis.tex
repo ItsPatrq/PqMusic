@@ -192,6 +192,7 @@
 \setlength{\parindent}{4em}
 \counterwithin{figure}{section}
 \counterwithin{equation}{section}
+\counterwithin{table}{section}
 \AtBeginDocument{\counterwithin{lstlisting}{section}}
 \setlength {\marginparwidth }{2cm}
 \setlength{\parskip}{0em} %odstęp pomiędzy paragrafami
@@ -972,7 +973,7 @@ Wiele algorytmów zaprojektowanych do transkrypcji muzyki bierze pod uwagę prob
 \end{equation}
 gdzie F jest częstotliwością fundamentalną a $\beta$ jest współczynnikiem nieharmoniczności \cite[807]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}.
 
-Davy i Godsill w swojej pracy \cite[1-10]{Transcription:BayesianHarmonicModels} zaproponowali model Bayesowy, który bierze pod uwagę nieharmoniczność (nazywaną w tej pracy jako nie-nastrojenie, z ang. \textit{de-tuning}). Opisany w tej pracy jest model zarówno dla sygnałów monofonicznych, jak i dla polifonicznych. Ten drugi zapisany jest jako dyskretne obserwacje $y$ w domenie czasu $t$ w następujący sposób:
+Davy i Godsill w swojej pracy \cite[1-10]{Transcription:BayesianHarmonicModels} zaproponowali model bayesowski, który bierze pod uwagę nieharmoniczność (nazywaną w tej pracy jako nie-nastrojenie, z ang. \textit{de-tuning}). Opisany w tej pracy jest model zarówno dla sygnałów monofonicznych, jak i dla polifonicznych. Ten drugi zapisany jest jako dyskretne obserwacje $y$ w domenie czasu $t$ w następujący sposób:
 \begin{equation}\label{eq:inharmonicity:bayesian}
   y_t = \left\{ \sum_{k=1}^{K}\sum_{m=1}^{M_k}\sum_{i=1}^{I} a_{k,m,i} \phi_{i,t}\cos[(m + \delta_{k,m})\omega_{0,k}t] + b_{k,m,i}\phi_{i,t}\sin[(m + \delta_{k,m})\omega_{0,k}t]\right\} + v_t
 \end{equation}
@@ -1389,6 +1390,17 @@ def countWeight(lvi, lvj, salience_j):
   return D / (salience_j + 1)
 \end{lstlisting}
 
+\subsection{Onsets and Frames}\label{sec:impl:onsetsAndFrames}
+Implementacja wykorzystania metodologi \textit{Onsets and Frames} w projekcie wykonana została na zwór tej, zaproponowanej przez autorów \cite{Transcription:Hawthorne:OnsetsAndFrames}. Udostępnili oni przykładowy kod, przy pomocy którego można przetestować działanie wytrenowanego bazą MAESTRO modelu w interaktywnym arkuszu Google Colab \cite{Transcription:OnsetsAndFrames:Colab}. Wprowadzone modyfikacje miały na celu zintegrowanie tego rozwiązania do opisywanego projektu.
+
+Metody związane z inicjalizacją modelu i transkrypcją utworu zostały umieszczone w klasie \textit{OnsetsAndFramesImpl} znajdującej się w pliku \textit{transcription/onsetsAndFrames.py}. Instancja tej klasy, przed wywołaniem metody przeznaczonej do transkrypcji, musi zostać zainicjalizowana przy pomocy metody \textit{initializeModel}. Model zostaje zdefiniowany i skonfigurowany na podstawie już wytrenowanego modelu, który szukany jest w katalogu \textit{transcription/train}. Model można pobrać z repozytorium projektu \textit{Onsets and Frames} \cite{Transcription:OnsetsAndFrames:Github}. Obiekt przechowuje informację o tym, czy już został zainicjalizowany ignorując kolejne wywołania metody \textit{initializeModel}.
+
+Metoda transkrypcji \textit{transcribe} przyjmuje dwa argumenty:
+\begin{itemize}
+  \item  \textit{uploaded} - plik audio do transkrypcji w postaci słownika, w którym klucz jest nazwą kompozycji a wartość danymi z pliku. 
+  \item \textit{responseFilePath} - ścieżka do pliku, w którym ma zostać zapisana transkrypcja w postaci MIDI.
+\end{itemize}
+
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
 Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa $n \times 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami w zakresie $\left[0, 127\right]$ oznaczające dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza, że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}
 
@@ -1664,11 +1676,9 @@ W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersal
 
 % TODO: Czy słownik skrótów potrzebny? Cheng-Zhi A. Huang -> C.A.Huang ?  Same Hirsch, Hans-Günter, Biing-Hwang
 
-%%\TODO: Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Bayesowy czy Bajesowy? Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
+%%\TODO: Jak przetłumaczyć ,,Gaussian smoothnes''? W tekscie dałem "gładkość Gaussa", ale nie jestem pewny czy to poprawne. Ten sam problem z oknem Gaussa / oknem Gaussiana. Średnia Gaussowska czy Średnia Gaussa? Nazwałem "równoległych metod" nazwę "joint methods". Dosłownie byłoby to "Wspólnych metod", ale ich działanie de facto polega na wyliczaniu równoległym a nie iteracyjnym. Czy to jest ok? }
 %TODO: Czy opisywać funkcje kosztu w rozdziale Onsets and Frames? jest dokładnie opisana w referencyjnej pracy naukowej
 %\TODO: [Holistyczna metoda z użyciem sieci neuronowych] Artykuł znajduje się na 20-30 stronach journala, ale sam w sobie numerowany jest od 1 - 10. Jak odnoszę się do 6 strony, powinno to być 6 czy zgodnie z journalem 26? ten sam problem w fig:specSmooth:kapuri
-% \ref{sec:end} - dlatego że zakończenie nie jest numerowane, \ref na nim powoduje wstawienia się referencji do rozdziału wcześniej.
-% Nie dodawałem żadnego opisu implementacji Onsets and Frames ponieważ duża część tego jest wzięta z ich jupiter notebooka. Czy to ok?
 
 % \section{Słownik skrótów}
 % \begin{itemize}
