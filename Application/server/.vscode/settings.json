@@ -17,7 +17,8 @@
         "xticks",
         "ylabel",
         "ylim",
-        "yticks"
+        "yticks",
+        "zainicjalizowany"
     ],
     "cSpell.ignoreWords": [
         "cmap",

@@ -66,7 +66,7 @@ class OnsetsAndFramesImpl:
         ])
 
         self.modelInitialized = True
-        print("OnesetsFrames model initialized successfully")
+        print("Model Onsets and Frames został pomyślnie zainicjalizowany")
 
     def transcription_data(self, params):
         del params
@@ -90,9 +90,6 @@ class OnsetsAndFramesImpl:
             assert len(example_list) == 1
             to_process.append(example_list[0].SerializeToString())
             
-            print('Processing complete for', fn)
-
-
         self.sess.run(self.iterator.initializer, {self.examples: to_process})
 
         input_fn = infer_util.labels_to_features_wrapper(self.transcription_data)

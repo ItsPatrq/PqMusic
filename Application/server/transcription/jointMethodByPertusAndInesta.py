@@ -179,7 +179,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 				lowPassedConv = np.convolve(currPatternPowers, gaussianPoints, 'same')
 				currPatternSharpnessMeasure = np.sum(abs(lowPassedConv - currPatternPowers)) / len(currPatternPowers)
 			else:
-				currPatternSharpnessMeasure = 0 # only possible if minHarmonicsPerCandidate set to less then 2
+				currPatternSharpnessMeasure = 0 # możliwe tylko, jeśli minHarmonicsPerCandidate jest ustawiony na mniej niż 2
 			currPatternSmoothness = 1 - currPatternSharpnessMeasure
 			combinationSalience += (totalPatternLoudness * currPatternSmoothness) ** 2
 		if lowestLoudness < highestLoudness * gamma:
@@ -209,7 +209,7 @@ def harmonic_and_smoothness_based_transcription(data, sampleRate, neighbourMergi
 				lowPassedConv = np.convolve(normalizedHpsPowers, gaussianPoints, 'same')
 				currPatternSharpnessMeasure = np.sum(abs(lowPassedConv - normalizedHpsPowers)) / (len(currPatternPowers) - len(currPatternPowers) * gaussianPoints[1])
 			else:
-				currPatternSharpnessMeasure = 0 # only possible if minHarmonicsPerCandidate set to less then 2
+				currPatternSharpnessMeasure = 0 # możliwe tylko, jeśli minHarmonicsPerCandidate jest ustawiony na mniej niż 2
 			currPatternSmoothness = 1 - currPatternSharpnessMeasure
 			combinationSalience += (totalPatternLoudness * currPatternSmoothness ** smoothnessImportance) ** 2
 
