@@ -457,7 +457,7 @@ Istotnym pojęciem przy omawianiu barwy dźwięku jest \textit{formant}. Formant
 \section{Modelowanie systemu transkrypcji} \label{sec:modelowanieSystemu}
 Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane w postaci binarnych plików dźwiękowych jako dyskretne sygnały cyfrowe dyskretnego czasu. W procesie cyfryzacji zostały poddane procesowi kwantyzowania wartości, najczęściej poprzez zaokrąglenie do najbliższych liczb całkowitych 
 \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
-% \cite[r. 1.1-1.3]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+% \cite[r. 1.1-1.2]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
 . Sposób, w jaki pliki te przechowują dane jest zdeterminowany przez wiele parametrów, jak kodowanie, które zostało na nich zastosowane, częstotliwość próbkowania, ilość kanałów itp. Istnieje wiele kodowań przeznaczonych do danych dźwiękowych, zarówno nieskompresowanych jak i skompresowanych. Te drugie powstały z myślą o zaoszczędzeniu jak największej ilości pamięci w znaleźć od tego, w jakim stopniu można obniżyć jakość podczas kompresji sygnału 
 \cite[66]{Homerecording:DlaKazdego}
 %\cite[r. 2]{Homerecording:DlaKazdego}
@@ -569,7 +569,10 @@ Istnieje wiele algorytmów zaliczających się do grupy algorytmów FFT. Popular
   \item{Na każdym z uzyskanych zbiorów wykonuje się DFT, czyli łącznie $\frac{N}{2}$ dwupunktowych DFT.}
   \item{Proces składania widm powtażamy tak, że dwuprążkowe widma składane są w czteroprążkowe, czteroprążkowe w ośmioprążkowe itd., do momentu, w którym odtworzone zostanie widmo N-prążkowe, czyli kompletne widmo sygnału.}
 \end{enumerate}
-Co daje łączną ilość etapów operacji równą $\log_2 N$. \cite[241-252]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+Co daje łączną ilość etapów operacji równą $\log_2 N$ 
+\cite[241-252]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 9.5.1]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+.
 
 \subsubsection{Krótkoczasowa transformata Fouriera}\label{sec:STFT}
 Do tej pory przeanalizowane zostało działanie i podstawowe odmiany algorytmu transformacji Fouriera, jednak aby można było wykorzystać to narzędzie przy analizie utworów muzycznych niezbędne jest wprowadzenie reprezentacji czasu-częstotliwości TFR. \textit{Krótkoczasowa transformacja Fouriera (STFT)} jest przeznaczona do operowania na małym oknie czasowym analizowanego sygnału. Pojedyńcze okno o indeksie $i_0$ z funkcją okna $w$ opisane jest wzorem:
@@ -581,7 +584,11 @@ Do funkcji okna standardowo używa się funkcji Gaussa, Hamminga, Hanninga lub k
   STFT^{W}_{x}(t,f) = CFT_{s \frac{w}{t}}(f) = \int_{-\infty}^{+\infty} x(\tau)w(t - \tau)e^{-j2\pi f\tau}  \,\mathrm{d}\tau.
 \end{equation}
 
-W równaniu \ref{eq:STFT1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dobierany jest zgodnie z zapotrzebowaniem, które sprowadza się do charakterystyki analizowanych danych. Dla przykładu, podczas detekcji mowy okno powinno być jak najmniejsze, ponieważ dynamika tonacji przy każdym słowie jest bardzo wysoka, i w celu odpowiedniego przeanalizowania wypowiedzi zsamplowane fragmenty, które poddawane są STFT powinny być jak najmniejsze, aby analiza była wrażliwa na nawet najdrobniejsze zmiany w tonie w celu właściwego wykrycia formantów \cite[804–816]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}\cite[56-57, 256-258]{Transcription:Hess:PitchDetectionOfSpeechSignals}.
+W równaniu \ref{eq:STFT1} funkcja $\gamma(x)$ oznacza czasowe okno obserwacji, zaś $\Gamma(f)$ jest jej widmem Fouriera. Rozmiar okna dobierany jest zgodnie z zapotrzebowaniem, które sprowadza się do charakterystyki analizowanych danych. Jako przykład, podczas detekcji mowy okno powinno być o małej ilości sampli, ponieważ dynamika tonacji przy każdym słowie jest bardzo wysoka. W celu odpowiedniego przeanalizowania wypowiedzi zsamplowane fragmenty, które poddawane są STFT, powinny być o jak najmniejszej długości, aby analiza była wrażliwa na nawet najkrótsze zmiany w tonie w celu właściwego wykrycia formantów 
+\cite[804–805]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+%\cite[sekcja 1]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+%\cite[55-57]{Transcription:Hess:PitchDetectionOfSpeechSignals} actually info on those pages doesn't support anything. r. 3.4 it is tho
+.
 
 Równanie \ref{eq:STFT1} nosi nazwę metody ,,przesuwającego się okna'' MWM (\textit{ang. Moving Window Method}) w dziedzinie czasowej lub częstotliwościowej. STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach wyciętego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwościowej algorytm STFT jest równoznaczny z:
 \begin{enumerate}
@@ -589,8 +596,11 @@ Równanie \ref{eq:STFT1} nosi nazwę metody ,,przesuwającego się okna'' MWM (\
   \item przesunięciem w częstotliwości sygnału czasowego otrzymanego z punktu \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.
 \end{enumerate}
 \cite[455-458]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 17.3]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+.
 
-Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż częstotliwościowej. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwając je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu (np. długość okna równa 2048 sampli, a przesunięcie równe 1024 sample spowoduje nakładanie się na siebie okien przy jednoczesnym podwojeniu ilości koniecznych obliczeń). Dokładniejszy opis tego zjawiska wraz z szczegółowym opisem istotnych cech, jakie wpływają na trafność wyboru długości i algorytmu okna można znaleźć w \cite{WindowChoiceStrategiesSTFT}.
+Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż częstotliwościowej. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwając je mniej niż jego właściwą szerokość. W zależności od tego jak mocno okno się na siebie nakłada proporcjonalnie rośnie koszt obliczeniowy tego algorytmu (np. długość okna równa 2048 sampli, a przesunięcie równe 1024 sample spowoduje nakładanie się na siebie okien przy jednoczesnym podwojeniu ilości koniecznych obliczeń). 
+%TODO: Nie moge znalezc. Byłem pewny że mam pdf, ale gdzieś się zapodział. Dokładniejszy opis tego zjawiska wraz z szczegółowym opisem istotnych cech, jakie wpływają na trafność wyboru długości i algorytmu okna można znaleźć w \cite{WindowChoiceStrategiesSTFT}.
 
 \begin{figure}[t]
   \begin{subfigure}{1.\textwidth}
@@ -612,7 +622,10 @@ Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż 
 \end{figure}
 
 
-W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych jest duplikowana. Ilość redundantnych danych jest proporcjonalna do szerokości nakładania się na siebie okien. Aby zminimalizować ten negatywny efekt, na okno nakładana jest funkcja dalej zwana funkcją okna. W ogólności, funkcja okna wydobywa odpowiednio przemnożone wartości wewnątrz jej zakresu (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza obrębem zakresu okna. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli ~\ref{tab:definicjeOkien} przedstawione są funkcje $w(t)$, które często wykorzystywane są jako okna czasowe w analizie sygnału akustycznego, wraz z ich analitycznymi wzorami widm $W(\omega)$. Graficzna reprezentację okna prostokątnego, Hanna oraz Hamminga można zobaczyć na rysunku \ref{fig:WindowFunctions}\cite[103, 106]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}\cite{Transcription:Kunieda:Aclos}.
+W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych jest duplikowana. Ilość redundantnych danych jest proporcjonalna do szerokości nakładania się na siebie okien. Aby zminimalizować ten negatywny efekt, na okno nakładana jest funkcja dalej zwana funkcją okna. W ogólności, funkcja okna wydobywa odpowiednio przemnożone wartości wewnątrz jej zakresu (w oknie) i stałą wartość (zazwyczaj jest to zero) wszędzie poza obrębem zakresu okna. Dla okien czasowych można stosować wiele różnych funkcji matematycznych. W tabeli ~\ref{tab:definicjeOkien} przedstawione są funkcje $w(t)$, które często wykorzystywane są jako okna czasowe w analizie sygnału akustycznego, wraz z ich analitycznymi wzorami widm $W(\omega)$. Graficzna reprezentację okna prostokątnego, Hanna oraz Hamminga można zobaczyć na rysunku \ref{fig:WindowFunctions}
+\cite[87-90]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 4.4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+\cite{Transcription:Kunieda:Aclos}.
 
 \begin{table}[t]
   \begin{center}
@@ -647,7 +660,10 @@ W momencie, gdy w algorytmie okno nakłada się na siebie, pewna porcja danych j
 \end{table}
 
 \subsubsection{Przetwarzanie transformacji Fouriera}\label{sec:przetwarzanieFFT}
-Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum \cite[501-507]{Transcription:Talkin:RAPT}. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
+Wynikiem FFT jest wektor liczb zespolonych, którego długość jest równa długości danych (wielkości okna + długość wypełnienia zerami). Urojona część wyniku transformaty jest niezbędna do odwrócenia procesu transformacji, lecz nie jest niezbędna w procesie analizy. Większość algorytmów używających FFT przetwarza i skaluje wynik, aby pozbyć się niepotrzebnych informacji a istotne cechy uwypuklić. Powszechnie używaną techniką podczas analizy sygnałów jest operowanie na logarytmie amplitudy spektrum 
+\cite[501-507]{Transcription:Talkin:RAPT}
+%\cite[r. 2]{Transcription:Talkin:RAPT}
+. Polega to na zastosowaniu normy Gaussa na każdej z wartości spektrum, co w rezultacie zniweluje część urojoną komponentu, a następnie zastosowanie na wyniku logarytmu naturalnego. Logarytm użyty jest do normalizacji i wyrównania danych przy zachowaniu relatywnych wartości. Wzór na logarytm amplitudy spektrum można przedstawić następująco:
 \begin{equation}\label{eq:logPowSpec}
 S_k^w(t,f) = ln||STFT_k^w(t,f)||
 \end{equation}
@@ -663,26 +679,41 @@ gdzie $v$ jest częstotliwością próbkowania. Częstotliwość ta jest maksyma
 \begin{figure}[t]
   \begin{center}
     \includegraphics[scale=0.7]{images/ZeroPadding.jpg}
-    \caption{Przykład analizy częstotliwościowej z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}}
+    \caption{Przykład analizy częstotliwościowej z wykorzystaniem STFT. Każdy z wykresów przedstawia to samo okno po uzupełnieniu na końcu zerami do długości $N_FFT$ = 128, 256, 1024 (kolejno od góry). Wykres z 
+    \cite[224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+    %\cite[r. 8.6]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+    }
     \label{fig:ZeroPadding}
   \end{center}
 \end{figure}
 
-Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania lub zastosowanie interpolacji, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} \cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
+Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, czy zwiększyć złożoność obliczeniową i osiągnąć lepszą aproksymację widma podczas FFT poprzez zwiększenie częstotliwości próbkowania lub zastosowanie interpolacji, czy zmniejszyć dokładność, ale otrzymać mniejszą złożoność obliczeniową. Istnieje jednak metoda, która prowadzi do kompromisu tych dwóch podejść. Polega ona na uzupełnieniu na końcu zerami analizowanego, fragmentu sygnału tuż po nałożeniu funkcji okna. Po tak wykonanej konkatenacji danych można zastosować STFT. Podejście to daje w wyniku gęściejsze próbkowanie widma przy mniejszych nakładach obliczeniowych. Tak zwiększoną rozdzielczość widma można zaobserwować na rysunku \ref{fig:ZeroPadding} 
+\cite[221-224]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 8.6]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+.
 
 \clearpage
 
 \section{Estymacja częstotliwości fundamentalnej w sygnale monofonicznym}\label{sec:f0}
-Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy  \cite[2-4]{Transcription:Klapuri:ChallengesAndFuture}. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania poszczególnych nut determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy przeanalizować wiele czynników. 
+Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy 
+\cite[2-9]{Transcription:Klapuri:ChallengesAndFuture}
+%\cite[r. 1-2]{Transcription:Klapuri:ChallengesAndFuture}
+. Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania poszczególnych nut determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy przeanalizować wiele czynników. 
 
 Samo rozpoznanie wysokości tonu jest kategoryzowane w zależności od specyfiki sygnału wejściowego na transkrypcję utworów monofonicznych (dla sygnału bez równoległych dźwięków) oraz transkrypcję utworów polifonicznych (dla sygnałów z równoległymi dźwiękami). Te drugie są często dalej dzielone na transkrypcję sygnałów mono- i multiinstrumentalnych (w zależności od tego, czy w sygnale występuje tylko jeden lub więcej instrumentów o różnych barwach dźwięku).
 
 Dalsze rozważania będą przebiegać z założeniem, że przetwarzane sygnały są z podzbioru muzyki o standardach kompozycji zachodniej, lecz bez wyszczególnionego gatunku muzycznego. Nie będziemy również skupiali się na wykryciu tak zwanych dźwięków o niezależnej wysokości, do których zaliczają się elementy perkusyjne. Ważnym założeniem, które jest stosowane w tym rozdziale, jest analiza jedynie sygnałów monofonicznych. W odróżnieniu do krzywych reprezentujących muzykę polifoniczną, w analizowanych utworach będzie grany tylko jeden dźwięk na pojedyńczym instrumencie, bez równoległych dźwięków. Algorytmy analizujące muzykę wielotonową są opisane w rozdziale \ref{sec:MultiPitch}. Jest to bardzo duże ułatwienie, ponieważ konkurujące sygnały dźwiękowe nakładają się na siebie, zmuszając algorytm analizujący do rozróżnienia i odseparowania ich przed faktyczną analizą F0. 
 
 \subsection{Funkcja autokorelacji}\label{sec:f0:ac}
-Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w przytoczonej wcześniej pracy \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności, które powtarzały się okresowo co $T$, były analizowane jako kandydaci F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest powszechna we współczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji, której celem jest znalezienie wysokości dźwięku \cite[41-44]{Transcription:Quenneville:Thesis}.
+Domena czasu jest najbardziej naturalną postacią sygnału dźwiękowego, ponieważ w takiej właśnie postaci jest odbierane przez ludzkie ucho - jako ciśnienie akustyczne zmienne w czasie. Wiele z pierwszych badań jakie prowadzono w kontekście transkrypcji sygnału fonicznego wykorzystywało tą postać sygnału, między innymi w przytoczonej wcześniej pracy \cite{Transcription:Gold:ComputerProgramForPitchExtraction}. Algorytm ten polegał na znajdywaniu wzorców w krzywej sygnału. Regularności, które powtarzały się okresowo co $T$, były analizowane jako kandydaci F0. Jak analiza czystego binarnego sygnału i wyliczenia na nim nie są częstą praktyką, tak podejście do znajdywania wzorców i regularności jest powszechna we współczesnych algorytmach. Najbardziej dosłowne odwzorowanie tej idei można znaleźć w metodologiach opartych na korelacji, której celem jest znalezienie wysokości dźwięku 
+\cite[41-44]{Transcription:Quenneville:Thesis}
+%\cite[r. 5.2]{Transcription:Quenneville:Thesis}
+.
 
-\textit{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara odwzorowuje podobieństwo pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych \cite[32-33]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o pewną wartość (przesunięcie, z ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
+\textit{Autokorelacja} jest narzędziem matematycznym stosowanym w przetwarzaniu sygnałów. Służy ono do analizy serii wartości. Ta statystyczna miara odwzorowuje podobieństwo pomiędzy kolejnymi wartościami tej samej zmiennej. Funkcja ta ma za zadanie wykrycie regularności w analizowanych danych 
+\cite[14-17]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 1.3.5]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+. Proces autokorelacji polega na badaniu korelacji wejściowych danych z tymi samymi danymi, ale przesuniętymi o pewną wartość (przesunięcie, z ang. \textit{lag}). Siła korelacji o odpowiednim przesunięciu może świadczyć o powtarzającym się wzorze w sygnale z częstotliwością przesunięcia.
 
 W pracy naukowej \cite{Transcription:Lawrence:AutocorrelationForPitchDetection} Lawrence używa funkcji autokorelacji do wykrycia częstotliwości fundamentalnych w zadanym sygnale monofonicznym. Zakłada on, że badany sygnał jest quasi-periodyczny, co oznacza, że sygnał posiada cechy pojawiające się w prawie równych odstępach, lecz nie musi być on bezbłędnie periodyczny. Sygnał w pełni periodyczny jest przedmiotem analizy czysto teoretycznej, ponieważ sygnał akustyczny musiałby pozostać bez zmian w amplitudzie i częstotliwości przez cały swój okres, podczas gdy sygnał quasi-periodyczny zakłada zmiany w strukturze sygnału względem czasu. Funkcja autokorelacji na takim sygnale byłaby funkcją długości okresu opisującą zgodność przesuniętego o ten okres sygnału z sygnałem bazowym. 
 
@@ -690,7 +721,10 @@ Wzór na ogólną postać funkcji autokorelacji od długości okresu $h(t)$ jako
 \begin{equation}\label{eq:AC}
   R(k) = \lim_{N \to \infty} \frac{1}{2N + 1} \sum_{n=-N}^{N} h(n)h(n + k)
 \end{equation}
-gdzie $k$ jest opóźnieniem, $n$ reprezentuje moment w czasie a N reprezentuje długość badanej funkcji. Jak można zaobserwować w \ref{eq:AC} założeniem jest, że sygnał bazowy jest nieskończenie długi (tak samo jak przy TF opisanej w sekcji \ref{sec:TF}). Do rozważań w kontekście analizy sygnału fonicznego będziemy używać wariancji krótkoczasowej tego wzoru, operującej na oknach danych (analogicznie do STFT opisanej w sekcji \ref{sec:STFT}) opisanej w \cite{Transcription:Talkin:RAPT} jako:
+gdzie $k$ jest opóźnieniem, $n$ reprezentuje moment w czasie a N reprezentuje długość badanej funkcji. Jak można zaobserwować w \ref{eq:AC} założeniem jest, że sygnał bazowy jest nieskończenie długi (tak samo jak przy TF opisanej w sekcji \ref{sec:TF}). Do rozważań w kontekście analizy sygnału fonicznego będziemy używać wariancji krótkoczasowej tego wzoru, operującej na oknach danych (analogicznie do STFT opisanej w sekcji \ref{sec:STFT}) opisanej w 
+\cite[503]{Transcription:Talkin:RAPT}
+%\cite[r. 2.2.2]{Transcription:Talkin:RAPT}
+ jako:
 \begin{equation}\label{eq:STAC}
   R(i,k) = \sum_{j=m}^{m + N - k - 1} h_jh_{j+k}, m = iz
 \end{equation}
@@ -726,9 +760,12 @@ Z jednego okna danych w wyniku wyznaczane jest to przesunięcie, które ma najwi
   \label{fig:ACResults}
 \end{figure}
 
-Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej, która stara się zminimalizować defekty funkcji autokorelacji, dokładny jej opis można znaleźć w \cite{Transcription:Talkin:RAPT}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego Jest to opisane dokładniej w sekcji \ref{sec:MultiPitch:monofon}.
+Podstawowym założeniem algorytmów wykrywania F0 z wykorzystaniem autokorelacji (tak samo jak znormalizowanej korelacji krzyżowej, która stara się zminimalizować defekty funkcji autokorelacji, dokładny jej opis można znaleźć w pracy \cite{Transcription:Talkin:RAPT}) jest to, że analizowany sygnał jest monofoniczny. Jest to spowodowane tym, że periodyczność jaką cechuje się pojedyńcza krzywa quasi-periodyczna jest modulowana, albo nawet całkowicie neutralizowana po nałożeniu na nią innej krzywej. Załóżmy, że został nagrany sygnał z dwoma nutami o różnych wysokościach granymi równolegle w tym samym czasie. Okresami, w którym te sygnały w izolacji byłyby powtarzalne to $T_1$ i $T_2$. Po nałożeniu się na siebie, wynikowy sygnał nie byłby periodyczny w żadnym z tych interwałów, chyba że jeden byłby wielokrotnością drugiego Jest to opisane dokładniej w sekcji \ref{sec:MultiPitch:monofon}.
 
-Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane tym, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na rysunku \ref{fig:ACResults:corr}. \cite[238-250]{Transcription:Anssi:SignalProcessingMethods}
+Wyniki estymacji F0 mają tendencje do bycia wielokrotnościami faktycznego F0 sygnału, co można zaobserwować na wykresach na wykresie \ref{fig:ACResults:f0}. Dzieje się tak, ponieważ wysoki współczynnik korelacji, jaki uzyska krzywa o periodyczności równej $T$ dla opóźnienia $T$ będzie relatywnie podobny do wyniku autokorelacji dla tego sygnału dla opóźnienia $2T$, $3T$ itd. Jest to spowodowane tym, że wzorzec występujący co $T$ występuje w szczególności co $2T$, $3T$ itd. Można to również zaobserwować w korelogramie przedstawionym na rysunku \ref{fig:ACResults:corr} 
+\cite[231-244]{Transcription:Anssi:SignalProcessingMethods}
+%\cite[8.2.1-8.3.3]{Transcription:Anssi:SignalProcessingMethods}
+.
 
 \subsection{Analiza TFR} \label{sec:f0:tfr}
 Analiza sygnału w reprezentacji średniego poziomu TFR, w przeciwieństwie do operowania na nieprzetworzonym sygnale cyfrowym, jak miało to miejsce w sekcji \ref{sec:f0:ac}, skupia się na badaniu relacji w domenie częstotliwości danego sygnału. Najpopularniejszą reprezentacja TRF jest zdefiniowana jako STFT na kolejnych fragmentach (oknach) sygnału. Docelową postacią jest zbiór okien tworzących spektrogram, ale w celu jego uzyskania należy SFTF przedstawić jako wektor energii. Jednym ze sposobów w jaki można uzyskać taką postać jest to wykonanie kwadratu modułu z STFT:
