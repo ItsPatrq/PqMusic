@@ -696,7 +696,7 @@ Przy modelowaniu systemu transkrypcji często trzeba podjąć trudną decyzję, 
 
 \section{Estymacja częstotliwości fundamentalnej w sygnale monofonicznym}\label{sec:f0}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w sygnale akustycznym. Jest to jeden z kroków wymaganych do pełnej transkrypcji utworu muzycznego, a przez wielu badających ten teren nauki uważany za najważniejszy 
-\cite[2-9]{Transcription:Klapuri:ChallengesAndFuture}
+\cite[408-415]{Transcription:Klapuri:ChallengesAndFuture}
 %\cite[r. 1-2]{Transcription:Klapuri:ChallengesAndFuture}
 . Wysokość dźwięku jest niezwykle istotną informacją z punktu widzenia muzyka, a sposób zagrania poszczególnych nut determinowany jest właśnie przez F0. Nawiązując do informacji opisanych w rozdziale \ref{sec:JakDzialaMuzyka} aby poprawnie wykryć F0 należy przeanalizować wiele czynników. 
 
@@ -805,17 +805,26 @@ Podczas analizy spektrogramu, naiwnym podejściem byłoby wybranie za F0 ten pik
 Analiza spektrogramu w celu znalezienia F0 polega na znalezieniu korelacji w rozmieszczeniu harmonicznych względem siebie. Zgodnie z regułą harmoniczności, harmoniczne sygnału mają częstotliwości będące wielokrotnościami fundamentalnej częstotliwości. Są one równomiernie rozmieszczone na przestrzeni całego spektrum, co powoduje, że pojedyńcza nuta jest sama w sobie periodyczna w domenie częstotliwości, co można zauważyć na rysunku \ref{fig:spectralComponent}. Ta charakterystyka jest powszechnie używana w wykrywaniu częstotliwości fundamentalnej sygnału akustycznego.
 
 \subsection{Analiza cepstralna}\label{sec:f0:ceps}
-Z racji tego, że spektrum samo w sobie jest periodyczne, możliwe jest użycie metodologi wykrywającej cykliczności na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Wynaleźli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku F0, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego \cite{Transcription:Childers:CepstruGuide} \cite[46-59]{Transcription:Quenneville:Thesis}.
+Z racji tego, że spektrum samo w sobie jest periodyczne, możliwe jest użycie metodologi wykrywającej cykliczności na spektrum. Taki pomysł mieli już w 1963 Bogert, Healy i Tukey w \cite{Transcription:Bogert:FirstCepstrum}. Wynaleźli oni narzędzie matematyczne przeznaczone dla danych zawierających echa lub pogłosy fundamentalnej częstotliwości, która nie jest znana. \textit{Cepstrum mocy} używane jest do wyznaczenia czasu początku danego dźwięku, jego echa i powiązanych amplitud. Analiza na zespolonym cepstrum pozwala na powrót do pierwotnego kształtu badanego \cite{Transcription:Childers:CepstruGuide} 
+\cite[46-50]{Transcription:Quenneville:Thesis}
+%\cite[r. 5.3, r. 5.3.1]{Transcription:Quenneville:Thesis}
+.
 
-Cepstrum zostało pierwotnie opisane w pracy \cite{Transcription:Bogert:FirstCepstrum}, a następnie, dwa lata później w roku 1967, zastosowane do wykrywania wysokości dźwięku w ramach \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w pracy naukowej dotyczącej historii tego narzędzia (\cite[95-99]{Transcription:Oppenheim:HistoryOfCepstrum}) równolegle i niezależnie z tymi badaniami powstawała praca doktorancka \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Ma ona szczególne zastosowanie w metodologii cepstralnej, pokrywając się wnioskami i przyspieszając tempo jego rozwoju. Dalsze prace Oppenheima opisujące między innymi charakterystyki splotu harmonicznych, które są bardzo podobne do spektrum logarytmu spektrum. Odkrycia te przyczyniły się do, między innymi, stosowania cepstrum na oknach czasowych (tak jak STFT) czy opisanie zespolonego cepstrum, które pozwala na odwrócenie tej transformacji, otwierając drogę do takich metod jak filtrowanie w domenie cepstralnej.
+W roku 1967 cepstrum zostało zastosowane do wykrywania wysokości dźwięku w ramach pracy \cite{Transcription:Noll:CepstrumPitchDetermination}. Jak opisuje Oppenheim i Schafer w pracy naukowej 
+\cite[95-99]{Transcription:Oppenheim:HistoryOfCepstrum}
+%\cite{Transcription:Oppenheim:HistoryOfCepstrum}
+, która dotyczy historii tego narzędzia, równolegle i niezależnie z tymi badaniami powstawała praca doktorancka \cite{Transcription:Oppenheim:Superposition} badająca klasę nielinearnych technik przetwarzania sygnałów poprzez koncepcje homomorficznego mapowania pomiędzy grupami algebraicznymi i przestrzeniami wektorowymi. Ma ona szczególne zastosowanie w metodologii cepstralnej, pokrywając się wnioskami i przyspieszając tempo jego rozwoju. Dalsze prace Oppenheima opisujące między innymi charakterystyki splotu harmonicznych, które są bardzo podobne do spektrum logarytmu spektrum. Odkrycia te przyczyniły się do, między innymi, stosowania cepstrum na oknach czasowych (tak jak STFT) czy opisanie zespolonego cepstrum, które pozwala na odwrócenie tej transformacji, otwierając drogę do takich metod jak filtrowanie w domenie cepstralnej.
 
-Oryginalnie analiza cepstralna opisana w pracy \cite{Transcription:Bogert:FirstCepstrum} została zdefiniowana jako ,,spektrum mocy z logarytmu spektrum mocy''. Nawiązując do wzoru \ref{eq:logPowSpec}, cepstrum mocy okna o indeksie $k$ z oknem $w$ liczy się jako 
+Oryginalnie analiza cepstralna, która została opisana w przytoczonej powyżej pracy \cite{Transcription:Bogert:FirstCepstrum} została zdefiniowana jako ,,spektrum mocy z logarytmu spektrum mocy''. Nawiązując do wzoru \ref{eq:logPowSpec}, cepstrum mocy okna o indeksie $k$ z oknem $w$ liczy się jako 
 \begin{equation}\label{eq:ceps1}
   C_k^w(t, f) = |(S_k^w(t,f)|^2.
 \end{equation}
-Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analityczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów \cite{Transcription:Bogert:FirstCepstrum} jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed algorytmem FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w oryginalnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtru konwolucyjnego \cite[1-2]{Transcription:Randall:CepstrumHistory}. 
+Pierwotnym zastosowaniem tego narzędzia było wykrycie echa w sygnale sejsmicznym. Podejście to było bardziej odporne na barwę sygnału od wcześniej używanej funkcji autokorelacji (opisanej w sekcji \ref{sec:f0:ac}). Zastosowanie to było czysto analityczne, i nie wymagało od algorytmu możliwości przywrócenia analizowanych danych do domeny czasu. Mimo, że jednym z autorów pierwotnej pracy o cepstrum jest Tukey, który także pracował nad FFT, cepstrum zostało opublikowane na dwa lata przed pracą opisującą algorytm FFT \cite{Transcription:Tukey:FFT}, przez co jego potencjał nie był jeszcze odkryty. Choć w pierwotnej pracy nad cepstrum zdefiniowane były takie pojęcie jak ,,lifter'', był zainicjalizowany później z użyciem filtru konwolucyjnego 
+\cite[1-2]{Transcription:Randall:CepstrumHistory}
+%\cite[r. 1]{Transcription:Randall:CepstrumHistory}
+.
 
-Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectrum} (z ang. spektrum). Bogert, Healy i Tukey w pracy \cite{Transcription:Bogert:FirstCepstrum} opisali szereg terminologii związanej z cepstrum, między innymi takie jak:
+Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectrum} (z ang. spektrum). Szereg terminologii został opisany na potrzeby zdefiniowania narzędzia cepstrum w pierwotnej pracy \cite{Transcription:Bogert:FirstCepstrum}, które do dziś są używane w celu wyróżnienia domen cepstralnych:
 \begin{table}[H]\centering
   \begin{tabular}{lll}
   \textit{rahmonics} & zamiast & \textit{harmonics} (z ang. harmoniczność) \\
@@ -826,16 +835,25 @@ Nazwa cepstrum bierze się z odwrócenia pierwszych liter wyrazu \textit{spectru
 \end{table}
 \noindent Wytłumaczeniem tej lingwistyki, w której znajome wyrazy były modyfikowane w celu uzyskania czegoś podobnego, ale mimo wszystko troche innego, było zadeklarowane następująco: 
 \begin{displayquote}
-,,Ogólnie rzecz biorąc, działamy po stronie częstotliwości w sposób powszechnie stosowany po stronie czasu i odwrotnie'' \cite[95]{Transcription:Oppenheim:FromFqToQf} (tłumaczenie własne)
+,,Ogólnie rzecz biorąc, działamy po stronie częstotliwości w sposób powszechnie stosowany po stronie czasu i odwrotnie'' 
+\cite[95]{Transcription:Oppenheim:HistoryOfCepstrum} 
+%\cite{Transcription:Oppenheim:HistoryOfCepstrum} 
+(tłumaczenie własne)
 \end{displayquote}
 
-Cepstrum posiada piki tam, gdzie oryginalny sygnał w przestrzeni czasu - amplitudy posiada echo. Ta nowa reprezentacja spektralnej domeny nie jest już domeną częstotliwości, ani też nie jest to domena czasu. Przez ten fakt, aby nie mylić tych pojęć z pozostałymi Bogert nazwał domenę cepstrum jako domena \textit{quefrency}, która tak naprawdę jest domeną częstotliwości spektralnych pików oryginalnego sygnału \cite[1-4]{Transcription:Randall:CepstrumHistory} \cite[210-219]{Transcription:Bogert:FirstCepstrum}.
+Cepstrum posiada piki tam, gdzie oryginalny sygnał w przestrzeni czasu - amplitudy posiada echo. Ta nowa reprezentacja spektralnej domeny nie jest już domeną częstotliwości, ani też nie jest to domena czasu. Przez ten fakt, aby nie mylić tych pojęć z pozostałymi Bogert nazwał domenę cepstrum jako domena \textit{quefrency}, która tak naprawdę jest domeną częstotliwości spektralnych pików oryginalnego sygnału 
+\cite[1-4]{Transcription:Randall:CepstrumHistory}
+%\cite[r. 1-2]{Transcription:Randall:CepstrumHistory}
+.
 
 W przypadku lifterowania, czyli filtrowania w domenie quefrency, używany jest wzór cepstrum sygnału ciągłego $x(t)$:
 \begin{equation}\label{eq:ceps:continous}
 Cep_x(\tau) \ ICFT_{log(|X|)}(\tau) = \int_{-\infty}^{\infty}  log(|X(f)|)e^{j2\pi f\tau}\,\mathrm{d}f, 
 \end{equation}
-gdzie  $X(f)$ oznacza TF. Zgodnie z tym wzorem filtrowanie sygnału w domenie częstotliwości przez wynik $X(f)H(F)$ staje się, po wzięciu $log$, sumą $log[X(f)] + log[H(f)]$ gdzie $H(f)$ jest filtrem częstotliwościowym \cite[25-27]{Transcription:Anssi:SignalProcessingMethods}.
+gdzie  $X(f)$ oznacza TF. Zgodnie z tym wzorem filtrowanie sygnału w domenie częstotliwości przez wynik $X(f)H(F)$ staje się, po wzięciu $log$, sumą $log[X(f)] + log[H(f)]$ gdzie $H(f)$ jest filtrem częstotliwościowym 
+\cite[25-27]{Transcription:Anssi:SignalProcessingMethods}
+%\cite[r. 2.1.3]{Transcription:Anssi:SignalProcessingMethods}
+.
 
 \begin{figure}[t]
   \begin{subfigure}{.49\textwidth}
@@ -863,20 +881,26 @@ gdzie  $X(f)$ oznacza TF. Zgodnie z tym wzorem filtrowanie sygnału w domenie cz
   \label{fig:cepstrumF0}
 \end{figure}
 
-Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do znalezienia częstotliwości fundamentalnej w monofonicznym sygnale. Podejście to operuje na cepstrum mocy, które opisane jest wzorem \ref{eq:ceps1} dla kolejnych okien czasowych. Tak pozyskane cepstrum badane jest w kontekście kandydatów F0, i wybierany jest ten, o największej magnitudzie. Dokładna implementacja opisana jest w sekcji \ref{sec:impl:alg:ceps}. Metoda ta jest podatna na wyznaczanie wielokrotności F0, zamiast faktycznej częstotliwości fundamentalnej, tak jak metoda autokorelacji \ref{sec:f0:ac}. Ten defekt można zaobserwować na ilustracji \ref{fig:cepstrumF0}. To podejście nie radzi sobie też z sygnałami zawierającymi dużą ilość szumów, co jest przedstawione w \cite[233-235]{Transcription:Kunieda:Aclos}. Mimo tych wad, metodyka cepstrum jest powszechnie stosowana w analizie sygnałów. Jej ważnym zastosowaniem jest filtrowanie przy pomocy lifteringu, które używane jest między innymi w opisanym algorytmie ACLOS \ref{sec:f0:aclos}.
+Postać cepstralną sygnału akustycznego można bezpośrednio wykorzystać do znalezienia częstotliwości fundamentalnej w monofonicznym sygnale. Podejście to operuje na cepstrum mocy, które opisane jest wzorem \ref{eq:ceps1} dla kolejnych okien czasowych. Tak pozyskane cepstrum badane jest w kontekście kandydatów F0, i wybierany jest ten, o największej magnitudzie. Dokładna implementacja opisana jest w sekcji \ref{sec:impl:alg:ceps}. Metoda ta jest podatna na wyznaczanie wielokrotności F0, zamiast faktycznej częstotliwości fundamentalnej, tak jak metoda autokorelacji \ref{sec:f0:ac}. Ten defekt można zaobserwować na ilustracji \ref{fig:cepstrumF0}. To podejście nie radzi sobie też z sygnałami zawierającymi dużą ilość szumów, co jest przedstawione w 
+\cite[233-235]{Transcription:Kunieda:Aclos}
+%\cite[r. 3-4]{Transcription:Kunieda:Aclos}
+. Mimo tych wad, metodyka cepstrum jest powszechnie stosowana w analizie sygnałów. Jej ważnym zastosowaniem jest filtrowanie przy pomocy lifteringu, które używane jest między innymi w opisanym algorytmie ACLOS \ref{sec:f0:aclos}.
 
 \subsection{ACLOS}\label{sec:f0:aclos}
-Badanie cykliczności spektrum można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
+Badanie cykliczności spektrum można wykorzystać również narzędzia autokorelacji. Omówiona wcześniej metoda badająca cykliczność fali akustycznej poprzez wyliczanie autokorelacji (\ref{sec:f0:ac}) użyta w domenie częstotliwości została opisana w 1996 roku w pracy \cite{Transcription:Kunieda:Aclos} pod nazwą \textbf{ACLOS}. Oba te algorytmy polegają na zasadzie cykliczności fal akustycznych i harmonicznych F0, próbując wykryć dokłądny odstęp pomiędzy cyklami.
 
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.29]{images/ACLOS/ACLOS_flow.jpg}
-    \caption{Schemat działania algorytmu ACLOS do wykrywania wysokości dźwięku. Schemat z \cite[233]{Transcription:Kunieda:Aclos}.}
+    \caption{Schemat działania algorytmu ACLOS do wykrywania wysokości dźwięku. Schemat z 
+    \cite[233]{Transcription:Kunieda:Aclos}
+    %\cite[r. 2]{Transcription:Kunieda:Aclos}
+    .}
     \label{fig:aclos:flow}
   \end{center}
 \end{figure}
 
-Nazwa algorytmu ACLOS jest skrótem \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma (tłumaczenie własne). Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z tą różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną w zależności od pików na poszczególnych pasmach sygnału, co czyni ten algorytm dużo bardziej złożony niż ACLOS.
+Nazwa algorytmu ACLOS jest skrótem \textit{AutoCorrelation of LOg Spectrum}, co oznacza autokorelację na logarytmie widma (tłumaczenie własne). Motywacją do stworzenia ACLOS było odkrycie takiego algorytmu, który wykorzysta zalety cepstrum i jednocześnie będzie bardziej odporne na szumy w badanym sygnale. Dodatkowo, autorzy ACLOS przytaczają prace naukową \cite{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted}, która również wykorzystuje autokorelacje na widmie sygnału akustycznego, z tą różnicą, że nie stosuje się na nim logarytmowania, a proces autokorelacji determinowany jest procedurą decyzyjną zależną od pików na poszczególnych pasmach sygnału, co czyni ten algorytm dużo bardziej złożony niż ACLOS.
 
 \begin{figure}[h]
   \begin{center}
@@ -891,7 +915,10 @@ Schemat działania algorytmu ACLOS dla okna Hanninga o długości 512 sampli prz
   R(j)& = \frac{1}{N}\sum_{i=0}^{N-1}f(i)f(i + j)&
   j = 0, 1, ..., M
 \end{align}
-gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmonicznych, który brana jest pod uwagę, $j$ jest częstotliwością dla której badany jest współczynnik autokorelacji a $M$ oznacza maksymalną częstotliwość, jaką może posiadać F0 w analizowanym sygnale \cite[50-51]{Transcription:Quenneville:Thesis}.
+gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmonicznych, który brana jest pod uwagę, $j$ jest częstotliwością dla której badany jest współczynnik autokorelacji a $M$ oznacza maksymalną częstotliwość, jaką może posiadać F0 w analizowanym sygnale 
+\cite[50-51]{Transcription:Quenneville:Thesis}
+%\cite[r. 5.3.2]{Transcription:Quenneville:Thesis}
+.
 
 \begin{figure}[ht]
   \begin{subfigure}{.49\textwidth}
@@ -917,7 +944,10 @@ gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmoniczn
   \label{fig:aclos:results}
 \end{figure}
 
-Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyznaczenie F0 na podstawie maksymalnego wyniku \ref{eq:Aclos:ACf}. Szerokość pasma pojedyńczego spektralnego komponentu zależna jest od przyjętej długości okna, a pasmo to jest zakresem, w którym znajduje się znalezione F0. Autorzy używają interpolacji wokół wartości wyznaczonej przez autokorelacje, co w rezultacie umożliwia uzyskanie większej dokładności wyniku. Możliwości użycia autokorelacji w metodykach wykrywania F0 zostały pokazane między innymi w pracy \cite[1046-1047]{Transcription:Suzuki:EstimationOfMistunedFrequency}.
+Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyznaczenie F0 na podstawie maksymalnego wyniku \ref{eq:Aclos:ACf}. Szerokość pasma pojedyńczego spektralnego komponentu zależna jest od przyjętej długości okna, a pasmo to jest zakresem, w którym znajduje się znalezione F0. Autorzy używają interpolacji wokół wartości wyznaczonej przez autokorelacje, co w rezultacie umożliwia uzyskanie większej dokładności wyniku. Możliwości użycia autokorelacji w metodykach wykrywania F0 zostały pokazane między innymi w pracy 
+\cite[1046-1047]{Transcription:Suzuki:EstimationOfMistunedFrequency}
+%\cite[r. 3-4]{Transcription:Suzuki:EstimationOfMistunedFrequency}
+.
 
 Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest nieliniowa. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
 
@@ -925,7 +955,16 @@ Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Ce
 \section{Estymacja wielu częstotliwości fundamentalnych w sygnale polifonicznym}\label{sec:MultiPitch}
 Ten rozdział skupia się na opisaniu metod estymacji składowej fundamentalnej w polifonicznym sygnale akustycznym. Sygnał polifoniczny to taki, w którym występują co najmniej dwa równoległe dźwięki w tym samym czasie. Problem ten jest znacznie bardziej złożony od wyznaczania pojedyńczego F0 opisanego w \ref{sec:f0}. Wiele z własności sygnałów akustycznych, jak periodyczność czy rozróżnialna barwa, nie są niezawodnym źródłem informacji w celach transkrypcji wielotonowej, ponieważ nakładające się na siebie dźwięki modulują te cechy dźwięków zniekształcając ich pierwotną formę.
 
-Współczesna muzyka zachodnia jest w dużym stopniu ustrukturyzowana zarówno w domenie czasu jak i częstotliwości. Tempo i rytm, w którym dany utwór jest grany, są informacjami zawartymi w domenie czasu. Dzięki wzorcom, które są zachowywane w muzyce, można te informacje wywnioskować. W domenie częstotliwości natomiast widoczne są zależności pomiędzy poszczególnymi wysokościami dźwięków. Pojedyńczej zagranej nucie towarzyszy, poza częstotliwością fundamentalną, szereg wydźwięków, co było już wielokrotnie udowadniane, jak na przykład w \cite[1325-1326]{Transcription:Mcintyre:OnTheOscilation}. Wibracje te badane przez fizyków były dostosowywane tak, aby pasowały do modeli normalnych. Ich struktura częstotliwości różni się w zależności od użytego instrumentu i sposobu w jaki został zagrany dźwięk. Częstotliwość i rozmieszczenie harmonicznych jest odgórnie ustalone przez instrument i sposób w jaki została zagrana nuta. Pomimo, że harmoniczne zawsze posiadają pewne odchylenie od perfekcyjnej harmonii (nie są dokłądną algebraiczną wielokrotnością częstotliwości F0, a oscylują w jej okolicy) dla konkretnego instrumentu i sposobu zagrania będą odgórnie zdefiniowane przez pewien model matematyczny \cite[1326-1327]{Transcription:Mcintyre:OnTheOscilation}. Jak opisuje Manuel Davy w \cite[203-204]{Transcription:Anssi:SignalProcessingMethods} struktura muzyki tonalnej może zostać wykorzystana do budowy modeli bayesowskich, czyli modeli matematycznych w kontekście probabilistycznym, które prowadzą do najprostszego modelu wyjaśniającego daną fale dźwiękową. Pomimo tego, że modele te wydają się naturalnym rozwiązaniem estymacji wielotonowej, ponieważ rozwiązują problem dużej ilości parametrów w fali dźwiękowej, których nie można wyestymować beż pewnych założeń, nie są one często wykorzystywane. Przytoczona wcześniej praca \cite{Transcription:BayesianHarmonicModels} jest przykładem wykorzystania modeli bayesowskich do analizowania sygnałów muzycznych, w tym wykrywania F0.
+Współczesna muzyka zachodnia jest w dużym stopniu ustrukturyzowana zarówno w domenie czasu jak i częstotliwości. Tempo i rytm, w którym dany utwór jest grany, są informacjami zawartymi w domenie czasu. Dzięki wzorcom, które są zachowywane w muzyce, można te informacje wywnioskować. W domenie częstotliwości natomiast widoczne są zależności pomiędzy poszczególnymi wysokościami dźwięków. Pojedyńczej zagranej nucie towarzyszy, poza częstotliwością fundamentalną, szereg wydźwięków, co było już wielokrotnie udowadniane, jak na przykład w 
+\cite[1325-1326]{Transcription:Mcintyre:OnTheOscilation}
+%\cite[sekcja INTRODUCTION]{Transcription:Mcintyre:OnTheOscilation}
+. Wibracje te badane przez fizyków były dostosowywane tak, aby pasowały do modeli normalnych. Ich struktura częstotliwości różni się w zależności od użytego instrumentu i sposobu w jaki został zagrany dźwięk. Częstotliwość i rozmieszczenie harmonicznych jest odgórnie ustalone przez instrument i sposób w jaki została zagrana nuta. Pomimo, że harmoniczne zawsze posiadają pewne odchylenie od perfekcyjnej harmonii (nie są dokłądną algebraiczną wielokrotnością częstotliwości F0, a oscylują w jej okolicy) dla konkretnego instrumentu i sposobu zagrania będą odgórnie zdefiniowane przez pewien model matematyczny 
+\cite[1326-1327]{Transcription:Mcintyre:OnTheOscilation}
+%\cite[r. 1]{Transcription:Mcintyre:OnTheOscilation}
+. Jak opisuje Manuel Davy w 
+\cite[203-204]{Transcription:Anssi:SignalProcessingMethods} 
+%\cite[r. 7]{Transcription:Anssi:SignalProcessingMethods} 
+struktura muzyki tonalnej może zostać wykorzystana do budowy modeli bayesowskich, czyli modeli matematycznych w kontekście probabilistycznym, które prowadzą do najprostszego modelu wyjaśniającego daną fale dźwiękową. Pomimo tego, że modele te wydają się naturalnym rozwiązaniem estymacji wielotonowej, ponieważ rozwiązują problem dużej ilości parametrów w fali dźwiękowej, których nie można wyestymować beż pewnych założeń, nie są one często wykorzystywane. Przytoczona wcześniej praca \cite{Transcription:BayesianHarmonicModels} jest przykładem wykorzystania modeli bayesowskich do analizowania sygnałów muzycznych, w tym wykrywania F0.
 
 \subsection{Wyniki algorytmów do sygnałów monofonicznych}\label{sec:MultiPitch:monofon}
 W rozdziale \ref{sec:f0} struktura częstotliwości rozumiała była jako obraz pojedyńczej częstotliwości fundamentalnej, z którego jednoznacznie wynika, jaka wysokość dźwięku jest grana w danym momencie czasu. Duża większość muzyki jest polifoniczna i tylko momentami skomplikowane kompozycje dopuszczają się brzmienia jedynie pojedynczych nut. W takich utworach metodologie transkrypcji muzyki monofonicznej są nieefektywne.
@@ -1020,29 +1059,50 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
 \end{figure}
 
 \subsection{Metody oparte o modele generatywne}
-W książce \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych opartych na modelach generatywnych fal akustycznych ze względu na charakter algorytmu jaki jest użyty. Modele generatywne fal akustycznych czerpią z modeli bayesowskich. Rozróżnili oni metody oparte o zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w \cite[744-745]{Transcription:McAulay:SinusoidalRepresentationF0}), oraz grupy modeli off-line i on-line.
+W książce 
+\cite[203-227]{Transcription:Anssi:SignalProcessingMethods} 
+%\cite[r. 7]{Transcription:Anssi:SignalProcessingMethods} 
+autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych opartych na modelach generatywnych fal akustycznych ze względu na charakter algorytmu jaki jest użyty. Modele generatywne fal akustycznych czerpią z modeli bayesowskich. Rozróżnili oni metody oparte o zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w 
+\cite[744-745]{Transcription:McAulay:SinusoidalRepresentationF0}
+%\cite[r. 1-2]{Transcription:McAulay:SinusoidalRepresentationF0}
+), oraz grupy modeli off-line i on-line.
 
 Podejścia off-line charakteryzują się globalnym mierzeniem parametrów estymacji. Operują one analizując całą falę dźwiękową. Założeniem tych algorytmów jest segmentacja danych w taki sposób, że każdy z segmentów ma niezmienne wysokości granych dźwięków. Ograniczenie to wymusza na systemie transkrypcji użycia jakiejś formy wykrywania początków dźwięków. Algorytmy te bazują również na pojęciu prawdopodobieństwa, które to opisane jest matematycznym modelem wraz z gęstością. Algorytmy w tej grupie często działają według pewnych założeń co do barwy dźwięków (instrumentów czy głosu) występujących w sygnale.
 
-Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę - jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywającego początki dźwięków. Autorzy w \cite[203-227]{Transcription:Anssi:SignalProcessingMethods} rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej.
+Metodologie on-line są znacznie większą grupą w sensie ilości i zróżnicowaniu algorytmów. Dla każdego kroku procesu $n$ badana jest tylko część sygnału (okno) $x(n)$. Wyniki ze wcześniejszych okien są również brane pod uwagę - jako rozkład prawdopodobieństwa przejścia. Ważną różnicą pomiędzy podejściami on-line i off-line jest to, że nie potrzebują one dodatkowego mechanizmu wykrywającego początki dźwięków. Autorzy w 
+\cite[203-227]{Transcription:Anssi:SignalProcessingMethods} 
+%\cite[r. 7]{Transcription:Anssi:SignalProcessingMethods} 
+rozróżnili modele on-line również po tym, czy tworzony model bezpośrednio miał determinować kształt fali, czy też być modelem pośrednim w bardziej skomplikowanym systemie. Dokładniej, opisują cztery podejścia stosowane dla ogólnego przetwarzania audio, z czego wszystkie wykorzystują cechę równomiernego rozłożenia harmonicznych akustycznej fali dźwiękowej.
 
 W tej sekcji przybliżone są metody Pertusa i Iñesta dotyczące automatycznej transkrypcji polifonicznego sygnału fonicznego przy pomocy równoległych metod w \cite{Transcription:Pertus:Inharmonicity} i \cite{Transcription:Pertus:Inharmonicity2} wraz z metodologiami opartymi na harmoniczności i gładkości widma opisanymi w pracy Anssi Klapuri \cite{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} i pracy Chunghsin Yeha i Axel Roebela \cite{Transcription:Yeh:JointEvaluationF0}.
 % która potem została ulepszona w \cite{Transcription:Yeh:JointEvaluationF0:2} nad którą pracował jeszcze Xavier Rodet
 
 \subsubsection{Przetwarzanie wstępne}\label{sec:preProcessing} 
-W swojej pracy \cite[1]{Transcription:Yeh:JointEvaluationF0} Yeh i Röbel zakładają, że quasi-harmoniczny, polifoniczny sygnał można przedstawić za pomocą poniższego wzoru:
+W pracy 
+\cite[1]{Transcription:Yeh:JointEvaluationF0} 
+%\cite[r. 1]{Transcription:Yeh:JointEvaluationF0} 
+Yeh i Röbel zakładają, że quasi-harmoniczny, polifoniczny sygnał można przedstawić za pomocą poniższego wzoru:
 \begin{equation}\label{eq:Yeh:signal}
 y[n] = \{ \sum_{m=1}^{M}\sum_{h_m = 1}^{H_m}a_m,h_m[n]cos((1 + \delta_{m,h_m})h_m\omega_m n + \phi_m [n])\} + v[n],
 \end{equation}
 Gdzie $n$ jest indeksem czasu, $M$ jest liczbą źródeł dźwięków, $H_m$ jest liczbą części dla $m$-tego źródła, $\omega_m$ reprezentuje F0 źródła $m$ a $\phi_m[n]$ jest fazą. Tak zarysowany sygnał jest w dalszej kolejności analizowany w oparciu o poszczególne komponenty. Warto zwrócić uwagę na to, że zakłada się szum o na tyle małej amplitudzie, że możliwym jest znalezienie poszczególnych sinusoidów składowych.
 
-Innym istotnym wzorem opisującym sygnał źródłowy jest jego reprezentacja w domenie częstotliwości. W swojej pracy Klapuri \cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} zdefiniowała kształt spektrum takiego sygnału jako funkcję częstotliwości:
+Innym istotnym wzorem opisującym sygnał źródłowy jest jego reprezentacja w domenie częstotliwości. W swojej pracy Klapuri 
+\cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} 
+%\cite[r. 2]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} 
+zdefiniowała kształt spektrum takiego sygnału jako funkcję częstotliwości:
 \begin{equation}\label{eq:Klapuri:spectrum}
 X(k) = H(k)S(k) + N(k)
 \end{equation}
 gdzie $X(k)$ jest dyskretnym spektrum mocy akustycznego sygnału źródłowego, $S(k)$ jest spektrum mocy wibrującego systemu, którego częstotliwość fundamentalna jest mierzona, $H(k)$ jest charakterystyką środowiska, w którym dźwięk został wygenerowany wraz z fizycznymi charakterystykami instrumentu, który filtruje źródło dźwięku i wszystkimi innymi czynnikami wpływający na modulacje nagrywanego sygnału a $N(k)$ jest spektrum mocy szumu addytywnego. 
 
-Generalizując, proces przygotowujący sygnał do transkrypcji muzyki można opisać jako eliminację $H(k)$ oraz $N(k)$ zgodnie ze wzorem \ref{eq:Klapuri:spectrum}. Szum $N(k)$ można tłumić poprzez odejmowanie w dziedzinie spektrum mocy. Proces eliminacji $H(k)$ nosi nazwę \textit{wstępne wybielanie} i można go dokonać poprzez liftering wysoko przepustowy (filtrowane są niższe wartości od zadanej w domenie quefrency). Odruchowym byłoby użycie obu tych metod, aby w wyniku dostać możliwie dokładne $S(k)$, jednak zgodnie z badaniami opisanymi w \cite[85-86]{Transcription:Hermansky:RecognitionInNoise} kaskadowe wykonywanie algorytmów redukujących szum i modulacje akustyczne nie polepsza wyniku działania algorytmów przetwarzających tak przygotowany sygnał. Klapuri w \cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} przedstawia metodę krzywienia magnitudy, która wyrównuje $H(k)$ i jednocześnie pozwala na liniowe odjęcie szumu w kaskadowy sposób. Opisane wykrzywianie dla spektrum mocy $X(k)$ zdefiniowane jest wzorem
+Generalizując, proces przygotowujący sygnał do transkrypcji muzyki można opisać jako eliminację $H(k)$ oraz $N(k)$ zgodnie ze wzorem \ref{eq:Klapuri:spectrum}. Szum $N(k)$ można tłumić poprzez odejmowanie w dziedzinie spektrum mocy. Proces eliminacji $H(k)$ nosi nazwę \textit{wstępne wybielanie} i można go dokonać poprzez liftering wysoko przepustowy (filtrowane są niższe wartości od zadanej w domenie quefrency). Odruchowym byłoby użycie obu tych metod, aby w wyniku dostać możliwie dokładne $S(k)$, jednak zgodnie z badaniami opisanymi w 
+\cite[84-86]{Transcription:Hermansky:RecognitionInNoise} 
+%\cite{Transcription:Hermansky:RecognitionInNoise} 
+kaskadowe wykonywanie algorytmów redukujących szum i modulacje akustyczne nie polepsza wyniku działania algorytmów przetwarzających tak przygotowany sygnał. Klapuri w 
+\cite[806]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} 
+%\cite[r. 2]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation} 
+przedstawia metodę krzywienia magnitudy, która wyrównuje $H(k)$ i jednocześnie pozwala na liniowe odjęcie szumu w kaskadowy sposób. Opisane wykrzywianie dla spektrum mocy $X(k)$ zdefiniowane jest wzorem
 \begin{equation}\label{eq:klapuri:warping}
   Y(k) = \ln\{ 1 + \frac{1}{g}X(K)\}
 \end{equation}
@@ -1064,16 +1124,25 @@ gdzie $m(f_n)$ jest magnitudą $n$-tej harmonicznej.
 W ogólności, wykorzystanie gładkości spektrum w procesie transkrypcji polega na założeniu, że obwiednia widma sygnału akustycznego jest relatywnie gładka i wraz ze wzrostem częstotliwości obserwowanego komponentu spektralnego zmniejsza się jego moc. W przypadku, gdy w spektrum istnieje skok w magnitudzie pomiędzy sąsiednimi harmonicznymi danego kandydata F0, który zakłóca kształt widma, można podejrzewać, że skok ten jest wynikiem nałożenia się na siebie harmonicznych różnych F0.
 
 
-Sytuacja, w której część harmonicznych dwóch różnych częstotliwości fundamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
+Sytuacja, w której część harmonicznych dwóch różnych częstotliwości fundamentalnych nakłada się na siebie została opisana przez Anssi Klapuri w 
+\cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation} 
+%\cite[r. 3]{Transcription:Klapuri:MultipitchEstimationAndSeparation} 
+jako $hF_S = jF_R$, gdzie $S$ i $R$ to rożne źródła równoległych dźwięków, $F_S$ i $F_R$ to ich częstotliwości fundamentalne, a $h$ i $j$ oznaczają numery harmonicznych dla danych F0. Po redukcji czynników wspólnych liczb całkowitych $h$ i $j$ wzór wygląda następująco:
 \begin{equation}\label{eq:specSmooth:klapuri:overlap}
   F_R = \frac{m}{n}F_s
 \end{equation}
-gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{eq:specSmooth:klapuri:overlap}, częstotliwości harmoniczne dwóch różnych F0 mogą się pokrywać nawzajem tylko wtedy, kiedy częstotliwości fundamentalne są między sobą w relacji wymiernej. Jak opisuje Klapuri w \cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation}, gdy dwa dźwięki są w opisanej wyżej relacji, to każda $m$-ta harmoniczna $mk$ dźwięku $S$ nakłada się z $n$-tą harmoniczną $nk$ dźwięku $R$, gdzie $k \geqslant 1$. Ściślej ujmując, $hF_S = jF_R$ dla każdej pary $h=mk$ i $j=nk$ gdy \ref{eq:specSmooth:klapuri:overlap} jest prawdziwe.
+gdzie $(m, n) \geqslant 1$ są liczbami całkowitymi. Zgodnie z równaniem \ref{eq:specSmooth:klapuri:overlap}, częstotliwości harmoniczne dwóch różnych F0 mogą się pokrywać nawzajem tylko wtedy, kiedy częstotliwości fundamentalne są między sobą w relacji wymiernej. Jak opisuje Klapuri w 
+\cite[3382]{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+%\cite[r. 3]{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+, gdy dwa dźwięki są w opisanej wyżej relacji, to każda $m$-ta harmoniczna $mk$ dźwięku $S$ nakłada się z $n$-tą harmoniczną $nk$ dźwięku $R$, gdzie $k \geqslant 1$. Ściślej ujmując, $hF_S = jF_R$ dla każdej pary $h=mk$ i $j=nk$ gdy \ref{eq:specSmooth:klapuri:overlap} jest prawdziwe.
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.38]{images/spectral_smoothnes_kapuri.jpg}
-    \caption{Zobrazowanie zasady gładkości spektrum. Logarytmiczne spektrum mocy zawierające dwa dźwięki. Widmo zostało przefiltrowane przez liftering wysoko przepustowy. Wykres z \cite[3383]{Transcription:Klapuri:MultipitchEstimationAndSeparation}.}
+    \caption{Zobrazowanie zasady gładkości spektrum. Logarytmiczne spektrum mocy zawierające dwa dźwięki. Widmo zostało przefiltrowane przez liftering wysoko przepustowy. Wykres z 
+    \cite[3383]{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+    %\cite[r. 4]{Transcription:Klapuri:MultipitchEstimationAndSeparation}
+    .}
     \label{fig:specSmooth:kapuri}
   \end{center}
 \end{figure}
@@ -1085,14 +1154,23 @@ Klapuri kategoryzuje trudności związane z relacjami wysokości dźwięków na 
 \end{itemize}
 Trudności te mają być zminimalizowane poprzez nałożenie funkcji wygadzającej na badane spektrum. Przykład przedstawiony na rysunku \ref{fig:specSmooth:kapuri} obrazuje funkcję wygładzenia (cieńka linia) nałożoną na spektrum podczas badania pierwszego dźwięku, które obrazuje, że co trzeci pik jest wysoko ponad zakładaną krzywą, i to one zostałyby w widmie po odjęciu wygładzonego widma pierwszego dźwięku ze spektrum sygnału. Ten sam mechanizm może pozwolić na wyeliminowanie nieistniejących dźwięków ,,duchów''.
 
-Gładkość spektrum jest założeniem, które jest prawdziwe dla większości przypadków, lecz nie jest to cecha, którą posiadają wszystkie dźwięki. W zależności od źródła wibracji, otoczenia i sposobu w jaki sygnał jest nagrany charakterystyka widma może odbiegać od tej, którą zakłada gładkość spektrum. Silniejsze formanty występujące na wyższych częstotliwościach są cechą wielu instrumentów akustycznych. W celu zminimalizowania błędów spowodowanych założeniem gładkości spektrum powstała kategoria algorytmów bazujących na wyuczonych modelach dźwięków. Zakładają one istnienie modeli dla każdego ze źródeł dźwięków, które mogą występować w analizowanym sygnale, które to są wykrywane w widmie. Problemem w takim podejściu jest ilość potrzebnych danych - w muzyce zachodniej wykorzystywanych jest bardzo dużo różnych instrumentów, z bardzo odległymi od siebie charakterystykami widmowymi. Potrzebne dane treningowe, poprawnie oznaczone według wysokości F0 oraz użytego instrumentu na skale ogólnej analizy popularnej muzyki zachodniej są praktycznie niemożliwe do usystematyzowania. Jednym z ułatwień jest wykorzystanie pojedyńczego nagrania F0 na danym instrumencie i przesuwanie go w wymiarze częstotliwości, aby symulować inne wysokości F0, ale nie jest to niezawodne rozwiązanie, ponieważ wiele instrumentów ma różne charakterystyki widmowe podczas grania różnych częstotliwości fundamentalnych\cite[55-68]{Transcription:Quenneville:Thesis}.
+Gładkość spektrum jest założeniem, które jest prawdziwe dla większości przypadków, lecz nie jest to cecha, którą posiadają wszystkie dźwięki. W zależności od źródła wibracji, otoczenia i sposobu w jaki sygnał jest nagrany charakterystyka widma może odbiegać od tej, którą zakłada gładkość spektrum. Silniejsze formanty występujące na wyższych częstotliwościach są cechą wielu instrumentów akustycznych. W celu zminimalizowania błędów spowodowanych założeniem gładkości spektrum powstała kategoria algorytmów bazujących na wyuczonych modelach dźwięków. Zakładają one istnienie modeli dla każdego ze źródeł dźwięków, które mogą występować w analizowanym sygnale, które to są wykrywane w widmie. Problemem w takim podejściu jest ilość potrzebnych danych - w muzyce zachodniej wykorzystywanych jest bardzo dużo różnych instrumentów, z bardzo odległymi od siebie charakterystykami widmowymi. Potrzebne dane treningowe, poprawnie oznaczone według wysokości F0 oraz użytego instrumentu na skale ogólnej analizy popularnej muzyki zachodniej są praktycznie niemożliwe do usystematyzowania. Jednym z ułatwień jest wykorzystanie pojedyńczego nagrania F0 na danym instrumencie i przesuwanie go w wymiarze częstotliwości, aby symulować inne wysokości F0, ale nie jest to niezawodne rozwiązanie, ponieważ wiele instrumentów ma różne charakterystyki widmowe podczas grania różnych częstotliwości fundamentalnych 
+\cite[55-68]{Transcription:Quenneville:Thesis}
+%\cite[r. 6]{Transcription:Quenneville:Thesis}
+.
 
 \subsubsection{Nieharmoniczność} \label{sec:multif0:inh:model}
-Wiele algorytmów zaprojektowanych do transkrypcji muzyki bierze pod uwagę problem nieharmoniczności dźwięku. Jak opisuje Klapuri w pracy \cite[806-808]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}, fizyczne źródła dźwięków wytwarzają harmoniczne, które nie posiadają dokładnych częstotliwości będącymi wielokrotnościami F0, lecz jedynie oscylują w ich okolicy. Dla przykładu, rozbieżność tą dla instrumentów strunowych można opisać jako:
+Wiele algorytmów zaprojektowanych do transkrypcji muzyki bierze pod uwagę problem nieharmoniczności dźwięku. Jak opisuje Klapuri w pracy 
+\cite[806-808]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+%\cite[r. 2]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+, fizyczne źródła dźwięków wytwarzają harmoniczne, które nie posiadają dokładnych częstotliwości będącymi wielokrotnościami F0, lecz jedynie oscylują w ich okolicy. Dla przykładu, rozbieżność tą dla instrumentów strunowych można opisać jako:
 \begin{equation}\label{eq:inharmonicity:strings}
   f_h = hF \sqrt{1 + (h^2 - 1) \beta}
 \end{equation}
-gdzie F jest częstotliwością fundamentalną a $\beta$ jest współczynnikiem nieharmoniczności \cite[807]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}.
+gdzie F jest częstotliwością fundamentalną a $\beta$ jest współczynnikiem nieharmoniczności 
+\cite[807]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+%\cite[r. 2]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}
+.
 
 W przytoczonej wcześniej pracy 
 \cite[1-10]{Transcription:BayesianHarmonicModels}
@@ -1119,7 +1197,10 @@ W kolejnym kroku ze spektralnych pików wybierany jest zbiór częstotliwości n
 
 Na podstawie kandydatów generowane są wszystkie możliwe ich kombinacje, a następnie wyliczane dla nich współczynniki ,,istotności'' (z ang. \textit{salience}) oznaczony później jako $S$. Kombinacja, dla której wartość tego współczynnika jest największa jest wybierana, co oznacza, że w danym oknie czasowym wszyscy kandydaci F0 danej kombinacji są obecni w kompozycji. Aby zredukować złożoność obliczeniową tego kroku, generowane są kombinacje z maksymalnie $C$ kandydatami, co przekłada się na założenie maksymalnie $C$ równoległych nut granych w tym samym czasie w analizowanym utworze.
 
-Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. W literaturze wektor ten powszechnie określany jest jako \textit{HPS}, z angielskiego \textit{hypothetical partial sequences} czyli hipotetyczne częściowe sekwencje (tłumaczenie własne) \cite[3]{Transcription:Yeh:JointEvaluationF0:2}. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które występują w widmach kilku kandydatów (i muszą zostać ,,wygładzone'').
+Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. W literaturze wektor ten powszechnie określany jest jako \textit{HPS}, z angielskiego \textit{hypothetical partial sequences} czyli hipotetyczne częściowe sekwencje (tłumaczenie własne) 
+\cite[1118]{Transcription:Yeh:JointEvaluationF0:2}
+%\cite[r. IV A]{Transcription:Yeh:JointEvaluationF0:2}
+. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które występują w widmach kilku kandydatów (i muszą zostać ,,wygładzone'').
 
 Wyliczanie istotności odbywa się dla każdego kandydata osobno, zaczynając od tych z najniższą częstotliwością. Na podstawie danego wzoru widmowego $p_c$ dla kandydata $c$ wszystkie harmoniczne, które występują w więcej niż jednym widmie, są liniowo interpolowane przy użyciu harmonicznych, które nie są dzielone pomiędzy kandydatów. Po tej operacji istnieją dwie możliwości:
 \begin{enumerate}
@@ -1148,7 +1229,10 @@ Istotność wyliczana jest na podstawie współczynników głośności i gładko
 \end{equation}
 gdzie C to ilość kandydatów danej kombinacji. Kombinacja  odrzucana jest, gdy różnica wartości współczynników głośności pomiędzy dwoma dowolnymi jej kandydatami przekracza ustaloną wartość $\gamma$. Jest to zabezpieczenie przed wyborem kombinacji, w których istnieje grupa kandydatów o zaniedbywalnej głośności. W takim wypadku powinna zostać wybrana inna kombinacja.
 
-W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania końcowego, które zminimalizuje ilość błędów w transkrypcji (\cite[106-107]{Transcription:Pertus:Inharmonicity}). Składa się ono z dwóch operacji:
+W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania końcowego, które zminimalizuje ilość błędów w transkrypcji 
+\cite[106-107]{Transcription:Pertus:Inharmonicity}
+%\cite[r. 2]{Transcription:Pertus:Inharmonicity}
+. Składa się ono z dwóch operacji:
 \begin{enumerate}
   \item założenie znalezienia konkretnej nuty, jeżeli nie była wykryta w danym oknie czasowym, ale była wykryta w poprzednim i następnym oknie
   \item usunięcie bardzo krótkich dźwięków. W pracy zasugerowano minimalną długość sześciu okien (przy założeniach wstępnych 55.68 ms)
@@ -1175,7 +1259,10 @@ Istotna zmiana pojawia się podczas liczenia parametru gładkości danego kandyd
 \begin{equation}\label{eq:inharmonicity2:sharpness}
   r(c) = \sum_{h=1}^H\left|\widetilde{p}_{c,h} - \overline{p}_{c,h} \right|
 \end{equation}
-Współczynnik $r(c)$ w podstawowej wersji jest normalizowany za pomocą podzielenia go przez ilość harmonicznych danego kandydata F0. Normalizacja ta jest rozszerzona w \cite[5-6]{Transcription:Pertus:Inharmonicity2} tak, aby był niezależny od natężenia:
+Współczynnik $r(c)$ w podstawowej wersji jest normalizowany za pomocą podzielenia go przez ilość harmonicznych danego kandydata F0. Normalizacja ta jest rozszerzona w 
+\cite[5-6]{Transcription:Pertus:Inharmonicity2} 
+%\cite[r. 2.4.2]{Transcription:Pertus:Inharmonicity2} 
+tak, aby był niezależny od natężenia:
 \begin{equation}\label{eq:inharmonicity2:roughness}
   \widetilde{r}(c) = \frac{r(c)}{H(1 - N_{0, 1}(\overline{x}))}
 \end{equation}
@@ -1201,7 +1288,10 @@ gdzie $C_i'(t)$ to kombinacja $i$ po procesie kwantyzacji w czasie $t$. W ogóln
 \end{equation}
 Tak wybierane kombinacje są bardziej spójne w domenie czasowej, niwelując gwałtowne zmiany wykrytych częstotliwości.
 
-Śledzenia wysokości zaproponowane w pracy \cite[7-8]{Transcription:Pertus:Inharmonicity2} jest drugą metodą, która wymusza wybór kombinacji o gładkim przejściu z jednej na drugą w czasie. Metoda ta polega na skonstruowaniu warstwowego, ważonego, ukierunkowanego grafu acyklicznego (wDAG, z ang. \textit{weighted directed acyclic graph}).
+Śledzenia wysokości zaproponowane w pracy 
+\cite[7-8]{Transcription:Pertus:Inharmonicity2} 
+%\cite[r. 3.2]{Transcription:Pertus:Inharmonicity2} 
+jest drugą metodą, która wymusza wybór kombinacji o gładkim przejściu z jednej na drugą w czasie. Metoda ta polega na skonstruowaniu warstwowego, ważonego, ukierunkowanego grafu acyklicznego (wDAG, z ang. \textit{weighted directed acyclic graph}).
 
 Graf $G = \left(V, v_b, E, w, t\right)$ będący warstwowym wDAG składa się ze zbioru wierzchołków $V$, wierzchołka początkowego $v_b$, zbioru krawędzi $E$, funkcji $w$ będącej wagą krawędzi pomiędzy dwoma wierzchołkami w sąsiednich warstwach grafu $w(v_b, v_j)$ oraz funkcji pozycji $t: V \rightarrow \left\{0, 1, 2, ..., T\right\}$. Wierzchołkami są kombinacje kandydatów F0 w danym oknie czasowym, natomiast $t$ dla każdego wierzchołka przyporządkowuje okno czasowe, w którym rozpatrywana jest dana kombinacja. Warstwą nazywane są wszystkie wierzchołki, dla których funkcja $t$ daje ten sam wynik $t(v) = \tau$. W innych słowach, warstwą w grafie jest zbiór kombinacji w jednym oknie czasowym.
 
@@ -1216,14 +1306,23 @@ D(v_i, v_j) = \sum_{\forall_{C\in v_i, v_j}}\left|\widetilde{l}(v_{i,c}) - \wide
 \end{equation}
 gdzie $\widetilde{l}(v_{i,c})$ oznacza ogólną głośność kandydata $c$ w kombinacji $i$. Zgodnie z powyższym wzorem \ref{eq:inharmonicity2:dwag:similarity} koszt przejścia pomiędzy wierzchołkami, które mają więcej wspólnych kandydatów będzie mniejsza od tych, które mają więcej rozłącznych kandydatów F0.
 
-W trakcie budowania wDAG w celu zwiększenia wydajność wybieranych jest tylko $M$ najbardziej prawdopodobnych kombinacji dla każdego okna czasowego. Po wygenerowaniu grafu na podstawie wag liczonych wzorem \ref{eq:inharmonicity2:dwagWeight} wyznaczana jest najkrótsza ścieżka przy pomocy algorytmu Dijkstry \cite[269–271]{Transcription:Dijkstra:Graphs} od pierwszego okna ($t(v) = 0$) do ostatniego ($t(v) = T$). Te wierzchołki, które należą do najkrótszej ścieżki odpowiadają kombinacjom, które są ostatecznie wybierane jako wynik algorytmu.
+W trakcie budowania wDAG w celu zwiększenia wydajność wybieranych jest tylko $M$ najbardziej prawdopodobnych kombinacji dla każdego okna czasowego. Po wygenerowaniu grafu na podstawie wag liczonych wzorem \ref{eq:inharmonicity2:dwagWeight} wyznaczana jest najkrótsza ścieżka przy pomocy algorytmu Dijkstry \cite{Transcription:Dijkstra:Graphs} od pierwszego okna ($t(v) = 0$) do ostatniego ($t(v) = T$). Te wierzchołki, które należą do najkrótszej ścieżki odpowiadają kombinacjom, które są ostatecznie wybierane jako wynik algorytmu.
 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
-Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych (NN, z ang. \textit{Neural Network}). Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 \cite[8-9]{Transcription:Klapuri:ChallengesAndFuture}. Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN \cite[6-8]{DBLP:journals/spm/BenetosDDE19}.
+Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych (NN, z ang. \textit{Neural Network}). Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 
+\cite[415-416]{Transcription:Klapuri:ChallengesAndFuture}
+%\cite[r. 2.2]{Transcription:Klapuri:ChallengesAndFuture}
+. Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN 
+\cite[26-28]{DBLP:journals/spm/BenetosDDE19}
+%\cite[sekcje pt. "NNs for AMT" i "A comparison of NMF and NN models"]{DBLP:journals/spm/BenetosDDE19}
+.
 
 %to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
 
-W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji \cite[7]{DBLP:journals/spm/BenetosDDE19}. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
+W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji 
+\cite[27]{DBLP:journals/spm/BenetosDDE19}
+%\cite[sekcja pt. "A comparison of NMF and NN models"]{DBLP:journals/spm/BenetosDDE19}
+. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
 
 
 \subsubsection{Holistyczna metoda z użyciem sieci neuronowych}\label{sec:multif0:petrusNetwork}
@@ -1249,13 +1348,19 @@ Przy $W$ będącym długością sygnału wejściowego (w ilości okien czasowych
 \begin{equation}
   P(\sigma | x, j), 1 \leqslant l \leqslant L, \sigma \in \Sigma 
 \end{equation}
-Dekodowanie odbywa się poprzez wybranie najbardziej prawdopodobnego symbolu dla każdego wektora cech danego bloku rekurencyjnego, a następnie wyniki są ze sobą łączone i usuwane są symbole puste \cite[2-5]{Transcription:Pertus:NeuralNetwork}.
+Dekodowanie odbywa się poprzez wybranie najbardziej prawdopodobnego symbolu dla każdego wektora cech danego bloku rekurencyjnego, a następnie wyniki są ze sobą łączone i usuwane są symbole puste 
+\cite[2-5]{Transcription:Pertus:NeuralNetwork}
+%\cite[r. 2-3]{Transcription:Pertus:NeuralNetwork}
+.
 
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.5]{images/holisticNetworkArchitecture.jpg}
-    \caption{Architektura sieci neuronowej zastosowanej w pracy  \cite{Transcription:Pertus:NeuralNetwork}. Diagram z \cite[5]{Transcription:Pertus:NeuralNetwork}, tłumaczenie własne.}
+    \caption{Architektura sieci neuronowej zastosowanej w pracy  \cite{Transcription:Pertus:NeuralNetwork}. Diagram z 
+    \cite[5]{Transcription:Pertus:NeuralNetwork}
+    %\cite[r. 3]{Transcription:Pertus:NeuralNetwork}
+    , tłumaczenie własne.}
     \label{fig:holisticNetworkArchitecture}
   \end{center}
 \end{figure}
@@ -1274,7 +1379,10 @@ Głównym założeniem, które odróżnia Onsets and Frames od innych systemów 
 
 Dane wejściowe są w postaci spektrogramów w skali melowej i logarytmie amplitudy, z 229 logarytmicznie rozmieszczonymi w domenie częstotliwości komponentami, oknem długości 2048 sampli i odstępami pomiędzy oknami długości 2048. Dane równolegle zasilają obie sieci. Wynik detektora początków nut jest dostarczany do sieci aktywacji nuty, dając jej łącznie dwie informacje wejściowe - czy  początek nuty został wykryty oraz spektrogram sygnału.
 
-Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w \cite[1-3]{Transcription:Kelz:AcousticModel}) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
+Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w 
+\cite[1-3]{Transcription:Kelz:AcousticModel}
+%\cite[r. 1-2]{Transcription:Kelz:AcousticModel}
+) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
@@ -1288,9 +1396,15 @@ Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została roz
   v_{midi} = 80 v_{predicted} + 10
 \end{equation}
 
-Opisywana praca została zaktualizowana, co zostało opisane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization}. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W nowszej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wykonane w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu nadmiernego dopasowania(z ang. \textit{overfittingu}, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.
+Opisywana praca została zaktualizowana, co zostało opisane w 
+\cite[3-5]{Transcription:Cheng:OnsetsAndFramesNovelization}
+%\cite[r. 3]{Transcription:Cheng:OnsetsAndFramesNovelization}
+. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W nowszej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wykonane w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu nadmiernego dopasowania(z ang. \textit{overfittingu}, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.
 
-Poza użyciem innej bazy, zmiany do Onsets and Frames zaproponowane w \cite[3-6]{Transcription:Cheng:OnsetsAndFramesNovelization} zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, choć nie jest bezpośrednio używana w dekodowaniu. Zaproponowana jest również zmiana dwukierunkowych warstw LSTM z 128 do 256 jednostek, zmieniając ilość filtrów w warstwie konwolucyjnej z 32/32/64 na 48/48/96, zwiększając tym samym warstwy sigmoidalne. Zmodyfikowane zostały również przejścia pomiędzy podsieciami. Argumentowane są tym, że dla większych baz efektywność rośnie przy większym i prostszym modelu. 
+Poza użyciem innej bazy, zmiany do Onsets and Frames zaproponowane w 
+\cite[3-5]{Transcription:Cheng:OnsetsAndFramesNovelization} 
+%\cite[r. 3]{Transcription:Cheng:OnsetsAndFramesNovelization} 
+zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, choć nie jest bezpośrednio używana w dekodowaniu. Zaproponowana jest również zmiana dwukierunkowych warstw LSTM z 128 do 256 jednostek, zmieniając ilość filtrów w warstwie konwolucyjnej z 32/32/64 na 48/48/96, zwiększając tym samym warstwy sigmoidalne. Zmodyfikowane zostały również przejścia pomiędzy podsieciami. Argumentowane są tym, że dla większych baz efektywność rośnie przy większym i prostszym modelu. 
 
 Dodatkowo zaproponowana została metoda augmentacji sygnału wejściowego, która polegać ma na modyfikacji każdego z danych wejściowych o pewną modulację audio (np. przesunięcie częstotliwości, dodanie szumu, zastosowanie equalizera). Zmiana ta pozytywnie wpływa na jakość modelu trenowanego bazą MAPS, jednak w przypadku bazy MAESTRO odnotowany został minimalny spadek w dokładności wyniku. 
 
@@ -1551,7 +1665,13 @@ Wydarzenia MIDI składają się z czterech parametrów:
 Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
-Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanych w pracach \cite[3]{Transcription:Pertus:Inharmonicity} i \cite[8]{Transcription:Pertus:Inharmonicity2}, gdzie wykorzystane były miary jakości F1 i dokładności. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
+Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanych w pracach 
+\cite[107]{Transcription:Pertus:Inharmonicity} 
+%\cite[r. 3]{Transcription:Pertus:Inharmonicity} 
+i 
+\cite[8]{Transcription:Pertus:Inharmonicity2}
+%\cite[r. 4]{Transcription:Pertus:Inharmonicity2}
+, gdzie wykorzystane były miary jakości F1 i dokładności. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
 
 Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy typy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
 

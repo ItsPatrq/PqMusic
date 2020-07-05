@@ -77,6 +77,7 @@ manually annotated audio events},
   booktitle={International Conference on Learning Representations},
   year={2019},
   url={https://openreview.net/forum?id=r1lYRjC9F7},
+  urldate = {2020-01-12}
 }
 
 @article{DBLP:journals/corr/HuangW16,
@@ -169,7 +170,6 @@ manually annotated audio events},
 @article{DiscriminativeModelForPolyphonicPianoTranscription,
   author  = {Poliner, Graham and Ellis, Daniel},
   year    = {2007},
-  month   = {01},
   pages   = {},
   title   = {A Discriminative Model for Polyphonic Piano Transcription},
   volume  = {2007},
@@ -281,7 +281,6 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
   title  = {Timing is of the Essence: Perceptual and Computational Techniques for Representing, Learning, and Reproducing Expressive Timing in Percussive Rhythm},
   year   = {1993},
   school = {Massachusetts Institute of Technology},
-  month  = {09/1993},
   author = {Bilmes, J. A.},
   pages  = {77-84}
 
@@ -308,12 +307,14 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
 } /*https://books.google.pl/books?id=A3jkobk4yMMC&pg=PA215&lpg=PA215&dq=Inversal,+scales+and+tuning+Diana+Deutsch+(ed.),+Psychology+of+Music&source=bl&ots=mvSxOCkdUH&sig=ACfU3U2gWOa8akGg9UfgRqA9PfUf1UWAxQ&hl=pl&sa=X&ved=2ahUKEwj559uIlZboAhVB3KQKHZclDrQQ6AEwAnoECAgQAQ#v=onepage&q=Inversal%2C%20scales%20and%20tuning%20Diana%20Deutsch%20(ed.)%2C%20Psychology%20of%20Music&f=false
 
 @article{Transcription:Childers:CepstruGuide,
-  title   = {The cepstrum: A guide to processing},
-  author  = {D. G. Childers and D. P. Skinner and R. C. Kemerait},
+  title   = {The Cepstrum: A Guide to Processing},
+  author  = {D. G. Childers, and D. P. Skinner, and R. C. Kemerait,},
   journal = {Proceedings of the IEEE},
   year    = {1977},
   volume  = {65},
-  pages   = {1428-1443}
+  number          = {10},
+  pages   = {1428-1443},
+  doi             = {10.1109/proc.1977.10747},
 }
 
 @article{Transcription:Clarke:RhythmAndTiming,
@@ -423,7 +424,6 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
 @article{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation,
   author  = {Klapuri, A. P.},
   year    = {2003},
-  month   = {11},
   pages   = {804–816},
   title   = {Multiple Fundamental Frequency Estimation Based on Harmonicity and Spectral Smoothness},
   volume  = {11},
@@ -435,11 +435,10 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
 @article{Transcription:Klapuri:MultipitchEstimationAndSeparation,
   author = {Klapuri, A. P.},
   year = {2001},
-  month = {03},
   pages = {3381-3384},
-  title = {Multipitch Estimation And Sound Separation By The Spectral Smoothness Principle},
+  title = {Multipitch estimation and sound separation by the spectral smoothness principle},
   volume = {5},
-  journal = {Acoustics, Speech, and Signal Processing, 1988. ICASSP-88., 1988 International Conference on},
+  booktitle={2001 IEEE International Conference on Acoustics, Speech, and Signal Processing. Proceedings (Cat. No.01CH37221)}, 
   doi = {10.1109/ICASSP.2001.940384}
 }
 
@@ -479,10 +478,10 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
   author  = {A. M. Noll,},
   journal = {The Journal of the Acoustical Society of America},
   year    = {1967},
-  volume  = {41 2},
-  pages   = {
-          293-309
-        }
+  volume  = {41},
+  number  = {2},
+  pages   = {293-309},
+  doi     = {10.1121/1.1910339}
 }
 
 @article{Transcription:Oppenheim:HistoryOfCepstrum,
@@ -491,16 +490,16 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
   journal = {IEEE Signal Processing Magazine},
   year    = {2004},
   volume  = {21},
-  pages   = {95-106}
+  number  = {5},
+  pages   = {95-106},
+  doi     = {10.1109/MSP.2004.1328092}
 }
 
 @phdthesis{Transcription:Oppenheim:Superposition,
   title   = {Superposition in a class of nonlinear systems},
   number  = {STAN-M-27},
   year    = {1964},
-  month   = {05/1964},
-  school  = {MIT Research Laboratory of Electronics},
-  address = {Massachusetts},
+  school  = {Massachusetts Institute of Technology},
   author  = {Oppenheim, A. V.}
 }
 
@@ -518,7 +517,6 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
   title    = {On the Automatic Transcription of Percussive Music - From Acoustic Signal to High-Level Analysis},
   number   = {STAN-M-27},
   year     = {1985},
-  month    = {05/1985},
   school   = {Stanford University},
   address  = {Stanford, CA},
   keywords = {acoustic signal, analysis, automatic transciption, percussion, transcription},
@@ -580,13 +578,8 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
   volume = "97",
   pages = "3 - 19",
   year = "2017",
-  note = "Special Issue on Surveillance",
-  issn = "0888-3270",
-  doi = "https://doi.org/10.1016/j.ymssp.2016.12.026",
-  url = "http://www.sciencedirect.com/science/article/pii/S0888327016305556",
+  doi = {10.1016/j.ymssp.2016.12.026},
   author = {R. B. Randall,},
-  keywords = "Cepstrum analysis, History, Gear diagnostics, Machine diagnostics, Operational modal analysis",
-  abstract = "It is not widely realised that the first paper on cepstrum analysis was published two years before the FFT algorithm, despite having Tukey as a common author, and its definition was such that it was not reversible even to the log spectrum. After publication of the FFT in 1965, the cepstrum was redefined so as to be reversible to the log spectrum, and shortly afterwards Oppenheim and Schafer defined the “complex cepstrum”, which was reversible to the time domain. They also derived the analytical form of the complex cepstrum of a transfer function in terms of its poles and zeros. The cepstrum had been used in speech analysis for determining voice pitch (by accurately measuring the harmonic spacing), but also for separating the formants (transfer function of the vocal tract) from voiced and unvoiced sources, and this led quite early to similar applications in mechanics. The first was to gear diagnostics (Randall), where the cepstrum greatly simplified the interpretation of the sideband families associated with local faults in gears, and the second was to extraction of diesel engine cylinder pressure signals from acoustic response measurements (Lyon and Ordubadi). Later Polydoros defined the differential cepstrum, which had an analytical form similar to the impulse response function, and Gao and Randall used this and the complex cepstrum in the application of cepstrum analysis to modal analysis of mechanical structures. Antoni proposed the mean differential cepstrum, which gave a smoothed result. The cepstrum can be applied to MIMO systems if at least one SIMO response can be separated, and a number of blind source separation techniques have been proposed for this. Most recently it has been shown that even though it is not possible to apply the complex cepstrum to stationary signals, it is possible to use the real cepstrum to edit their (log) amplitude spectrum, and combine this with the original phase to obtain edited time signals. This has already been used for a wide range of mechanical applications. A very powerful processing tool is an exponential “lifter” (window) applied to the cepstrum, which is shown to extract the modal part of the response (with a small extra damping of each mode corresponding to the window). This can then be used to repress or enhance the modal information in the response according to the application."
 }
 
 @article{Transcription:Tukey:FFT,
@@ -601,100 +594,83 @@ url   ={https://magenta.tensorflow.org/onsets-frames}
 }
 
 @ARTICLE{Transcription:Lahat:SpectralAutocorrelationNoiseCorrupted,
-  author={M. {Lahat} and R. {Niederjohn} and D. {Krubsack}},
+  author={M. Lahat, and R. Niederjohn, and D. Krubsack,},
   journal={IEEE Transactions on Acoustics, Speech, and Signal Processing},
-  title={A spectral autocorrelation method for measurement of the fundamental frequency of noise-corrupted speech},
+  title={A Spectral Autocorrelation Method for Measurement of the Fundamental Frequency of Noise-Corrupted Speech},
   year={1987},
   volume={35},
   number={6},
   pages={741-750},
-  keywords={Autocorrelation;Frequency measurement;Noise measurement;Speech enhancement;Additive white noise;Noise level;Cepstrum;Additive noise;Gaussian noise;Time varying systems},
   doi={10.1109/TASSP.1987.1165224},
-  ISSN={0096-3518},
-  month={June}
 }
-
+ 
 @INPROCEEDINGS{Transcription:Suzuki:EstimationOfMistunedFrequency,
-  author={J. {Suzuki} and T. {Shimamura} and H. {Yashima}},
-  booktitle={1994 IEEE GLOBECOM. Communications: The Global Bridge},
+  author={J. Suzuki, and T. Shimamura, and H. Yashima,},
+  booktitle={IEEE GLOBECOM. Communications: The Global Bridge},
   title={Estimation of mistuned frequency from received voice signal in suppressed carrier SSB},
-  year={1994},
   volume={2},
-  number={},
-  pages={1045-1049 vol.2},
-  keywords={modulation;frequency estimation;cepstral analysis;demodulation;radio receivers;voice communication;automatic frequency control;mistuned frequency estimation;received voice signal;suppressed carrier SSB;distortion free speech;carrier frequency;manual tuning;fine tuning;harmonic structure;demodulated voiced sound;fundamental frequency;cepstrum;receiving frequency;simulation;AFC;Frequency estimation;Amplitude modulation;Tuning;Automatic frequency control;Signal detection;Frequency measurement;Speech analysis;Envelope detectors;Distortion;Cepstrum},
+  year={1994},
+  pages={1045-1049},
   doi={10.1109/GLOCOM.1994.512817},
-  ISSN={null},
-  month={Nov}
 }
 
 @article{Transcription:Mcintyre:OnTheOscilation,
-  author = {Mcintyre, M. and Schumacher, R. and Woodhouse, J.},
-  year = {1983},
-  month = {11},
-  pages = {},
-  title = {On the oscillations of musical instruments},
-  volume = {74},
-  journal = {Journal of The Acoustical Society of America - J ACOUST SOC AMER},
-  doi = {10.1121/1.390157}
+  author  = {Mcintyre, M. E. and Schumacher, R. T. and Woodhouse, J.},
+  year    = {1983},
+  pages   = {1325-1345},
+  title   = {On the oscillations of musical instruments},
+  volume  = {74},
+  number  = {5},
+  journal = {The Journal of the Acoustical Society of America},
+  doi     = {10.1121/1.390157}
 }
 
 @article{Transcription:Yeh:JointEvaluationF0,
   author = {Yeh, C. and Röbel, A.},
   year = {2004},
-  month = {10},
-  address = {Naples, Italy},
+  pages = {234-239},
   journal = {International Conference on Digital Audio Effects},
-  title = {A new score function for joint evaluation of multiple F0 hypotheses.}
+  title = {A new score function for joint evaluation of multiple F0 hypothesis}
 }
 
 @article{Transcription:Yeh:JointEvaluationF0:2,
-author={C. {Yeh} and A. {Roebel} and X. {Rodet}},
+author={C. Yeh, and A. Roebel, and X. {Rodet}},
 journal={IEEE Transactions on Audio, Speech, and Language Processing},
 title={Multiple Fundamental Frequency Estimation and Polyphony Inference of Polyphonic Music Signals},
 year={2010},
 volume={18},
 number={6},
 pages={1116-1126},
-keywords={acoustic signal processing;Fourier transforms;frequency estimation;multiple fundamental frequency estimation;polyphony inference;polyphonic music signals;short-time Fourier transform;STFT;hypothetical source;music information retrieval evaluation exchange;MIREX;Frequency estimation;Multiple signal classification;Instruments;Acoustic noise;Music information retrieval;Inference algorithms;Hidden Markov models;Fourier transforms;Noise level;Signal analysis;Automatic music transcription;frequency estimation;music information retrieval;noise estimation;signal analysis;source separation},
-doi={10.1109/TASL.2009.2030006},
-ISSN={1558-7924},
-month={Aug},
+doi={10.1109/TASL.2009.2030006}
 }
 
 @article{Transcription:McAulay:SinusoidalRepresentationF0,
-author={R. {McAulay} and T. {Quatieri}},
-journal={IEEE Transactions on Acoustics, Speech, and Signal Processing},
-title={Speech analysis/Synthesis based on a sinusoidal representation},
-year={1986},
-volume={34},
-number={4},
-pages={744-754},
-keywords={Speech analysis;Speech synthesis;Acoustic noise;Noise shaping;Speech coding;Frequency synthesizers;Parameter estimation;Fourier transforms;Phase modulation;Amplitude modulation},
-doi={10.1109/TASSP.1986.1164910},
-ISSN={0096-3518},
-month={August}
+  author={R. J. McAulay, and T. F. Quatieri,},
+  journal={IEEE Transactions on Acoustics, Speech, and Signal Processing},
+  title={Speech Analysis/Synthesis Based on a Sinusoidal Representation},
+  year={1986},
+  volume={34},
+  number={4},
+  pages={744-754},
+  doi={10.1109/TASSP.1986.1164910},
 }
 
 @inproceedings{Transcription:Pertus:Inharmonicity,
   author = {Pertusa, A. and Iñesta, M. J.},
   year = {2008},
-  month = {03},
   pages = {105 - 108},
   title = {Multiple fundamental frequency estimation using Gaussian smoothness},
-  isbn = {978-1-4244-1483-3},
-  journal = {Acoustics, Speech, and Signal Processing, 1988. ICASSP-88., 1988 International Conference on},
+  journal = {IEEE International Conference on Acoustics, Speech and Signal Processing},
   doi = {10.1109/ICASSP.2008.4517557}
 }
 
 @inproceedings{Transcription:Hermansky:RecognitionInNoise,
-  author = {Hermansky, H. and Morgan, N. and Hirsch, Hans-Günter},
+  author = {Hermansky, H. and Morgan, N. and Hirsch, H.-G.},
   year = {1993},
-  month = {05},
   pages = {83 - 86},
   title = {Recognition of speech in additive and convolutional noise based on RASTA spectral processing},
+  journal = {IEEE International Conference on Acoustics Speech and Signal Processing},
   volume = {2},
-  isbn = {0-7803-0946-4},
   doi = {10.1109/ICASSP.1993.319236}
 }
 
@@ -706,58 +682,38 @@ month={August}
   school = {Middlebury College},
 }
 
-@article{Transcription:Oppenheim:FromFqToQf,
-  author = {Oppenheim, A.V. and Schafer, R.},
-  year = {2004},
-  month = {10},
-  pages = {95 - 106},
-  title = {From Frequency to Quefrency: A History of the Cepstrum},
-  volume = {21},
-  journal = {Signal Processing Magazine, IEEE},
-  doi = {10.1109/MSP.2004.1328092}
-}
-
 @article{Transcription:Pertus:Inharmonicity2,
   author = {Pertusa, A. and Iñesta, J.},
   year = {2012},
-  month = {02},
   title = {Efficient methods for joint estimation of multiple fundamental frequencies in music signals},
   volume = {2012},
+  number  = {1},
   journal = {EURASIP Journal on Advances in Signal Processing},
   doi = {10.1186/1687-6180-2012-27}
 }
 
 @misc{Transcription:Pertus:NeuralNetwork,
-    title={A holistic approach to polyphonic music transcription with neural networks},
-    author={M. A. Román, and A. Pertusa, and J. Calvo-Zaragoza,},
-    year={2019},
-    eprint={1910.12086},
-    archivePrefix={arXiv},
-    primaryClass={cs.SD}
+  title={A holistic approach to polyphonic music transcription with neural networks},
+  author={M. A. Román, and A. Pertusa, and J. Calvo-Zaragoza,},
+  year={2019},
+  journal={ArXiv},
+  volume={abs/1910.12086}
 }
 
 @article{Transcription:Dijkstra:Graphs,
 author = {Dijkstra, E. W.},
 title = {A Note on Two Problems in Connexion with Graphs},
 year = {1959},
-issue_date = {December 1959},
-publisher = {Springer-Verlag},
-address = {Berlin, Heidelberg},
 volume = {1},
 number = {1},
-issn = {0029-599X},
-url = {https://doi.org/10.1007/BF01386390},
 doi = {10.1007/BF01386390},
-journal = {Numer. Math.},
-month = dec,
+journal = {Numerische Mathematik},
 pages = {269–271},
-numpages = {3}
 }
 
 @article{Transcription:Marolt:FirstNN,
 author = {Marolt, Matija},
 year = {2004},
-month = {07},
 pages = {439 - 449},
 title = {A Connectionist Approach to Automatic Transcription of Polyphonic Piano Music},
 volume = {6},
@@ -811,7 +767,6 @@ doi = {10.1109/TMM.2004.827507}
   title     = {MAPS - A piano database for multipitch estimation and automatic transcription of musi},
   journal      = {Research report},
   year        = {2010},
-  month       = {7},
   url         = {https://hal.inria.fr/inria-00544155},
   urldate =   {2020-02-5}
 }
