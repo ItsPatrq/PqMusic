@@ -5,9 +5,8 @@ References Notes
 * Transcription:Moorer:OnTheTranscriptionOfMusicalSOundByComputer: ref title
 https://sci-hub.tw/https://www.jstor.org/stable/40731298?seq=1
 * Transcription::FirstRythm: ref title https://staff.aist.go.jp/m.goto/PAPER/ACM94goto.pdf
-* Transcription:Bilmes:TimingIsOfTHeEssence: Title ref, https://dspace.mit.edu/handle/1721.1/62091
 * Transcription:Schloss:AutomaticTranscriptionOfPercussiveMusic: 99-104 (r. 3.3.6), https://ccrma.stanford.edu/papers/automatic-transcription-of-percussive-music-acoustic-signal-high-level-analysis
-* Transcription:Bilmes:TimingIsOfTHeEssence: 77-84 (r. 5.1) https://people.ece.uw.edu/bilmes/p/mypubs/bilmes1993-mit-thesis.pdf
+* Transcription:Bilmes:TimingIsOfTHeEssence: 77-84 (r. 5.1) https://people.ece.uw.edu/bilmes/p/mypubs/bilmes1993-mit-thesis.pdf (https://dspace.mit.edu/handle/1721.1/62091)
 * Transcription:BayesianHarmonicModels: 1-2 (r. 1), by title, 1-10 (r. 1-2), 9 (r. 2.4) https://www.researchgate.net/publication/2845155_Bayesian_Harmonic_Models_for_Musical_Signal_Analysis
 * Transcription:Hawthorne:OnsetsAndFrames: by title, http://arxiv.org/abs/1710.11153
 * Transcription:Kameoka:HarmonicSeparationL By title, https://doi.org/10.1109/ICASSP.2004.1326822
