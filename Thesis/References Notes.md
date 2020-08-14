@@ -24,7 +24,6 @@ https://sci-hub.tw/https://www.jstor.org/stable/40731298?seq=1
 * DBLP:journals/spm/BenetosDDE19: 22-24 (sekcja pt. "An overview of AMT methods"), 26-28 (sekcje pt. "NNs for AMT" i "A comparison of NMF and NN models"), 27 (sekcja pt. "A comparison of NMF and NN models"), https://sci-hub.tw/10.1109/MSP.2018.2869928
 * Transcription:Karjalainen:MultipitchAnalysisModel: by title, https://sci-hub.tw/10.1109/89.876309
 * TransformacjaFourieraWroc: by title, http://www.math.uni.wroc.pl/~mpal/academic/2004/2.pdf TODO: Czy to poprawne cytowanie? Ten sam wzór walidowałem z kilku źródeł
-* TransformacjaFourieraAgh: by title, http://home.agh.edu.pl/~mkl/lab2.pdf  TODO: Czy to poprawne cytowanie? Ten sam wzór walidowałem z kilku źródeł
 * TransformacjaFourieraelektronikab2b: by title, https://elektronikab2b.pl/technika/3096-dyskretna-transformata-fouriera
 * Transcription:Tukey:FFT: by title, https://sci-hub.tw/10.1090/S0025-5718-1965-0178586-1
 * Transcription:Hess:PitchDetectionOfSpeechSignals, 55-57 (r. 3.4) https://books.google.pl/books?id=VfT0CAAAQBAJ&pg=PP5&lpg=PP5&dq=doi:10.1007/978-3-642-81926-1&source=bl&ots=v46was9U0t&sig=ACfU3U3pUBEbv8KUHMBO9gHqvpJ-c7ugwg&hl=pl&sa=X&ved=2ahUKEwiNzZrz6LHqAhU9xcQBHS8zDCQQ6AEwAnoECAkQAQ#v=onepage&q&f=false
@@ -45,7 +44,7 @@ https://sci-hub.tw/https://www.jstor.org/stable/40731298?seq=1
 * Transcription:Mcintyre:OnTheOscilation: 1325-1326 (sekcja INTRODUCTION), 1326-1327 (r. 1), https://sci-hub.tw/10.1121/1.390157
 * Transcription:McAulay:SinusoidalRepresentationF0: 744-745 (r. 1-2), https://sci-hub.tw/10.1109/TASSP.1986.1164910
 * Transcription:Pertus:Inharmonicity: by title, 106-107 (r. 2), 107 (r. 3) https://sci-hub.tw/10.1109/ICASSP.2008.4517557
-* Transcription:Pertus:Inharmonicity2: by title, 5-6 (r. 2.4.2), 7-8 (r. 3.2), https://sci-hub.tw/10.1186/1687-6180-2012-27
+* Transcription:Pertus:Inharmonicity2: by title, 5-6 (r. 2.4.2), 7-8 (r. 3.2), 3 (r. 2.1), https://sci-hub.tw/10.1186/1687-6180-2012-27
 * Transcription:Yeh:JointEvaluationF0: by title, 1 (r. 1) https://www.researchgate.net/publication/234166071_A_new_score_function_for_joint_evaluation_of_multiple_F0_hypothesis
 * Transcription:Hermansky:RecognitionInNoise: 84-86 (no sections) ,https://sci-hub.tw/10.1109/ICASSP.1993.319236
 * Transcription:Klapuri:MultipitchEstimationAndSeparation: 3382 (r. 3), 3383 (r. 4) https://sci-hub.tw/10.1109/ICASSP.2001.940384
