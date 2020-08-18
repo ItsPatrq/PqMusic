@@ -1,3 +1,5 @@
+## W tym pliku znajdują się ogólne funkcje pomocznicze
+
 from pydub import AudioSegment
 import ntpath
 import numpy as np

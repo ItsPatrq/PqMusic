@@ -1,3 +1,5 @@
+## W tym pliku znajdują się mechanizm mierzenia czasu wykonywania algorytmów
+
 import time
 from functools import wraps
 import numpy as np

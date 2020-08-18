@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+## W tym pliku znajdują się funkcje używane przez GUI do prezentacji funkcji okna
 
 import numpy as np
 import matplotlib.pyplot as plot

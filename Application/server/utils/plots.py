@@ -1,4 +1,5 @@
-#from pydub import AudioSegment
+## W tym pliku znajdują się metody pomocnicze do rysowania wykresów
+
 import ntpath
 import numpy as np
 import matplotlib.pyplot as plt
@@ -347,7 +348,6 @@ def plot_peaks(peaks, frameWidth, sampleRate, barwidth=3.0, show=True, language 
 def plot_pitch_tracking(path, G):
   pos = nx.spring_layout(G)
   nx.draw(G,pos,node_color='gray', node_size=500)
-  print(G.edges())
   nx.draw_networkx_edge_labels(G,alpha=0.7, pos=pos, font_size=6, font_color='k')
   nx.draw_networkx_labels(G,pos=pos, font_size=14, font_weight="bold", font_color='k')
 

@@ -16,7 +16,6 @@ export const Spectrogram: FC = () => {
         </section>
     )
     const handleChange = (acceptedFiles: File[], rejectedFiles: File[], event: DropEvent) => {
-        //TODO: Blueprint toaster progress bar
         if (acceptedFiles.length > 0) {
             DataService.Spectrogram(acceptedFiles[0])
         }

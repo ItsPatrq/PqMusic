@@ -1,3 +1,5 @@
+## W tym pliku znajduje się użycie modelu Onsets And Frames
+
 import tensorflow as tf
 import librosa
 import numpy as np
@@ -16,7 +18,7 @@ from magenta.music.protobuf import music_pb2
 from magenta.music import sequences_lib
 import ctypes.util
 
-# Ignore warnings caused by pyfluidsynth
+# Ignoruj ostrzeżenia wywołane pyfluidsynth
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
@@ -94,8 +96,6 @@ class OnsetsAndFramesImpl:
 
         input_fn = infer_util.labels_to_features_wrapper(self.transcription_data)
 
-        ## FILE HAVE BEEN UPLOADED
-
         prediction_list = list(
             self.estimator.predict(
                 input_fn,
@@ -112,11 +112,6 @@ class OnsetsAndFramesImpl:
             min_midi_pitch=constants.MIN_MIDI_PITCH,
             onset_predictions=onset_predictions,
             velocity_values=velocity_values)
-
-
-        # mm.plot_sequence(sequence_prediction)
-        # mm.play_sequence(sequence_prediction, mm.midi_synth.fluidsynth,
-        #                 colab_ephemeral=False)
 
         midi_io.sequence_proto_to_midi_file(sequence_prediction, responseFilePath)
 

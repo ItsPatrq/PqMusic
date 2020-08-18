@@ -1,3 +1,5 @@
+# W tym pliku znajduje się implementacja autokorelacji operującej na sygnale audio w domenie czasu
+
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -13,7 +15,6 @@ sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from io import BytesIO
 from utils.midi import res_in_hz_to_midi_notes, write_midi, load_midi_file
 
-# Funkcja autokorelacji operująca na sygnale audio w domenie czasu
 def autocorrelation(data, sampleRate, frameWidth, spacing, fqMin, fqMax, disableTqdm = True):
   def ac(currFrame, minLag, maxLag):
     res = list(np.zeros(minLag))

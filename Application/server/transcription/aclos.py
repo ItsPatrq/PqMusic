@@ -1,3 +1,5 @@
+## W tym pliku znajduje się implementacja algorytmu ACLOS
+
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -14,11 +16,6 @@ from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
 from scipy.interpolate import interp1d
 from io import BytesIO
 
-# autokorelacja logarytmu spektrum mocy
-# Paper: https://www.researchgate.net/publication/232643468_Robust_method_of_measurement_of_fundamental_frequency_by_ACLOS_autocorrelation_of_log_spectrum
-# wartości domyślne są zeby było tak samo jak w pracy naukowej
-# https://dsp.stackexchange.com/questions/736/how-do-i-implement-cross-correlation-to-prove-two-audio-files-are-similar
-# https://books.google.pl/books?id=zfVeDwAAQBAJ&pg=PA240&lpg=PA240&dq=fft+log+abs&source=bl&ots=WeVYfedbB6&sig=ACfU3U0WD7QNHPVm08eaFC-0B8vr8mHKVA&hl=pl&sa=X&ved=2ahUKEwjWi_3m7NTmAhUQuaQKHcTCAM0Q6AEwA3oECAcQAQ#v=onepage&q=fft%20log%20abs&f=false
 def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512, disableTqdm = True):
     correlogram = []
     interpolatedAutocorrelogram = []
@@ -77,7 +74,7 @@ def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPa
 
     return bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra
 
-## Funkcja do użytku serwera
+## Funkcja do użytku przez serwer
 def transcribe_by_aclos_wrapped(filePath):
     frameWidth = 2048
     spacing = 512

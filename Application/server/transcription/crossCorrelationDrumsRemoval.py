@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+## W tym pliku znajduje się metoda usuwająca elementy perkusyjne z sygnału wejściowego. Algorytm nie jest opisany w pracy pisemnej. Autorska metoda miała wykrywać początki dźwięków i porównywać je z bazą przykładowych dźwięków perkusyjnych przy pomocy kross-korelacji. W przypadku dopasowania dźwięk zostawał usuwany z widma. Problem pojawia się przy nawet najmniejszym błędzie wykrycia faktycznego początku nuty - odjęcie takiego dźwięku z widma z drobnym przesunięciem od faktycznego dźwięku w wyniku powoduje występowanie dwóch takich dźwięków pod rząd, z tym że jeden ma odwróconą fazę.
 
 import sys
 from os import path
@@ -10,7 +10,7 @@ from scipy.fftpack import fft, ifft
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 from utils.general import loadNormalizedSoundFile, create_sine, fft_to_hz, hz_to_fft, hz_to_fourier, to_wave
 
-# right now using aubio library, might implement own later
+# obecnie używane aubio do wykrywania początków dźwięków
 def detect_onsets(filePath, method="default", windowSize=1024):
 	hop_s = windowSize // 2
 	s = source(filePath, hop_size=hop_s)
@@ -18,10 +18,10 @@ def detect_onsets(filePath, method="default", windowSize=1024):
 
 	o = onset("default", windowSize, hop_s, samplerate)
 
-	# list of onsets, in samples
+	# lista początków dźwięków
 	onsets = []
 
-	# total number of frames read
+	# liczba wczytanych okien
 	total_frames = 0
 	while True:
 		samples, read = s()
@@ -57,7 +57,7 @@ def spectral_removal(inputData, soundToBeRemoved, occurances, sampleRate, frameW
 def cross_correlation(inputData, onsets, exampleSounds, sampleRate, frameWidth=4096, sizeOfZeroPadding=4096, spacing=4096, onsetMissplace=10):
 	zeropad = np.zeros(sizeOfZeroPadding)
 	def corr(a, b):
-		div = np.linalg.norm(a) * np.linalg.norm(b) #cosine of angle between those two vectors
+		div = np.linalg.norm(a) * np.linalg.norm(b) #kosinus konta pomiędzy tymi dwoma wektorami
 		fftA = fft(np.concatenate((a, zeropad)))
 		fftRevB = fft(list(reversed(np.concatenate((b, zeropad)))))
 		crossCorrelation = abs(ifft(fftA * fftRevB))
@@ -112,7 +112,7 @@ def drums_removal_example():
 	
 	for i in range(0, len(sounds)):
 		res = spectral_removal(data, sounds[i], occurances[i], sampleRate)
-	to_wave(res, sampleRate, "costam.wav")
+	to_wave(res, sampleRate, "crossCorrelationDrumsRemoval.wav")
 
 if __name__ == "__main__":
 	drums_removal_example()

@@ -47,7 +47,7 @@ class DataService {
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+            DefaultToaster.show({ message: "Przetwarzanie zakończone!", className: "bp3-intent-success" });
 
             const response = res.xhr.response;
             callback(response);
@@ -60,19 +60,23 @@ class DataService {
     }
 
     public Spectrogram(file: File) {
+        const currKey = this.GetNewKey();
+        DefaultToaster.show({ message: "Przetwarzanie...", className: "bp3-intent-primary", timeout: 0 }, currKey);
         const request = superagent.post(env_url + "Spectrogram").responseType("blob");
         const formData = new FormData();
         formData.append('file', file);
         request.send(formData);
         request.end((err, res) => {
             if(err || !res.ok) {
+                DefaultToaster.dismiss(currKey);
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+            DefaultToaster.show({ message: "Przetwarzanie zakończone!", className: "bp3-intent-success" });
 
             const file = res.xhr.response;
             DownloadFile(file, "spectrogram.png", "image/png");
+            DefaultToaster.dismiss(currKey);
         });
     }
 
@@ -145,7 +149,7 @@ class DataService {
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+            DefaultToaster.show({ message: "Przetwarzanie zakończone!", className: "bp3-intent-success" });
 
             const file = res.xhr.response;
             DownloadFile(file, "HannWindow.png", "image/png");
@@ -161,7 +165,7 @@ class DataService {
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+            DefaultToaster.show({ message: "Przetwarzanie zakończone!", className: "bp3-intent-success" });
 
             const file = res.xhr.response;
             DownloadFile(file, "HammingWindow.png", "image/png");
@@ -177,7 +181,7 @@ class DataService {
                 DefaultToaster.show({ message: "Błąd serwera", className: "bp3-intent-danger"});
                 return;
             }
-            DefaultToaster.show({ message: "Success!", className: "bp3-intent-success" });
+            DefaultToaster.show({ message: "Przetwarzanie zakończone!", className: "bp3-intent-success" });
 
             const file = res.xhr.response;
             DownloadFile(file, "RectangleWindow.png", "image/png");

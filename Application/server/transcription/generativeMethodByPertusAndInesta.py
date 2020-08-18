@@ -1,3 +1,5 @@
+## W tym pliku znajduje się implementacja metod Metoda Pertusa i Iñesta z 2008 i 2012 roku
+
 import math
 import numpy as np
 from tqdm import tqdm

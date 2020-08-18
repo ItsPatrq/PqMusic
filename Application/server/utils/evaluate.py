@@ -1,3 +1,5 @@
+## W tym pliku znajduje się mechanizm ewaluacji algorytmów
+
 import sys
 import os
 import warnings
@@ -12,7 +14,7 @@ from transcription.ac import autocorrelation
 from transcription.aclos import aclos
 from transcription.cepstrumF0Analysis import cepstrumF0Analysis
 from transcription.cepstrumF0AnalysisGpu import cepstrumF0AnalysisGpu
-from transcription.jointMethodByPertusAndInesta import harmonic_and_smoothness_based_transcription
+from transcription.generativeMethodByPertusAndInesta import harmonic_and_smoothness_based_transcription
 from transcription.onsetsAndFrames import OnsetsAndFramesImpl
 import json
 import enum
@@ -100,11 +102,12 @@ argsJointMethodByPertusaAndInesta2012 = {
     'lifteringCoefficient': [0, 6],
     'minNoteVelocity': [16],
     'newAlgorithmVersion': [True],
-    'smoothnessImportance': [3, 2], #TODO: Czy to było dobrze opisane w Thesis?
+    'smoothnessImportance': [3, 2],
     'temporalSmoothnessRange': [2, 3],
     'pitch_tracking_combinations': [3, 4]
 }
 
+## Wcześniej wyliczone najlepsze parametry dla algorytmów
 best_arg_ac = (1, 1024, 1024, 50, 5500)
 best_arg_aclos =  (3, 4096, 1024, 2048)
 best_arg_ceps = (3, 4096, 1024, 8192)

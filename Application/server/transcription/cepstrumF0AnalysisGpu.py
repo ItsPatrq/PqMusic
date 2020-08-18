@@ -1,3 +1,5 @@
+## W tym pliku znajduje się implementacja algorytmu wykrywającego F0 przy pomocy metod cepstrum na GPU
+
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -18,7 +20,7 @@ from reikna.fft import FFT as gpu_fft
 from reikna.cluda import dtypes, cuda_api
 from io import BytesIO
 
-
+## Analiza F0 przy pomocy cepstrum na GPU
 def cepstrumF0AnalysisGpu (api, thr, compiledCepstrum, data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512):
     if compiledCepstrum is None:
         params = dict(Fs=sampleRate, NFFT=frameWidth, noverlap=frameWidth-spacing, pad_to=frameWidth+sizeOfZeroPadding)

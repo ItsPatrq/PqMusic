@@ -1,3 +1,5 @@
+## W tym pliku znajdują się metody pomocnicze do obsługi standardu MIDI (zapis/odczyt) wraz z metodą porównującą dwie rolki pianina
+
 from midiutil import MIDIFile
 import numpy as np
 import math
@@ -198,14 +200,10 @@ if __name__ == "__main__":
 	import sys
 	sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 	filePathAbs = path.dirname(path.abspath(__file__))
-	#filePath = path.join(filePath, '../test_sounds/chopin-nocturne.wav')
-	#filePath = '../test_sounds/Sine_sequence.wav'
-	#filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
-	filePath = path.join(filePathAbs, '../onsetsTest.mid')
-	filePath2 = path.join(filePathAbs, '../resAC.mid')
-
-	res1 = load_midi_file(filePath)
-	write_midi(res1, './test.mid')
+	
+	#filePath = path.join(filePathAbs, '../onsetsTest.mid')
+	#filePath2 = path.join(filePathAbs, '../resAC.mid')
+	#res1 = load_midi_file(filePath)
+	#write_midi(res1, './test.mid')
 	#res2 = load_midi_file(filePath2)
-
 	#compare_midi_to_ground_truth(res1, res2)

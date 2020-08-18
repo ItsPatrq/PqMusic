@@ -273,11 +273,11 @@ W tej pracy przeanalizowany jest problem automatycznej transkrypcji muzyki, nakr
 
 W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu. 
 
-\newpage
+\clearpage
 \setcounter{secnumdepth}{4}
 
-\section{Jak ,,działa'' muzyka}\label{sec:JakDzialaMuzyka}
-W celu usystematyzowania pojęć i nadania fundamentu do dalszych rozważań istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Utwór muzyczny jest uporządkowanym zbiorem dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy (magnitudy) zadanego sygnału akustycznego. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na możliwie odseparowane części wyróżnia się cztery rozdzielne składowe, których zbadanie i poprawne zinterpretowanie jest przedmiotem algorytmów transkrypcji muzyki
+\section{Wprowadzenie do zasad działania muzyki}\label{sec:JakDzialaMuzyka}
+W celu usystematyzowania pojęć i nadania fundamentu do dalszych rozważań istotne jest zdefiniowanie terminologii związanej z muzyką jak i samej muzyki. Utwór muzyczny jest uporządkowanym zbiorem dźwięków o odpowiednich wysokościach i głośnościach z zachowaniem odpowiedniego rytmu. Wysokości tych dźwięków są proporcjonalne do częstotliwości wibracji, które zostały wytworzone przez dany instrument lub głos ludzki. Głośność określana jest przy pomocy amplitudy (magnitudy) zadanego sygnału akustycznego. Sygnały monofoniczne odnoszą się do dźwięków, które nie nachodzą na siebie w czasie. Analogicznie, sygnały polifoniczne to takie, w których występuje więcej niż jeden dźwięk w tym samym momencie czasu. Starając się rozłożyć skomplikowaną strukturę utworów muzycznych na możliwie odseparowane części wyróżnia się cztery rozdzielne składowe, których zbadanie i poprawne zinterpretowanie jest przedmiotem algorytmów transkrypcji muzyki
 \cite[63]{Homerecording:DlaKazdego}.
 %\cite[r. 2]{Homerecording:DlaKazdego}.
 Są to:
@@ -319,7 +319,7 @@ Informacja o rytmie jest zapisana w relacjach pomiędzy poszczególnymi dźwięk
 
 Podstawową jednostką rytmiczną jest nuta. Miarą tempa utworu przeniesioną na domenę fizyczną są uderzenia na minutę (często określane jako BPM, z ang. \textit{beats per minute}) oznaczające liczbę ćwierćnut (beatów) przypadających na jedną minutę. Taktem nazywa się odcinek zapisu muzycznego wizualnie oznaczony pionowymi kreskami. Takty tworzą regularne odcinki czasowe, a ich długość jest zależna od metrum. Metrum jest oznaczeniem metrycznym opisującym ile jakich jednostek mieści się w takcie. Dla przykładu, najpopularniejszym metrum w muzyce popularnej jest 4/4, co oznacza, że w każdym takcie mieszczą się cztery ćwierćnuty.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.3]{images/RythmMertic.jpg}
     \caption{Sygnał akustyczny z wyraźnymi metrykami muzycznymi. Na osi poziomej liczbowo oznaczona jest metryka nutowa (4 beaty), mniejszymi zaś regularne odstępy taktowe.}
@@ -376,7 +376,7 @@ Interesującą własnością niemalże wszystkich kultur muzycznych jest podobie
   \begin{center}
     \begin{tabular}{ |c|c|c| } 
     \hline
-    p & f & Literalna nazwa wysokości dźwięku\\
+    p & f & Nazwa wysokości dźwięku\\
     \hline
     33 & 55 & A1\\
     45 & 110 & A2\\
@@ -449,7 +449,8 @@ Istotnym pojęciem przy omawianiu barwy dźwięku jest formant. Formantem nazywa
 \cite[24-25]{Transcription:Klapuri:Phd}.
 %cite[r. 3.3.1]{Transcription:Klapuri:Phd}.
 
-\newpage
+\clearpage
+
 \section{Modelowanie systemu transkrypcji} \label{sec:modelowanieSystemu}
 Sygnały akustyczne, przetworzone przez przetwornik analogowo-cyfrowy (A/C) są przechowywane w postaci binarnych plików dźwiękowych jako dyskretne sygnały cyfrowe dyskretnego czasu. W procesie cyfryzacji zostają poddane procesowi kwantyzowania wartości, najczęściej poprzez zaokrąglenie do najbliższych liczb całkowitych 
 \cite[1-4]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
@@ -924,7 +925,7 @@ gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmoniczn
     \includegraphics[width=1.\linewidth]{images/ACLOS/Interpolacja_superzoomed_cropped.png}
     \caption{Wykres (c) w przybliżeniu}
   \end{subfigure}
-  \caption{Wynik ACLOS użytego na kompozycji ,,Oda do radości'' IX symfonii Beethovena zagranej w sposób monofoniczny na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli. Wykresy (c) i (d) przedstawiają wynik równania \ref{eq:Aclos:ACf} na tym samym oknie po zastosowaniu lifteringu. Jaśniejsze obszary w cepstrogramie oznaczają większa magnitudę.}
+  \caption{Wynik ACLOS użytego na kompozycji ,,Oda do radości'' IX symfonii Beethovena zagranej w sposób monofoniczny na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli. Wykresy (c) i (d) przedstawiają wynik równania \ref{eq:Aclos:ACf} na tym samym oknie po zastosowaniu lifteringu. Jaśniejsze obszary w cepstrogramie oznaczają większą magnitudę.}
   \label{fig:aclos:results}
 \end{figure}
 
@@ -933,7 +934,8 @@ Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyzn
 
 Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest nieliniowa. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
 
-\newpage
+\clearpage
+
 \section{Estymacja wielu częstotliwości fundamentalnych w sygnale polifonicznym}\label{sec:MultiPitch}
 W tym rozdziale opisane są metody estymacji składowej fundamentalnej w polifonicznym sygnale akustycznym. Sygnał polifoniczny to taki, w którym występują co najmniej dwa równoległe dźwięki w tym samym czasie. Problem ten jest znacznie bardziej złożony od wyznaczania pojedyńczego F0 w sygnale monofonicznym opisanego w \ref{sec:f0}. Wiele z własności sygnałów akustycznych, jak periodyczność czy rozróżnialna barwa, nie są niezawodnym źródłem informacji w celach transkrypcji wielotonowej, ponieważ nakładające się na siebie dźwięki modulują te cechy dźwięków zniekształcając ich pierwotną formę.
 
@@ -985,7 +987,7 @@ Przyglądając się z bliska pojedyńczemu wynikowi funkcji autokorelacji, jak w
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.38]{images/Spectrogram/spectrogram_multi_2048_512_cropped.png}
-    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina w Em zagranego na pianinie. Użyto okna Hanna o długości 2048 sampli, marginesu zer o długości 2048 i odstępów długości 512 sampli. Jaśniejsze obszary w spektrogramie oznaczają większa magnitudę.}
+    \caption{Spektrogram nagrania Preludium op. 28 nr. 4 Fryderyka Chopina w Em zagranego na pianinie. Użyto okna Hanna o długości 2048 sampli, marginesu zer o długości 2048 i odstępów długości 512 sampli. Jaśniejsze obszary w spektrogramie oznaczają większą magnitudę.}
     \label{fig:multi:spectrogram}
   \end{center}
 \end{figure}
@@ -1005,7 +1007,7 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.27]{images/Em/spectrogram_Em_2048_512_cropped.png}
-    \caption{Spektrogram nagrania akordu Em zagranego na pianinie. Użyto okna Hanna o długości 2048 sampli z marginesem zer długości 2048 i marginesu zer długości 2048. Jaśniejsze obszary w spektrogramie oznaczają większa magnitudę.}
+    \caption{Spektrogram nagrania akordu Em zagranego na pianinie. Użyto okna Hanna o długości 2048 sampli z marginesem zer długości 2048 i marginesu zer długości 2048. Jaśniejsze obszary w spektrogramie oznaczają większą magnitudę.}
     \label{fig:multi:em:spectrogram}
   \end{center}
 \end{figure}
@@ -1020,7 +1022,7 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
     \caption{Estymacja F0}
     \label{fig:multi:ceps:estimation}
   \end{subfigure}
-  \caption{Wynik analizy cepstralnej nagrania akordu Em zagranego na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli.}
+  \caption{Wynik analizy cepstralnej nagrania akordu Em zagranego na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli. Jaśniejsze obszary w cepstrogramie oznaczają większą magnitudę.}
   \label{fig:multi:ceps}
 \end{figure}
 
@@ -1034,7 +1036,7 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
     \caption{Estymacja F0}
     \label{fig:multi:aclos:estimation}
   \end{subfigure}
-  \caption{Wynik analizy algorytmem ACLOS nagrania akordu Em zagranego na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli. Jaśniejsze obszary w spektrogramach oznaczają większa magnitudę.}
+  \caption{Wynik analizy algorytmem ACLOS nagrania akordu Em zagranego na pianinie. Użyto okno Hanna o długości 2048 sampli z marginesem zer długości 2048 i odstępami długości 2048 sampli. Jaśniejsze obszary w spektrogramach oznaczają większą magnitudę.}
   \label{fig:multi:aclos}
 \end{figure}
 
@@ -1133,7 +1135,7 @@ Anssi Klapuri kategoryzuje trudności związane z relacjami wysokości dźwięk�
 \end{itemize}
 Trudności te mają być zminimalizowane poprzez nałożenie funkcji wygładzającej na badane spektrum. Przykład przedstawiony na rysunku \ref{fig:specSmooth:kapuri} obrazuje funkcję wygładzenia (cieńka linia) nałożoną na spektrum podczas badania pierwszego dźwięku, które obrazuje, że co trzeci pik jest wysoko ponad zakładaną krzywą, i to one zostałyby w widmie po odjęciu wygładzonego widma pierwszego dźwięku ze spektrum sygnału. Ten sam mechanizm może pozwolić na wyeliminowanie nieistniejących dźwięków ,,duchów''.
 
-Gładkość spektrum jest założeniem, które jest prawdziwe dla większości sygnałów akustycznych, lecz nie jest to cecha, którą posiadają wszystkie dźwięki. W zależności od źródła wibracji, otoczenia i sposobu, w jaki sygnał jest nagrany, charakterystyka widma może odbiegać od tej, którą zakłada gładkość spektrum. Silniejsze formanty występujące w wyższych częstotliwościach są cechą wielu instrumentów akustycznych. W celu zminimalizowania błędów spowodowanych założeniem gładkości spektrum powstała kategoria algorytmów bazujących na wyuczonych modelach dźwięków. Zakładają one istnienie modeli dla każdego ze źródeł dźwięków, które mogą występować w analizowanym sygnale, które to są wykrywane w widmie. Problemem w takim podejściu jest ilość potrzebnych danych - w muzyce zachodniej wykorzystywanych jest bardzo dużo różnych instrumentów, z bardzo odległymi od siebie charakterystykami widmowymi. Potrzebne dane treningowe, poprawnie oznaczone według wysokości F0 oraz użytego instrumentu na skale ogólnej analizy popularnej muzyki zachodniej są praktycznie niemożliwe do usystematyzowania. Jednym z ułatwień jest wykorzystanie pojedyńczego nagrania F0 na danym instrumencie i przesuwanie go w wymiarze częstotliwości, aby symulować inne wysokości F0, ale nie jest to niezawodne rozwiązanie, ponieważ wiele instrumentów ma różne charakterystyki widmowe podczas grania różnych częstotliwości fundamentalnych 
+Gładkość spektrum jest założeniem, które pozostaje prawdziwe dla większości sygnałów akustycznych, lecz nie jest to cecha, którą posiadają wszystkie dźwięki. W zależności od źródła wibracji, otoczenia i sposobu, w jaki sygnał jest nagrany, charakterystyka widma może odbiegać od tej, którą zakłada gładkość spektrum. Silniejsze formanty występujące w wyższych częstotliwościach są cechą wielu instrumentów akustycznych. W celu zminimalizowania błędów spowodowanych założeniem gładkości spektrum powstała kategoria algorytmów bazujących na wyuczonych modelach dźwięków. Zakładają one istnienie modeli dla każdego ze źródeł dźwięków, które mogą występować w analizowanym sygnale, które to są wykrywane w widmie. Problemem w takim podejściu jest ilość potrzebnych danych - w muzyce zachodniej wykorzystywanych jest bardzo dużo różnych instrumentów, z bardzo odległymi od siebie charakterystykami widmowymi. Potrzebne dane treningowe, poprawnie oznaczone według wysokości F0 oraz użytego instrumentu na skale ogólnej analizy popularnej muzyki zachodniej są praktycznie niemożliwe do usystematyzowania. Jednym z ułatwień jest wykorzystanie pojedyńczego nagrania F0 na danym instrumencie i przesuwanie go w wymiarze częstotliwości, aby symulować inne wysokości F0, ale nie jest to niezawodne rozwiązanie, ponieważ wiele instrumentów ma różne charakterystyki widmowe podczas grania różnych częstotliwości fundamentalnych 
 \cite[55-68]{Transcription:Quenneville:Thesis}.
 %\cite[r. 6]{Transcription:Quenneville:Thesis}.
 
@@ -1152,7 +1154,7 @@ gdzie F jest częstotliwością fundamentalną a $\beta$ jest współczynnikiem 
 W przytoczonej wcześniej pracy 
 \cite[1-10]{Transcription:BayesianHarmonicModels}
 %\cite[r. 1-2]{Transcription:BayesianHarmonicModels}
- Davy i Godsill zaproponowali model bayesowski, który bierze pod uwagę nieharmoniczność (nazywaną w tej pracy jako nie-nastrojenie, z ang. \textit{de-tuning}). Opisany w tej pracy jest model zarówno dla sygnałów monofonicznych, jak i dla polifonicznych. Ten drugi zapisany jest jako dyskretne obserwacje $y$ w domenie czasu $t$ w następujący sposób:
+Davy i Godsill zaproponowali model matematyczny, który bierze pod uwagę nieharmoniczność (nazywaną w tej pracy jako nie-nastrojenie, z ang. \textit{de-tuning}). Opisany w tej pracy jest model zarówno dla sygnałów monofonicznych, jak i dla polifonicznych. Ten drugi zapisany jest jako dyskretne obserwacje $y$ w domenie czasu $t$ w następujący sposób:
 \begin{equation}\label{eq:inharmonicity:bayesian}
   y_t = \left\{ \sum_{k=1}^{K}\sum_{m=1}^{M_k}\sum_{i=1}^{I} a_{k,m,i} \phi_{i,t}\cos[(m + \delta_{k,m})\omega_{0,k}t] + b_{k,m,i}\phi_{i,t}\sin[(m + \delta_{k,m})\omega_{0,k}t]\right\} + v_t
 \end{equation}
@@ -1164,7 +1166,7 @@ dla $t = 0,1,...,N-1$, gdzie $K$ jest liczbą równolegle granych dźwięków w 
 (tłumaczenie własne).
 \end{displayquote}
 \subsubsection{Metoda Pertusa i Iñesta (2008)} \label{sec:pertus1}
-Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku nosi nazwę ,,Estymacja wielu częstotliwości fundamentalnych z użyciem gładkości Gaussa'' (tłumaczenie własne) \cite{Transcription:Pertus:Inharmonicity}. Jest to metoda łączona, wykorzystująca okno Gaussa do wygładzenia wyniku. Algorytm ten przetwarza dane przed faktyczną analizą, jak zostało to opisane w sekcji \ref{sec:preProcessing}, wykorzystuje zasadę gładkości spektrum opisaną w sekcji \ref{sec:specSmoothnes} i bierze pod uwagę spektralną nieharmonicznych, której problem opisany był w sekcji \ref{sec:multif0:inh:model}.
+Metoda, którą opracowali razem Antonio Pertusa i José M. Iñesta w 2008 roku nosi nazwę ,,Estymacja wielu częstotliwości fundamentalnych z użyciem gładkości Gaussa'' (tłumaczenie własne) \cite{Transcription:Pertus:Inharmonicity}. Jest to metoda, wykorzystująca okno Gaussa do wygładzenia widma sygnału i generująca listę hipotez, z której dalej determinowany jest wynik transkrypcji. Algorytm ten przetwarza dane przed faktyczną analizą, jak zostało to opisane w sekcji \ref{sec:preProcessing}, wykorzystuje zasadę gładkości spektrum opisaną w sekcji \ref{sec:specSmoothnes} i bierze pod uwagę spektralną nieharmonicznych, której problem opisany był w sekcji \ref{sec:multif0:inh:model}.
 
 Algorytm wykonuje estymację F0 operując na spektrum kolejnych okien czasowych. Analizowane fragmenty sygnału wejściowego przygotowane są tak, aby miały długość 93 ms (4096 sampli przy częstotliwości samplowania równej 44,1 kHZ) z zastosowaniem funkcji Hanninga jako funkcji okna oraz marginesu zer równego trzykrotności długości oryginalnego okna. Na tak przygotowanym oknie wykonywane jest STFT, którego wynik ma 16384 spektralnych komponentów, więc każdy z nich ma pasmo szerokości 2,7 Hz (szerokość pasma jest liczona wzorem $h = Fs / N$, gdzie $Fs$ jest częstotliwością próbkowania, a $N$ długością okna).
 
@@ -1387,7 +1389,7 @@ zakładają dodanie detekcji offsetu, która zasila detektor aktywności nut, ch
 
 Dodatkowo zaproponowana została metoda augmentacji sygnału wejściowego, która polegać ma na modyfikacji każdego z danych wejściowych o pewną modulację audio (np. przesunięcie częstotliwości, dodanie szumu, zastosowanie equalizera). Zmiana ta pozytywnie wpływa na jakość modelu trenowanego bazą MAPS, jednak w przypadku bazy MAESTRO odnotowany został minimalny spadek w dokładności wyniku. 
 
-\newpage
+\clearpage
 
 \section{Implementacja}\label{sec:impl}
 W tym rozdziale opisane są implementacje algorytmów transkrypcji z rozdziałów \ref{sec:f0} i \ref{sec:MultiPitch}, które są częścią projektu powstałego w ramach tej pracy magisterskiej. Kod napisany został w skryptowym języku Python w wersji 3.7.4, który wydawał się najodpowiedniejszy do tego typu zadania ze względu na dostępne biblioteki dedykowane do matematycznych problemów (jak \textit{numpy} czy \textit{scipy}). Szczegółowa lista użytych rozwiązań dostępna jest w pliku README.md dostępnym w głównym katalogu projektu.
@@ -1532,7 +1534,7 @@ Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. N
 \end{lstlisting}
 
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
-Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w jednej funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{server/transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} przyjmuje wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
+Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w tej samej funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \mbox{\textit{server/transcription/generativeMethodByPertusAndInesta.py}}. W przypadku, gdy argument \textit{newAlgorithmVersion} przyjmuje wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
 
 W pierwszej kolejności wywoływana jest funkcja \textit{coreMethod}, której zadaniem jest przetworzenie sygnału do postaci nut, na którym następnie wykonywane jest przetwarzanie końcowe. Z każdego spektrum okna czasowego po nałożeniu lifteringu wydobywane są wartości (piki) o amplitudach powyżej zadanego progu i na ich podstawie wyznaczani są kandydaci do F0. Zbiór wyznaczonych częstotliwości pomniejszany jest o te, które nie mają wystarczającej ilości harmonicznych w tablicy pików. Liczba kandydatów następnie jest posortowana względem amplitud i odrzucone zostają wszystkie przekraczające indeks \textit{maxCandidates} zmniejszając tym samym ilość kombinacji w przypadku dużej liczby kandydatów.
 
@@ -1746,12 +1748,13 @@ Skrypty źródłowe graficznego interfejsu znajdują się w katalogu \textit{sta
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.38]{images/GUI.jpg}
-    \caption{Zrzut ekranu graficznego interfejsu zaimplementowanego w ramach projektu.}
+    \caption{Zrzut ekranu widoku graficznego interfejsu zaimplementowanego w ramach projektu.}
     \label{fig:GUI}
   \end{center}
 \end{figure}
 
-\newpage
+\clearpage
+
 \section{Ewaluacja} \label{sec:ewal}
 W tym rozdziale przedstawione są wyniki ewaluacji zaimplementowanych w ramach pracy magisterskiej algorytmów. Proces ewaluacyjny polega na znalezieniu wektora najlepszych argumentów danej funkcji, a następnie porównaniu wyniku transkrypcji z oryginalną kompozycją dla każdego utworu ze zbioru testowego. Ewaluacja zaimplementowanych algorytmów została wykonana przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1, dokładności oraz średniego czasu wykonywania.
 
@@ -1806,7 +1809,7 @@ Nazwy argumentów symbolizują:
   \item K - zakres wygładzania czasowego (w oknach czasowych),
   \item M - zakres śledzenia wysokości (w oknach czasowych).
 \end{itemize}
-Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argumenty użyte podczas ewaluacji sygnałów polifonicznych są przedstawione w tablicy \ref{tab:bestArgPoli} z analogiczną konwencją nazewnictwa.
+Wartość ,,-'' oznacza, że parametr nie jest wykorzystywany w danym algorytmie. Metody Pertusa i Iñesta posiadają więcej argumentów niż pozostałe algorytmy, więc przeznaczona została dla nich dodatkowa tabela, w której wymienione są parametry istotne tylko dla tych funkcji.
 
 \begin{table}[H]
   \begin{center}
@@ -1823,7 +1826,6 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
   \end{tabular}
 \end{center}
 
-
 \begin{center}
   \begin{tabular}{ |c|c|c|c|c|c|c|c|c|c|c| } 
     \hline
@@ -1836,6 +1838,8 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
   \caption{Wektory najlepszych argumentów dla każdej funkcji transkrypcji dla sygnałów monofonicznych.}\label{tab:bestArgMono}
   \end{center}
 \end{table}
+
+Argumenty użyte podczas ewaluacji sygnałów polifonicznych są przedstawione w tablicy \ref{tab:bestArgPoli} z analogiczną do opisanej wyżej dla sygnałów monofonicznych konwencją nazewnictwa.
 
 \begin{table}[H]
   \begin{center}
@@ -1908,11 +1912,12 @@ Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabe
   \label{tab:eval:poli}
 \end{table}
 
-Z pozyskanych wyników można zaobserwować, że metoda Pertusa i Iñesta z 2008 roku jest w stanie wykryć więcej obserwacji TP od wersji z 2012 kosztem gorszej dokładności, precyzji i czasu. Jest to powiązane z innym przetwarzaniem końcowym, które w metodzie z 2012 roku dokłądniej sprawdza kontekstowość wykrytych dźwięków. Większa wartość parametru dozwolonej nieharmoniczności algorytmu z 2008 roku doprowadziła do powstania większej ilości kombinacji do przetworzenia, co znacząco zwiększa czas wykonywania transkrypcji.
+Z pozyskanych wyników można zaobserwować, że metoda Pertusa i Iñesta z 2008 roku jest w stanie wykryć więcej obserwacji TP od wersji z 2012 kosztem gorszej dokładności, precyzji i czasu. Jest to powiązane z innym przetwarzaniem końcowym, które w metodzie z 2012 roku dokłądniej sprawdza kontekst wykrytych dźwięków. Większa wartość parametru dozwolonej nieharmoniczności algorytmu z 2008 roku doprowadziła do powstania większej ilości kombinacji do przetworzenia, co znacząco zwiększa czas wykonywania transkrypcji.
 
-Analizując przedstawione wyniki ewaluacji należy zwrócić uwagę na fakt, że ilość danych, na których podstawie został wyliczone wynik jest znacznie mniej niż w większości z cytowanych prac. Zaproponowana metoda klasyfikacji wykrytych dźwięków również różni się od tych, zaprezentowanych w innych pracach.
+Analizując przedstawione wyniki ewaluacji należy zwrócić uwagę na fakt, że ilość danych, na których podstawie został wyliczone wynik jest znacznie mniej niż w większości z cytowanych prac. Zaproponowana metoda klasyfikacji wykrytych dźwięków również różni się od tych, zaprezentowanych w innych pracach. Wiele nut zostało oznakowanych jako FN ze względu na mały margines błędu używany przy klasyfikacji. Transkrypcje często posiadały wykryte nuty oryginalnej kompozycji, lecz były przesunięte w czasie na tyle mocno, że klasyfikowały się jako FP.
 
-\newpage
+\clearpage
+
 \setcounter{secnumdepth}{0}
 \section{Zakończenie} \label{sec:end}
 W tej pracy magisterskiej przedstawiony został problem automatycznej transkrypcji muzyki wraz z metodologiami jego rozwiązania. W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane zostały pojęcia teorii muzyki oraz jej cechy, jak i ich istotność w kontekście opisywanego tematu. W rozdziale \ref{sec:modelowanieSystemu} przedstawione zostały ogólne założenia transkrypcji muzyki wraz ze szczegółowym opisem transformaty Fouriera. W rozdziałach \ref{sec:f0} i \ref{sec:MultiPitch} opisane zostały wybrane algorytmy do wykrywania wysokości F0 w sygnałach dźwięków odpowiednio monofonicznych i polifonicznych. Kod, który powstał w ramach tej pracy implementuje przedstawione metody i opisany został w rozdziale \ref{sec:impl}. Zaimplementowane zostały również funkcję ewaluacyjne, które porównują omawiane algorytmy miarą F1 oraz mierzą ich czas wykonania. Opis ewaluacji zaimplementowanych metod transkrypcji muzyki opisany został w rozdziale \ref{sec:ewal}.
@@ -1977,7 +1982,7 @@ W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersal
 \EndNoToc
 \addcontentsline{toc}{section}{Spis tablic}
 \newpage
-\cleardoublepage
+\clearpage
 \lstlistoflistings
 \addcontentsline{toc}{section}{Spis listingów}
 

@@ -1,3 +1,5 @@
+## W tym pliku znajdują się funkcje liczące cepstrum przy pomocy CPU
+
 import numpy as np
 from scipy.fftpack import fft, ifft
 import enum

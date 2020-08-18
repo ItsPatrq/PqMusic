@@ -10,7 +10,7 @@ from utils.windowFunctionsPresentation import hannWindow, hammingWindow, rectang
 from transcription.ac import autocorrelation_wrapped
 from transcription.cepstrumF0Analysis import transcribe_by_cepstrum_wrapped
 from transcription.aclos import transcribe_by_aclos_wrapped
-from transcription.jointMethodByPertusAndInesta import transcribe_by_joint_method_wrapped
+from transcription.generativeMethodByPertusAndInesta import transcribe_by_joint_method_wrapped
 app = Flask(__name__, static_url_path='', static_folder=os.path.abspath('../static/build'))
 import base64
 import matplotlib

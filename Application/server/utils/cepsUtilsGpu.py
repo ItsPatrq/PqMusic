@@ -1,3 +1,4 @@
+## W tym pliku znajdują się funkcje liczące cepstrum przy pomocy GPU
 
 import numpy
 

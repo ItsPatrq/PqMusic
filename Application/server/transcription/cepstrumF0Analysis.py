@@ -1,3 +1,5 @@
+## W tym pliku znajduje się implementacja algorytmu wykrywającego F0 przy pomocy metod cepstrum na CPU
+
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
@@ -68,7 +70,7 @@ if __name__ == "__main__":
     
     for i in range(0, 1000):
         bestFq, cepstra, spectra, logSpectrogram = cepstrumF0Analysis(data, sampleRate, 4096, 1024, 8192)
-    #---------------------------#
+
     plot_spectrum_line_component_only(spectra[5], sampleRate, language="pl")
 
 
