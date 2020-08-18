@@ -227,7 +227,7 @@
 	\end{minipage}
 	\vspace{3cm}
 	\begin{center}
-		Toruń 2019\\
+		Toruń 2020\\
 	\end{center}
 \end{titlepage}
 
@@ -905,7 +905,12 @@ gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmoniczn
 \cite[50-51]{Transcription:Quenneville:Thesis}.
 %\cite[r. 5.3.2]{Transcription:Quenneville:Thesis}.
 
-\begin{figure}[ht]
+%%TODO: wyniku z równania VS wyniku równania
+Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyznaczenie F0 na podstawie maksymalnego wyniku z równania \ref{eq:Aclos:ACf}. Szerokość pasma pojedyńczego spektralnego komponentu zależna jest od przyjętej długości okna, a pasmo to jest zakresem, w którym znajduje się znalezione F0. Autorzy używają interpolacji wokół wartości wyznaczonej przez autokorelacje, co w rezultacie umożliwia uzyskanie większej dokładności wyniku.
+
+Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest nieliniowa. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
+
+\begin{figure}[H]
   \begin{subfigure}{.49\textwidth}
     \includegraphics[width=1.\linewidth]{images/ACLOS/Korelogram_cropped.png}
     \caption{Korelogram}
@@ -928,11 +933,6 @@ gdzie $f(i)$ jest i-tym komponentem lini widmowej, $N$ oznacza zakres harmoniczn
   \caption{Wynik ACLOS użytego na kompozycji ,,Oda do radości'' IX symfonii Beethovena zagranej w sposób monofoniczny na pianinie. Użyto okno Hanna o długości 2048 sampli z odstępami długości 512 sampli. Wykresy (c) i (d) przedstawiają wynik równania \ref{eq:Aclos:ACf} na tym samym oknie po zastosowaniu lifteringu. Jaśniejsze obszary w cepstrogramie oznaczają większą magnitudę.}
   \label{fig:aclos:results}
 \end{figure}
-
-%%TODO: wyniku z równania VS wyniku równania
-Algorytm ACLOS po wyliczeniu wektora autokorelacji dla danego okna zakłada wyznaczenie F0 na podstawie maksymalnego wyniku z równania \ref{eq:Aclos:ACf}. Szerokość pasma pojedyńczego spektralnego komponentu zależna jest od przyjętej długości okna, a pasmo to jest zakresem, w którym znajduje się znalezione F0. Autorzy używają interpolacji wokół wartości wyznaczonej przez autokorelacje, co w rezultacie umożliwia uzyskanie większej dokładności wyniku.
-
-Wyniki ACLOS w wyznaczaniu F0 są podobne do tych, wyznaczonych przez metodę Cepstrum (\ref{sec:f0:ceps}) co można zaobserwować na rysunku \ref{fig:aclos:results}. Większa niedokładność na początku kolejnych wysokości jest spowodowana charakterystyką użytego pianina, którego barwa podczas narastania amplitudy dźwięku jest nieliniowa. ACLOS jest uważane za metodę bardziej odporną na szum w analizowanym sygnale niż metoda Cepstrum \cite{Transcription:Kunieda:Aclos}.
 
 \clearpage
 
@@ -994,7 +994,7 @@ Przyglądając się z bliska pojedyńczemu wynikowi funkcji autokorelacji, jak w
 
 Metody operujące na dziedzinie częstotliwości mają dużo większą skuteczność w wykrywaniu równoległych F0, jednak algorytmika stojąca za tymi metodami przeznaczonymi do analizy sygnałów polifonicznych są dużo bardziej skomplikowana niż te, w przypadku monofonicznych utworów. Dzieje się tak ze względu na wyższy poziom złożoności widma. Spektrogram sygnałów polifonicznych nie jest tak jednoznacznym wskaźnikiem jak był w przypadku sygnałów monofonicznych. Częstotliwości harmonicznych mogą się na siebie nakładać, zniekształcając ich cykliczność jak i modulując wyraźność formantów.  Przykład takiego zjawiska można zaobserwować na rysunku \ref{fig:multi:spectra:partials}. Nagranie akordu Em3 zagranego na pianinie widać linią ciągłą, natomiast pojedyńczo nagrane dźwięki E3, G3 oraz B3 są przedstawione jako osobne krzywe. Na wykresie widoczne jest, że wynikowa krzywa Em żadko nakłada się dokłądnie z linią pojedyńczej nuty, a jest raczej nową strukturą z częścią cech wspólnych.
 
-\begin{figure}[H]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.325]{images/Em/spectral_component_em3_partials_2048_512_cropped.png}
     \caption{Spektralne komponenty nagrania akordu Em zagranego na pianinie oraz trzech poszczególnych nut zagranych na tym samym pianinie nagranych osobno. Użyto okna Hanna o długości 2048 sampli i marginesu zer długości 2048.}
@@ -1423,7 +1423,7 @@ Funkcja autokorelacji (opisana w rozdziale \ref{sec:f0:ac}) jest jedynym z zaimp
   minLag = int(floor(sampleRate / fqMax))
   maxLag = int(ceil(sampleRate / fqMin))
 \end{lstlisting}
-
+\begin{figure}
 \begin{lstlisting}[language=Python, caption={Funkcja autokorelacji}, captionpos=b, label={code:ac}]
 n = len(data)
 result = list(np.zeros(min_lag))
@@ -1435,6 +1435,7 @@ for lag in range(min_lag, max_lag):
   result.append(float(sum/(n-lag)))
 return result
 \end{lstlisting}
+\end{figure}
 
 Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli (próbka o indeksie $i$ po przesunięciu ma indeks $i + lag$). Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy współczynnik korelacji. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/ac.py}.
 
@@ -1450,6 +1451,7 @@ Cepstrum (opisane w rozdziale \ref{sec:f0:ceps}) w projekcie używany jest w dw�
 
 Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do cepstrum oraz znalezienie komponentu cepstralnego o największej wartości. Podzielenie quefrency wyznaczonego komponentu przez częstotliwość próbkowania daje w wyniku częstotliwość F0. Pod uwagę branych jest jedynie $n / 2$ pierwszych elementów cepstrum, gdzie $n$ jest ilością danych wejściowych łącznie z marginesem zer (ze względu na symetryczny charakter wyniku cepstrum). Pierwsze elementy wyniku cepstrum nie są brane pod uwagę przy szukaniu maksymalnego komponentu ze względu na znaczne zwiększenie błędności wyniku (pierwsze komponenty cepstralne symbolizują podobieństwo sygnału do samego siebie, analogicznie do autokorelacji), co zostało w implementacji zrobione poprzez wyzerowanie wartości pierwszych 14 elementów wektora cepstrum (linia $4$ listingu \ref{code:cepsF0Cpu}). 
 
+\begin{figure}  
 \begin{lstlisting}[language=Python, caption={Estymacja F0 przy pomocy cepstrum}, captionpos=b, label={code:cepsF0Cpu}]
   cepst, logSp, spectr = real_cepst_from_signal(frame)
   fftLen = int(np.floor(len(spectr)/2))
@@ -1459,6 +1461,7 @@ Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do ce
   maxperiod = np.argmax(cepst)
   bestFq.append(sampleRate/maxperiod)
 \end{lstlisting}
+\end{figure}
 
 W ramach tej pracy magisterskiej została zaimplementowana wersja analizy cepstralnej przy użyciu karty graficznej GPU (karty graficznej, z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku Python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
 
