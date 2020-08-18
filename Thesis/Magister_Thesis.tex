@@ -1042,7 +1042,7 @@ Metody cepstrum i ACLOS opisane w sekcjach \ref{sec:f0:ceps} i \ref{sec:f0:aclos
 W książce 
 \cite[203-227]{Transcription:Anssi:SignalProcessingMethods}
 %\cite[r. 7]{Transcription:Anssi:SignalProcessingMethods}
-autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych opartych na modelach generatywnych fal akustycznych ze względu na charakter algorytmu jaki jest użyty. Modele generatywne fal akustycznych czerpią z modeli bayesowskich. Rozróżnili oni metody oparte o zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w 
+autorzy kategoryzują metodyki przeznaczone do transkrypcji częstotliwości fundamentalnych opartych na modelach generatywnych fal akustycznych ze względu na charakter algorytmu jaki jest użyty. Modele generatywne fal akustycznych czerpią z modeli bayesowskich. Rozróżnili oni metody oparte na zaszumione modele sum sinusoidów, które nie brały pod uwagę zależności pomiędzy harmonicznymi (przykładem takiego podejścia jest analiza mowy opisana w 
 \cite[744-745]{Transcription:McAulay:SinusoidalRepresentationF0}
 %\cite[r. 1-2]{Transcription:McAulay:SinusoidalRepresentationF0}
 ), oraz grupy modeli off-line i on-line.
@@ -1173,26 +1173,26 @@ Dla każdego okna wyniku STFT wykonywane jest przetwarzanie wstępne. Polega ono
 W kolejnym kroku ze spektralnych pików wybierany jest zbiór częstotliwości nazywany ,,kandydatami F0''. Pik jest uznawany za kandydata jeżeli jego częstotliwość jest w zadanym zakresie $[f_{min}, f_{max}]$ oraz posiada on w danym spektrum co najmniej $\eta$ harmonicznych. Pierwszy z warunków ogranicza grupę analizowanych F0 do jedynie tych, które mogą występować w kompozycji. Badanie skrajnie niskich lub skrajnie wysokich w tonie dźwięków jest niepotrzebne, ponieważ nie są one wykorzystywane w muzyce. Drugie założenie ogranicza grupę kandydatów odrzucając tych, których barwa jest niemożliwa do określenia. Aby wykryć harmoniczne danego F0 sprawdzane jest istnienie pików o częstotliwości będącej wielokrotnością częstotliwości kandydata F0. W związku z istnieniem nieharmoniczności, badane są częstotliwości w zasięgu ze stałym marginesem $hf_0 \pm f_r$ dla $h = 2, 3, ...$, gdzie $f_0$ jest kandydatem F0. Wybierany jest pik najbliższy wielokrotności $f_0$. W przypadku nie znalezienia żadnego piku w danym zakresie, harmoniczna uznawana jest za brakującą. W następnym kroku lista kandydatów sortowana jest względem sumy amplitud ich harmonicznych. Dodatkowym parametrem jest maksymalna liczba kandydatów $F$, na podstawie której odrzucani są nadmiarowi kandydaci o najmniejszej sumie amplitud, aby zwiększyć wydajność tego systemu transkrypcji.
 
 %%HERE
-Na podstawie kandydatów generowane są wszystkie możliwe ich kombinacje, a następnie wyliczane dla nich współczynniki ,,istotności'' (z ang. \textit{salience}) oznaczony później jako $S$. Kombinacja, dla której wartość tego współczynnika jest największa jest wybierana, co oznacza, że w danym oknie czasowym wszyscy kandydaci F0 danej kombinacji są obecni w kompozycji. Aby zredukować złożoność obliczeniową tego kroku, generowane są kombinacje z maksymalnie $C$ kandydatami, co przekłada się na założenie maksymalnie $C$ równoległych nut granych w tym samym czasie w analizowanym utworze.
+Na podstawie kandydatów generowane są wszystkie możliwe ich kombinacje, a następnie są wyliczane dla nich współczynniki ,,istotności'' (z ang. \textit{salience}) oznaczone dalej jako $S$. Kombinacja, która ma największą wartość tego współczynnika, jest wybierana, co oznacza, że w danym oknie czasowym wszyscy kandydaci F0 danej kombinacji są obecni w kompozycji. Aby zredukować złożoność obliczeniową tego kroku, generowane są kombinacje z maksymalnie $C$ kandydatami, co przekłada się na maksymalnie $C$ równoległych nut granych w tym samym czasie w analizowanym utworze.
 
-Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. W literaturze wektor ten powszechnie określany jest jako \textit{HPS}, z angielskiego \textit{hypothetical partial sequences} czyli hipotetyczne częściowe sekwencje (tłumaczenie własne) 
-\cite[1118]{Transcription:Yeh:JointEvaluationF0:2}
-%\cite[r. IV A]{Transcription:Yeh:JointEvaluationF0:2}
-. Na podstawie tych wektorów wywoływany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które występują w widmach kilku kandydatów (i muszą zostać ,,wygładzone'').
+Istotnością kombinacji jest suma współczynnika istotności każdego z jej kandydatów. Jako istotność brane są pod uwagę amplitudy poszczególnych harmonicznych F0 wyliczane na podstawie gładkości ich widm. Dla pojedyńczego kandydata $c$ wyznaczany jest wektor ,,wzoru widmowego'' $p$, który zawiera informacje o amplitudach każdej z harmonicznych kandydata. W literaturze wektor ten powszechnie określany jest jako HPS (z ang. \textit{hypothetical partial sequences}) czyli hipotetyczne częściowe sekwencje (tłumaczenie własne) 
+\cite[1118]{Transcription:Yeh:JointEvaluationF0:2}.
+%\cite[r. IV A]{Transcription:Yeh:JointEvaluationF0:2}.
+Na podstawie tych wektorów wykonywany jest iteracyjny algorytm, którego celem jest oznaczenie przynależności każdej harmonicznej do kandydatów występujących w danej kombinacji. Kategoryzuje on harmoniczne na dwie grupy: te, które są w widmie tylko jednego kandydata i te, które występują w widmach kilku kandydatów (i muszą zostać ,,wygładzone'').
 
 Wyliczanie istotności odbywa się dla każdego kandydata osobno, zaczynając od tych z najniższą częstotliwością. Na podstawie danego wzoru widmowego $p_c$ dla kandydata $c$ wszystkie harmoniczne, które występują w więcej niż jednym widmie, są liniowo interpolowane przy użyciu harmonicznych, które nie są dzielone pomiędzy kandydatów. Po tej operacji istnieją dwie możliwości:
 \begin{enumerate}
-\item interpolowana wartość jest większa lub równa amplitudzie dzielonej harmonicznej. W tym przypadku amplituda uwzględniana przy liczeniu istotności kandydata $c$ dla tej harmonicznej jest brana ze wzoru widmowego $p_c$, natomiast we wszystkich pozostałych wektorach $p$, w których występuje ta harmoniczna, amplituda jej jest zerowana.
+\item interpolowana wartość jest większa lub równa amplitudzie dzielonej harmonicznej. W tym przypadku amplituda uwzględniana przy liczeniu istotności kandydata $c$ dla tej harmonicznej jest brana ze wzoru widmowego $p_c$, natomiast we wszystkich pozostałych wektorach $p$, w których występuje ta harmoniczna, amplituda jej jest zerowana,
 \item interpolowana wartość jest mniejsza od amplitudy dzielonej harmonicznej. W tym przypadku interpolowana wartość przypisywana jest do wzoru widmowego $p_c$, a w pozostałych wektorach, w których występuje ta harmoniczna, amplituda jej jest pomniejszana o interpolowaną wartość.
 \end{enumerate}
 Proces ten ma na celu wygładzenie spektrum dla każdego z kandydatów $c$, zgodnie z zasadą gładkości opisaną w sekcji \ref{sec:specSmoothnes}.
 
-Z tak przygotowanych wzorców widmowych wyliczana jest głośność $l(c)$ dla każdego kandydata $c$ poprzez zsumowanie amplitud z $p_c$.
+Głośność $l(c)$ każdego kandydata $c$ występującego w danym wzorcu widmowym $p$ wyliczana jest poprzez zsumowanie amplitud występujących w $p_c$
 \begin{equation}\label{eq:inharmonicity:loudness}
   l(c) = \sum_{h=1}^H p_{c,h}
 \end{equation}
 
-Wyliczany jest również współczynnik gładkości $\sigma$ dla każdego $c$ z użyciem gładkości Gaussa. Wektor $p_c$ jest filtrowany dolno-przepustowo przy pomocy obciętego znormalizowanego okna Gaussa z trzema komponentami $N_{\sigma = 1.0} = \left\{0,21, 0,58, 0,21\right\}$, które nakłądane jest na wzorzec spektralny danego kandydata tworząc wygładzony wzorzec $\widetilde{p}$. Mając wygładzony HPS, wyliczany jest współczynnik ostrości danego kandydata $s(c)$ jako suma wartości bezwzględnej różnicy wygładzonego i oryginalnego wzorca. Wynik tej operacji normalizowana jest poprzez wyliczenie ilorazu z ilością harmonicznych w wektorze $p_c$:
+Wyliczany jest również współczynnik gładkości $\sigma$ dla każdego $c$ z użyciem gładkości Gaussa. Wektor $p_c$ jest filtrowany dolno-przepustowo przy pomocy obciętego znormalizowanego okna Gaussa z trzema komponentami $N_{\sigma = 1.0} = \left\{0,21, 0,58, 0,21\right\}$, które nakłądane jest na wzorzec spektralny danego kandydata tworząc wygładzony wzorzec $\widetilde{p}$. Mając wygładzony HPS, wyliczany jest współczynnik ostrości danego kandydata $s(c)$ jako suma wartości bezwzględnej różnicy wygładzonego i oryginalnego wzorca. Wynik tej operacji normalizowany jest poprzez wyliczenie ilorazu z ilością harmonicznych w wektorze $p_c$:
 \begin{equation}\label{eq:inharmonicity:sharpness}
   \overline{s}(c) = \frac{1}{H}\sum_{h=1}^H \left(\left|\widetilde{p}_{c,h} - p_{c,h}\right|\right)
 \end{equation}
@@ -1201,34 +1201,34 @@ Tak wyliczony współczynnik ostrości wykorzystuje się do obliczenia współcz
   \sigma(c) = 1 - \overline{s}(c) 
 \end{equation}
 
-Istotność wyliczana jest na podstawie współczynników głośności i gładkości każdego z kandydatów jako
+Istotność wyliczana jest na podstawie współczynników głośności i gładkości każdego z kandydatów jako:
 \begin{equation}\label{eq:inharmonicity:salience}
   S = \sum_{c=1}^C\left[l(c)*\sigma(c)\right]^2
 \end{equation}
-gdzie C to ilość kandydatów danej kombinacji. Kombinacja  odrzucana jest, gdy różnica wartości współczynników głośności pomiędzy dwoma dowolnymi jej kandydatami przekracza ustaloną wartość $\gamma$. Jest to zabezpieczenie przed wyborem kombinacji, w których istnieje grupa kandydatów o zaniedbywalnej głośności. W takim wypadku powinna zostać wybrana inna kombinacja.
+gdzie $C$ jest ilością kandydatów danej kombinacji. Kombinacja  odrzucana jest, gdy różnica wartości współczynników głośności pomiędzy dwoma dowolnymi jej kandydatami przekracza ustaloną wartość $\gamma$. Jest to zabezpieczenie przed wyborem kombinacji, w których istnieje grupa kandydatów o zaniedbywalnej głośności. W takim wypadku powinna zostać wybrana inna kombinacja.
 
-W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania końcowego, które zminimalizuje ilość błędów w transkrypcji 
-\cite[106-107]{Transcription:Pertus:Inharmonicity}
-%\cite[r. 2]{Transcription:Pertus:Inharmonicity}
-. Składa się ono z dwóch operacji:
+W pracy opisującej algorytm autorzy zaproponowali zastosowanie przetwarzania końcowego, które ma na celu zminimalizowanie ilości błędów w transkrypcji 
+\cite[106-107]{Transcription:Pertus:Inharmonicity}.
+%\cite[r. 2]{Transcription:Pertus:Inharmonicity}.
+Składa się ono z dwóch operacji:
 \begin{enumerate}
-  \item założenie znalezienia konkretnej nuty, jeżeli nie była wykryta w danym oknie czasowym, ale była wykryta w poprzednim i następnym oknie
-  \item usunięcie bardzo krótkich dźwięków. W pracy zasugerowano minimalną długość sześciu okien (przy założeniach wstępnych 55.68 ms)
+  \item założenie znalezienia nuty, jeżeli nie była wykryta w danym oknie czasowym, ale była wykryta w poprzednim i następnym oknie (np. w przypadku, gdy dźwięk C3 był wykryty w oknach o indeksie 10 i 12, ale nie był wykryty w oknie o indeksie 11, to zakłada się, że w oknie o indeksie 11 również wykryto ten dźwięk),
+  \item usunięcie bardzo krótkich dźwięków. W pracy zasugerowano minimalną długość sześciu okien (przy założeniach wstępnych częstotliwości próbkowania i długości okna wynosi to 55.68 ms).
 \end{enumerate}
 Tak przetworzone dane są zapisywane do pliku MIDI na podstawie informacji o początku dźwięku, jego długości oraz wysokości.
 
 \subsubsection{Metoda Pertusa i Iñesta (2012)}\label{sec:petrus2}
-Opisana w sekcji \ref{sec:pertus1} metoda do równoległej estymacji F0 w każdym z okien czasowych została po czterech latach rozszerzona na podstawie nowych dokonań w dziedzinie transkrypcji muzyki i opisana przez tych samych badaczy w pracy \cite{Transcription:Pertus:Inharmonicity2}. Założenia metody pozostają bez zmian - dla każdego badanego okna wyliczane są współczynniki istotności w oparciu o kombinacje kandydatów F0, i wybierana jest kombinacja o największym współczynniku $S$. Różnicę od pierwotnej metodologi, jakie narzuca znowelizowany algorytm, składają się z uaktualnia sposób wyliczania istotności o normalizację współczynnika gładkości oraz dodania zaawansowanych technik przetwarzania końcowego dla każdego okna w oparciu o okna sąsiednie. Ogólny schemat działania tej metody jest przedstawiony na rysunku \ref{fig:petrusa_2012_methodology}.
+Opisana w sekcji \ref{sec:pertus1} metoda do równoległej estymacji F0 w każdym z okien czasowych została po czterech latach rozszerzona na podstawie nowych dokonań w dziedzinie transkrypcji muzyki i opisana przez tych samych badaczy w pracy \cite{Transcription:Pertus:Inharmonicity2}. Założenia metody pozostają bez zmian - dla każdego badanego okna wyliczane są współczynniki istotności w oparciu o kombinacje kandydatów F0, a następnie wybierana jest kombinacja o największym współczynniku $S$. Różnicę od pierwotnej metodologi, jakie narzuca znowelizowany algorytm, składają się z uaktualnia sposób wyliczania istotności o normalizację współczynnika gładkości oraz dodania zaawansowanych technik przetwarzania końcowego dla każdego okna w oparciu o okna sąsiednie. Ogólny schemat działania tej metody jest przedstawiony na rysunku \ref{fig:petrusa_2012_methodology}.
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.31]{images/Pertusa_2012_methodology.png}
-    \caption{Ogólny podgląd metody z podziałem na metodę podstawową opisaną w \cite{Transcription:Pertus:Inharmonicity} i rozszerzoną opisaną w \cite{Transcription:Pertus:Inharmonicity2}. Schemat z \cite[3]{Transcription:Pertus:Inharmonicity2}, tłumaczenie własne.}
+    \caption{Schemat metody z podziałem na metodę podstawową opisaną w \cite{Transcription:Pertus:Inharmonicity} i rozszerzoną opisaną w \cite{Transcription:Pertus:Inharmonicity2}. Schemat z \cite[3]{Transcription:Pertus:Inharmonicity2}, tłumaczenie własne.}
     \label{fig:petrusa_2012_methodology}
   \end{center}
 \end{figure}
 
-Dla danej kombinacji kandydatów częstotliwości fundamentalnych $c$ wyliczanie parametru wykonywane jest tak samo jak w podstawowej metodzie, tj. zgodnie ze wzorem \ref{eq:inharmonicity:loudness}. Odrzucane są kombinacje, które posiadają kandydata z głośnością poniżej wyznaczanego progu ($l(c) < \eta$), lub takie, w których różnica pomiędzy najcichszym i najgłośniejszym kandydatem jest wystarczająco duża ($l(c) < \gamma L_C$, z $L_C$ będącym głośnością najgłośniejszego kandydata), tak samo jak w metodzie podstawowej.
+Dla danej kombinacji kandydatów częstotliwości fundamentalnych $c$ wyliczanie parametru wykonywane jest tak samo jak w podstawowej metodzie, tj. zgodnie ze wzorem \ref{eq:inharmonicity:loudness}. Odrzucane są kombinacje, które posiadają kandydata z głośnością poniżej wyznaczanego progu ($l(c) < \eta$) lub takie, w których różnica pomiędzy najcichszym i najgłośniejszym kandydatem jest wystarczająco duża ($l(c) < \gamma L_C$, z $L_C$ będącym głośnością najgłośniejszego kandydata).
 
 Istotna zmiana pojawia się podczas liczenia parametru gładkości danego kandydata. Wektor HPS $p_c$ danego kandydata jest poddawany normalizacji poprzez podzielenie jego wartości przez jego maksymalną wartość, skalując go do przedziału $\left<0-1\right>$. Tak znormalizowany HPS jest oznaczany jako $\overline{p}$. Kolejno wzory na wygładzony wektor wzoru widmowego i współczynnik ostrości danej kombinacji są wyliczane z użyciem znormalizowanego HPS:
 \begin{equation}\label{eq:inharmonicity2:hpsSmoothed}
@@ -1237,21 +1237,21 @@ Istotna zmiana pojawia się podczas liczenia parametru gładkości danego kandyd
 \begin{equation}\label{eq:inharmonicity2:sharpness}
   r(c) = \sum_{h=1}^H\left|\widetilde{p}_{c,h} - \overline{p}_{c,h} \right|
 \end{equation}
-Współczynnik $r(c)$ w podstawowej wersji jest normalizowany za pomocą podzielenia go przez ilość harmonicznych danego kandydata F0. Normalizacja ta jest rozszerzona w 
+Współczynnik $r(c)$ w podstawowej wersji algorytmu jest normalizowany za pomocą podzielenia go przez ilość harmonicznych danego kandydata F0. Normalizacja ta jest rozszerzona w pracy
 \cite[5-6]{Transcription:Pertus:Inharmonicity2} 
 %\cite[r. 2.4.2]{Transcription:Pertus:Inharmonicity2} 
 tak, aby był niezależny od natężenia:
 \begin{equation}\label{eq:inharmonicity2:roughness}
   \widetilde{r}(c) = \frac{r(c)}{H(1 - N_{0, 1}(\overline{x}))}
 \end{equation}
-Wzór liczenia współczynnika gładkości na podstawie znormalizowanego współczynnika ostrości pozostaje niezmieniony (\ref{eq:inharmonicity:smoothnes}).
+Wzór liczenia współczynnika gładkości na podstawie znormalizowanego współczynnika ostrości pozostaje niezmieniony (zgodnie ze wzorem \ref{eq:inharmonicity:smoothnes}).
 
 Wzór na istotność pojedyńczego kandydata został rozszerzony o parametr $k$, którego zadaniem jest zbalansowanie wkładu gładkości na ten współczynnik:
 
 \begin{equation}\label{eq:inharmonicity2:salience}
 S(c) = l(c) * \sigma^k(c)
 \end{equation}
-Liczenie istotności danej kombinacji jest niezmieniony (\ref{eq:inharmonicity:salience}). W danym oknie wybierana jest kombinacja kandydatów o największym współczynniku $S$. Po ewaluacji każdego okna analizowanego utworu wykonywane jest przetwarzanie końcowe z wykorzystaniem sąsiednich okien, które skłąda się z dwóch etapów: wygładzania czasowego oraz śledzenia wysokości. Wzbogacają one omawianą metodę o informację na temat kontekstu każdego z okien czasowych pozwalając na oszacowanie spójniejszego wyniku.
+Liczenie istotności danej kombinacji jest niezmienione (zgodne ze wzorem \ref{eq:inharmonicity:salience}). W danym oknie wybierana jest kombinacja kandydatów o największym współczynniku $S$. Po ewaluacji każdego okna analizowanego utworu wykonywane jest przetwarzanie końcowe z wykorzystaniem sąsiednich okien, które składa się z dwóch etapów: wygładzania czasowego oraz śledzenia wysokości. Wzbogacają one omawianą metodę o informację na temat kontekstu każdego z okien czasowych, pozwalając na oszacowanie spójniejszego wyniku.
 
 Wygładzenie czasowe jest procesem przeliczenia istotności każdej z kombinacji w oparciu o sąsiednie okna czasowe. Celem tej operacji jest wybór najbardziej prawdopodobnej kombinacji na przestrzeni $2K + 1$ okien, a nie tylko w kontekście analizowanego odcinka czasowego.
 
@@ -1259,7 +1259,7 @@ Wszystkie kombinacje poddawane są procesowi kwantyzacji z postaci częstotliwo�
 \begin{equation} \label{eq:inharmonicity2:smoothedSalience}
   \widetilde{S}(C_i'(t)) = \sum_{j = t - K}^{t+K}S(C_i'(j))
 \end{equation}
-gdzie $C_i'(t)$ to kombinacja $i$ po procesie kwantyzacji w czasie $t$. W ogólności, we wszystkich $2K$ oknach wokół okna o indeksie czasowym $t$ wybierane są kombinacje zawierające dokładnie te same nuty, i następnie sumowana jest ich istotność w celu uzyskania nowego wyznacznika, na którego podstawie wyznaczana jest najbardziej prawdopodobna kombinacja:
+gdzie $C_i'(t)$ to kombinacja $i$ po procesie kwantyzacji w czasie $t$. W ogólności, we wszystkich $2K$ oknach wokół okna o indeksie czasowym $t$ wybierane są kombinacje zawierające dokładnie te same nuty a następnie sumowana jest ich istotność w celu uzyskania nowego wyznacznika, na którego podstawie wyznaczana jest najbardziej prawdopodobna kombinacja:
 
 \begin{equation} \label{eq:inharmonicity2:smoothedSalience:winner}
 \widehat{C}'(t) = \arg \max_i \left\{\widetilde{S}(C_i'(t))\right\}
@@ -1269,25 +1269,25 @@ Tak wybierane kombinacje są bardziej spójne w domenie czasowej, niwelując gwa
 Śledzenia wysokości zaproponowane w pracy 
 \cite[7-8]{Transcription:Pertus:Inharmonicity2} 
 %\cite[r. 3.2]{Transcription:Pertus:Inharmonicity2} 
-jest drugą metodą, która wymusza wybór kombinacji o gładkim przejściu z jednej na drugą w czasie. Metoda ta polega na skonstruowaniu warstwowego, ważonego, ukierunkowanego grafu acyklicznego (wDAG, z ang. \textit{weighted directed acyclic graph}).
+jest drugą metodą, która wymusza wybór kombinacji o gładkim w czasie przejściu z jednej na drugą. Metoda ta polega na skonstruowaniu warstwowego, ważonego, ukierunkowanego grafu acyklicznego (wDAG, z ang. \textit{weighted directed acyclic graph}).
 
-Graf $G = \left(V, v_b, E, w, t\right)$ będący warstwowym wDAG składa się ze zbioru wierzchołków $V$, wierzchołka początkowego $v_b$, zbioru krawędzi $E$, funkcji $w$ będącej wagą krawędzi pomiędzy dwoma wierzchołkami w sąsiednich warstwach grafu $w(v_b, v_j)$ oraz funkcji pozycji $t: V \rightarrow \left\{0, 1, 2, ..., T\right\}$. Wierzchołkami są kombinacje kandydatów F0 w danym oknie czasowym, natomiast $t$ dla każdego wierzchołka przyporządkowuje okno czasowe, w którym rozpatrywana jest dana kombinacja. Warstwą nazywane są wszystkie wierzchołki, dla których funkcja $t$ daje ten sam wynik $t(v) = \tau$. W innych słowach, warstwą w grafie jest zbiór kombinacji w jednym oknie czasowym.
+Graf $G = \left(V, v_b, E, w, t\right)$ będący warstwowym wDAG składa się ze zbioru wierzchołków $V$, wierzchołka początkowego $v_b$, zbioru krawędzi $E$, funkcji $w$ będącej wagą krawędzi pomiędzy dwoma wierzchołkami w sąsiednich warstwach grafu $w(v_b, v_j)$ oraz funkcji pozycji $t: V \rightarrow \left\{0, 1, 2, ..., T\right\}$. Wierzchołkami są kombinacje kandydatów F0 w danym oknie czasowym, natomiast $t$ dla każdego wierzchołka przyporządkowuje okno czasowe, w którym rozpatrywana jest dana kombinacja. Warstwą nazywane są wszystkie wierzchołki, dla których funkcja $t$ daje ten sam wynik $t(v) = \tau$. Innymi słowy, warstwą w grafie jest zbiór kombinacji w jednym oknie czasowym.
 
 Krawędzie prowadzone są ze wszystkich wierzchołków warstwy dla $t(v_i) = \tau$ do wszystkich krawędzi warstwy następnej $t(v_j) = \tau + 1$. Waga krawędzi liczona jest według wzoru:
 
 \begin{equation}\label{eq:inharmonicity2:dwagWeight}
 w(v_i, v_j) = \frac{D(v_i, v_j)}{\widetilde{S}(v_j) + 1}
 \end{equation}
-gdzie $\widetilde{S}$ oznacza istotnością kombinacji warstwy do której prowadzona jest krawędź, liczona według wzoru \ref{eq:inharmonicity2:smoothedSalience}, a $D(v_i, v_j)$ jest współczynnikiem podobieństwa pomiędzy kombinacjami odpowiadającymi wierzchołkom $v_i$ i $v_j$ liczona jako:
+gdzie $\widetilde{S}$ oznacza istotność kombinacji warstwy, do której prowadzona jest krawędź, liczona według wzoru \ref{eq:inharmonicity2:smoothedSalience} a $D(v_i, v_j)$ jest współczynnikiem podobieństwa pomiędzy kombinacjami odpowiadającymi wierzchołkom $v_i$ i $v_j$ liczona jako:
 \begin{equation}\label{eq:inharmonicity2:dwag:similarity}
 D(v_i, v_j) = \sum_{\forall_{C\in v_i, v_j}}\left|\widetilde{l}(v_{i,c}) - \widetilde{l}(v_{j,c}) \right| + \sum_{\forall_{C\in v_i - v_j}}\widetilde{l}(v_{i,c}) + \sum_{\forall_{C\in v_j - v_i}}\widetilde{l}(v_{j,c})
 \end{equation}
-gdzie $\widetilde{l}(v_{i,c})$ oznacza ogólną głośność kandydata $c$ w kombinacji $i$. Zgodnie z powyższym wzorem \ref{eq:inharmonicity2:dwag:similarity} koszt przejścia pomiędzy wierzchołkami, które mają więcej wspólnych kandydatów będzie mniejsza od tych, które mają więcej rozłącznych kandydatów F0.
+gdzie $\widetilde{l}(v_{i,c})$ oznacza ogólną głośność kandydata $c$ w kombinacji $i$. Zgodnie z powyższym wzorem \ref{eq:inharmonicity2:dwag:similarity} koszt przejścia pomiędzy wierzchołkami, które mają więcej wspólnych kandydatów, będzie mniejsza od tych, które mają więcej rozłącznych kandydatów F0.
 
 W trakcie budowania wDAG w celu zwiększenia wydajność wybieranych jest tylko $M$ najbardziej prawdopodobnych kombinacji dla każdego okna czasowego. Po wygenerowaniu grafu na podstawie wag liczonych wzorem \ref{eq:inharmonicity2:dwagWeight} wyznaczana jest najkrótsza ścieżka przy pomocy algorytmu Dijkstry \cite{Transcription:Dijkstra:Graphs} od pierwszego okna ($t(v) = 0$) do ostatniego ($t(v) = T$). Te wierzchołki, które należą do najkrótszej ścieżki odpowiadają kombinacjom, które są ostatecznie wybierane jako wynik algorytmu.
 
 \subsection{Metody z wykorzystaniem uczenia maszynowego}
-Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te oparte na NMF oraz na sieciach neuronowych (NN, z ang. \textit{Neural Network}). Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 
+Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej efektywnymi metodami w dziedzinie transkrypcji muzyki są te, oparte na NMF oraz te, oparte na sieciach neuronowych (NN, z ang. \textit{Neural Network}). Te drugie można zaobserwować na szczytach list wyników porównania efektywności modeli transkrypcji, takich jak MIREX (z ang. \textit{The Music Information Retrieval Evaluation eXchange}, framework do formalnej ewaluacji wydajności algorytmów wydobywających informacje muzyczne z sygnałów cyfrowych), już w 2012 
 \cite[415-416]{Transcription:Klapuri:ChallengesAndFuture}
 %\cite[r. 2.2]{Transcription:Klapuri:ChallengesAndFuture}
 . Transkrypcja muzyki jest problemem ściśle powiązanym z zadaniem rozpoznawania wzorców, na którego rozwój w ostatnich latach znaczący wpływ miały metody używające NN 
@@ -1297,20 +1297,20 @@ Jak było to opisane w sekcji \ref{sec:modelowanieSystemu}, obecnie najbardziej 
 
 %to chyba nie ma znaczenia, więc komentuje. -> W literaturze naukowej jednym z pierwszych wartych uwagi rozwiązań wykorzystujące sieci neuronowe jest \cite[439-440]{Transcription:Marolt:FirstNN}. Użyte zostały tam sieci czasu-opóźnienia (z ang. \textit{time-delay}), które można opisać jako sieci konwolucyjnych ukierunkowanych w czasie, badające wynik banku filtrów gammatone \cite[6]{DBLP:journals/spm/BenetosDDE19}.
 
-W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugie zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji 
+W dalszej części tej sekcji zostaną omówione dwa systemy transkrypcji oparte na sieciach neuronowych. Pierwszy z nich będący transkrypcją na poziomie notacji muzycznej \ref{sec:multif0:petrusNetwork}, drugi zaś na poziomie nut \ref{sec:multif0:onsetsAndFrames}, będący do tej pory najefektywniejszym systemem transkrypcji 
 \cite[27]{DBLP:journals/spm/BenetosDDE19}
 %\cite[sekcja pt. "A comparison of NMF and NN models"]{DBLP:journals/spm/BenetosDDE19}
-. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur.
+. W ramach tej pracy nie zostaną opisane dokładne szczegóły dotyczące działania sieci a jedynie pokrótce omówione specyficzne aspekty użytych architektur, które przyczyniły się do ich wysokich efektywności.
 
 
 \subsubsection{Holistyczna metoda z użyciem sieci neuronowych}\label{sec:multif0:petrusNetwork}
-Praca \cite{Transcription:Pertus:NeuralNetwork} miała na celu zbudowanie architektury zdolnej do transkrypcji A2S (Audio do partytury z ang. \textit{Audio-to-Score}). Jest to rzadkie podejście, wykorzystujące poziom abstrakcji notacji muzycznej. Wiele spośród istniejących algorytmów zakłada transkrypcję do plików MIDI lub podobnych, których struktura opiera się na zapisie rolki pianina, umożliwiając z tego poziomu wygenerować notację muzyczną. Omawiany w tej sekcji algorytm zakłada bezpośredni proces transkrypcji cyfrowego sygnału akustycznego do notacji muzycznej.
+Praca \cite{Transcription:Pertus:NeuralNetwork} miała na celu zbudowanie architektury zdolnej do transkrypcji A2S (Audio do partytury z ang. \textit{Audio-to-Score}). Jest to rzadkie podejście, wykorzystujące poziom abstrakcji notacji muzycznej. Wiele spośród istniejących algorytmów zakłada transkrypcję do plików MIDI lub podobnych, których struktura opiera się na zapisie rolki pianina, której poziom abstrakcji pozwala wygenerować notację muzyczną. Omawiany w tej sekcji algorytm zakłada bezpośredni proces transkrypcji cyfrowego sygnału akustycznego do notacji muzycznej.
 
-Proces określenia partytury ma wiele różnic od tego, którego celem jest wygenerowanie transkrypcji w postaci MIDI. Nawet bezbłędne A2S nie jest w stanie wiernie odzwierciedlić kompozycji muzycznej z sygnału ze względu na ekspresywny charakter wykonania. Kompozycja zapisana w postaci notacji muzycznej może być wykonana na wiele różnych sposobów w zależności od interpretacji. Odwrotna relacja również zachodzi - to samo wykonanie ma różne reprezentacje w postaci partytury. W zależności od przyjętej szczegółowości transkrypcji, różne parametry muzyczne mogą być badane, które w dalszej kolejności przekładają się na symbole muzyczne występujące w partyturze, takie jak oznaczenia tempa, metrum (sygnatura czasowa), klucz, w którym została napisana kompozycja, oznaczenia artykulacji itp.
+Proces określenia partytury ma wiele różnic od tego, którego celem jest wygenerowanie transkrypcji w postaci rolki pianina. Nawet bezbłędne A2S nie jest w stanie wiernie odzwierciedlić kompozycji muzycznej z sygnału ze względu na ekspresywny charakter wykonania. Kompozycja na podstawie notacji muzycznej może być wykonana na wiele różnych sposobów, w zależności od interpretacji. Odwrotna relacja również zachodzi - to samo wykonanie ma różne reprezentacje w postaci partytury. W zależności od przyjętej szczegółowości transkrypcji, różne parametry muzyczne mogą być badane, które w dalszej kolejności przekładają się na symbole muzyczne występujące w partyturze, takie jak oznaczenia tempa, metrum (sygnatura czasowa), tonacji, w jakiej została napisana kompozycja, oznaczenia artykulacji itp.
 
 Algorytm opisywany w \cite{Transcription:Pertus:NeuralNetwork} zakłada pewien stały alfabet notacji muzycznych, za pomocą którego można zdefiniować analizowany utwór. Opisywany A2S przedstawiony jest jako funkcja dziedziny domeny plików dźwiękowych $f : \mathcal{X} \rightarrow \Sigma^{\ast}$, gdzie $\mathcal{X}$ jest domeną plików muzycznych a $ \Sigma $ jest skończonym alfabetem muzycznych symboli.
 
-Model przyjmuje jako dane wejściowe spektralną reprezentację sygnału w czasie uzyskaną poprzez STFT z komponentami rozmieszczonymi logarytmicznie i magnitudą w skali logarytmicznej. Wynikiem jest sekwencja symboli mogąca być zaprezentowana jako zapis nutowy. Symbole określają nuty oraz przerwy z odpowiadającym im czasem trwania, kreski taktowe, łuki pomiędzy nutami oraz fermaty.
+Model przyjmuje jako dane wejściowe spektralną reprezentację sygnału w czasie uzyskaną poprzez STFT z komponentami rozmieszczonymi logarytmicznie i magnitudą w skali logarytmicznej. Wynikiem algorytmu jest sekwencja symboli mogąca być zaprezentowana jako zapis nutowy. Symbole określają nuty oraz przerwy z odpowiadającym im czasem trwania, kreski taktowe, łuki pomiędzy nutami oraz fermaty.
 
 Omawiana praca opisuje proces przygotowanych danych treningowych jako nietrywialny ze względu na małą ilość rzetelnych kompozycji w postaci cyfrowych notacji muzycznych. Dokładność obecnej algorytmiki systemów optycznego rozpoznawania muzyki na podstawie zapisu nutowego przez autorów uznawana jest jako niewystarczająca aby użyć jej w celu generowania danych treningowych. Ostatecznie wykorzystana została baza \textit{humdrum-data} dostępna w repozytorium \cite{Transcription:Sapp:Humdrum}. Dane te są w autorskim formacie zaproponowanym w zestawie narzędzi \textit{humdrum}. Format ten jest przeznaczony do ogólnych celów badań nad muzyką. Syntaks \textit{humdrum} nakreśla wzór, którego częścią są inne schematy notacji muzycznej wyższego poziomu, takie jak format \textit{**kern}, na którym oparte są referencyjne dane wykorzystane w opisywanym badaniu. Składnia \textit{**kern} jest szczególnie odpowiednia do tego modelu, ponieważ zaprojektowana jest ona do kodowania alfabetu muzycznego muzyki zachodniej.
 
@@ -1343,24 +1343,24 @@ Dekodowanie odbywa się poprzez wybranie najbardziej prawdopodobnego symbolu dla
   \end{center}
 \end{figure}
 
-Architektura zaprezentowana w omawianej pracy przedstawiona jest na schemacie w \ref{fig:holisticNetworkArchitecture}. Pierwsze dwie warstwy konwolucyjne nakładają 16 filtrów o wymiarach 3 x 3 z krokiem równym 2 na osi częstotliwości. Kolejne dwie warstwy są blokiem rekurencyjnym, w którego skład wchodzą dwukierunkowe sieci z długotrwałą pamięcią krótkoterminową (LSTM, z ang. \textit{Long Short-Term Memory}), każda z nich z 1024 ukrytymi jednostkami. W celu uniknięcia nadmiernego dopasowania dodane są sieci normalizacji wsadowej (ang. \textit{Batch Normalization}) pomiędzy każdą warstwą z wyjątkiem pierwszej i ostatniej, warstwy \textit{dropout} po każdej warstwie konwolucyjnej oraz ostatniej warstwie rekurencyjnej, które przepuszczają tylko fragment danych. Szczegółowy opis użytych parametrów w zależności od danych testowych jest zawarty w omawianej pracy.
+Architektura zaprezentowana w omawianej pracy przedstawiona jest na rysunku \ref{fig:holisticNetworkArchitecture}. Pierwsze dwie warstwy konwolucyjne nakładają 16 filtrów o wymiarach 3 x 3 z krokiem równym 2 na osi częstotliwości. Kolejne dwie warstwy są blokiem rekurencyjnym, w którego skład wchodzą dwukierunkowe sieci z długotrwałą pamięcią krótkoterminową (LSTM, z ang. \textit{Long Short-Term Memory}), każda z nich z 1024 ukrytymi jednostkami. W celu uniknięcia nadmiernego dopasowania dodane są sieci normalizacji wsadowej (ang. \textit{Batch Normalization}) pomiędzy każdą warstwą z wyjątkiem pierwszej i ostatniej, warstwy \textit{dropout} po każdej warstwie konwolucyjnej oraz ostatniej warstwie rekurencyjnej, które przepuszczają tylko fragment danych. Szczegółowy opis użytych parametrów w zależności od danych testowych jest zawarty w omawianej pracy \cite{Transcription:Pertus:NeuralNetwork}.
 
 %%Pytanie czy dodać wyniki, które są opisane w tej pracy, albo jakąś konkluzje jeszcze tutaj
 
 
 \subsubsection{Onsets and Frames}\label{sec:multif0:onsetsAndFrames}
-Użycie sieci neuronowych do modelowania systemu transkrypcji występuje w literaturze naukowej już od dłuższego czasu. Wyniki tych architektur nie były wyraźnie wyższe od równolegle wynajdywanych sposobów. W ostatnich latach, w ramach projektu Magenta \cite{Transcription:Magenta} powstał system transkrypcji o nazwie \textit{Onsets And Frames} (początki dźwięków i okna, tłumaczenie własne), który, według ewaluacji przedstawionej w dedykowanej pracy naukowej \cite{Transcription:Hawthorne:OnsetsAndFrames}, osiąga rekordowe rezultaty w dokładności wyników.
+Użycie sieci neuronowych do modelowania systemu transkrypcji występuje w literaturze naukowej już od dłuższego czasu. Poprawność wyników tych architektur nie była znacząco większa od równolegle wynajdywanych algorytmów korzystających z innych narzędzi niż NN. W ostatnich latach, w ramach projektu Magenta \cite{Transcription:Magenta} powstał system transkrypcji o nazwie \textit{Onsets And Frames} (początki dźwięków i okna, tłumaczenie własne), który, według ewaluacji przedstawionej w dedykowanej pracy naukowej \cite{Transcription:Hawthorne:OnsetsAndFrames}, osiąga rekordowe rezultaty w poprawności wyników.
 
-Projekt Magenta ma na celu wytworzenie algorytmiki i oprogramowania, które ma być narzędziem w rękach artystów. Ma to na celu udowodnienie, że uczenie maszynowe może być pomocne w procesie artystycznie twórczym. Rozwiązania są \textit{open source}, ułatwiając tym samym do nich dostęp. Douglas Eck, członek zespołu pracującego nad Magenta zapewnia, że projekt ten ma na celu dać źródło inspiracji artystom, a nie szukać sposobów ich zastąpienia przez komputery. System transkrypcji, który został opracowany w ramach tego projektu, jest nie tylko docelowym produktem tej koncepcji, ale też narzędziem pozwalającym ewaluować i zasilać danymi inne badane przez Magenta architektury.
+Projekt Magenta ma na celu wytworzenie algorytmiki i oprogramowania, które ma być narzędziem w rękach artystów. Ma to na celu udowodnienie, że uczenie maszynowe może być pomocne w procesie artystycznie twórczym. Rozwiązania te są rozpowszechnione jako otwarte oprogramowanie, ułatwiając tym samym do nich dostęp. Douglas Eck, członek zespołu pracującego nad Magenta zapewnia, że projekt ten ma na celu dać źródło inspiracji artystom, a nie szukać sposobów ich zastąpienia przez komputery. System transkrypcji, który został opracowany w ramach tego projektu, jest nie tylko docelowym produktem tej koncepcji, ale też narzędziem pozwalającym ewaluować i zasilać danymi inne badane przez Magenta architektury.
 
 Głównym założeniem, które odróżnia Onsets and Frames od innych systemów transkrypcji bazujących na sieciach neuronowych, jest rozłożenie zadania na dwa problemy: wykrywanie początku nuty oraz wykrywanie aktywności nut w oknie. Oba pod\-zadania mają osobne dedykowane sieci. Nuta jest uznawana za obecną wtedy, i tylko wtedy, gdy zostanie dla niej wykryty początek oraz aktywność.
 
 Dane wejściowe są w postaci spektrogramów w skali melowej i logarytmie amplitudy, z 229 logarytmicznie rozmieszczonymi w domenie częstotliwości komponentami, oknem długości 2048 sampli i odstępami pomiędzy oknami długości 2048. Dane równolegle zasilają obie sieci. Wynik detektora początków nut jest dostarczany do sieci aktywacji nuty, dając jej łącznie dwie informacje wejściowe - czy  początek nuty został wykryty oraz spektrogram sygnału.
 
 Detektor początku nuty składa się z modelu akustycznego (jego architektura opisana jest w 
-\cite[1-3]{Transcription:Kelz:AcousticModel}
-%\cite[r. 1-2]{Transcription:Kelz:AcousticModel}
-) połączonego z dwukierunkowym LSTM z 128 jednostkami dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik po nałożeniu progu 0.5 jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
+\cite[1-3]{Transcription:Kelz:AcousticModel})
+%\cite[r. 1-2]{Transcription:Kelz:AcousticModel})
+połączonego z dwukierunkowym LSTM o 128 jednostkach dla każdego kierunku, który połączony jest z warstwą sigmoidalną, która ma 88 wyjść. Liczba wyników jest równa ilości klawiszy na pełnowymiarowym pianinie. Wykrywacz aktywności nuty zbudowany jest z modelu akustycznego połączonego z sigmoidalną warstwą, analogiczną do tej w detektorze. Jej wynik jest łączony z wynikiem detektora początku nuty jako wejście do dwukierunkowego LSTM z 128 jednostkami dla każdego kierunku. Po tym występuje kolejna warstwa sigmoidalna z analogicznymi do poprzednich parametrami, której wynik, po nałożeniu progu 0.5, jest interpretowany jako predykcja danego okna. Architektura ta jest przedstawiona na rysunku \ref{fig:onsetsAndFramesArch}
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.8]{images/architekturaSieciOnesetsFrames.png}
@@ -1369,15 +1369,16 @@ Detektor początku nuty składa się z modelu akustycznego (jego architektura op
   \end{center}
 \end{figure}
 
-Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została rozpatrzona przez żaden z istniejących wcześniej modeli. Model zbudowany jest analogicznie, ale nie jest połączony z architekturą opisaną powyżej. Etykiety dynamiki są generowane przez podzielenie wszystkich dynamik przez maksymalną obecną w danym fragmencie. Najmniejsza dynamika jest wyznaczana jako $\frac{v_{min}}{v_{max}}$. Wynik jest przycinany do zakresu $\left[0,1\right]$ a następnie przekształcany do parametru \textit{velocity} w MIDI mapowaniem:
-\begin{equation}
+Metoda Onsets and Frames wprowadziła detekcje dynamiki, która nie została rozpatrzona przez żaden z istniejących wcześniej modeli. Model zbudowany jest analogicznie, ale nie jest połączony z architekturą opisaną powyżej. Etykiety dynamiki są wyliczane przez iloraz każdej dynamiki do maksymalnej dynamiki obecnej w danym fragmencie. Najmniejsza dynamika jest wyznaczana jako $\frac{v_{min}}{v_{max}}$. Wynik jest ograniczany do zakresu $\left[0,1\right]$ a następnie przekształcany do parametru \textit{velocity} w standardzie MIDI funkcją mapującą, która ma postać:
+\begin{equation}\label{eq:onsets:midiVelocity}
   v_{midi} = 80 v_{predicted} + 10
 \end{equation}
+gdzie $v_{predicted}$ jest wyliczoną etykietą dynamiki z zakresu $\left[0,1\right]$.
 
 Opisywana praca została zaktualizowana, co zostało opisane w 
-\cite[3-5]{Transcription:Cheng:OnsetsAndFramesNovelization}
-%\cite[r. 3]{Transcription:Cheng:OnsetsAndFramesNovelization}
-. Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwotnej wersji rozwiązania była ona najbardziej odpowiednia biorąc pod uwagę ilość i jakość zawartych w niej danych. W nowszej wersji została ona zamieniona na bazę MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpienia pianisty na fortepianie akustycznym Yamaha Disklavier. Nuty w MIDI nakładają się tymi z plików audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wykonane w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu nadmiernego dopasowania(z ang. \textit{overfittingu}, tłumaczenie własne) \cite{Transcription:Curtis:MAESTRO}.
+\cite[3-5]{Transcription:Cheng:OnsetsAndFramesNovelization}.
+%\cite[r. 3]{Transcription:Cheng:OnsetsAndFramesNovelization}.
+Pierwotnie, model trenowany i ewaluowany był przy użyciu bazy MAPS \cite{Transcription:OnsetsAndFrames:MAPS}. Na czas powstawania pierwszej wersji rozwiązania była ona najbardziej odpowiednia, biorąc pod uwagę ilość i jakość zawartych w niej danych. W nowszej wersji została ona zastąpiona bazą MAESTRO (z ang. \textit{MIDI and Audio Edited for Synchronous TRacks and Organization}) przygotowaną w ramach opisywanej pracy. MAESTRO zawiera ponad 172.3 godziny sparowanych plików audio z MIDI, co jest trzykrotnie większą ilością danych od bazy MAPS. Zawarte pliki audio są nagraniami wystąpieniami pianisty na fortepianie akustycznym Yamaha Disklavier. Zdarzenia nut w pliku MIDI nakładają się z tymi występującymi w plikach audio z dokładnością do około 3 milisekund. Dzielenie danych na treningowe, walidacyjne i testowe jest wykonane w taki sposób, że ta sama kompozycja, nawet jeżeli wykonana przez różnych artystów, nie występuje w więcej niz jednej grupie. Zasada ta wprowadzona jest w celu uniknięcia efektu nadmiernego dopasowania (z ang. \textit{overfittingu}) \cite{Transcription:Curtis:MAESTRO}.
 
 Poza użyciem innej bazy, zmiany do Onsets and Frames zaproponowane w 
 \cite[3-5]{Transcription:Cheng:OnsetsAndFramesNovelization} 
@@ -1391,17 +1392,17 @@ Dodatkowo zaproponowana została metoda augmentacji sygnału wejściowego, któr
 \section{Implementacja}\label{sec:impl}
 W tym rozdziale opisane są implementacje algorytmów transkrypcji z rozdziałów \ref{sec:f0} i \ref{sec:MultiPitch}, które są częścią projektu powstałego w ramach tej pracy magisterskiej. Kod napisany został w skryptowym języku Python w wersji 3.7.4, który wydawał się najodpowiedniejszy do tego typu zadania ze względu na dostępne biblioteki dedykowane do matematycznych problemów (jak \textit{numpy} czy \textit{scipy}). Szczegółowa lista użytych rozwiązań dostępna jest w pliku README.md dostępnym w głównym katalogu projektu.
 
-Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM z 16 lub 32 bitami na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez dodanie każdej z wartości. Dane przed analizą są znormalizowane poprzez skalowanie danych do zakresu $\left[0, 1\right]$.
+Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają pliki  o rozszerzeniu \textit{.wav} z kodowaniem PCM o 16 lub 32 bitach na sampel. Sygnały, które są dwukanałowe (stereo audio) zostają przed analizą ,,spłaszczone'' do jednego kanału poprzez przemnożenie wartości każdego z nich przez $\frac{1}{2}$ oraz scalenie ich razem poprzez sumę wartości tych wektorów. Dane przed analizą są znormalizowane poprzez skalowanie danych do zakresu $\left[0, 1\right]$.
 
 Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentacji na okna czasowe:
 \begin{itemize}
-  \item \textit{data} - znormalizowane dane pobrane z pliku dźwiękowego
-  \item \textit{frameWidth} - długość okna w samplach
-  \item \textit{sampleRate} - częstotliwość próbkowania
-  \item \textit{spacing} - odstęp pomiędzy kolejnymi oknami danych
+  \item \textit{data} - znormalizowane dane pobrane z pliku dźwiękowego,
+  \item \textit{frameWidth} - długość okna w samplach,
+  \item \textit{sampleRate} - częstotliwość próbkowania,
+  \item \textit{spacing} - odstęp pomiędzy kolejnymi oknami danych.
 \end{itemize}
 
-\begin{lstlisting}[language=Python, caption={Przykład pętli po danych wejściowych z uwzględnieniem okna czasowego}, captionpos=b, label={code:iter}]
+\begin{lstlisting}[language=Python, caption={Przykład pętli po danych wejściowych z uwzględnieniem okna czasowego. Takie dzielenie danych, z nakładaniem funkcji okna i dodaniem marginesu zer jest wykonywane w większości zaimplementowanych algorytmów.}, captionpos=b, label={code:iter}]
   for i in range(0, int(math.ceil((len(data) - frameWidth) / spacing))):
     frame = data[i*spacing:i*spacing+frameWidth] * hann
     frame = np.concatenate((frame, zeroPadding))
@@ -1410,12 +1411,12 @@ Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje czter
 
 Sposób iterowania pomiędzy kolejnymi oknami jest również identyczny dla każdej z implementacji i jest przedstawiony na listingu \ref{code:iter}. W lini 2 listingu na konkretne okno danych nakładana jest funkcja okna (w tym przypadku okno Hanna). W przypadku algorytmów operujących na spektrum, do okna dodawana jest odpowiednia ilość zer (linia 3) jako margines zer, i dopiero na tak przygotowanych danych wykonywana jest transformata (linia 4).
 
-Zaimplementowany został również prosty mechanizm porównujący pliki MIDI. Jego celem jest porównanie wyników zaimplementowanych algorytmów w celu ich ewaluacji, co zostało opisane w sekcji \ref{sec:impl:midiCompare}. Wyniki ewaluacji przeprowadzonej na zaproponowanej implementacji opisane są następnie w rozdziale \ref{sec:ewal}. Algorytmy wykrywające F0 w monofonicznym sygnale oryginalnie nie posiadają metodyki przedstawiania wyniku jako plik MIDI. Na potrzeby tej pracy przedstawienie wyniku w postaci MIDI zostało zaimplementowane, czego opis można znaleźć w sekcji \ref{sec:impl:midiGen}.
+Zaimplementowany został również prosty mechanizm porównujący pliki MIDI. Jego celem jest porównanie wyników zaimplementowanych algorytmów, co zostało opisane w sekcji \ref{sec:impl:midiCompare}. Wyniki ewaluacji przeprowadzonej na zaproponowanej implementacji opisane są następnie w rozdziale \ref{sec:ewal}. Na potrzeby tej pracy przedstawienie wyników w postaci MIDI zostało zaimplementowane dla algorytmów wykrywających F0 w sygnale monofonicznym i polifonicznym, czego opis można znaleźć w sekcji \ref{sec:impl:midiGen}.
 
-Poza algorytmami w ramach tej pracy magisterskiej zaimplementowany został również graficzny interfejs (GUI, z ang. \textit{Graphical User Interface}) w postaci aplikacji webowej z dedykowanym serwerem lokalnym napisanym w Python, za pomocą którego można łatwo przetestować działanie zaimplementowanych metod. Krótki opis tego rozwiązania znajduje się w tym rozdziale w sekcji \ref{sec:impl:gui}.
+Poza algorytmiką w ramach tej pracy magisterskiej zaimplementowany został również graficzny interfejs (GUI, z ang. \textit{Graphical User Interface}) w postaci aplikacji webowej z dedykowanym serwerem lokalnym napisanym w Python, za pomocą którego można łatwo przetestować działanie zaimplementowanych metod. Krótki opis tego rozwiązania znajduje się w sekcji \ref{sec:impl:gui}.
 
 \subsection{Autokorelacja}\label{sec:impl:alg:ac}
-Funkcja autokorelacji (\ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna (jak widać na listingu \ref{code:minMaxLag}), jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięciem, które w dalszej części ograniczają zakres, na którym operuje funkcja autokorelacji, co widać na listingu \ref{code:ac}.
+Funkcja autokorelacji (opisana w rozdziale \ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna (co jest pokazane na listingu \ref{code:minMaxLag}), jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięcie, które w dalszej części ograniczają zakres, na którym operuje funkcja autokorelacji (co jest pokazane na listingu \ref{code:ac}).
 \begin{lstlisting}[ language=Python, caption={Wyliczanie maksymalnego i minimalnego przesunięcia funkcji autokorelacji}, captionpos=b, label={code:minMaxLag}]
   minLag = int(floor(sampleRate / fqMax))
   maxLag = int(ceil(sampleRate / fqMin))
@@ -1433,10 +1434,10 @@ for lag in range(min_lag, max_lag):
 return result
 \end{lstlisting}
 
-Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli w prawo. Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy wynik. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/ac.py}.
+Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli (próbka o indeksie $i$ po przesunięciu ma indeks $i + lag$). Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy współczynnik korelacji. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/ac.py}.
 
 \subsection{Cepstrum}\label{sec:impl:alg:ceps}
-Cepstrum (\ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody do estymacji F0, jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} co przedstawione jest na listingu \ref{code:cepsUtil}.
+Cepstrum (opisane w rozdziale \ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody do estymacji F0 jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} co przedstawione jest na listingu \ref{code:cepsUtil}.
 
 \begin{lstlisting}[language=Python, caption={Wyliczanie cepstrum mocy}, captionpos=b, label={code:cepsUtil}]
   spectrum = fft(data)
@@ -1457,16 +1458,23 @@ Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do ce
   bestFq.append(sampleRate/maxperiod)
 \end{lstlisting}
 
-W ramach tej pracy magisterskiej została zaimplementowana wersja analizy cepstralnej przy użyciu karty graficznej GPU (z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
+W ramach tej pracy magisterskiej została zaimplementowana wersja analizy cepstralnej przy użyciu karty graficznej GPU (karty graficznej, z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku Python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
 
-Rozwiązanie GPU znajduje się w pliku \textit{server/utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje argumenty w postaci znormalizowanych danych audio, długości okna, długości marginesu zer oraz odległości pomiędzy oknami. Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces, przedstawiony na listingu \ref{code:cepsF0Gpu}, można opisać w następujący sposób:
+Rozwiązanie GPU znajduje się w pliku \textit{server/utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje cztery argumenty:
+\begin{itemize}
+  \item znormalizowane dane audio,
+  \item długość okna,
+  \item długość marginesu zer,
+  \item odległość pomiędzy oknami.
+\end{itemize}
+Dane poprzez transformację dostosowywane są do formatu wejścia funkcji FFT dostępnej w bibliotece \textit{reikna}. Cały proces, przedstawiony na listingu \ref{code:cepsF0Gpu}, można opisać w następujący sposób:
 \begin{enumerate}
-  \item dane sygnału wejściowego (\textit{flat\_input}) przekształcane są do tablicy dwuwymiarowej \textit{unwindowed\_input} transformacją \textit{rolling\_frame} tak, że długości wierszy są równe długości ustalonego okna czasowego z długością marginesu zer. Dane składowane są po kolei z uwzględnieniem marginesu zer i odległości pomiędzy oknami;
-  \item tablica \textit{unwindowed\_input} przekształcana jest do \textit{input\_real} transformacją \textit{hanning\_window}, która nakłada funkcję Hanna do każdego z wierszy danych wejściowych;
-  \item dlatego, że do użytej implementacji FFT wymagane jest podanie danych o typie zespolonym, użyta została transformacja \textit{combine\_complex}, która przyjmuje dwa parametry - dane rzeczywiste, którymi są przygotowana tablica \textit{input\_real} oraz dane urojone, które są wygenerowanie za pomocą funkcji \textit{broadcast\_const} i mają postać tablicy zer takich samych wymiarów jak \textit{input\_real};
-  \item na tak przygotowanych danych wykonywana jest funkcja FFT, po której stosowana jest transformacja \textit{log\_pow} dająca w wyniku \textit{log\_pow} będące tablicą spektrum logarytmów mocy;
-  \item funkcja IFFT (odwrotność FFT) wywoływana jest na wyniku kolejnej transformacji \textit{combine\_complex}, której danymi wejściowymi rzeczywistymi jest tablica \textit{log\_pow} a urojonymi jest tablica generowana analogicznie do tej, przygotowanej w pkt. 3;
-  \item wynik IFFT przekształcany jest transformacją \textit{crop\_frequencies\_ceps}, która zeruje pierwszych 10 wartości (analogicznie do \ref{code:cepsF0Cpu}) oraz wycina elementy przekraczające częstotliwość Nyquista;
+  \item dane sygnału wejściowego (\textit{flat\_input}) przekształcane są do tablicy dwuwymiarowej \textit{unwindowed\_input} transformacją \textit{rolling\_frame} tak, że długości wierszy są równe długości ustalonego okna czasowego z długością marginesu zer. Dane składowane są po kolei z uwzględnieniem marginesu zer i odległości pomiędzy oknami,
+  \item tablica \textit{unwindowed\_input} przekształcana jest do \textit{input\_real} transformacją \\\textit{hanning\_window}, która nakłada funkcję Hanna do każdego z wierszy danych wejściowych,
+  \item dlatego, że do użytej implementacji FFT wymagane jest podanie danych o typie zespolonym, użyta została transformacja \textit{combine\_complex}, która przyjmuje dwa parametry - dane rzeczywiste, którymi są przygotowana tablica \textit{input\_real} oraz dane urojone, które są wygenerowane za pomocą funkcji \textit{broadcast\_const} i mają postać tablicy zer takich samych wymiarów jak \textit{input\_real},
+  \item na tak przygotowanych danych wykonywana jest funkcja FFT, po której stosowana jest transformacja \textit{log\_pow} dająca w wyniku \textit{log\_pow} będące tablicą spektrum logarytmów mocy,
+  \item funkcja IFFT (odwrotność FFT) wywoływana jest na wyniku kolejnej transformacji \textit{combine\_complex}, której danymi wejściowymi rzeczywistymi jest tablica \textit{log\_pow} a urojonymi jest tablica generowana analogicznie do tej, przygotowanej w pkt. 3,
+  \item wynik IFFT przekształcany jest transformacją \textit{crop\_frequencies\_ceps}, która zeruje pierwszych 10 wartości (analogicznie do \ref{code:cepsF0Cpu}) oraz wycina elementy przekraczające częstotliwość Nyquista,
   \item wynik \textit{crop\_frequencies\_ceps} jest transponowany i zwracany jako wynik.
 \end{enumerate}
 
@@ -1493,9 +1501,9 @@ Rozwiązanie GPU znajduje się w pliku \textit{server/utils/cepsUtilsGpu.py} w p
 \end{lstlisting}
 
 \subsection{ACLOS}\label{sec:impl:alg:aclos}
-Trzonem metody ACLOS (\ref{sec:f0:aclos}) jest funkcja autokorelacji w domenie częstotliwości, której implementacja jest bardzo podobna do tej w domenie czasu (\ref{sec:impl:alg:ac}). Wyróżniającymi się elementami tego algorytmu są użycie lifteringu na sygnale oraz wykorzystanie interpolacji do zwiększenia dokładności wyniku.   
+Trzonem metody ACLOS (opisanej w \ref{sec:f0:aclos}) jest funkcja autokorelacji w domenie częstotliwości, której implementacja jest bardzo podobna do tej, w domenie czasu, opisanej w sekcji \ref{sec:impl:alg:ac}. Wyróżniającymi się cechami tego algorytmu są użycie lifteringu na sygnale oraz wykorzystanie interpolacji do zwiększenia dokładności wyniku.   
 
-Filtrowanie w domenie quefrency odbywa się dla każdego okna czasowego, po przekształceniu do nałożeniu funkcji okna oraz przekształceniu do postaci spektrum mocy. Widmo przekształcane jest do cepstrum przy pomocy IFFT, po czym wykonywane jest na nim filtrowanie. Proces ten przedstawiony jest na listingu \ref{code:liftering}. Poza danymi wejściowymi jako argumenty funkcja \textit{lifterOnCeps} przyjmuje typ lifteringu \textit{lifterType} (którym może być funkcja sinusoidalna, trójkątna lub prostokątna) oraz mnożnik \textit{coefficient}.
+Filtrowanie w domenie quefrency odbywa się dla każdego okna czasowego, po przekształceniu i nałożeniu funkcji okna oraz przekształceniu do postaci spektrum mocy. Widmo przekształcane jest do cepstrum przy pomocy IFFT, po czym wykonywane jest na nim filtrowanie. Proces ten przedstawiony jest na listingu \ref{code:liftering}. Poza danymi wejściowymi jako argumenty funkcja \textit{lifterOnCeps} przyjmuje typ lifteringu \textit{lifterType} (którym może być funkcja sinusoidalna, trójkątna lub prostokątna) oraz mnożnik \textit{coefficient}.
 
 Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. Na jej podstawie wyznaczana jest częstotliwość z najlepszym wynikiem, co przedstawione jest na listingu \ref{code:bestFqInterpolate}. Zmienna \textit{fftToFq} jest tablicą z wartościami równymi częstotliwości dla kolejnych indeksów wyniku FFT dla danej rozdzielczości. Maksymalny błąd w domenie częstotliwości wiąże się z rozdzielczością wykonywanego FFT i jest równy $\frac{fs}{NFFT}$, gdzie $fs$ jest częstotliwością próbkowania, a $NFFT$ to ustalona długość okna. 
 
@@ -1524,18 +1532,18 @@ Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. N
 \end{lstlisting}
 
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
-Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{server/transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} ustawiony jest na wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
+Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w jednej funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \textit{server/transcription/jointMethodByPertusAndInesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} przyjmuje wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
 
 W pierwszej kolejności wywoływana jest funkcja \textit{coreMethod}, której zadaniem jest przetworzenie sygnału do postaci nut, na którym następnie wykonywane jest przetwarzanie końcowe. Z każdego spektrum okna czasowego po nałożeniu lifteringu wydobywane są wartości (piki) o amplitudach powyżej zadanego progu i na ich podstawie wyznaczani są kandydaci do F0. Zbiór wyznaczonych częstotliwości pomniejszany jest o te, które nie mają wystarczającej ilości harmonicznych w tablicy pików. Liczba kandydatów następnie jest posortowana względem amplitud i odrzucone zostają wszystkie przekraczające indeks \textit{maxCandidates} zmniejszając tym samym ilość kombinacji w przypadku dużej liczby kandydatów.
 
-Kolejnym krokiem jest wyznaczenie wszystkich możliwych kombinacji i wyliczenie istotności każdej z nich. Funkcja obliczająca istotność tworzy kopie tablicy pików i tablicy wszystkich wzorów spektralnych a następnie iteruje po wszystkich kandydatach danej kombinacji:
+Kolejnym krokiem jest wyznaczenie wszystkich możliwych kombinacji i wyliczenie istotności każdej z nich. Funkcja obliczająca istotność tworzy kopie tablicy pików i tablicy wszystkich wzorów spektralnych, a następnie iteruje po wszystkich kandydatach danej kombinacji i wykonuje dwa kroki:
 \begin{enumerate}
-  \item kopia pików i wzorów spektralnych zostają wygładzone w oparciu o spektrum danego kandydata funkcją \textit{smoothenPattern} zgodnie z metodą opisaną w \ref{sec:pertus1};
+  \item kopia pików i wzorów spektralnych zostają wygładzone w oparciu o spektrum danego kandydata funkcją \textit{smoothenPattern} zgodnie z metodą opisaną w rozdziale \ref{sec:pertus1};
   \item wyliczane zostają głośność jako suma amplitud oraz gładkość danego wzoru spektralnego kandydata F0.
 \end{enumerate}
-W danym oknie czasowym wybierana jest kombinacja o największej sumie istotności harmonicznych. Lista częstotliwości kandydatów F0 wygranej kombinacji transformowana jest na tablicę, której indeksy oznaczają numery nut MIDI a wartościami jest parametr dynamiki, za którego brana jest średnia amplituda F0 wraz z harmonicznymi.
+W danym oknie czasowym wybierana jest kombinacja o największej sumie istotności harmonicznych. Lista częstotliwości kandydatów F0 wygranej kombinacji transformowana jest na tablicę, której indeksy oznaczają numery nut MIDI a wartościami są parametry dynamiki, wyliczane jako średnia amplituda F0 wraz z harmonicznymi.
 
-Przetwarzanie końcowe zaimplementowane w funkcji \textit{postProcessMidiNotes} i wylicza ono dynamikę na podstawie wcześniej nadanej wartości z amplitudy i generuje bardziej ,,spójną'' rolkę pianina, odrzucając zbyt krótkie nuty i łącząc w całość nuty, które były wykryte w oknie o indeksie $n-1$ oraz $n+1$, ale nie były wykryte w oknie o indeksie $n$. Implementacja pozwala na zdefiniowanie ilości sąsiadujących nut branych pod uwagę podczas tego procesu.
+Przetwarzanie końcowe zaimplementowane jest w funkcji \textit{postProcessMidiNotes} i wylicza ono dynamikę na podstawie wcześniej nadanej wartości z amplitudy i generuje bardziej ,,spójną'' rolkę pianina, odrzucając zbyt krótkie nuty i łącząc w całość nuty, które były wykryte w oknie o indeksie $n-1$ oraz $n+1$, ale nie były wykryte w oknie o indeksie $n$. Implementacja pozwala na zdefiniowanie ilości sąsiadujących nut branych pod uwagę podczas tego procesu poprzez parametr \textit{neighbourMerging}.
 
 \begin{lstlisting}[language=Python, caption={Trzon algorytmu Pertusa i Iñesta (2008)}, captionpos=b, label={code:coreMethodPetrusa1}, numbers=none]
   peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
@@ -1564,7 +1572,7 @@ Przetwarzanie końcowe zaimplementowane w funkcji \textit{postProcessMidiNotes} 
 \end{lstlisting}
 
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
-Gdy funkcja \textit{harmonicAndSmoothnessBasedTranscription} zostanie wywołana z argumentem $newAlgorithmVersion = True$ wykonana zostanie metoda z usprawnieniami opisanymi w sekcji \ref{sec:petrus2} i pracy naukowej \cite{Transcription:Pertus:Inharmonicity2}. Implementacja różni się od tej opisanej w \ref{sec:impl:alg:specSmoothnes} sposobem wyliczania istotności kombinacji oraz przetwarzaniem końcowym.  
+Gdy funkcja \textit{harmonicAndSmoothnessBasedTranscription} zostanie wywołana z wartością \textit{True} argumentu \textit{newAlgorithmVersion} wykonana zostanie metoda z usprawnieniami opisanymi w sekcji \ref{sec:petrus2} i pracy naukowej \cite{Transcription:Pertus:Inharmonicity2}. Implementacja różni się od tej opisanej w \ref{sec:impl:alg:specSmoothnes} sposobem wyliczania istotności kombinacji oraz przetwarzaniem końcowym.  
 
 Proces wyliczania istotności dla danego kandydata F0 zgodnie z opisem z \cite{Transcription:Pertus:Inharmonicity2} jest przedstawiony na listingu \ref{code:petrusIstotnosc}. Wynikiem trzonu algorytmu, w przeciwieństwie do wersji z 2008 roku, jest lista nut MIDI dla wszystkich kombinacji razem z ich istotnością. Na tej podstawie w funkcji \textit{flattenCombination} wykonywane jest wygładzanie na przestrzeni rolki pianina, jak jest to opisane w algorytmie, natomiast śledzenie wysokości nut zaimplementowane jest w funkcji \textit{pitchTracking}. Funkcja wyliczającą wagi każdego z wierzchołków grafu przedstawiona jest na listingu \ref{code:petrusPitchTracking}, gdzie argumenty $lvi$ i $lvj$ są wzorami spektralnymi harmonicznej z okna $i$ i $j = i + 1$ a argument $saliences$ jest istotnością $j$-ego okna. Wyznaczona tablica nut jest przetwarzana metodą \textit{postProcessMidiNotes} tak samo jak w implementacji \ref{sec:impl:alg:specSmoothnes}.
 
@@ -1610,9 +1618,9 @@ def countWeight(lvi, lvj, salience_j):
 \end{lstlisting}
 
 \subsection{Onsets and Frames}\label{sec:impl:onsetsAndFrames}
-Implementacja wykorzystania metodologi \textit{Onsets and Frames} w projekcie wykonana została na zwór tej, zaproponowanej przez autorów \cite{Transcription:Hawthorne:OnsetsAndFrames}. Udostępnili oni przykładowy kod, przy pomocy którego można przetestować działanie wytrenowanego bazą MAESTRO modelu w interaktywnym arkuszu Google Colab \cite{Transcription:OnsetsAndFrames:Colab}. Wprowadzone modyfikacje miały na celu zintegrowanie tego rozwiązania do opisywanego projektu.
+Implementacja wykorzystania metodologi \textit{Onsets and Frames} w projekcie wykonana została na zwór tej, zaproponowanej przez autorów \cite{Transcription:Hawthorne:OnsetsAndFrames}. Udostępnili oni przykładowy kod, przy pomocy którego można przetestować działanie wytrenowanego bazą MAESTRO modelu w interaktywnym arkuszu Google Colab \cite{Transcription:OnsetsAndFrames:Colab}. Wprowadzone modyfikacje miały na celu zintegrowanie tego rozwiązania do metod ewaluacyjnych opisywanego projektu.
 
-Metody związane z inicjalizacją modelu i transkrypcją utworu zostały umieszczone w klasie \textit{OnsetsAndFramesImpl} znajdującej się w pliku \textit{transcription/onsetsAndFrames.py}. Instancja tej klasy, przed wywołaniem metody przeznaczonej do transkrypcji, musi zostać zainicjalizowana przy pomocy metody \textit{initializeModel}. Model zostaje zdefiniowany i skonfigurowany na podstawie już wytrenowanego modelu, który szukany jest w katalogu \textit{transcription/train}. Model można pobrać z repozytorium projektu \textit{Onsets and Frames} \cite{Transcription:OnsetsAndFrames:Github}. Obiekt przechowuje informację o tym, czy już został zainicjalizowany ignorując kolejne wywołania metody \textit{initializeModel}.
+Metody związane z inicjalizacją modelu i transkrypcją utworu zostały umieszczone w klasie \textit{OnsetsAndFramesImpl} znajdującej się w pliku \\\mbox{\textit{transcription/onsetsAndFrames.py}}. Instancja tej klasy, przed wywołaniem metody przeznaczonej do transkrypcji, musi zostać zainicjalizowana przy pomocy metody \textit{initializeModel}. Model zostaje zdefiniowany i skonfigurowany na podstawie już wytrenowanego modelu, który szukany jest w katalogu \textit{transcription/train}. Model można pobrać z repozytorium projektu \textit{Onsets and Frames} \cite{Transcription:OnsetsAndFrames:Github}. Obiekt przechowuje informację o tym, czy już został zainicjalizowany ignorując kolejne wywołania metody \textit{initializeModel}.
 
 Metoda transkrypcji \textit{transcribe} przyjmuje dwa argumenty:
 \begin{itemize}
@@ -1621,8 +1629,8 @@ Metoda transkrypcji \textit{transcribe} przyjmuje dwa argumenty:
 \end{itemize}
 
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
-Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa $n \times 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami w zakresie $\left[0, 127\right]$ oznaczające dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza, że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}
-
+Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa $n \times 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami z zakresu $\left[0, 127\right]$ oznaczającymi dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza, że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}.
+\begin{figure}[t]
 \begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:hzToMidi}, numbers=none]
 	resultPianoRoll = []
 	for fq in resInF0PerFrame:
@@ -1630,8 +1638,9 @@ Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicz
 		pianoRollRow[hz_to_midi(fq)] = 100
 		resultPianoRoll.append(pianoRollRow)
 \end{lstlisting}
+\end{figure}
 
-Tak przygotowana tablica rolek pianina przetwarzana jest w funkcji \textit{post\_process\_midi\_notes}, której zadaniem jest utworzenie listy wydarzeń MIDI na podstawie sąsiednich nut. Funkcja ta używana jest również przez algorytmy \ref{sec:impl:alg:specSmoothnes} i \ref{sec:impl:alg:specSmoothnes:improved} jako przetwarzanie końcowe, które sterowane jest przy pomocy argumentów odpowiadających za minimalną długość nuty (\textit{minNoteMs}), minimalną dynamikę nuty (\textit{minNoteVelocity}) oraz maksymalną dozwoloną ,,lukę'' w ciągłości wykrywania danej nuty (\textit{neighbourMerging}).
+Tak przygotowana tablica rolek pianina przetwarzana jest przy pomocy funkcji \\\mbox{\textit{post\_process\_midi\_notes}}, której zadaniem jest utworzenie listy wydarzeń MIDI na podstawie sąsiednich nut. Funkcja ta używana jest również przez algorytmy \ref{sec:impl:alg:specSmoothnes} i \ref{sec:impl:alg:specSmoothnes:improved} jako przetwarzanie końcowe, które sterowane jest przy pomocy argumentów odpowiadających za minimalną długość nuty (\textit{minNoteMs}), minimalną dynamikę nuty (\textit{minNoteVelocity}) oraz maksymalną dozwoloną ,,lukę'' w ciągłości wykrywania danej nuty (\textit{neighbourMerging}).
 
 Wydarzenia MIDI składają się z czterech parametrów:
 \begin{itemize}
@@ -1640,7 +1649,7 @@ Wydarzenia MIDI składają się z czterech parametrów:
   \item czasu początku nuty w ms. (\textit{onsetS}),
   \item czasu trwania nuty w ms. (\textit{durationS}).
 \end{itemize}
-Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Ze względu na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
+Użyta biblioteka do generowania plików MIDI (\textit{midiutil}) pozwala na dodanie dwóch dodatkowych parametrów do wydarzenia nuty MIDI - numer śladu (z ang. \textit{track}), na którym znajduje się zdarzenie oraz numer kanału (z ang. \textit{channel}) z przedziału $\left[0, 1\right]$. Z uwagi na charakter algorytmów, oba parametry ustawiane są na wartość $0$ dla każdej nuty. Ze względu na to, że zdarzenia w czasie opisywane są w sposób absolutny (w ms.) a nie relatywny (w notacji muzycznej), parametr tempa MIDI jest nieistotny.
 
 \subsection{Porównywanie MIDI}\label{sec:impl:midiCompare}
 Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanych w pracach 
@@ -1649,34 +1658,34 @@ Ocena wyników transkrypcji w projekcie odbywa się na wzór ewaluacji opisanych
 i 
 \cite[8]{Transcription:Pertus:Inharmonicity2}
 %\cite[r. 4]{Transcription:Pertus:Inharmonicity2}
-, gdzie wykorzystane były miary jakości F1 i dokładności. Do porównania dwóch plików MIDI zaimplementowana została funkcja \textit{compare\_midi\_to\_ground\_truth}. Na potrzeby ewaluacji wyników transkrypcji została również zaimplementowana funkcja \textit{load\_midi\_file} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \textit{server/utils/midi.py}.
+, gdzie wykorzystane były miary jakości F1 i dokładności. Do porównania dwóch plików MIDI zaimplementowana została funkcja \mbox{\textit{compare\_midi\_to\_ground\_truth}}. Na potrzeby ewaluacji wyników transkrypcji została napisana funkcja \mbox{\textit{load\_midi\_file}} pozwalająca wczytać istniejący plik MIDI w przyjętej strukturze. Obie te funkcje znajdują się w pliku \mbox{\textit{server/utils/midi.py}}.
 
-Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy typy: \textit{set\_tempo}, informujące o tempie wczytanej kompozycji, \textit{note\_on}, które przechowuje czas początku nuty, oraz \textit{note\_off}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
+Z listy zdarzeń MIDI wczytanego pliku brane pod uwagę są tylko trzy typy: \mbox{\textit{set\_tempo}}, informujące o tempie wczytanej kompozycji, \mbox{\textit{note\_on}}, które przechowuje czas początku nuty oraz \mbox{\textit{note\_off}}, które informuje o końcu danej nuty. Z wyżej wymienionych zdarzeń dwa ostatnie przechowują również informacje o wysokości nuty i jej dynamice. Na podstawie tych informacji generowana jest lista nut ze strukturą analogiczną do tej, jaka użyta jest przy generowaniu plików MIDI opisanym w \ref{sec:impl:midiGen}.
 
-Każdą z wynikowych nut transkrypcji algorytm ewaluacyjny klasyfikuje do jednej z dwóch grup:
+Każdą z wynikowych nut transkrypcji algorytm porównujący klasyfikuje do jednej z dwóch grup:
 \begin{itemize}
-  \item prawdziwie dodatnie (TP, ang. \textit{True positive}) gdy w utworze referencyjnym istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu),
-  \item fałszywie dodatnie (FP, ang. \textit{False positive}) gdy w utworze referencyjnym nie istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu).
+  \item prawdziwie dodatnie (TP, z ang. \textit{True positive}) gdy w utworze referencyjnym istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu),
+  \item fałszywie dodatnie (FP, z ang. \textit{False positive}) gdy w utworze referencyjnym nie istnieje nuta o takim samym początku i czasie trwania ($\pm$ margines błędu).
 \end{itemize} 
-Zliczane są również wystąpienia fałszy ujemnych (FN, ang. \textit{False negative}) sprawdzając ilość nut w utworze referencyjnym, których nie ma w wyniku transkrypcji. Przykład tej klasyfikacji pokazany jest na rysunku \ref{fig:f1}.
+Zliczane są również wystąpienia fałszy ujemnych (FN, z ang. \textit{False negative}) sprawdzając ilość nut w utworze referencyjnym, których nie ma w wyniku transkrypcji. Przykład tej klasyfikacji pokazany jest na rysunku \ref{fig:f1}.
 
 \begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.21]{images/TranscriptionStatisticF1Measure.jpg}
-    \caption{Przykład rolki pianina dwóch plików MIDI. Utwór referencyjny (lewa rolka) przedstawia oryginalne rozłożenie nut. Na wyniku transkrypcji (prawa rolka) oznaczone są klasyfikacje statystyczne.}
+    \caption{Przykład rolki pianina dwóch plików MIDI. Utwór referencyjny (lewa rolka) przedstawia rozłożenie nut (zielone prostokąty) w oryginalnej kompozycji. Na wyniku transkrypcji (prawa rolka) oznaczone są wykryte nuty (zielone prostokąty) wraz z klasyfikacją statystyczną (jako czerwone prostokąty pod wykrytymi nutami są oznaczone FN, czerwone prostokąty nad wykrytymi nutami oznaczają FP natomiast jasnozielone prostokąty reprezentują nuty z utworu referencyjnego, które były wykryte z marginesem błędu).}
     \label{fig:f1}
   \end{center}
 \end{figure}
 
-Funkcja porównująca przyjmuje jako argumenty maksymalny dozwolony błąd \textit{maxError} będący liczbą sekund dozwolonego offsetu pomiędzy porównywanymi zdarzeniami oraz dwie listy nut MIDI: \textit{transcriptionMidiNotes} będącą wynikiem ewaluowanego algorytmu i \textit{groundTruthMidiNotes} będącą oryginalną kompozycją. Działanie algorytmu można podzielić na trzy etapy:
+Funkcja porównująca przyjmuje jako argumenty maksymalny dozwolony błąd \textit{maxError} będący liczbą sekund dozwolonej rozbieżności w czasie początku lub końca pomiędzy porównywanymi zdarzeniami oraz dwie listy nut MIDI: \mbox{\textit{transcriptionMidiNotes}} będącą wynikiem ewaluowanego algorytmu i \mbox{\textit{groundTruthMidiNotes}} będącą oryginalną kompozycją. Działanie algorytmu można podzielić na trzy etapy:
 \begin{enumerate}
-  \item policzenie wszystkich FP poprzez sprawdzenie, czy dana nuta z tablicy \textit{transcriptionMidiNotes} posiada odpowiednik w tablicy \textit{groundTruthMidiNotes}. Dla każdej pozycji bez pary zwiększany jest licznik FP,
-  \item policzenie wszystkich TP i FN poprzez sprawdzenie, czy dana nuta z tablicy \textit{groundTruthMidiNotes} posiada odpowiednik w tablicy \textit{transcriptionMidiNotes}. Gdy para zostanie znaleziona zwiększany jest licznik TP, w przeciwnym wypadku zwiększany jest licznik FN,
-  \item policzenie miar statystycznych
+  \item policzenie wszystkich FP poprzez sprawdzenie, czy dana nuta z tablicy \\\textit{transcriptionMidiNotes} posiada odpowiednik w tablicy \textit{groundTruthMidiNotes}. Dla każdej pozycji bez pary zwiększany jest licznik FP,
+  \item policzenie wszystkich TP i FN poprzez sprawdzenie, czy dana nuta z tablicy \\\textit{groundTruthMidiNotes} posiada odpowiednik w tablicy \textit{transcriptionMidiNotes}. Gdy para zostanie znaleziona zwiększany jest licznik TP, w przeciwnym wypadku zwiększany jest licznik FN,
+  \item policzenie miar statystycznych.
 \end{enumerate}
 Szczegółowy opis wyliczanych miar statystycznych znajduje się w rozdziale \ref{sec:ewal}.
 
-W celach porównawczych zostało również przeprowadzone sprawdzenie czasu wykonywania poszczególnych algorytmów transkrypcji. Zagadnienie to jest szczególnie ciekawe w kontekście porównania czasu wykonania algorytmów w wersji wykorzystujących GPU do tej wykonywanej w całości na CPU. Zaimplementowany dekorator \textit{profile} znajdujący się w pliku \textit{server/utils/custom\_profile.py} każdorazowo mierzy czas wywołania funkcji i zapisuje go. Wynik przedstawiany jest w postaci średniej ($\frac{\textrm{suma czasów}}{\textrm{ilość wywołań}}$) z wyłączeniem $n$ najwolniejszych i najszybszych wywołań w celu wykluczenia wartości skrajnych.
+W celach porównawczych zostało również przeprowadzone sprawdzenie czasu wykonywania poszczególnych algorytmów transkrypcji. Zagadnienie to jest szczególnie ciekawe w kontekście porównania czasu wykonania algorytmów wykorzystujących GPU do implementacji używających jedynie CPU. Zaimplementowany dekorator \textit{profile} znajdujący się w pliku \mbox{\textit{server/utils/custom\_profile.py}} każdorazowo mierzy czas wywołania funkcji i zapisuje go. Wynik przedstawiany jest w postaci średniej ($\frac{\textrm{suma czasów}}{\textrm{ilość wywołań}}$) z wyłączeniem $n$ najwolniejszych i najszybszych wywołań w celu wykluczenia wartości skrajnych.
 
 Podczas porównywania wyników algorytmów ważnym jest, aby dla każdego z nich dobrać parametry tak, aby wynikowe F1 było jak największe. Podczas gdy pojedyńczy parametr, jak np. długość okna, ma swoje odwzorowanie w manipulacji dokładności w dziedzinie czasu i częstotliwości, tak oszacowanie wektora optymalnych parametrów, z czego każdy może wpływać na pozostałe, nie jest tak trywialne. W celu znalezienia najlepszych argumentów zaimplementowanych algorytmów został napisany mechanizm, który iteruje po zbiorze kombinacji proponowanych argumentów i wylicza dla nich miarę F1 na podstawie zbioru walidacyjnego. 
 
@@ -1687,10 +1696,10 @@ W celu poprawnej interpretacji ewaluacji metody zostały podzielone na dwie grup
 \end{enumerate}
 Mechanizm porównujący wyniki algorytmów, którego implementacja znajduje się w pliku \textit{server/utils/evaluate.py}, wykonuje operacje opisane w tej sekcji dla wszystkich algorytmów według schematu poniżej:
 \begin{enumerate}
-  \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments}) i wszystkich kombinacji argumentów dla zadeklarowanych przyjmowanych wartości,
-  \item dla każdego algorytmu badanej grupy wykonywana jest ewaluacja miar statystycznych i czasu wykonywania z wykorzystaniem zbioru testowego (funkcja \textit{run\_test\_on\_dataset\_with\_args}).
+  \item dla każdego algorytmu z badanej grupy wyznaczany jest wektor najlepszych argumentów na podstawie zbioru walidacyjnego (funkcja \textit{validate\_arguments} i wszystkich kombinacji argumentów ze zbioru zadeklarowanych przyjmowanych wartości (są to słowniki, których kluczami są nazwy przyjmowanych przez funkcje parametrów, a wartościami tablice ewaluowanych wartości),
+  \item dla każdego algorytmu badanej grupy wykonywana jest ewaluacja miar statystycznych i czasu wykonywania z wykorzystaniem zbioru testowego (funkcja \\\textit{run\_test\_on\_dataset\_with\_args}).
 \end{enumerate}
-Dane wejściowe, na których wykonywana jest ewaluacja deklarowane są jako zbiory danych opisane plikiem JSON. Każdy zbiór danych jest osobnym katalogiem w folderze \textit{server/test\_sounds/data\_sets} zawierającym:
+Dane wejściowe, na których wykonywana jest ewaluacja, deklarowane są jako zbiory danych opisane plikiem JSON. Każdy zbiór danych jest osobnym katalogiem w folderze \textit{server/test\_sounds/data\_sets} zawierającym:
 \begin{itemize}
   \item plik o nazwie \textit{metadata.json}, w którym opisany jest zbiór danych. Każdy element musi zawierać cztery parametry:
   \begin{itemize}
@@ -1699,7 +1708,7 @@ Dane wejściowe, na których wykonywana jest ewaluacja deklarowane są jako zbio
     \item \textit{audio\_filename} - relatywna względem katalogu zbioru danych ścieżka do pliku audio,
     \item \textit{canonical\_title} - nazwa kompozycji
   \end{itemize}
-  \item plików audio i MIDI zgodnych z opisem w \textit{metadata.json}
+  \item pliki audio i MIDI zgodne z opisem w \textit{metadata.json}
 \end{itemize}
 Metody ewaluacyjne przyjmują nazwę zbioru danych, z którego mają być brane dane oraz generują kombinacje argumentów wejściowych na podstawie zadeklarowanych słowników \textit{argsAc}, \textit{argsAclos} itd. Ze względu na to, że złożoność obliczeniowa rośnie wykładniczo wraz ze wzrostem możliwych wartości argumentów, algorytmy te wykorzystują multi-procesowość w celu polepszenia czasu wykonywania (co widać na listingu \ref{code:eval:multiproces}). 
 
@@ -1723,27 +1732,37 @@ return currArg, bestF1
 \end{lstlisting}
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
-W ramach projektu został zaimplementowany interfejs graficzny, na który składa się serwer HTTP napisany w języku python oraz strona napisana w języku \textit{TypeScript} i technologii \textit{React}. Daje ona możliwość wywołania każdej z wyżej opisanych implementacji algorytmów transkrypcji muzyki z wcześniej wyliczonymi optymalnymi parametrami.
+W ramach projektu został zaimplementowany interfejs graficzny, na który składa się serwer HTTP napisany w języku Python oraz strona napisana w języku \textit{TypeScript} i technologii \textit{React}. Daje ona możliwość wywołania każdej z wyżej opisanych implementacji algorytmów transkrypcji muzyki z wcześniej wyliczonymi optymalnymi parametrami.
 
 Działanie serwera sprowadza się do implementacji przechwytywania zapytań od klienta i odsyłania wyniku pożądanego algorytmu w jednym z dwóch postaci:
 \begin{enumerate}
   \item dla algorytmów przeznaczonych do analizy sygnałów monofonicznych - obiekt JSON, którego kluczami są nazwy poszczególnych wykresów (np. spektrogram, cepstrogram) a wartościami odpowiednie grafiki zakodowane do formatu Base64,
-  \item dla algorytmy przeznaczonych do analizy sygnałów monofonicznych i polifonicznych - plik MIDI transkrypcji.
+  \item dla algorytmy przeznaczonych do analizy sygnałów monofonicznych i polifonicznych - plik MIDI wyniku transkrypcji.
 \end{enumerate} 
 Implementacja serwera znajduje się w pliku \textit{server/server.py}.
 
 Skrypty źródłowe graficznego interfejsu znajdują się w katalogu \textit{static/src} i służą do wygenerowania statycznej strony, która jest wysyłana przez serwer do przeglądarki klienta. Zbudowana paczka jest poddana procesowi minifikacji i składa się ze standardowych plików rozpoznawanych przez przeglądarki internetowe - \textit{css}, \textit{js} oraz \textit{html}. Opis uruchomienia pełnego GUI na lokalnej maszynie znajduje się w pliku \textit{README.md} w katalogu głównym projektu.
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.38]{images/GUI.jpg}
+    \caption{Zrzut ekranu graficznego interfejsu zaimplementowanego w ramach projektu.}
+    \label{fig:GUI}
+  \end{center}
+\end{figure}
+
 \newpage
 \section{Ewaluacja} \label{sec:ewal}
-W tym rozdziale opisane są wyniki ewaluacji zaimplementowanych w ramach pracy magisterskiej algorytmów. Proces ewaluacyjny polega na znalezieniu wektora najlepszych argumentów danej funkcji, a następnie porównaniu wyniku transkrypcji z oryginalną kompozycją dla każdego utworu ze zbioru testowego. Ewaluacja zaimplementowanych algorytmów została wykonana przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1, dokładności oraz średniego czasu wykonywania.
+W tym rozdziale przedstawione są wyniki ewaluacji zaimplementowanych w ramach pracy magisterskiej algorytmów. Proces ewaluacyjny polega na znalezieniu wektora najlepszych argumentów danej funkcji, a następnie porównaniu wyniku transkrypcji z oryginalną kompozycją dla każdego utworu ze zbioru testowego. Ewaluacja zaimplementowanych algorytmów została wykonana przy pomocy metod przedstawionych w sekcji \ref{sec:impl:midiCompare}. Użyte do testów dane pochodzą z bazy MAESTRO \cite{Transcription:Curtis:MAESTRO}. Wynik przedstawiony jest w postaci miary statystycznej F1, dokładności oraz średniego czasu wykonywania.
+
+Holistyczna metoda transkrypcji, opisana w rozdziale \ref{sec:multif0:petrusNetwork}, nie jest ewaluowana, ponieważ wynik tego algorytmu nie jest porównywalny z pozostałymi tu opisanymi metodami ze względu na charakterystykę transkrypcji A2S, która zakłada inny poziom abstrakcji rezultatu.
 
 Na podstawie mocy sklasyfikowanych przez algorytmy ewaluacyjne zbiorów TP, FP i FN mierzone są cztery miary statystyczne:
 \begin{itemize}
-  \item dokładność (ang. \textit{accuracy}) pokazująca skale poprawnie wykrytych obserwacji na tle wszystkich sklasyfikowanych obserwacji (\ref{eq:acc}),
-  \item precyzja (ang. \textit{precision}) pokazująca jaka część klasyfikacji dodatniej jest prawdziwie dodatnia (\ref{eq:percision}),
-  \item czułość (ang. \textit{recall}) pokazująca jaka część spośród wszystkich dodatnich wyników została wykryta przez transkrypcję (\ref{eq:recall}),
-  \item miara jakości F1 jako harmoniczna średnia precyzji i czułości (\ref{eq:f1}).
+  \item dokładność (z ang. \textit{accuracy}) reprezentująca skale poprawnie wykrytych obserwacji na tle wszystkich sklasyfikowanych obserwacji (zgodnie ze wzorem \ref{eq:acc}),
+  \item precyzja (z ang. \textit{precision}) reprezentująca jaka część klasyfikacji dodatniej jest prawdziwie dodatnia (zgodnie ze wzorem \ref{eq:percision}),
+  \item czułość (z ang. \textit{recall}) reprezentująca jaka część spośród wszystkich dodatnich wyników została wykryta przez transkrypcję (zgodnie ze wzorem \ref{eq:recall}),
+  \item miara jakości F1 jako harmoniczna średnia precyzji i czułości (zgodnie ze wzorem \ref{eq:f1}).
 \end{itemize}
 
 \begin{equation} \label{eq:acc}
@@ -1759,9 +1778,9 @@ Na podstawie mocy sklasyfikowanych przez algorytmy ewaluacyjne zbiorów TP, FP i
   F1 = 2 \cdot  \frac{\textrm{precision} \cdot  \textrm{recall}}{\textrm{precision} + \textrm{recall}}
 \end{equation}
 
-Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona część danych bazy MAESTRO, a następnie zmodyfikowane zostały pliki MIDI tak, aby w danym momencie w czasie obecna była tylko jedna nuta. Na podstawie tych plików zostały wygenerowane sygnały audio z wykorzystaniem sampli pianina Steinway. Dane podzielone są do grupy używanej w celu wyznaczenia najlepszych argumentów oraz do grupy, na której wykonywane są testy. Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych (grupy testowe i ewaluacyjne). Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do wyliczenia wyników. Testy obu przypadkach (dla sygnałów monofonicznych i polifonicznych) zostały wykonane na maszynie z procesorem Intel Core i5 3,19 GHz oraz kartą graficzną NVIDIA GeForce GTX 1060 3GB.
+Do ewaluacji algorytmów analizujących sygnał monofoniczny została wydzielona część danych bazy MAESTRO, a następnie zmodyfikowane zostały pliki MIDI tak, aby w danym momencie w czasie obecna była tylko jedna nuta. Na podstawie tych plików zostały wygenerowane sygnały audio z wykorzystaniem sampli pianina Steinway. Dane podzielone są do grupy używanej w celu wyznaczenia najlepszych argumentów oraz do grupy, na której wykonywane są testy. Ewaluacja algorytmów analizujących sygnał polifoniczny została wykonana na części bazy MAESTRO wybranej w sposób losowy z uwzględnieniem podziału danych (grupy testowe i ewaluacyjne). Pozycje oryginalnie przypisane do zbioru ewaluacyjnego wykorzystane zostały do wyznaczenia najlepszych argumentów, natomiast te ze zbioru testowego były użyte do wyliczenia wyników. Testy w obu przypadkach (dla sygnałów monofonicznych i polifonicznych) zostały wykonane na maszynie z procesorem Intel Core i5 3,19 GHz oraz kartą graficzną NVIDIA GeForce GTX 1060 3GB.
 
-W tablicy \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych funkcji użyte podczas procesu ewaluacji dla sygnałów monofonicznych (analogicznie tablica \ref{tab:bestArgPoli} dla sygnałów polifonicznych). Skrócone algorytmów symbolizują: 
+W tablicy \ref{tab:bestArgMono} przedstawione są argumenty zaimplementowanych funkcji użyte podczas procesu ewaluacji dla sygnałów monofonicznych (analogicznie tablica \ref{tab:bestArgPoli} dla sygnałów polifonicznych). Nazwy skrócone algorytmów symbolizują: 
 \begin{itemize}
   \item AC - autokorelacja \ref{sec:f0:ac}
   \item ACLOS - autokorelacja na logarytmie widma \ref{sec:f0:aclos}
@@ -1775,12 +1794,12 @@ Nazwy argumentów symbolizują:
   \item odstęp - odstępy pomiędzy kolejnymi oknami,
   \item marg. zer - wymiar tablicy zer dodanej do okna przed wykonaniem FFT,
   \item W - ilość analizowanych sąsiednich nut przy scalaniu podczas przetwarzania końcowego,
-  \item min/max F0 - odpowiednio minimalna / maksymalna częstotliwość jaka jest analizowana w kontekście F0 (w Hz),
+  \item min/max F0 - odpowiednio minimalna / maksymalna częstotliwość, jaka jest analizowana w kontekście F0 (w Hz),
   \item $P$ - minimalny odstęp pomiędzy pikami w amplitudzie (w samplach),
   \item $\mu$ - próg amplitudy, poniżej którego zerowane są wartości,
   \item $\eta$ - minimalna ilość harmonicznych dla kandydata F0,
-  \item $\gamma$ - parametr sterujący maksymalną różnicą w parametrze głośności w kombinacji,
-  \item $f_r$ - parametr sterujący maksymalną nieharmonicznością,
+  \item $\gamma$ - maksymalna różnica w parametrze głośności w kombinacji,
+  \item $f_r$ - maksymalna nieharmoniczność,
   \item C - maksymalna ilość równoległych dźwięków,
   \item lifter - mnożnik lifteringu. Dla wartości 0 funkcja lifteringu nie jest wykonywana,
   \item $k$ - ważność współczynnika gładkości,
@@ -1845,11 +1864,7 @@ Wartość ,,-'' oznacza, że parametr nie jest używany w danym algorytmie. Argu
   \label{tab:bestArgPoli}
 \end{table}
 
-Wyniki ewaluacji algorytmów dla sygnałów monofonicznych znajdują się w tabeli \ref{tab:eval:mono}. Testy wykonane zostały z maksymalnym błędem początku i trwania nuty równym 0.085 sekundy na 11 kompozycjach z łącznie 269 zdarzeniami MIDI i łącznym czasem odtwarzania 72s. Miary statystyczne są średnią miar wszystkich przypadków testowych. Kolumna T reprezentuje średni czas wykonania algorytmu. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń. W celu uzyskania bardziej rzetelnego rezultatów czasu wykonania, wszystkie testy były wykonane dziesięciokrotnie i odrzuconych zostało 5 najszybszych i najwolniejszych wyników.
-
-Cepstrum liczone na GPU jest wolniejsze od tego liczonego na CPU dlatego, że plan dla innych danych wejściowych musi być wyliczany w każdej iteracji. Dla przedstawienia realnego przyspieszenia, jakie daje użycie karty graficznej przy wyliczaniu cepstrum z sygnału, zostały wykonane dodatkowe testy w postaci 1000 powtórzeń analizy F0 algorytmem cepstrum z użyciem GPU i użyciem jedynie CPU dla pojedyńczego pliku dźwiękowego o czasie odtwarzania 38s. W tym teście, z odrzuceniem 10 skrajnych wyników, średni czas wykonywania algorytmu na samym CPU wyniosła  0.828s. podczas gdy algorytm wykonany z użyciem GPU osiągnął średni czas wykonywania równy 0.670s.
-
-Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabeli \ref{tab:eval:poli}. Testy wykonane zostały z maksymalnym błędem początku i trwania nuty równym 0.085 sekundy na 2 kompozycjach z łącznie 4431 zdarzeniami MIDI i łącznym czasem odtwarzania 310s. Miary statystyczne są średnią miar wszystkich przypadków testowych, natomiast kolumna T reprezentuje średni czas wykonania algorytmu. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń.
+Wyniki ewaluacji algorytmów dla sygnałów monofonicznych znajdują się w tabeli \ref{tab:eval:mono}. Testy wykonane zostały z maksymalnym błędem początku i trwania nuty równym 0.085 sekundy na 11 kompozycjach z łącznie 269 zdarzeniami MIDI i łącznym czasem odtwarzania 72s. Miary statystyczne są średnią miar wszystkich przypadków testowych. Kolumna T reprezentuje średni czas wykonania algorytmu w sekundach. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń. W celu uzyskania bardziej rzetelnego rezultatu czasu wykonania wszystkie testy były wykonane dziesięciokrotnie i odrzuconych zostało 5 najszybszych i najwolniejszych wywołań.
 
 \begin{table}[H]
   \begin{center}
@@ -1863,13 +1878,19 @@ Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabe
     CEPS GPU & - & - & - & - & - & - & - & 1.97\\
     P\&I 08  & 112 & 198 & 157 & 0.337 & 0.430 & 0.484 & 0.443 & 4.31\\
     P\&I 12 & 142 & 284 & 127 & 0.225 & 0.308 & 0.367 & 0.320 & 5.54\\
-    Onsets\&Frames & 122 & 158 & 147 & 0.299 & 0.360 & 0.401 & 0.379 & 9.452\\
+    Onsets\&Frames & 122 & 158 & 147 & 0.299 & 0.360 & 0.401 & 0.379 & 9.45\\
     \hline
     \end{tabular}
   \end{center}
   \caption{Wyniki transkrypcji sygnałów monofonicznych}
   \label{tab:eval:mono}
 \end{table}
+
+Warto zwrócić uwagę na fakt, że metoda Pertusa i Iñesta z 2008 osiągnęła lepsze wyniki we wszystkich miarach jakościowych od znowelizowanej wersji. Możliwym wyjaśnieniem tego jest znacząca różnica w przetwarzaniu końcowym tych algorytmów, gdzie wersja z 2012 roku używa wygładzania czasowego, które zaprojektowane było z myślą o transkrypcji kompozycji polifonicznych. 
+
+Podczas tak zdefiniowanej ewaluacji algorytm wykrywania F0 przy pomocy cepstrum liczonego na GPU jest wolniejsze od tego, liczonego na CPU. Dzieje się tak dlatego, że plan obliczeń GPU dla innych danych wejściowych musi być wyliczany w każdej iteracji. Dla przedstawienia realnego przyspieszenia, jakie daje użycie karty graficznej przy wyliczaniu cepstrum z sygnału zostały wykonane dodatkowe testy w postaci 1000 powtórzeń analizy F0 algorytmem cepstrum z użyciem GPU i użyciem jedynie CPU dla pojedyńczego pliku dźwiękowego o czasie odtwarzania 38s. Różnica tych ewaluacji polega na tym, że plan obliczeń GPU jest wyliczany tylko dla pierwszego przypadku, a każde kolejne wywołanie używana wyliczonego wcześniej planu. W tym teście, z odrzuceniem 10 skrajnych wyników, średni czas wykonywania algorytmu na samym CPU wyniósł  0.828s. podczas gdy algorytm wykonany z użyciem GPU osiągnął średni czas wykonywania równy 0.670s, co daje w przybliżeniu 19\% przyspieszenia obliczeń.
+
+Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabeli \ref{tab:eval:poli}. Testy wykonane zostały z maksymalnym błędem początku i trwania nuty równym 0.085 sekundy na 2 kompozycjach z łącznie 4431 zdarzeniami MIDI i łącznym czasem odtwarzania 310s. Miary statystyczne są średnią miar wszystkich przypadków testowych, natomiast kolumna T reprezentuje średni czas wykonania algorytmu w sekundach. Kolumny FN, FP i TP odpowiadają mocy zbiorów wszystkich sklasyfikowanych zdarzeń.
 
 \begin{table}[H]
   \begin{center}
@@ -1887,17 +1908,20 @@ Wyniki ewaluacji algorytmów dla sygnałów polifonicznych znajdują się w tabe
   \label{tab:eval:poli}
 \end{table}
 
+Z pozyskanych wyników można zaobserwować, że metoda Pertusa i Iñesta z 2008 roku jest w stanie wykryć więcej obserwacji TP od wersji z 2012 kosztem gorszej dokładności, precyzji i czasu. Jest to powiązane z innym przetwarzaniem końcowym, które w metodzie z 2012 roku dokłądniej sprawdza kontekstowość wykrytych dźwięków. Większa wartość parametru dozwolonej nieharmoniczności algorytmu z 2008 roku doprowadziła do powstania większej ilości kombinacji do przetworzenia, co znacząco zwiększa czas wykonywania transkrypcji.
+
+Analizując przedstawione wyniki ewaluacji należy zwrócić uwagę na fakt, że ilość danych, na których podstawie został wyliczone wynik jest znacznie mniej niż w większości z cytowanych prac. Zaproponowana metoda klasyfikacji wykrytych dźwięków również różni się od tych, zaprezentowanych w innych pracach.
 
 \newpage
 \setcounter{secnumdepth}{0}
 \section{Zakończenie} \label{sec:end}
-W tej pracy magisterskiej przedstawiony został problem automatycznej transkrypcji muzyki wraz z metodologiami jego rozwiązania. W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane zostały pojęcia teorii muzyki oraz jej cechy, jak i ich istotność w kontekście opisywanego tematu. Rozdział \ref{sec:modelowanieSystemu} przedstawił ogólne założenia transkrypcji muzyki wraz z szczegółowym opisem używanego w nich potężnego narzędzia matematycznego jakim jest transformata Fouriera. Rozdziały \ref{sec:f0} i \ref{sec:MultiPitch} opisują wybrane algorytmy do wykrywania wysokości F0 w odpowiednio sygnale monofonicznym i sygnale polifonicznym. Kod, który powstał w ramach tej pracy implementuje przedstawione metody i jest opisany w rozdziale \ref{sec:impl}. Zaimplementowane zostały również funkcję ewaluacyjne, które porównują omawiane algorytmy pod względem jakości wyniku miarą F1 oraz mierzą ich czas wykonania. Opis ewaluacji zaimplementowanych metod transkrypcji muzyki opisany jest w rozdziale \ref{sec:ewal}.
+W tej pracy magisterskiej przedstawiony został problem automatycznej transkrypcji muzyki wraz z metodologiami jego rozwiązania. W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane zostały pojęcia teorii muzyki oraz jej cechy, jak i ich istotność w kontekście opisywanego tematu. W rozdziale \ref{sec:modelowanieSystemu} przedstawione zostały ogólne założenia transkrypcji muzyki wraz ze szczegółowym opisem transformaty Fouriera. W rozdziałach \ref{sec:f0} i \ref{sec:MultiPitch} opisane zostały wybrane algorytmy do wykrywania wysokości F0 w sygnałach dźwięków odpowiednio monofonicznych i polifonicznych. Kod, który powstał w ramach tej pracy implementuje przedstawione metody i opisany został w rozdziale \ref{sec:impl}. Zaimplementowane zostały również funkcję ewaluacyjne, które porównują omawiane algorytmy miarą F1 oraz mierzą ich czas wykonania. Opis ewaluacji zaimplementowanych metod transkrypcji muzyki opisany został w rozdziale \ref{sec:ewal}.
 
-Znacząca część pracy skupia się jedynie na problemie częściowym transkrypcji muzyki jakim jest wykrycie wysokości obecnych w sygnale dźwięków. Pozostałe problemy, jak analiza rytmiki czy barwy dźwięku została jedynie przedstawiona, bez dogłębnej analizy. Przedstawione metodologie pokazują, że zadanie transkrypcji muzyki jest złożonym tematem przetwarzania sygnałów, który nie ma jednego optymalnego rozwiązania. Opisane algorytmy zakładają kompozycje przestrzegającą zasad muzyki zachodniej, co jest istotnym ograniczeniem możliwych danych wejściowych. 
+Znacząca część pracy skupia się jedynie na problemie częściowym transkrypcji muzyki jakim jest wykrycie wysokości obecnych w sygnale dźwięków. Pozostałe problemy, jak analiza rytmiki czy barwy dźwięku zostały jedynie przedstawione, bez dogłębnej analizy. Przedstawione metodologie pokazują, że zadanie transkrypcji muzyki jest złożonym tematem przetwarzania sygnałów, który nie ma jednego optymalnego rozwiązania. Opisane algorytmy zakładają muzykę komponowaną w oparciu o system równomiernie temperowany, co jest istotnym ograniczeniem możliwych danych wejściowych.
 
-Polifoniczność w sygnale jest czynnikiem, który najmocniej wpływa na złożoność problemu transkrypcji muzyki. Rozróżnienie poszczególnych równoległych dźwięków wykonywane jest przy pomocy różnych metod, które często łączone są w złożone algorytmy, jak w metodach Metoda Pertusa i Iñesta \ref{sec:pertus1} \ref{sec:petrus2}. Inną próbą transkrypcji polifonii jest wykrywanie wzorców w sygnale, co ma miejsce w algorytmach bazujących na uczeniu maszynowym. Przykładami takich rozwiązań są \textit{Onsets and Frames} i holistyczna metoda Pertusa, opisane w odpowiednio \ref{sec:multif0:onsetsAndFrames} i \ref{sec:multif0:petrusNetwork}.
+Polifoniczność w sygnale jest czynnikiem, który najmocniej wpływa na złożoność problemu transkrypcji muzyki. Rozróżnienie poszczególnych równoległych dźwięków wykonywane jest przy pomocy różnych metod, które często łączone są w złożone algorytmy, jak w metodach Pertusa i Iñesta \ref{sec:pertus1} \ref{sec:petrus2}. Inną techniką transkrypcji sygnałów dźwięków polifonicznych jest wykrywanie wzorców w sygnale, co ma miejsce w algorytmach bazujących na uczeniu maszynowym. Przykładami takich rozwiązań są \textit{Onsets and Frames} i holistyczna metoda Pertusa, opisane w rozdziałach odpowiednio \ref{sec:multif0:onsetsAndFrames} i \ref{sec:multif0:petrusNetwork}.
 
-W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersalnych danych wejściowych. Co więcej, nie istnieje bezbłędne system transkrypcji nawet dla kompozycji z ograniczeniem do standardów muzyki zachodniej i użycia pojedyńczego instrumentu, jakim jest pianino. Analiza wyników algorytmów pokazuje jednak, że wraz z nowymi rozwiązaniami na przestrzeni lat osiągane są nowe rekordy pod względem jakości wyników algorytmów transkrypcji muzyki. 
+W dniu pisania pracy nie istnieje rozwiązanie omawianego problemu dla uniwersalnych danych wejściowych. Co więcej, nie istnieje bezbłędny system transkrypcji nawet dla kompozycji z ograniczeniami do użycia pojedyńczego instrumentu i systemu równomiernie temperowanego. Analiza wyników algorytmów pokazuje jednak, że wraz z nowymi rozwiązaniami na przestrzeni lat osiągane są nowe rekordy pod względem jakości wyników algorytmów transkrypcji muzyki.
 
 % TODO: Czy słownik skrótów potrzebny? Cheng-Zhi A. Huang -> C.A.Huang ?  Same Hirsch, Hans-Günter, Biing-Hwang
 
