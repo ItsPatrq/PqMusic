@@ -4,8 +4,8 @@ import strings from '../shared/strings';
 import { DialogWithResImages, ImageResult } from '../shared/components/dialogWithResImages/DialogWithResImages';
 import { Cepstrum } from './cepstrum/Cepstrum';
 import { Aclos } from './aclos/Aclos';
-import { JointMethodPertusa2008 } from './jointMethodPertusa2008/JointMethodPertusa2008';
-import { JointMethodPertusa2012 } from './jointMethodPertusa2012/JointMethodPertusa2012';
+import { GenerativeMethodPertusa2008 } from './generativeMethodPertusa2008/GenerativeMethodPertusa2008';
+import { GenerativeMethodPertusa2012 } from './generativeMethodPertusa2012/GenerativeMethodPertusa2012';
 import { OnsetsAndFrames } from './onsetsAndFrames/OnsetsAndFrames';
 
 
@@ -49,8 +49,8 @@ export class Transcribe extends Component<{}, ITranscribe> {
             openDialog={(res) => this.openDialog(res, strings.modalLabels.transcription.aclosResult)}
           />
         <h3>{strings.subTitlePolyphonic}</h3>
-          <JointMethodPertusa2008  />
-          <JointMethodPertusa2012 />
+          <GenerativeMethodPertusa2008  />
+          <GenerativeMethodPertusa2012 />
           <OnsetsAndFrames />
       </div>
     );

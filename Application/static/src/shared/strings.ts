@@ -38,8 +38,8 @@ const pl = {
             autoCorrelation: "Funkcja autokorelacji",
             cepstrum: "Analiza cepstralna",
             aclos: "ACLOS",
-            jointMethodPertusa2008: "Metoda Pertusa i Iñesta (2008)",
-            jointMethodPertusa2012: "Metoda Pertusa i Iñesta (2012)"
+            GenerativeMethodPertusa2008: "Metoda Pertusa i Iñesta (2008)",
+            GenerativeMethodPertusa2012: "Metoda Pertusa i Iñesta (2012)"
         },
         utils: {
             windowFunctions: "Pobierz wykres funkcji okna",
@@ -52,8 +52,8 @@ const pl = {
             autoCorrelationResult: "Wynik metody autokorelacji",
             cepstrumResult: "Wynik analizy cepstrum",
             aclosResult: "Wynik metody ACLOS",
-            jointMethodPertusa2008: "Wynik metody Pertusa i Iñesta (2008)",
-            jointMethodPertusa2012: "Wynik metody Pertusa i Iñesta (2012)"
+            GenerativeMethodPertusa2008: "Wynik metody Pertusa i Iñesta (2008)",
+            GenerativeMethodPertusa2012: "Wynik metody Pertusa i Iñesta (2012)"
         }
     },
     dropZoneDefaultMessage: "Przeciągnij i upuść lub kliknij aby wybrać plik do transkrypcji (wav lub mp3)",

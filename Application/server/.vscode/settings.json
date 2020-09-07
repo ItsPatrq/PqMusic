@@ -26,5 +26,9 @@
         "pylab",
         "yscale",
         "yticklabels"
-    ]
+    ],
+    "[python]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4  
+      }
 }

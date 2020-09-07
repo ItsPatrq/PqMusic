@@ -127,14 +127,14 @@ class DataService {
         });
     }
 
-    public TranscribeByJointMethodPertusa2008(file: File) {
+    public TranscribeByGenerativeMethodPertusa2008(file: File) {
         this.GenericRequest(file, "TranscribeByPertusa2008", (res:Blob) => {
             DownloadFileFromBlob(res, "transkrypcjaMetodaPertusaInesta2008.mid", "audio/midi");
         });
     }
 
 
-    public TranscribeByJointMethodPertusa2012(file: File) {
+    public TranscribeByGenerativeMethodPertusa2012(file: File) {
         this.GenericRequest(file, "TranscribeByPertusa2012", (res:Blob) => {
             DownloadFileFromBlob(res, "transkrypcjaMetodaPertusaInesta2012.mid", "audio/midi");
         });

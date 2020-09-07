@@ -271,7 +271,7 @@ użycia tylko konkretnego instrumentu \cite{Transcription:Hawthorne:OnsetsAndFra
 
 W tej pracy przeanalizowany jest problem automatycznej transkrypcji muzyki, nakreślając obecny stan nauki w tej dziedzinie. Omówione są najważniejsze rejony w oparciu o przykłady już istniejących rozwiązań jak i próba optymalizacji części z nich poprzez zrównoleglenie obliczeń z wykorzystaniem karty graficznej. Celem tych rozważań jest przybliżenie ogólnej koncepcji transkrypcji muzyki wraz z teorią na jakiej się opiera.
 
-W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i złożoności czasowej algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu. 
+W rozdziale \ref{sec:JakDzialaMuzyka} zdefiniowane i omówione są pojęcia niezbędne do zrozumienia istoty problemu transkrypcji muzyki. Następnie, w rozdziale \ref{sec:modelowanieSystemu} omówione są ogólne założenia systemów transkrypcji muzyki, jak i przedstawione podstawowe narzędzia, z których korzystają. Rozdział \ref{sec:f0} dotyczy metod wykrywania wysokości dźwięku sygnału monofonicznego. Te metody są w kolejnym rozdziale \ref{sec:MultiPitch} omawiane w kontekście sygnałów polifonicznych. Rozdział ten zawiera również szczegółowy opis wybranych algorytmów dedykowanych do estymacji wysokości dźwięków w sygnałach polifonicznych. Szczegóły na temat implementacji omawianych algorytmów znajdują się w rozdziale \ref{sec:impl}. Przy użyciu tych implementacji zostało przeprowadzone porównanie rzetelności wyników jak i czasu wykonywania algorytmów, które opisane jest w rozdziale \ref{sec:ewal}. Krótkie podsumowanie umieszczone jest na końcu pracy w zakończeniu. 
 
 \clearpage
 \setcounter{secnumdepth}{4}
@@ -583,13 +583,17 @@ Rozmiar okna dobierany jest zgodnie z charakterystyką analizowanych danych. Prz
 %\cite[sekcja 1]{Transcription:Klapuri:MultipleFundamentalFrequencyEstimation}.
 %\cite[55-57]{Transcription:Hess:PitchDetectionOfSpeechSignals} actually info on those pages doesn't support anything. r. 3.4 it is tho
 
-Równanie \ref{eq:STFT1} nosi nazwę metody ,,przesuwającego się okna'' MWM (z ang. \textit{Moving Window Method}) w dziedzinie czasowej lub częstotliwości. STFT wykonywane w dziedzinie czasowej sprowadza się do wykonywania przekształcenia Fouriera na kolejnych fragmentach podzielonego sygnału poprzez przesuwanie okna $\gamma(x)$. W dziedzinie częstotliwości algorytm STFT wykonywany jest przy pomocy dwóch operacji:
+W książce 
+\cite[455-458]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+%\cite[r. 17.3]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}
+Tomasz P. Zieliński wyjaśnia szczegółowo zastosowania równania \ref{eq:STFT1}:
+\begin{displayquote}
+,,Równanie [\ref{eq:STFT1}] nosi także metody \textit{przesuwającego się okna} MWM (ang. \textit{Moving Window Method}) w dziedzinie czasowej lub częstotliwościowej. W dziedzinie czasowej STFT oplega na wykonywaniu prostego przekształcenia Fouriera na kolejnych fragmentach sygnału, \textit{wycinanych} poprzez przesuwające okno $\gamma(x)$. W dziedzinie częstotliwościowej STFT jest natomiast równoważne:
 \begin{enumerate}
-  \item \label{sec:STFT:item1}Odwrotnym przekształceniem Fouriera fragmentu widma sygnału poprzez przesunięcie w domenie częstotliwości widma okna,
-  \item Przesunięciem w domenie częstotliwości sygnału czasowego otrzymanego z punktu \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.
+  \item \label{sec:STFT:item1}odwrotnemu przekształceniu Fouriera fragmentu widma sygnału $X(v)$ \textit{wyciętemu} przez przesunięte w częstotliwości widmo okna $\varGamma (v-f)$ (jest to filtracja sygnału filtrem pasmowoprzepustowym o częstotliwości środkowej równej $f$),
+  \item przesunięciem częstotliwości sygnału czasowego otrzymanego z \ref{sec:STFT:item1} do częstotliwości zerowej poprzez wymnożenie go z $exp(-j2 \pi ft)$.''
 \end{enumerate}
-\cite[455-458]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
-%\cite[r. 17.3]{CyfrowePrzetwarzanieSygnalowOdTeoriiDoZastosowan}.
+\end{displayquote}
 
 Bardzo małe okna czasowe dają większą dokładność w domenie czasowej niż częstotliwości. Dla algorytmów wykrywających tonacje muzyki precyzja w częstotliwości jest dużo bardziej istotna niż precyzja w czasie. Technika, która pozytywnie wpływa na dokładność w obu tych płaszczyznach, zakłada nakładanie na siebie okna, przesuwając je mniej niż jego właściwą szerokość. W zależności od tego, jak mocno okno się na siebie nakłada, proporcjonalnie rośnie koszt obliczeniowy tego algorytmu (np. długość okna równa 2048 sampli, a przesunięcie równe 1024 sample spowoduje nakładanie się na siebie okien przy jednoczesnym podwojeniu ilości koniecznych obliczeń). 
 %TODO: Nie moge znalezc. Byłem pewny że mam pdf, ale gdzieś się zapodział. Dokładniejszy opis tego zjawiska wraz z szczegółowym opisem istotnych cech, jakie wpływają na trafność wyboru długości i algorytmu okna można znaleźć w \cite{WindowChoiceStrategiesSTFT}.
@@ -1399,16 +1403,16 @@ Wszystkie z funkcji operujących na danych audio opisanych poniżej zakładają 
 Każda z funkcji implementujących algorytmy transkrypcji muzyki przyjmuje cztery bazowe argumenty odpowiadające danym wejściowym i sposobie ich fragmentacji na okna czasowe:
 \begin{itemize}
   \item \textit{data} - znormalizowane dane pobrane z pliku dźwiękowego,
-  \item \textit{frameWidth} - długość okna w samplach,
-  \item \textit{sampleRate} - częstotliwość próbkowania,
+  \item \textit{frame\_width} - długość okna w samplach,
+  \item \textit{sample\_rate} - częstotliwość próbkowania,
   \item \textit{spacing} - odstęp pomiędzy kolejnymi oknami danych.
 \end{itemize}
 
 \begin{lstlisting}[language=Python, caption={Przykład pętli po danych wejściowych z uwzględnieniem okna czasowego. Takie dzielenie danych, z nakładaniem funkcji okna i dodaniem marginesu zer jest wykonywane w większości zaimplementowanych algorytmów.}, captionpos=b, label={code:iter}]
-  for i in range(0, int(math.ceil((len(data) - frameWidth) / spacing))):
-    frame = data[i*spacing:i*spacing+frameWidth] * hann
-    frame = np.concatenate((frame, zeroPadding))
-    frameComplex = fft(frame)
+  for i in range(0, int(math.ceil((len(data) - frame_width) / spacing))):
+    frame = data[i*spacing:i*spacing+frame_width] * hann
+    frame = np.concatenate((frame, zero_padding))
+    frame_complex = fft(frame)
 \end{lstlisting}
 
 Sposób iterowania pomiędzy kolejnymi oknami jest również identyczny dla każdej z implementacji i jest przedstawiony na listingu \ref{code:iter}. W lini 2 listingu na konkretne okno danych nakładana jest funkcja okna (w tym przypadku okno Hanna). W przypadku algorytmów operujących na spektrum, do okna dodawana jest odpowiednia ilość zer (linia 3) jako margines zer, i dopiero na tak przygotowanych danych wykonywana jest transformata (linia 4).
@@ -1418,29 +1422,29 @@ Zaimplementowany został również prosty mechanizm porównujący pliki MIDI. Je
 Poza algorytmiką w ramach tej pracy magisterskiej zaimplementowany został również graficzny interfejs (GUI, z ang. \textit{Graphical User Interface}) w postaci aplikacji webowej z dedykowanym serwerem lokalnym napisanym w Python, za pomocą którego można łatwo przetestować działanie zaimplementowanych metod. Krótki opis tego rozwiązania znajduje się w sekcji \ref{sec:impl:gui}.
 
 \subsection{Autokorelacja}\label{sec:impl:alg:ac}
-Funkcja autokorelacji (opisana w rozdziale \ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna (co jest pokazane na listingu \ref{code:minMaxLag}), jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięcie, które w dalszej części ograniczają zakres, na którym operuje funkcja autokorelacji (co jest pokazane na listingu \ref{code:ac}).
+Funkcja autokorelacji (opisana w rozdziale \ref{sec:f0:ac}) jest jedynym z zaimplementowanych algorytmów, który operuje na nieprzetworzonym sygnale w domenie czasu. Dodatkowymi parametrami (poza tymi związanymi z parametrami danych i długością okna) są częstotliwości maksymalna i minimalna (co jest pokazane na listingu \ref{code:minMaxLag}), jakie są w zakresie analizy. Na ich podstawie wyznaczane są minimalne i maksymalne przesunięcie, które w dalszej części ograniczają zakres, na którym operuje funkcja autokorelacji (co jest pokazane na listingu \ref{code:ac}, przedstawiającym implementacje autokorelacji użytą w ramach zarówno tego algorytmu jak i ACLOS \ref{sec:impl:alg:aclos}. Implementacja jest wykonana analogicznie do funkcji autocorrelation przedstawionej w pracy \cite[75]{Transcription:Quenneville:Thesis}).
 \begin{lstlisting}[ language=Python, caption={Wyliczanie maksymalnego i minimalnego przesunięcia funkcji autokorelacji}, captionpos=b, label={code:minMaxLag}]
-  minLag = int(floor(sampleRate / fqMax))
-  maxLag = int(ceil(sampleRate / fqMin))
+  min_lag = int(floor(sample_rate / fq_max))
+  max_lag = int(ceil(sample_rate / fq_min))
 \end{lstlisting}
 \begin{figure}
-\begin{lstlisting}[language=Python, caption={Funkcja autokorelacji}, captionpos=b, label={code:ac}]
-n = len(data)
+\begin{lstlisting}[language=Python, caption={Funkcja autokorelacji, zaimplementowana analogicznie do metody przedstawionej w \cite{Transcription:Quenneville:Thesis}}, captionpos=b, label={code:ac}]
+data_len = len(data)
 result = list(np.zeros(min_lag))
 for lag in range(min_lag, max_lag):
-  sumarray = np.zeros(n+lag)
-  sumarray[:n] = data
-  sumarray[:n-lag] *= data[lag:]
-  sum = np.sum(sumarray[:n-lag])
-  result.append(float(sum/(n-lag)))
+  sum_array = np.zeros(data_len + lag)
+  sum_array[:data_len] = data
+  sum_array[:data_len-lag] *= data[lag:]
+  sum_from_array = np.sum(sum_array[:data_len-lag])
+  result.append(float(sum_from_array/(data_len-lag)))
 return result
 \end{lstlisting}
 \end{figure}
 
-Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $minLag - maxLag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli (próbka o indeksie $i$ po przesunięciu ma indeks $i + lag$). Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy współczynnik korelacji. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/ac.py}.
+Funkcja autokorelacji wyliczana jest dla każdego okna czasowego. Zwraca ona wektor długości $min\_lag - max\_lag$ wartości korelacji danych wejściowych z danymi przesuniętymi o $lag$ sampli (próbka o indeksie $i$ po przesunięciu ma indeks $i + lag$). Dla danego okna jako estymację F0 wybierane jest to przesunięcie, które ma najwyższy współczynnik korelacji. Implementacja znajduje się w projekcie w pliku \textit{server/transcription/autocorrelation.py}.
 
 \subsection{Cepstrum}\label{sec:impl:alg:ceps}
-Cepstrum (opisane w rozdziale \ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody do estymacji F0 jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrumUtils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} co przedstawione jest na listingu \ref{code:cepsUtil}.
+Cepstrum (opisane w rozdziale \ref{sec:f0:ceps}) w projekcie używany jest w dwóch celach - jako trzon metody do estymacji F0 jak i do filtrowania sygnału w domenie quefrency. Z tego powodu implementacja funkcjonalności została wyniesiona do pomocniczego pliku \textit{utils/cepstrum\_utils}. Funkcja \textit{real\_cepst\_from\_signal} przyjmuje okno danych, na którym wyliczane jest cepstrum mocy według wzoru \ref{eq:ceps1} co przedstawione jest na listingu \ref{code:cepsUtil}.
 
 \begin{lstlisting}[language=Python, caption={Wyliczanie cepstrum mocy}, captionpos=b, label={code:cepsUtil}]
   spectrum = fft(data)
@@ -1459,13 +1463,13 @@ Estymacja F0 dla każdego z okien czasowych polega na transformacji danych do ce
   cepst[0:14] = np.zeros(14)
   cepstra.append(cepst)
   maxperiod = np.argmax(cepst)
-  bestFq.append(sampleRate/maxperiod)
+  bestFq.append(sample_rate/maxperiod)
 \end{lstlisting}
 \end{figure}
 
 W ramach tej pracy magisterskiej została zaimplementowana wersja analizy cepstralnej przy użyciu karty graficznej GPU (karty graficznej, z ang. \textit{graphics processing unit}). Zaimplementowane rozwiązanie zakłada dostęp do API CUDA, z którego korzysta użyta biblioteka dająca dostęp do wywoływania poleceń GPU z poziomu kodu napisanego w języku Python. Szczegóły karty jak i stopień uzyskanego przyspieszenia opisane są w rozdziale \ref{sec:ewal}.
 
-Rozwiązanie GPU znajduje się w pliku \textit{server/utils/cepsUtilsGpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje cztery argumenty:
+Rozwiązanie GPU znajduje się w pliku \textit{server/utils/ceps\_utils\_gpu.py} w postaci klasy \textit{CepsUtilsGpu} implementującej interfejs biblioteki \textit{reikna} pozwalający na tworzenie planu obliczeń na GPU. Plan ten przyjmuje cztery argumenty:
 \begin{itemize}
   \item znormalizowane dane audio,
   \item długość okna,
@@ -1528,16 +1532,16 @@ Estymacja F0 przyjmuje interpolacje sześcienną wyniku funkcji autokorelacji. N
 \end{lstlisting}
 
 \begin{lstlisting}[float, language=Python, caption={Wyznaczanie F0 w ACLOS}, captionpos=b, label={code:bestFqInterpolate}]
-  interp_x = np.linspace(0, dataLen-1, num=dataLen*interpolMultiplier)
+  interp_x = np.linspace(0, dataLen-1, num=dataLen*interpol_multiplier)
   argmax = np.argmax(interpolatedAutocorrelation(interp_x))
-  correlationArgMax = int(np.round(argmax / interpolMultiplier))
-  delta = argmax - (correlationArgMax * interpolMultiplier)
-  bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultiplier)
-  return bestFq
+  correlation_arg_max = int(np.round(argmax / interpol_multiplier))
+  delta = argmax - (correlation_arg_max * interpol_multiplier)
+  best_fq = fft_to_fq[correlation_arg_max] + (fqMaxError * delta / interpol_multiplier)
+  return best_fq
 \end{lstlisting}
 
 \subsection{Metoda Pertusa i Iñesta (2008)}\label{sec:impl:alg:specSmoothnes}
-Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w tej samej funkcji \textit{harmonicAndSmoothnessBasedTranscription} w pliku \mbox{\textit{server/transcription/generativeMethodByPertusAndInesta.py}}. W przypadku, gdy argument \textit{newAlgorithmVersion} przyjmuje wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
+Metody opisane w sekcjach \ref{sec:pertus1} oraz \ref{sec:petrus2} w dużej części się pokrywają, dlatego też implementacja obu metod znajduje się w tej samej funkcji \textit{harmonic\_and\_smoothness\_based\_transcription} w pliku \textit{server/transcription/generative\_method\_by\_pertus\_and\_inesta.py}. W przypadku, gdy argument \textit{newAlgorithmVersion} przyjmuje wartość \textit{False}, zostanie wykonana metoda zgodna z opisem pracy z 2008 roku \cite{Transcription:Pertus:Inharmonicity}, którego implementacja opisana jest w tej sekcji. W przeciwnym wypadku zostanie wykonana znowelizowana wersja algorytmu z 2012 roku (\cite{Transcription:Pertus:Inharmonicity2}). Trzon metody zaprezentowany jest na listingu \ref{code:coreMethodPetrusa1}.
 
 W pierwszej kolejności wywoływana jest funkcja \textit{coreMethod}, której zadaniem jest przetworzenie sygnału do postaci nut, na którym następnie wykonywane jest przetwarzanie końcowe. Z każdego spektrum okna czasowego po nałożeniu lifteringu wydobywane są wartości (piki) o amplitudach powyżej zadanego progu i na ich podstawie wyznaczani są kandydaci do F0. Zbiór wyznaczonych częstotliwości pomniejszany jest o te, które nie mają wystarczającej ilości harmonicznych w tablicy pików. Liczba kandydatów następnie jest posortowana względem amplitud i odrzucone zostają wszystkie przekraczające indeks \textit{maxCandidates} zmniejszając tym samym ilość kombinacji w przypadku dużej liczby kandydatów.
 
@@ -1551,29 +1555,29 @@ W danym oknie czasowym wybierana jest kombinacja o największej sumie istotnośc
 Przetwarzanie końcowe zaimplementowane jest w funkcji \textit{postProcessMidiNotes} i wylicza ono dynamikę na podstawie wcześniej nadanej wartości z amplitudy i generuje bardziej ,,spójną'' rolkę pianina, odrzucając zbyt krótkie nuty i łącząc w całość nuty, które były wykryte w oknie o indeksie $n-1$ oraz $n+1$, ale nie były wykryte w oknie o indeksie $n$. Implementacja pozwala na zdefiniowanie ilości sąsiadujących nut branych pod uwagę podczas tego procesu poprzez parametr \textit{neighbourMerging}.
 
 \begin{lstlisting}[language=Python, caption={Trzon algorytmu Pertusa i Iñesta (2008)}, captionpos=b, label={code:coreMethodPetrusa1}, numbers=none]
-  peaks, candidate = getPeaksAndCandidates(countPowerFftWindow(i))
-  hypotheses, amplitudeSum, patterns, ownerships =
+  peaks, candidate = get_peaks_and_candidates(count_power_fft_window(i))
+  hypotheses, amplitude_sum, patterns, ownerships =
     getCandidatesThatHaveEnoughHarmonics(candidate, peaks)
   if(len(hypotheses) == 0):
     resNotes.append({})
     continue
-  sortedByFq = getMaxCandidatesByPower(amplitudeSum, hypotheses)
-  possibleCombinations = []
-  for num_pitches in range(1, min(maxParallelNotes, len(sortedByFq)) + 1):
-    for combo in combinations(sortedByFq, num_pitches):
-      possibleCombinations.append(combo)
-  allSaliences = []
-  allMidiNotes = []
-  for combination in possibleCombinations:
-    combinationSalience = countCombinationSalience(
+  sorted_by_fq = getmax_candidatesByPower(amplitude_sum, hypotheses)
+  possible_combinations = []
+  for num_pitches in range(1, min(max_parallel_notes, len(sorted_by_fq)) + 1):
+    for combo in combinations(sorted_by_fq, num_pitches):
+      possible_combinations.append(combo)
+  all_saliences = []
+  all_midi_notes = []
+  for combination in possible_combinations:
+    combination_salience = count_combination_salience(
         combination, patterns, peaks, ownerships)
-    allSaliences.append(combinationSalience)
-    midiNotes = {}
-    for fftFq in combination:
-      fq = fft_to_hz_array[fftFq]
-      midiNotes[hz_to_midi(fq)] = (amplitudeSum[fftFq] / len(patterns[fftFq]))
-    allMidiNotes.append(midiNotes)
-  resNotes.append(allMidiNotes[np.argmax(allSaliences)])
+    all_saliences.append(combination_salience)
+    curr_midi_notes = {}
+    for fft_fq in combination:
+      fq = fft_to_hz_array[fft_fq]
+      curr_midi_notes[hz_to_midi(fq)] = (amplitude_sum[fft_fq] / len(patterns[fft_fq]))
+    all_midi_notes.append(curr_midi_notes)
+  resNotes.append(all_midi_notes[np.argmax(all_saliences)])
 \end{lstlisting}
 
 \subsection{Metoda Pertusa i Iñesta (2012)}\label{sec:impl:alg:specSmoothnes:improved}
@@ -1582,26 +1586,26 @@ Gdy funkcja \textit{harmonicAndSmoothnessBasedTranscription} zostanie wywołana 
 Proces wyliczania istotności dla danego kandydata F0 zgodnie z opisem z \cite{Transcription:Pertus:Inharmonicity2} jest przedstawiony na listingu \ref{code:petrusIstotnosc}. Wynikiem trzonu algorytmu, w przeciwieństwie do wersji z 2008 roku, jest lista nut MIDI dla wszystkich kombinacji razem z ich istotnością. Na tej podstawie w funkcji \textit{flattenCombination} wykonywane jest wygładzanie na przestrzeni rolki pianina, jak jest to opisane w algorytmie, natomiast śledzenie wysokości nut zaimplementowane jest w funkcji \textit{pitchTracking}. Funkcja wyliczającą wagi każdego z wierzchołków grafu przedstawiona jest na listingu \ref{code:petrusPitchTracking}, gdzie argumenty $lvi$ i $lvj$ są wzorami spektralnymi harmonicznej z okna $i$ i $j = i + 1$ a argument $saliences$ jest istotnością $j$-ego okna. Wyznaczona tablica nut jest przetwarzana metodą \textit{postProcessMidiNotes} tak samo jak w implementacji \ref{sec:impl:alg:specSmoothnes}.
 
 \begin{lstlisting}[language=Python, caption={Wyliczanie istotności w algorytmie Pertusa i Iñesta (2012)}, captionpos=b, label={code:petrusIstotnosc}, numbers=none]
-  currPattern, currPeaks = smoothenPattern(currPatterns[fundamental],
-    currPeaks, ownerships)
-  harmonicsPatterns.append((hz_to_midi(fft_to_hz_array[fundamental]), currPattern))
-  currPatternPowers = np.array(currPattern)
-  currPatternPowers = currPatternPowers.T[1]
-  totalPatternLoudness = np.sum(currPatternPowers)
-  highestLoudness, lowestLoudness = updateMinMaxL(totalPatternLoudness,
-    highestLoudness, lowestLoudness)
-  if lowestLoudness < highestLoudness * gamma:
-    return 0.0, harmonicsPatterns
-  normalizedHpsPowers = np.array(currPatternPowers) / np.max(currPatternPowers)
-  if(len(currPatternPowers) > 2):
-    lowPassedConv = np.convolve(normalizedHpsPowers, gaussianPoints, 'same')
-    currPatternSharpnessMeasure = np.sum(abs(lowPassedConv - normalizedHpsPowers)) /
-      (len(currPatternPowers) - len(currPatternPowers) * gaussianPoints[1])
+  curr_pattern, curr_peaks = smoothen_pattern(curr_patterns[fundamental],
+    curr_peaks, ownerships)
+  harmonics_patterns.append((hz_to_midi(fft_to_hz_array[fundamental]), curr_pattern))
+  curr_pattern_powers = np.array(curr_pattern)
+  curr_pattern_powers = curr_pattern_powers.T[1]
+  total_pattern_loudness = np.sum(curr_pattern_powers)
+  highest_loudness, lowest_loudness = updateMinMaxL(total_pattern_loudness,
+    highest_loudness, lowest_loudness)
+  if lowest_loudness < highest_loudness * gamma:
+    return 0.0, harmonics_patterns
+  normalized_hps_powers = np.array(curr_pattern_powers) / np.max(curr_pattern_powers)
+  if(len(curr_pattern_powers) > 2):
+    low_passed_conv = np.convolve(normalized_hps_powers, gaussian_points, 'same')
+    curr_pattern_sharpness_measure = np.sum(abs(low_passed_conv - normalized_hps_powers))
+      / (len(curr_pattern_powers) - len(curr_pattern_powers) * gaussian_points[1])
   else:
-    currPatternSharpnessMeasure = 0
-  currPatternSmoothness = 1 - currPatternSharpnessMeasure
-  combinationSalience += (totalPatternLoudness *
-    currPatternSmoothness ** smoothnessImportance) ** 2
+    curr_pattern_sharpness_measure = 0
+  curr_pattern_smoothness = 1 - curr_pattern_sharpness_measure
+  combination_salience += (total_pattern_loudness *
+    curr_pattern_smoothness ** smoothness_importance) ** 2
 \end{lstlisting}
 
 \begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:petrusPitchTracking}, numbers=none]
@@ -1625,7 +1629,7 @@ def countWeight(lvi, lvj, salience_j):
 \subsection{Onsets and Frames}\label{sec:impl:onsetsAndFrames}
 Implementacja wykorzystania metodologi \textit{Onsets and Frames} w projekcie wykonana została na zwór tej, zaproponowanej przez autorów \cite{Transcription:Hawthorne:OnsetsAndFrames}. Udostępnili oni przykładowy kod, przy pomocy którego można przetestować działanie wytrenowanego bazą MAESTRO modelu w interaktywnym arkuszu Google Colab \cite{Transcription:OnsetsAndFrames:Colab}. Wprowadzone modyfikacje miały na celu zintegrowanie tego rozwiązania do metod ewaluacyjnych opisywanego projektu.
 
-Metody związane z inicjalizacją modelu i transkrypcją utworu zostały umieszczone w klasie \textit{OnsetsAndFramesImpl} znajdującej się w pliku \\\mbox{\textit{transcription/onsetsAndFrames.py}}. Instancja tej klasy, przed wywołaniem metody przeznaczonej do transkrypcji, musi zostać zainicjalizowana przy pomocy metody \textit{initializeModel}. Model zostaje zdefiniowany i skonfigurowany na podstawie już wytrenowanego modelu, który szukany jest w katalogu \textit{transcription/train}. Model można pobrać z repozytorium projektu \textit{Onsets and Frames} \cite{Transcription:OnsetsAndFrames:Github}. Obiekt przechowuje informację o tym, czy już został zainicjalizowany ignorując kolejne wywołania metody \textit{initializeModel}.
+Metody związane z inicjalizacją modelu i transkrypcją utworu zostały umieszczone w klasie \textit{OnsetsAndFramesImpl} znajdującej się w pliku \textit{transcription/onsets\_and\_frames.py}. Instancja tej klasy, przed wywołaniem metody przeznaczonej do transkrypcji, musi zostać zainicjalizowana przy pomocy metody \textit{initializeModel}. Model zostaje zdefiniowany i skonfigurowany na podstawie już wytrenowanego modelu, który szukany jest w katalogu \textit{transcription/train}. Model można pobrać z repozytorium projektu \textit{Onsets and Frames} \cite{Transcription:OnsetsAndFrames:Github}. Obiekt przechowuje informację o tym, czy już został zainicjalizowany ignorując kolejne wywołania metody \textit{initializeModel}.
 
 Metoda transkrypcji \textit{transcribe} przyjmuje dwa argumenty:
 \begin{itemize}
@@ -1636,12 +1640,12 @@ Metoda transkrypcji \textit{transcribe} przyjmuje dwa argumenty:
 \subsection{Generowanie MIDI}\label{sec:impl:midiGen}
 Zaimplementowane algorytmy estymujące F0, które operują na sygnale monofonicznym, zwracają wynik w postaci tablicy wyznaczonych częstotliwości dla każdego okna czasowego. W celu wygenerowania MIDI z wyniku o takiej postaci, tworzona jest tablica dwuwymiarowa $n \times 127$, gdzie n jest długością przekształcanej tablicy wyniku algorytmu. Każdy z wierszy reprezentuje rolkę pianina w danym oknie czasowym o indeksie równym indeksowi wiersza. Wartości tych tablic są liczbami z zakresu $\left[0, 127\right]$ oznaczającymi dynamikę danej nuty (parametr \textit{velocity} standardu MIDI), gdzie 0 oznacza, że dana nuta nie została wykryta. Opisywane algorytmy nie mają mechanizmu wyznaczania dynamiki wykrytych F0, dlatego też została przyjęta stała wartość $velocity = 100$ dla wszystkich wyznaczonych F0. Implementacje tego mechanizmu przedstawia listing \ref{code:hzToMidi}.
 \begin{figure}[t]
-\begin{lstlisting}[language=Python, caption={Funkcja wyliczająca wagę krawędzi w algorytmie śledzenia wysokości nut}, captionpos=b, label={code:hzToMidi}, numbers=none]
-	resultPianoRoll = []
-	for fq in resInF0PerFrame:
-		pianoRollRow = np.zeros(127)
-		pianoRollRow[hz_to_midi(fq)] = 100
-		resultPianoRoll.append(pianoRollRow)
+\begin{lstlisting}[language=Python, caption={Funkcja tranformująca wynik detekcji F0 do postaci rolki pianina dla sygnału monofonicznego.}, captionpos=b, label={code:hzToMidi}, numbers=none]
+	result_piano_roll = []
+	for fq in res_in_f0_per_frame:
+		piano_roll_row = np.zeros(127)
+		piano_roll_row[hz_to_midi(fq)] = 100
+		result_piano_roll.append(piano_roll_row)
 \end{lstlisting}
 \end{figure}
 
@@ -1674,7 +1678,7 @@ Każdą z wynikowych nut transkrypcji algorytm porównujący klasyfikuje do jedn
 \end{itemize} 
 Zliczane są również wystąpienia fałszy ujemnych (FN, z ang. \textit{False negative}) sprawdzając ilość nut w utworze referencyjnym, których nie ma w wyniku transkrypcji. Przykład tej klasyfikacji pokazany jest na rysunku \ref{fig:f1}.
 
-\begin{figure}[H]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.21]{images/TranscriptionStatisticF1Measure.jpg}
     \caption{Przykład rolki pianina dwóch plików MIDI. Utwór referencyjny (lewa rolka) przedstawia rozłożenie nut (zielone prostokąty) w oryginalnej kompozycji. Na wyniku transkrypcji (prawa rolka) oznaczone są wykryte nuty (zielone prostokąty) wraz z klasyfikacją statystyczną (jako czerwone prostokąty pod wykrytymi nutami są oznaczone FN, czerwone prostokąty nad wykrytymi nutami oznaczają FP natomiast jasnozielone prostokąty reprezentują nuty z utworu referencyjnego, które były wykryte z marginesem błędu).}
@@ -1720,20 +1724,20 @@ Metody ewaluacyjne przyjmują nazwę zbioru danych, z którego mają być brane 
 \begin{lstlisting}[language=Python, caption={Algorytm szukający najlepszej kombinacji argumentów dla zadanej funkcji func.}, captionpos=b, label={code:eval:multiproces}, numbers=none]
 with concurrent.futures.ProcessPoolExecutor() as executor:
   processes = []
-  bestF1 = 0
-  bestArgs = None
+  best_f1 = 0
+  best_args = None
   idx = 1
-  for arg in possibleArgsCombinations:
-      processes.append(executor.submit(validate_arguments, func, arg, evalObjects,
-      saveRes, isResMidi, False, str(idx) + "/" + str(len(possibleArgsCombinations))))
+  for arg in possible_args_combinations:
+      processes.append(executor.submit(validate_arguments, func, arg, evalObjects,\
+      saveRes, isResMidi, False, str(idx) + "/" + str(len(possible_args_combinations))))
       idx += 1
   for res in processes:
-      currArg, currF1 = res.result()
-      if currF1 > bestF1:
-          bestF1 = currF1
-          bestArgs = currArg
+      curr_arg, curr_f1 = res.result()
+      if curr_f1 > best_f1:
+          best_f1 = curr_f1
+          best_args = curr_arg
 
-return currArg, bestF1
+return best_args, best_f1
 \end{lstlisting}
 
 \subsection{Interfejs GUI}\label{sec:impl:gui}
