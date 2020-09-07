@@ -1,26 +1,17 @@
-# PqMusic 
-_eng_
 
-Project written as part of magister thesis research on studying state of the art on music transcription system.
-
-* *Thesis* folder contains complete papier with LaTex source code and images used.
-* *Application/static* folder contains GUI written as a web application
-* *Application/server* folder contains algorithms implemented in python as well as server side of GUI
+* Folder *static* zawiera GUI napisane jako aplikacja internetowa
+* Folder *server* zawiera algorytmy zaimplementowane w Pythonie oraz po stronie serwera GUI
 
 ***
-_pl_
+Wszystkie algorytmy dostępne są w folderze transcription/*.py. Każdy z nich zawiera sekcje _if __name__ == "__main__":_, pod którą jest skrypt do przetestowania danego algorytmu, na wzór którego można w prosty sposób zmienić parametry wywołania algorytmu.
 
+Dla poprawnego działania algorytmu Onsets and Frames wymagane jest pobranie checkpoint-a wytrenowanego modelu z repozytorium Onsets and Frames i umieszczenie go w katalogu server/transcription/train
 
-* Folder *Thesis* zawiera pełny papier z kodem źródłowym LaTex i wykorzystanymi obrazami.
-* Folder *Application/static* zawiera GUI napisane jako aplikacja internetowa
-* Folder *Application/server* zawiera algorytmy zaimplementowane w Pythonie oraz po stronie serwera GUI
-
-***
-Wszystkie algorytmy dostępne są w folderze Application/transcription/*.py. Każdy z nich zawiera sekcje _if __name__ == "__main__":_, pod którą jest skrypt do przetestowania danego algorytmu, na wzór którego można w prosty sposób zmienić parametry wywołania algorytmu.
+Do ewaluacji wszystkich metod przygotowane są w module server/utils/evaluate metody. Załączone pliki zawierają bazę "monoSound" pozwalającą przetestować algorytmy na sygnałach monofonicznych. Do przetestowania sygnałów polifonicznych najlepiej pobrać bazę Maestro, której metadane.json są kompatybilne z projektem, i umieścić w dedykowanym katalogu.
 
 Sposób uruchomienia GUI:
 
-W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, co spowoduje zbudowanie paczki ze stroną i skryptami. Następnie należy uruchomić skrypt z pliku Application/server/server.py. Spowoduje to uruchomienie servera HTTP hostującego GUI pod lokalnym adresem http://127.0.0.1:5000/.
+W folderze static wykonać komendy _npm install_ oraz _npm build_, co spowoduje zbudowanie paczki ze stroną i skryptami. Następnie należy uruchomić skrypt z pliku server/server.py. Spowoduje to uruchomienie servera HTTP hostującego GUI pod lokalnym adresem http://127.0.0.1:5000/.
 ***
 
 ## Wymagania:
@@ -41,14 +32,27 @@ W folderze Application/static wykonać komendy _npm install_ oraz _npm build_, c
 1. Node.js v12.13.1 (GUI)
 1. npm 6.12.1 (GUI)
 1. ffmpeg 4.2 (brew install ffmpeg)
-1. FluidSynth (1.1) _(brew install fluid-synth)_ ->
-(brew install pkg-config
-(git clone https://github.com/FluidSynth/fluidsynth.git
-cd fluidsynth
-git checkout 1.1.x
-mkdir build
-cd build
-cmake ..
-sudo make install
-fluidsynth --version) or
-(brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/34dcd1ff65a56c3191fa57d3dd23e7fffd55fae8/Formula/fluid-synth.rb)
+1. FluidSynth (1.1) _(brew install fluid-synth)_ -> instalacja: 
+(brew install pkg-config)
+    
+    (git clone https://github.com/FluidSynth/fluidsynth.git
+
+    cd fluidsynth
+
+    git checkout 1.1.x
+
+    mkdir build
+
+    cd build
+
+    cmake ..
+
+    sudo make install
+
+    fluidsynth --version)
+
+    or
+
+    (brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/34dcd1ff65a56c3191fa57d3dd23e7fffd55fae8/Formula/fluid-synth.rb)
+
+W pliku requirements.txt wylistowane są wyamagne biblioteki python w celu ułatwienia instalacji przez pip

@@ -1,110 +1,134 @@
-## W tym pliku znajduje się implementacja algorytmu ACLOS
+"""
+W tym module znajduje się implementacja algorytmu ACLOS
+"""
+
+import numpy as np
+from scipy.fftpack import fft
+from scipy.interpolate import interp1d
+from tqdm import tqdm
+import math
+from io import BytesIO
 
 import sys
 from os import path
 sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+from utils.cepstrum_utils import lifter_on_power_spec, LifterType  # pylint: disable=import-error
+from utils.plots import plot_spectrogram, plot_pitches, plot_correlogram, plot_interpolated_correlation  # pylint: disable=import-error
+from utils.general import loadNormalizedSoundFile, fft_to_hz  # pylint: disable=import-error
 
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.fftpack import fft, ifft
-from tqdm import tqdm
-import math
-from utils.general import loadNormalizedSoundFile, create_sine, fft_to_hz
-from utils.plots import plot_spectrum_line_component, plot_spectrogram, plot_correlation, plot_pitches, plot_correlogram, plot_interpolated_correlation
-from utils.custom_profile import profile, print_prof_data
-from utils.cepstrumUtils import lifterOnPowerSpec, LifterType
-from scipy.interpolate import interp1d
-from io import BytesIO
-
-def aclos(data, sampleRate = 1024, frameWidth = 512, spacing = 512, sizeOfZeroPadding = 512, disableTqdm = True):
+def aclos(data, sample_rate=1024, frame_width=512, spacing=512,
+          size_of_zero_padding=512, disable_tqdm=True):
+    """
+    Funkcja autokorelacji na spektrum mocy wyznaczająca F0. Dzieli dane wejściowe na okna czasowe,na których
+    wykonywane jest spektrum mocy oraz liczona autokorelacja
+    Returns:
+        best_fq: Tablica wyznaczonych F0
+        correlogram: korelogram
+        interpolated_autocorrelogram: interpolacja korelogramu, z którego wyliczone były wynikowe F0
+    """
     correlogram = []
-    interpolatedAutocorrelogram = []
+    interpolated_autocorrelogram = []
     spectra = []
-    bestLag = []
-    bestFq = []
-    lifteredSpectra = []
-    hann = np.hanning(frameWidth)
-    zeroPadding = np.zeros(sizeOfZeroPadding)
-    fftToFq = fft_to_hz(sampleRate, frameWidth)
-    fqMaxError = sampleRate // frameWidth
+    best_fq = []
+    liftered_spectra = []
+    hann = np.hanning(frame_width)
+    zero_padding = np.zeros(size_of_zero_padding)
+    fft_to_fq = fft_to_hz(sample_rate, frame_width)
+    fq_max_error = sample_rate // frame_width
 
+    def autocorrelation(data, min_lag, max_lag):
+        """
+        Funkcja licząca autokorelacje dla $dane z maksymalnym/minimalnym
+        przesunięciem równym odpowiednio $min_lag i max_lag
+        """
+        data_len = len(data)
+        result = list(np.zeros(min_lag))
+        for lag in range(min_lag, max_lag):
+            sum_array = np.zeros(data_len + lag)
+            sum_array[:data_len] = data
+            sum_array[:data_len-lag] *= data[lag:]
+            sum_from_array = np.sum(sum_array[:data_len-lag])
+            result.append(float(sum_from_array/(data_len-lag)))
 
-    def ac(data, minLag, maxLag):
-        # w teiri dwie pętle, ale *= leci po wszystkich elementach
-        n = len(data)
-        result = list(np.zeros(minLag))
-        for lag in range(minLag, maxLag):
-            sumArray = np.zeros(n + lag)
-            sumArray[:n] = data
-            sumArray[:n-lag] *= data[lag:]
-            sum = np.sum(sumArray[:n-lag])
-            result.append(float(sum/(n-lag)))
-
-        interpolated = interp1d(np.arange(0, len(result)), result, kind='cubic')
+        interpolated = interp1d(
+            np.arange(0, len(result)), result, kind='cubic')
         return result, interpolated
 
-    def countBestFq(interpolatedAutocorrelation, dataLen, interpolMultiplier = 10):
-        interp_x = np.linspace(0, dataLen-1, num=dataLen*interpolMultiplier)
-        argmax = np.argmax(interpolatedAutocorrelation(interp_x))
-        correlationArgMax = int(np.round(argmax / interpolMultiplier))
-        delta = argmax - (correlationArgMax * interpolMultiplier)
-        bestFq = fftToFq[correlationArgMax] + (fqMaxError * delta / interpolMultiplier)
-        return bestFq
+    def count_best_fq(interpolated_autocorrelation, data_len, interpol_multiplier=10):
+        """
+        Funkcja wyznaczająca częstotliwość F0 na podstawie
+        interpolacji korelogramu
+        """
+        interp_x = np.linspace(0, data_len-1, num=data_len*interpol_multiplier)
+        argmax = np.argmax(interpolated_autocorrelation(interp_x))
+        correlation_arg_max = int(np.round(argmax / interpol_multiplier))
+        delta = argmax - (correlation_arg_max * interpol_multiplier)
+        best_fq = fft_to_fq[correlation_arg_max] + \
+            (fq_max_error * delta / interpol_multiplier)
+        return best_fq
 
-    for i in tqdm(range(0, int(math.ceil((len(data) - frameWidth) / spacing))), disable=disableTqdm):
-        frame = data[i*spacing:i*spacing+frameWidth] * hann
-        frame = np.concatenate((frame, zeroPadding))
-        frameComplex = fft(frame)
-        fftLen = int(np.floor(len(frameComplex)/2))
-        powerSpec = abs(frameComplex)
-        lifteredPowerSpec = lifterOnPowerSpec(powerSpec, LifterType.sine, 8)
+    for i in tqdm(range(0, int(math.ceil((len(data) - frame_width) / spacing))),
+                  disable=disable_tqdm):
+        frame = data[i*spacing:i*spacing+frame_width] * hann
+        frame = np.concatenate((frame, zero_padding))
+        frame_complex = fft(frame)
+        fft_len = int(np.floor(len(frame_complex)/2))
+        powerSpec = abs(frame_complex)
+        liftered_power_spec = lifter_on_power_spec(
+            powerSpec, LifterType.sine, 8)
 
-        powerSpec = powerSpec[:fftLen]
-        lifteredPowerSpec = lifteredPowerSpec[:fftLen]
+        powerSpec = powerSpec[:fft_len]
+        liftered_power_spec = liftered_power_spec[:fft_len]
 
-        autocorrelation, interpolatedAutocorrelation = ac(lifteredPowerSpec, 5, frameWidth // 2 + 1)
+        autocorrelation_result, interpolated_autocorrelation = autocorrelation(
+            liftered_power_spec, 5, frame_width // 2 + 1)
 
-        correlogram.append(autocorrelation,)
-        interpolatedAutocorrelogram.append(interpolatedAutocorrelation)
+        correlogram.append(autocorrelation_result,)
+        interpolated_autocorrelogram.append(interpolated_autocorrelation)
         spectra.append(powerSpec)
-        lifteredSpectra.append(lifteredPowerSpec)
-        bestLag.append(np.argmax(autocorrelation))
-        bestFq.append(countBestFq(interpolatedAutocorrelation, len(autocorrelation)))
+        liftered_spectra.append(liftered_power_spec)
+        best_fq.append(count_best_fq(
+            interpolated_autocorrelation, len(autocorrelation_result)))
+
+    return best_fq, correlogram, interpolated_autocorrelogram, spectra
 
 
-    return bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra
-
-## Funkcja do użytku przez serwer
-def transcribe_by_aclos_wrapped(filePath):
-    frameWidth = 2048
+def transcribe_by_aclos_wrapped(file_path):
+    """
+    Funkcja pomocnicza do wywołania głównej metody przez serwer
+    """
+    frame_width = 2048
     spacing = 512
-    sampleRate, data = loadNormalizedSoundFile(filePath)
-    bestFq, correlogram, _, _, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
+    sample_rate, data = loadNormalizedSoundFile(file_path)
+    best_fq, correlogram, _, spectra = aclos(
+        data, sample_rate, frame_width, spacing, frame_width)
 
+    fig, _ = plot_pitches(best_fq, spacing, sample_rate,
+                          show=False, language="pl")
+    fig2, _ = plot_spectrogram(
+        spectra, spacing, sample_rate, show=False, language="pl")
+    fig3, _ = plot_correlogram(
+        correlogram, spacing, sample_rate, show=False, language="pl")
 
-    fig, _ = plot_pitches(bestFq, spacing, sampleRate, show=False, language="pl")
-    fig2, _ = plot_spectrogram(spectra, spacing, sampleRate, show=False, language="pl")
-    fig3, _ = plot_correlogram(correlogram, spacing, sampleRate, show=False, language="pl")
+    pitches_fig, correlogram_fig, spectrogram_fig = BytesIO(), BytesIO(), BytesIO()
+    fig.savefig(pitches_fig, format="png")
+    fig2.savefig(spectrogram_fig, format="png")
+    fig3.savefig(correlogram_fig, format="png")
 
+    return pitches_fig, correlogram_fig, spectrogram_fig
 
-    pitchesFig, correlogramFig, spectrogramFig = BytesIO(), BytesIO(), BytesIO()
-    fig.savefig(pitchesFig, format="png")
-    fig2.savefig(spectrogramFig, format="png")
-    fig3.savefig(correlogramFig, format="png")
-
-    return pitchesFig, correlogramFig, spectrogramFig
 
 if __name__ == "__main__":
-    frameWidth = 2048
-    spacing = 512
-    filePath = path.dirname(path.abspath(__file__))
-    filePath = path.join(filePath, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
+    test_frame_width = 2048
+    test_spacing = 512
+    test_file_path = path.dirname(path.abspath(__file__))
+    test_file_path = path.join(
+        test_file_path, '../test_sounds/ode_to_joy_(9th_symphony)/ode_to_joy_(9th_symphony).wav')
 
-    sampleRate, data = loadNormalizedSoundFile(filePath)
+    test_sample_rate, test_data = loadNormalizedSoundFile(test_file_path)
 
-
-    bestFq, correlogram, interpolatedAutocorrelogram, bestLag, spectra = aclos(data, sampleRate, frameWidth, spacing, frameWidth)
-    plot_interpolated_correlation(interpolatedAutocorrelogram[10], correlogram[10], language='pl')
-
-
-    print("ok")
+    test_best_fq, test_correlogram, test_interpolated_autocorrelogram, test_spectra =\
+        aclos(test_data, test_sample_rate, test_frame_width,
+              test_spacing, test_frame_width, disable_tqdm=False)
+    plot_interpolated_correlation(
+        test_interpolated_autocorrelogram[10], test_correlogram[10], language='pl')
