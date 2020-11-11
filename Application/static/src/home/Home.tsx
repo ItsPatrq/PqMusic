@@ -1,14 +1,14 @@
 import React from 'react';
-import DataService from '../dataService/DataService';
-import strings from '../shared/strings';
+import { LanguageContext } from '../shared/languageContext';
 
 export const Home: React.FC = () => {
-
     return (
-        <div className="PqM-home PqM-header">
-           <object data={DataService.GetThesisPaper()}>
-               {strings.pdfObjectFallback}
-           </object>
-        </div>
+        <LanguageContext.Consumer>
+            {({strings}) => (
+            <div className="PqM-home PqM-header">
+                {strings.homePage}
+            </div>
+            )}
+        </LanguageContext.Consumer>
     );
 };

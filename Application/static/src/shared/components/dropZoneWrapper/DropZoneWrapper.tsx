@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Dropzone, { DropEvent, DropzoneState } from 'react-dropzone'
-import strings from '../../strings';
+import { LanguageContext } from '../../languageContext';
 
 export type DropZoneWrapperProps = {
     callback(files:File[]):any,
@@ -22,7 +22,9 @@ export const DropZoneWrapper: FC<DropZoneWrapperProps> = ({ callback, multiple =
             <section>
                 <div {...props.getRootProps()}>
                     <input {...props.getInputProps()} />
-                    <p className="PqM-dropZone">{strings.dropZoneDefaultMessage}</p>
+                    <LanguageContext.Consumer>
+                        {({strings}) => <p className="PqM-dropZone">{strings.dropZoneDefaultMessage}</p>}
+                    </LanguageContext.Consumer>
                 </div>
             </section>
         )

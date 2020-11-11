@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
+import { LanguageContext } from '../shared/languageContext';
 import { FqMidi } from './FqMidi/FqMidi';
 import Spectrogram from './Spectrogram/Spectrogram';
-import WindowFunctions from './WindowFunctions/WindowFunctions';
-import strings from '../shared/strings';
 export type UtilityState = {
   fqMidiValue: number
 }
@@ -28,22 +27,24 @@ export class Utility extends Component<{}, UtilityState> {
   }
   public render = () => {
     return (
-      <div className="PqM-Utility">
+      <LanguageContext.Consumer>
+        {({strings}) => (
+          <div className="PqM-Utility">
+            <div className="PqM-header">
+              {strings.titleUtilities}
+            </div>
 
-        <div className="PqM-header">
-          {strings.titleUtilities}
+            <FqMidi 
+              fqMidiValue={this.state.fqMidiValue} 
+              handleFqMidiValueChange={this.handleFqMidiValueChange}
+            />
+            <Spectrogram />
+            {/* {process.env.REACT_APP_ENV === "local" &&  < WindowFunctions /> } */}
             
-        </div>
-
-        <FqMidi 
-          fqMidiValue={this.state.fqMidiValue} 
-          handleFqMidiValueChange={this.handleFqMidiValueChange}
-        />
-        <Spectrogram />
-        {/* {process.env.REACT_APP_ENV === "local" &&  < WindowFunctions /> } */}
-        
-        
-      </div>
+            
+          </div>
+        )}
+      </LanguageContext.Consumer>
     );
   }
 

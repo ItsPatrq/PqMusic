@@ -1,26 +1,30 @@
 import React, { FC } from 'react';
 import { RowFlex } from '../../shared/components/rowFlex/RowFlex';
-import strings from '../../shared/strings';
 import DataService from '../../dataService/DataService';
 import DropZoneWrapper from '../../shared/components/dropZoneWrapper/DropZoneWrapper';
+import { IStrings, LanguageContext } from '../../shared/languageContext';
 
 export const OnsetsAndFrames: FC<{}> = () => {
 
-    const handleFileInputChange = (acceptedFiles: File[]) => {
-        DataService.TranscribeByOnsetsFrames(acceptedFiles[0]);
+    const getHandleFileInputChange = (strings: IStrings) => (acceptedFiles: File[]) => {
+        DataService.TranscribeByOnsetsFrames(acceptedFiles[0], strings);
     }
-    const getRowContent = () => (
+    const getRowContent = (strings: IStrings) => (
         <DropZoneWrapper
-            callback={handleFileInputChange}
+            callback={getHandleFileInputChange(strings)}
             multiple={false}
         />
     );
 
     return (
-        <RowFlex
-            children={getRowContent()}
-            label={strings.rowLabels.transcription.onesetsAndFrames}
-        />
+        <LanguageContext.Consumer>
+            {({strings}) => (
+                <RowFlex
+                    children={getRowContent(strings)}
+                    label={strings.rowLabels.transcription.onsetsAndFrames}
+                />
+            )}
+        </LanguageContext.Consumer>
     );
 }
 

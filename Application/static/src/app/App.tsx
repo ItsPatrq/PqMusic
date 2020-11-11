@@ -5,16 +5,18 @@ import { MainNavbar } from '../mainNavbar/MainNavbar';
 import { ViewState } from '../shared/enums';
 import { Transcribe } from '../transcribe/Transcribe';
 import { Utility } from '../utility/Utility';
-
+import getContextValue, { languagesEnum, LanguageContext } from '../shared/languageContext';
 type AppState = {
-  currentViewState: ViewState
+  currentViewState: ViewState,
+  language: languagesEnum
 }
 
 export class App extends Component<{}, AppState> {
   constructor(props: object) {
     super(props);
     this.state = {
-      currentViewState: ViewState.home
+      currentViewState: ViewState.home,
+      language: languagesEnum.eng
     };
   }
 
@@ -32,17 +34,28 @@ export class App extends Component<{}, AppState> {
     });
   }
 
+  changeLanguage = (newLanguage: languagesEnum) => {
+    if(newLanguage === this.state.language) {
+      return;
+    }
+    this.setState({
+      language: newLanguage
+    });
+  }
+
   public render() {
     return (
-      <div className="PqM">
-        <header className="PqM-header">
-          
-          <MainNavbar OnViewStateChange={this.onViewStateChange} CurremtViewState={this.state.currentViewState} />
-        </header>
+      <LanguageContext.Provider value={getContextValue(this.state.language)}>
+        <div className="PqM">
+          <header className="PqM-header">
+            
+            <MainNavbar OnChangeLanguage={this.changeLanguage} OnViewStateChange={this.onViewStateChange} CurrentViewState={this.state.currentViewState} />
+          </header>
 
-          {this.getContent()}
-          
-      </div>
+            {this.getContent()}
+            
+        </div>
+      </LanguageContext.Provider>
     );
   }
 

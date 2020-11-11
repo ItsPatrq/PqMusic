@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { NumericInput } from "@blueprintjs/core";
 import { RowFlex } from '../../shared/components/rowFlex/RowFlex';
-import strings from '../../shared/strings';
+import { LanguageContext } from '../../shared/languageContext';
 
 export type FqMidiProps = {
   fqMidiValue: number,
@@ -26,10 +26,14 @@ export const FqMidi: FC<FqMidiProps> = ({fqMidiValue, handleFqMidiValueChange}) 
     )
 
     return (
-        <RowFlex
-            children={content}
-            label={strings.rowLabels.utils.fqMIDI}
-        />
+        <LanguageContext.Consumer>
+            {({strings}) => (
+                <RowFlex
+                    children={content}
+                    label={strings.rowLabels.utils.fqMIDI}
+                />
+            )}
+        </LanguageContext.Consumer>
     );
 }
 

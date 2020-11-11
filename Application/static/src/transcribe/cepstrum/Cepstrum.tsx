@@ -1,42 +1,46 @@
 import React, { FC } from 'react';
 import { RowFlex } from '../../shared/components/rowFlex/RowFlex';
-import strings from '../../shared/strings';
 import DataService from '../../dataService/DataService';
 import DropZoneWrapper from '../../shared/components/dropZoneWrapper/DropZoneWrapper';
 import { ImageResult } from '../../shared/components/dialogWithResImages/DialogWithResImages';
+import { IStrings, LanguageContext } from '../../shared/languageContext';
 
 export const Cepstrum: FC<{ openDialog(res: ImageResult[]): void }> = ({ openDialog }) => {
 
-    const handleFileInputChange = (acceptedFiles: File[]) => {
+    const getHandleFileInputChange = (strings: IStrings) =>  (acceptedFiles: File[]) => {
         DataService.TranscribeByCepstrum(acceptedFiles[0], (res) => { 
             const result:ImageResult[] = [{
                 image: res.cepstrogram,
-                title: "cepstrogram"
+                title: strings.plots.cepstrogram
             }, {
                 image: res.pitches,
-                title: "pitches"
+                title: strings.plots.pitches
             }, {
                 image: res.spectrogram,
-                title: "spektrogram mocy"
+                title: strings.plots.powerSpec
             }, {
                 image: res.logSpectrogram,
-                title: "logarytm spektrogramu mocy"
+                title: strings.plots.logPowSpec
             }]
             openDialog(result);
-        });
+        }, strings);
     }
-    const getRowContent = () => (
+    const getRowContent = (strings: IStrings) => (
         <DropZoneWrapper
-            callback={handleFileInputChange}
+            callback={getHandleFileInputChange(strings)}
             multiple={false}
         />
     );
 
     return (
-        <RowFlex
-            children={getRowContent()}
-            label={strings.rowLabels.transcription.cepstrum}
-        />
+        <LanguageContext.Consumer>
+            {({strings}) => (
+                <RowFlex
+                    children={getRowContent(strings)}
+                    label={strings.rowLabels.transcription.cepstrum}
+                /> 
+            )}
+        </LanguageContext.Consumer>
     );
 }
 

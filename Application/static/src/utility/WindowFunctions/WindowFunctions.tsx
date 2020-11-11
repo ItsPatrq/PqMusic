@@ -1,45 +1,49 @@
 import React, { FC } from 'react';
 import { RowFlex } from '../../shared/components/rowFlex/RowFlex';
-import strings from '../../shared/strings';
 import DataService from '../../dataService/DataService';
 import { Button } from '@blueprintjs/core';
+import { IStrings, LanguageContext } from '../../shared/languageContext';
 
 
 export const WindowFunctions: FC = () => {
-    const handleHannOnClickEvent = () => {
-        DataService.HannWindow();
+    const getHandleHannOnClickEvent = (strings: IStrings) => () => {
+        DataService.HannWindow(strings);
     };
-    const handleHammingOnClickEvent = () => {
-        DataService.HammingWindow();
+    const getHandleHammingOnClickEvent = (strings: IStrings) => () => {
+        DataService.HammingWindow(strings);
     };
-    const handleRectangleOnClickEvent = () => {
-        DataService.RectangleWindow();
+    const getHandleRectangleOnClickEvent = (strings: IStrings) => () => {
+        DataService.RectangleWindow(strings);
     };
-    const content = (
+    const getContent = (strings: IStrings) => (
         <div className="PqM-Utility_window_functions">
             <Button
                 className="bp3-intent-primary"
-                onClick={handleHannOnClickEvent}
+                onClick={getHandleHannOnClickEvent(strings)}
                 text={strings.buttonLabelDownloadHannWindow}
             />
             <Button
                 className="bp3-intent-primary"
-                onClick={handleHammingOnClickEvent}
+                onClick={getHandleHammingOnClickEvent(strings)}
                 text={strings.buttonLabelDownloadHammingWindow}
             />
             <Button
                 className="bp3-intent-primary"
-                onClick={handleRectangleOnClickEvent}
+                onClick={getHandleRectangleOnClickEvent(strings)}
                 text={strings.buttonLabelDownloadRectangleWindow}
             />
         </div>
     )
 
     return (
-        <RowFlex
-            children={content}
-            label={strings.rowLabels.utils.windowFunctions}
-        />
+        <LanguageContext.Consumer>
+            {({strings}) => (
+                <RowFlex
+                    children={getContent(strings)}
+                    label={strings.rowLabels.utils.windowFunctions}
+                />
+            )}
+        </LanguageContext.Consumer>
     );
 }
 

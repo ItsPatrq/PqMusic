@@ -54,10 +54,7 @@ body {
   background-color: rgba(167, 182, 194, 0.85); }
 
 .PqM-main-navbar img {
-  width: 85px;
-  cursor: pointer; }
-  .PqM-main-navbar img:hover {
-    background: rgba(167, 182, 194, 0.3); }
+  width: 85px; }
 
 .PqM-row-wrapper {
   width: 100%;
