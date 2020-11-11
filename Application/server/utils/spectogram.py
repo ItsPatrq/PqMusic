@@ -30,5 +30,5 @@ def plot_spectrogram_wrapped(filePath, result_path):
         spectra.append(powerSpec)
 
     fig, _ = plot_spectrogram(
-        spectra, spacing, sampleRate, showColorbar=True, language="pl", show=False)
+        spectra, spacing, sampleRate, showColorbar=True, language="eng", show=False)
     fig.savefig(result_path, format="png")

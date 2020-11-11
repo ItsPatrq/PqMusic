@@ -62,12 +62,6 @@ def handleRequestWithFile():
 def index():
     return send_file("../static/build/index.html")
 
-
-@app.route('/Thesis', methods=['GET', 'POST'])
-def getThesisPaper():
-    return send_file("../static/build/Magister_Thesis.pdf")
-
-
 @app.route("/Spectrogram", methods=['POST'])
 def spectrogram():
     requestFilePath, responseFolderPath, _, _, fileName = handleRequestWithFile()
