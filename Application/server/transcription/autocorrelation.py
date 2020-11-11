@@ -59,9 +59,9 @@ def autocorrelation_wrapped(file_path):
     best_frequencies, correlogram = autocorrelation(
         data, sample_rate, frame_width, frame_width, fq_min, fq_max)
     fig, _ = plot_pitches(best_frequencies, spacing,
-                          sample_rate, show=False, language="pl")
+                          sample_rate, show=False, language="eng")
     fig2, _ = plot_correlogram(
-        correlogram, spacing, sample_rate, show=False, language="pl")
+        correlogram, spacing, sample_rate, show=False, language="eng")
     pitches, correlogram = BytesIO(), BytesIO()
     fig.savefig(pitches, format="png")
     fig2.savefig(correlogram, format="png")

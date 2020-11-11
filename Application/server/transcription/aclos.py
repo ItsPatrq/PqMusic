@@ -104,11 +104,11 @@ def transcribe_by_aclos_wrapped(file_path):
         data, sample_rate, frame_width, spacing, frame_width)
 
     fig, _ = plot_pitches(best_fq, spacing, sample_rate,
-                          show=False, language="pl")
+                          show=False, language="eng")
     fig2, _ = plot_spectrogram(
-        spectra, spacing, sample_rate, show=False, language="pl")
+        spectra, spacing, sample_rate, show=False, language="eng")
     fig3, _ = plot_correlogram(
-        correlogram, spacing, sample_rate, show=False, language="pl")
+        correlogram, spacing, sample_rate, show=False, language="eng")
 
     pitches_fig, correlogram_fig, spectrogram_fig = BytesIO(), BytesIO(), BytesIO()
     fig.savefig(pitches_fig, format="png")
