@@ -74,15 +74,15 @@ export const MainNavbar: React.FC<MainNavbarProps> = ({ OnViewStateChange, Curre
     }
     return (
         <LanguageContext.Consumer>
-            {({strings, language}) => (
+            {({ strings, language }) => (
                 <Navbar className="PqM-main-navbar">
                     <Navbar.Group align={Alignment.LEFT}>
-                        <Navbar.Heading ><img src={logo} alt="PqMusic Logo" /></Navbar.Heading>
+                        <Navbar.Heading ><a href='/'><img src={logo} alt="PqMusic Logo" /></a></Navbar.Heading>
                         <Navbar.Divider />
                         {getViewButtons(strings)}
                     </Navbar.Group>
                     <Navbar.Group align={Alignment.RIGHT}>
-                            {getLanguageChangeButtons(language)}
+                        {getLanguageChangeButtons(language)}
                     </Navbar.Group>
                 </Navbar>
             )}

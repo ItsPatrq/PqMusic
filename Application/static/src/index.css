@@ -1,82 +1,102 @@
 .PqM-home object {
   width: 100vw;
-  height: calc(100vh - 85px); }
+  height: calc(100vh - 85px);
+}
 
 .PqM-Utility_fqMidi {
-  display: flex; }
+  display: flex;
+}
 
 .PqM-Utility_fqMidi_result {
   font-size: 20px;
   font-weight: 600;
   padding-right: 10px;
   padding-left: 10px;
-  width: 100px; }
+  width: 100px;
+}
 
 .PqM-Utility_fqMidi_variable {
   font-size: 20px;
   font-weight: 600;
   padding-right: 10px;
-  padding-left: 10px; }
+  padding-left: 10px;
+}
 
 .PqM {
   text-align: center;
   height: 100vh;
   background-color: #282c34;
-  color: white; }
+  color: white;
+}
 
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
-  pointer-events: none; }
+  pointer-events: none;
+}
 
 .PqM-header {
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin); }
+  font-size: calc(10px + 2vmin);
+}
 
 .PqM-main-navbar {
-  color: #282c34; }
+  color: #282c34;
+}
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .PqM-dropZone {
   background-color: #545d6e;
-  min-height: 50px; }
+  min-height: 50px;
+}
 
 .bp3-button.bp3-minimal.is-active {
-  background-color: rgba(167, 182, 194, 0.85); }
+  background-color: rgba(167, 182, 194, 0.85);
+}
 
 .bp3-button.bp3-minimal.is-active:hover {
-  background-color: rgba(167, 182, 194, 0.85); }
+  background-color: rgba(167, 182, 194, 0.85);
+}
 
 .PqM-main-navbar img {
-  width: 85px; }
+  width: 85px;
+}
 
 .PqM-row-wrapper {
   width: 100%;
   clear: both;
-  float: left; }
-  .PqM-row-wrapper .PqM-row {
-    clear: both;
-    float: left;
-    padding: 10px 25px 10px 200px;
-    position: relative;
-    margin: 20px 0 0;
-    width: 100%; }
-    .PqM-row-wrapper .PqM-row_label {
-      margin-top: 8px;
-      float: left;
-      margin-left: -190px;
-      text-align: right;
-      width: 180px; }
+  float: left;
+}
+.PqM-row-wrapper .PqM-row {
+  clear: both;
+  float: left;
+  padding: 10px 25px 10px 200px;
+  position: relative;
+  margin: 20px 0 0;
+  width: 100%;
+}
+.PqM-row-wrapper .PqM-row_label {
+  margin-top: 8px;
+  float: left;
+  margin-left: -190px;
+  text-align: right;
+  width: 180px;
+}
 
 .PqM-dialog.with-res-images {
   width: 95vw;
-  height: calc(95vh - 50px); }
-  .PqM-dialog.with-res-images img {
-    height: calc(85vh - 50px);
-    width: 90vw; }
+  height: calc(95vh - 50px);
+}
+.PqM-dialog.with-res-images img {
+  height: calc(85vh - 50px);
+  width: 90vw;
+}
+
+/*# sourceMappingURL=index.css.map */
